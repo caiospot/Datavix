@@ -1,0 +1,13 @@
+Origem;Destino;Valor
+Orgânico;Visita;1065
+Orgânico;Cadastro;2196
+Pago;Visita;2446
+Pago;Cadastro;2143
+Indicação;Visita;572
+Indicação;Cadastro;4258
+Email;Visita;3883
+Email;Cadastro;694
+Visita;Compra;2535
+Visita;Abandono;354
+Cadastro;Compra;2286
+Cadastro;Abandono;778

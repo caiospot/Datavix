@@ -1,0 +1,9 @@
+.DS_Store
+# gerados por `node build.mjs`
+/index.html
+/dist/
+/test/dev.html
+# protótipo antigo
+/spike-vizzu/
+node_modules/
+/test/out/

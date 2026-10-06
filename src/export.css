@@ -1,0 +1,7 @@
+:root { --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace; --sans: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif; }
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { font: 400 15px/1.5 var(--sans); -webkit-font-smoothing: antialiased; }
+#app .piece { max-width: none; margin: 0; border-radius: 0; box-shadow: none; min-height: 100vh; }
+.piece h1 { margin: 0; }
+@media (prefers-reduced-motion: reduce) { * { animation-duration: .001ms !important; transition-duration: .001ms !important; } }

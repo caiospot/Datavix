@@ -1,0 +1,901 @@
+Pedido,Data,Categoria,Valor,Observação
+PED-0001,2024-01-11,Brinquedos,915,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0002,2024-04-08,Higiene,2996,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0003,2024-03-07,Limpeza,946,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0004,2024-04-28,Limpeza,1236,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0005,2024-07-08,Limpeza,4450,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0006,2024-01-15,Alimentos,1905,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0007,2024-04-12,Alimentos,699,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0008,2024-07-04,Brinquedos,9867,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0009,2024-06-15,Papelaria,1234,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0010,2024-01-25,Alimentos,317,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0011,2024-08-01,Limpeza,501,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0012,2024-04-02,Jardinagem,236,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0013,2024-05-13,Brinquedos,9934,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0014,2024-02-07,Brinquedos,7315,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0015,2024-02-27,Eletrônicos,36173,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0016,2024-07-17,Papelaria,326,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0017,2024-05-15,Limpeza,3956,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0018,2024-06-10,Bebidas,5206,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0019,2024-05-24,Jardinagem,272,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0020,2024-01-23,Higiene,1203,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0021,2024-05-23,Eletrônicos,281,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0022,2024-03-02,Limpeza,243,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0023,2024-08-14,Papelaria,304,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0024,2024-08-21,Higiene,3795,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0025,2024-05-08,Higiene,1205,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0026,2024-08-18,Alimentos,6074,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0027,2024-04-02,Higiene,504,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0028,2024-03-29,Eletrônicos,1944,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0029,2024-05-18,Brinquedos,10650,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0030,2024-05-28,Higiene,2301,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0031,2024-05-07,Papelaria,202,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0032,2024-05-25,Eletrônicos,24911,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0033,2024-05-13,Alimentos,5908,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0034,2024-02-03,Brinquedos,241,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0035,2024-07-02,Alimentos,5545,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0036,2024-07-01,Alimentos,3690,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0037,2024-02-28,Jardinagem,431,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0038,2024-07-18,Alimentos,200,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0039,2024-05-18,Alimentos,5275,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0040,2024-08-16,Higiene,222,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0041,2024-06-09,Papelaria,250,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0042,2024-06-17,Papelaria,211,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0043,2024-07-26,Jardinagem,201,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0044,2024-06-09,Eletrônicos,15113,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0045,2024-04-11,Brinquedos,2290,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0046,2024-07-09,Papelaria,2253,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0047,2024-02-29,Jardinagem,1226,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0048,2024-01-17,Jardinagem,609,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0049,2024-08-23,Jardinagem,201,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0050,2024-04-24,Bebidas,1248,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0051,2024-03-31,Papelaria,2979,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0052,2024-03-14,Alimentos,270,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0053,2024-01-03,Eletrônicos,5256,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0054,2024-06-30,Papelaria,282,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0055,2024-03-04,Higiene,911,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0056,2024-07-19,Higiene,3606,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0057,2024-06-12,Alimentos,3961,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0058,2024-05-26,Bebidas,302,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0059,2024-05-17,Brinquedos,203,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0060,2024-06-23,Jardinagem,2133,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0061,2024-08-24,Alimentos,4247,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0062,2024-03-08,Limpeza,1025,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0063,2024-08-14,Jardinagem,5542,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0064,2024-08-21,Bebidas,5850,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0065,2024-01-10,Higiene,2124,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0066,2024-05-21,Bebidas,839,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0067,2024-03-14,Limpeza,400,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0068,2024-07-11,Alimentos,585,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0069,2024-04-08,Bebidas,200,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0070,2024-03-03,Papelaria,285,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0071,2024-02-12,Alimentos,214,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0072,2024-01-03,Alimentos,2092,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0073,2024-04-07,Higiene,676,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0074,2024-02-23,Limpeza,1338,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0075,2024-08-27,Papelaria,269,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0076,2024-02-27,Alimentos,1056,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0077,2024-04-09,Limpeza,4583,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0078,2024-08-09,Higiene,363,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0079,2024-04-12,Eletrônicos,630,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0080,2024-03-17,Higiene,534,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0081,2024-02-17,Limpeza,402,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0082,2024-06-03,Limpeza,767,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0083,2024-06-07,Eletrônicos,23837,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0084,2024-05-15,Limpeza,2324,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0085,2024-02-21,Higiene,626,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0086,2024-07-14,Alimentos,3602,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0087,2024-06-27,Higiene,2001,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0088,2024-01-24,Eletrônicos,24589,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0089,2024-08-09,Papelaria,2305,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0090,2024-03-18,Jardinagem,8051,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0091,2024-07-29,Alimentos,3775,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0092,2024-02-04,Eletrônicos,31564,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0093,2024-01-25,Eletrônicos,30591,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0094,2024-07-15,Eletrônicos,25703,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0095,2024-06-27,Bebidas,1981,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0096,2024-03-29,Alimentos,656,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0097,2024-02-08,Brinquedos,2512,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0098,2024-01-12,Brinquedos,1592,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0099,2024-07-13,Jardinagem,5258,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0100,2024-02-08,Papelaria,464,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0101,2024-04-17,Higiene,590,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0102,2024-02-04,Eletrônicos,5254,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0103,2024-06-01,Limpeza,1174,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0104,2024-08-23,Bebidas,3086,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0105,2024-05-16,Alimentos,6930,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0106,2024-08-15,Jardinagem,814,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0107,2024-02-18,Brinquedos,6621,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0108,2024-06-01,Eletrônicos,810,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0109,2024-06-16,Alimentos,1450,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0110,2024-03-18,Higiene,580,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0111,2024-02-17,Bebidas,1686,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0112,2024-05-28,Bebidas,5147,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0113,2024-07-31,Eletrônicos,3493,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0114,2024-04-21,Eletrônicos,6810,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0115,2024-03-29,Higiene,2450,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0116,2024-04-08,Bebidas,558,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0117,2024-03-31,Higiene,4987,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0118,2024-02-22,Alimentos,4493,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0119,2024-07-08,Alimentos,480,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0120,2024-07-08,Eletrônicos,3039,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0121,2024-08-09,Eletrônicos,9697,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0122,2024-04-02,Jardinagem,7422,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0123,2024-02-19,Bebidas,288,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0124,2024-02-07,Alimentos,1239,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0125,2024-01-23,Brinquedos,4880,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0126,2024-01-07,Jardinagem,202,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0127,2024-03-22,Bebidas,2988,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0128,2024-07-18,Papelaria,593,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0129,2024-05-19,Brinquedos,203,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0130,2024-07-12,Limpeza,4636,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0131,2024-02-16,Higiene,413,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0132,2024-03-31,Bebidas,5948,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0133,2024-05-06,Alimentos,1595,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0134,2024-03-05,Limpeza,4051,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0135,2024-03-30,Papelaria,1035,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0136,2024-08-05,Eletrônicos,800,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0137,2024-07-16,Bebidas,475,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0138,2024-02-10,Limpeza,284,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0139,2024-04-02,Higiene,2050,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0140,2024-04-05,Limpeza,223,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0141,2024-04-14,Jardinagem,220,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0142,2024-07-07,Alimentos,1122,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0143,2024-08-21,Limpeza,200,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0144,2024-01-03,Papelaria,704,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0145,2024-06-17,Higiene,4470,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0146,2024-02-25,Jardinagem,1337,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0147,2024-04-08,Limpeza,940,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0148,2024-04-01,Alimentos,7267,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0149,2024-06-07,Alimentos,1009,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0150,2024-07-01,Brinquedos,4412,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0151,2024-07-14,Alimentos,2724,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0152,2024-08-18,Bebidas,5281,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0153,2024-03-24,Limpeza,1270,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0154,2024-01-21,Limpeza,3321,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0155,2024-04-24,Limpeza,627,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0156,2024-03-14,Bebidas,202,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0157,2024-01-29,Alimentos,402,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0158,2024-06-15,Eletrônicos,1486,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0159,2024-02-05,Eletrônicos,9010,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0160,2024-04-07,Alimentos,6297,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0161,2024-08-19,Bebidas,3765,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0162,2024-02-06,Alimentos,5106,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0163,2024-03-30,Alimentos,2353,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0164,2024-08-24,Papelaria,201,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0165,2024-07-12,Limpeza,857,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0166,2024-04-11,Alimentos,7495,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0167,2024-07-10,Eletrônicos,9778,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0168,2024-07-17,Alimentos,1367,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0169,2024-07-18,Papelaria,291,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0170,2024-02-11,Brinquedos,8037,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0171,2024-04-22,Eletrônicos,15039,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0172,2024-01-17,Eletrônicos,628,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0173,2024-07-08,Limpeza,200,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0174,2024-01-25,Jardinagem,2929,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0175,2024-02-09,Higiene,3663,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0176,2024-05-06,Eletrônicos,10241,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0177,2024-03-16,Brinquedos,2756,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0178,2024-02-24,Alimentos,205,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0179,2024-06-17,Eletrônicos,201,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0180,2024-01-04,Alimentos,1643,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0181,2024-02-24,Limpeza,2319,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0182,2024-02-23,Alimentos,4880,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0183,2024-02-27,Brinquedos,235,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0184,2024-06-02,Bebidas,200,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0185,2024-07-24,Alimentos,1136,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0186,2024-06-21,Alimentos,1547,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0187,2024-05-24,Higiene,293,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0188,2024-01-31,Higiene,2868,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0189,2024-03-24,Limpeza,1349,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0190,2024-05-25,Alimentos,5919,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0191,2024-05-19,Brinquedos,2495,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0192,2024-01-31,Brinquedos,208,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0193,2024-08-21,Alimentos,1410,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0194,2024-03-30,Eletrônicos,9932,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0195,2024-03-03,Alimentos,2125,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0196,2024-05-07,Limpeza,1576,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0197,2024-04-18,Eletrônicos,5441,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0198,2024-04-04,Eletrônicos,12872,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0199,2024-03-19,Eletrônicos,30917,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0200,2024-07-06,Jardinagem,8196,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0201,2024-03-02,Limpeza,600,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0202,2024-03-02,Alimentos,246,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0203,2024-03-28,Limpeza,2562,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0204,2024-02-12,Limpeza,533,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0205,2024-08-11,Brinquedos,910,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0206,2024-01-15,Limpeza,506,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0207,2024-02-16,Limpeza,1122,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0208,2024-02-21,Brinquedos,5707,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0209,2024-04-03,Limpeza,3828,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0210,2024-06-28,Bebidas,201,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0211,2024-02-09,Alimentos,292,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0212,2024-07-23,Bebidas,212,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0213,2024-02-28,Jardinagem,291,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0214,2024-04-06,Alimentos,456,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0215,2024-04-24,Alimentos,253,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0216,2024-07-28,Alimentos,241,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0217,2024-01-29,Alimentos,4631,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0218,2024-05-16,Bebidas,1552,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0219,2024-04-28,Jardinagem,1631,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0220,2024-02-09,Jardinagem,3052,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0221,2024-08-13,Limpeza,3986,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0222,2024-05-13,Alimentos,8900,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0223,2024-01-13,Limpeza,200,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0224,2024-01-09,Eletrônicos,8080,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0225,2024-03-06,Alimentos,3179,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0226,2024-07-01,Alimentos,321,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0227,2024-07-04,Bebidas,220,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0228,2024-05-11,Higiene,2449,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0229,2024-05-31,Bebidas,2010,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0230,2024-08-22,Alimentos,1267,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0231,2024-03-30,Limpeza,200,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0232,2024-07-11,Alimentos,713,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0233,2024-07-03,Alimentos,784,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0234,2024-06-16,Jardinagem,3606,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0235,2024-08-24,Jardinagem,4382,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0236,2024-03-06,Alimentos,3701,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0237,2024-01-05,Higiene,318,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0238,2024-04-17,Papelaria,1779,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0239,2024-04-21,Limpeza,637,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0240,2024-01-26,Brinquedos,1817,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0241,2024-05-20,Alimentos,2750,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0242,2024-01-19,Bebidas,260,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0243,2024-06-17,Papelaria,2255,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0244,2024-04-14,Alimentos,3828,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0245,2024-07-29,Brinquedos,6578,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0246,2024-01-21,Limpeza,574,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0247,2024-08-12,Alimentos,212,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0248,2024-06-16,Eletrônicos,20528,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0249,2024-07-09,Papelaria,274,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0250,2024-08-10,Higiene,3359,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0251,2024-01-17,Higiene,255,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0252,2024-08-16,Brinquedos,4423,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0253,2024-01-15,Bebidas,773,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0254,2024-03-20,Eletrônicos,34056,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0255,2024-08-22,Alimentos,905,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0256,2024-02-11,Alimentos,6241,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0257,2024-05-07,Alimentos,200,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0258,2024-05-25,Limpeza,410,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0259,2024-07-14,Papelaria,215,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0260,2024-05-18,Alimentos,861,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0261,2024-04-30,Limpeza,201,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0262,2024-08-17,Alimentos,1634,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0263,2024-03-24,Limpeza,244,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0264,2024-08-13,Higiene,4841,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0265,2024-01-06,Limpeza,2350,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0266,2024-07-09,Higiene,649,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0267,2024-02-28,Alimentos,2376,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0268,2024-08-01,Papelaria,234,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0269,2024-02-21,Papelaria,2010,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0270,2024-01-14,Eletrônicos,456,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0271,2024-04-04,Bebidas,4294,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0272,2024-02-28,Limpeza,322,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0273,2024-05-16,Higiene,403,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0274,2024-05-01,Alimentos,352,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0275,2024-02-25,Brinquedos,9139,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0276,2024-03-11,Limpeza,489,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0277,2024-03-08,Higiene,2950,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0278,2024-01-14,Bebidas,881,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0279,2024-01-09,Jardinagem,607,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0280,2024-02-06,Eletrônicos,7427,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0281,2024-05-10,Higiene,921,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0282,2024-01-20,Jardinagem,223,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0283,2024-02-28,Bebidas,213,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0284,2024-01-08,Bebidas,4705,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0285,2024-07-28,Higiene,216,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0286,2024-06-21,Limpeza,204,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0287,2024-07-03,Bebidas,6436,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0288,2024-05-17,Alimentos,1464,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0289,2024-04-07,Brinquedos,301,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0290,2024-02-15,Limpeza,2070,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0291,2024-03-15,Papelaria,698,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0292,2024-02-07,Eletrônicos,6966,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0293,2024-02-26,Limpeza,3280,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0294,2024-01-29,Brinquedos,218,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0295,2024-06-10,Alimentos,5602,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0296,2024-02-23,Higiene,760,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0297,2024-06-14,Higiene,318,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0298,2024-07-18,Brinquedos,9173,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0299,2024-01-14,Alimentos,210,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0300,2024-05-15,Higiene,3077,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0301,2024-06-13,Brinquedos,355,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0302,2024-06-10,Limpeza,2413,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0303,2024-04-06,Limpeza,316,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0304,2024-06-08,Bebidas,1749,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0305,2024-01-02,Papelaria,980,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0306,2024-03-18,Papelaria,2719,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0307,2024-06-10,Limpeza,394,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0308,2024-08-22,Papelaria,200,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0309,2024-05-31,Limpeza,327,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0310,2024-01-27,Limpeza,1578,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0311,2024-02-14,Papelaria,271,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0312,2024-03-07,Eletrônicos,23327,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0313,2024-01-11,Bebidas,223,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0314,2024-03-18,Higiene,212,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0315,2024-08-10,Higiene,229,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0316,2024-08-13,Eletrônicos,932,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0317,2024-05-10,Alimentos,348,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0318,2024-05-02,Brinquedos,2122,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0319,2024-07-21,Higiene,359,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0320,2024-03-06,Jardinagem,6390,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0321,2024-05-16,Bebidas,3209,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0322,2024-07-13,Bebidas,259,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0323,2024-02-11,Alimentos,215,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0324,2024-07-17,Alimentos,385,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0325,2024-08-25,Brinquedos,444,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0326,2024-03-03,Alimentos,1511,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0327,2024-06-30,Limpeza,483,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0328,2024-06-16,Jardinagem,342,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0329,2024-04-13,Alimentos,1248,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0330,2024-01-24,Eletrônicos,245,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0331,2024-03-22,Alimentos,258,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0332,2024-07-21,Brinquedos,3255,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0333,2024-05-23,Alimentos,1950,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0334,2024-01-21,Eletrônicos,24523,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0335,2024-08-02,Higiene,4936,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0336,2024-04-08,Alimentos,8966,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0337,2024-05-13,Higiene,222,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0338,2024-07-15,Jardinagem,204,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0339,2024-08-11,Higiene,3313,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0340,2024-01-05,Alimentos,4421,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0341,2024-01-20,Higiene,452,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0342,2024-01-09,Alimentos,500,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0343,2024-07-12,Bebidas,308,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0344,2024-01-27,Limpeza,291,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0345,2024-08-14,Jardinagem,4501,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0346,2024-08-13,Alimentos,2418,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0347,2024-01-09,Alimentos,338,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0348,2024-02-22,Jardinagem,3878,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0349,2024-02-26,Papelaria,2066,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0350,2024-04-28,Bebidas,1721,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0351,2024-05-26,Eletrônicos,8491,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0352,2024-03-18,Papelaria,1273,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0353,2024-06-11,Alimentos,1048,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0354,2024-06-29,Papelaria,536,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0355,2024-03-15,Alimentos,5062,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0356,2024-01-31,Eletrônicos,5269,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0357,2024-08-11,Papelaria,311,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0358,2024-02-09,Bebidas,5310,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0359,2024-01-03,Eletrônicos,351,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0360,2024-04-05,Limpeza,2876,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0361,2024-08-07,Papelaria,3220,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0362,2024-07-31,Alimentos,2485,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0363,2024-01-01,Brinquedos,4013,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0364,2024-03-03,Papelaria,1009,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0365,2024-01-27,Alimentos,8127,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0366,2024-01-21,Eletrônicos,14645,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0367,2024-03-10,Alimentos,1297,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0368,2024-05-04,Higiene,4874,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0369,2024-08-01,Eletrônicos,7592,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0370,2024-03-08,Brinquedos,1020,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0371,2024-08-10,Alimentos,1189,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0372,2024-08-18,Papelaria,775,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0373,2024-07-11,Higiene,221,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0374,2024-05-28,Jardinagem,2261,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0375,2024-03-14,Alimentos,2915,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0376,2024-06-14,Eletrônicos,655,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0377,2024-08-08,Bebidas,224,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0378,2024-02-22,Papelaria,358,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0379,2024-04-25,Bebidas,255,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0380,2024-04-07,Limpeza,704,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0381,2024-01-28,Higiene,207,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0382,2024-04-20,Limpeza,1009,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0383,2024-04-27,Jardinagem,512,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0384,2024-06-29,Alimentos,458,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0385,2024-04-05,Alimentos,4468,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0386,2024-03-14,Brinquedos,470,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0387,2024-06-03,Brinquedos,1869,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0388,2024-05-22,Eletrônicos,1412,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0389,2024-02-23,Higiene,223,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0390,2024-05-29,Higiene,2028,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0391,2024-07-24,Limpeza,1080,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0392,2024-03-28,Papelaria,1763,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0393,2024-07-10,Eletrônicos,6472,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0394,2024-04-24,Jardinagem,379,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0395,2024-08-18,Papelaria,823,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0396,2024-03-25,Limpeza,2349,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0397,2024-04-04,Papelaria,990,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0398,2024-04-20,Brinquedos,2486,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0399,2024-01-01,Brinquedos,200,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0400,2024-01-07,Limpeza,202,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0401,2024-06-08,Jardinagem,1382,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0402,2024-08-27,Limpeza,1556,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0403,2024-05-17,Higiene,4584,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0404,2024-03-22,Brinquedos,910,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0405,2024-08-18,Higiene,2982,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0406,2024-06-05,Bebidas,4369,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0407,2024-01-24,Eletrônicos,25968,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0408,2024-01-14,Jardinagem,399,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0409,2024-05-30,Alimentos,4393,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0410,2024-04-18,Bebidas,203,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0411,2024-02-13,Brinquedos,8507,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0412,2024-01-11,Bebidas,498,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0413,2024-03-22,Papelaria,213,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0414,2024-02-16,Limpeza,1323,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0415,2024-08-01,Alimentos,5257,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0416,2024-05-24,Eletrônicos,697,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0417,2024-04-04,Bebidas,891,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0418,2024-07-01,Higiene,603,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0419,2024-01-20,Alimentos,207,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0420,2024-07-03,Alimentos,2963,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0421,2024-01-08,Higiene,4138,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0422,2024-04-11,Eletrônicos,200,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0423,2024-06-18,Bebidas,5938,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0424,2024-06-02,Higiene,1265,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0425,2024-06-28,Limpeza,1669,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0426,2024-02-11,Alimentos,4550,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0427,2024-02-01,Eletrônicos,10817,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0428,2024-06-08,Alimentos,224,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0429,2024-05-25,Eletrônicos,8572,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0430,2024-01-01,Papelaria,1258,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0431,2024-04-17,Alimentos,209,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0432,2024-08-22,Bebidas,2979,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0433,2024-05-11,Alimentos,2157,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0434,2024-03-03,Limpeza,1336,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0435,2024-07-06,Eletrônicos,1765,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0436,2024-06-16,Eletrônicos,1170,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0437,2024-06-19,Jardinagem,1441,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0438,2024-08-08,Limpeza,424,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0439,2024-05-24,Papelaria,388,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0440,2024-02-29,Alimentos,6908,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0441,2024-06-25,Limpeza,403,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0442,2024-08-10,Brinquedos,2547,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0443,2024-01-12,Alimentos,629,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0444,2024-06-08,Papelaria,457,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0445,2024-01-20,Brinquedos,214,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0446,2024-04-27,Brinquedos,203,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0447,2024-02-25,Eletrônicos,6047,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0448,2024-08-06,Alimentos,8760,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0449,2024-03-20,Limpeza,204,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0450,2024-04-06,Eletrônicos,9673,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0451,2024-05-09,Bebidas,776,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0452,2024-02-15,Higiene,1344,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0453,2024-05-04,Alimentos,4894,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0454,2024-03-26,Brinquedos,310,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0455,2024-08-20,Brinquedos,6184,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0456,2024-03-02,Higiene,2133,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0457,2024-04-12,Alimentos,201,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0458,2024-02-29,Brinquedos,8984,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0459,2024-04-11,Brinquedos,6639,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0460,2024-06-24,Jardinagem,2829,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0461,2024-08-06,Alimentos,201,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0462,2024-04-29,Brinquedos,604,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0463,2024-01-09,Eletrônicos,200,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0464,2024-04-07,Brinquedos,2066,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0465,2024-02-18,Bebidas,836,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0466,2024-03-25,Jardinagem,200,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0467,2024-04-21,Higiene,512,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0468,2024-05-16,Bebidas,325,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0469,2024-02-23,Alimentos,628,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0470,2024-02-21,Alimentos,410,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0471,2024-02-24,Papelaria,471,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0472,2024-03-13,Jardinagem,2872,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0473,2024-08-05,Eletrônicos,4064,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0474,2024-08-11,Alimentos,2372,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0475,2024-08-27,Alimentos,481,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0476,2024-07-13,Alimentos,3194,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0477,2024-04-29,Alimentos,214,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0478,2024-02-01,Alimentos,267,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0479,2024-08-08,Bebidas,3249,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0480,2024-06-21,Alimentos,243,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0481,2024-07-28,Alimentos,598,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0482,2024-05-05,Bebidas,2266,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0483,2024-08-11,Bebidas,696,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0484,2024-04-05,Papelaria,205,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0485,2024-07-22,Higiene,3413,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0486,2024-02-20,Eletrônicos,3901,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0487,2024-01-15,Eletrônicos,3817,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0488,2024-03-03,Higiene,2158,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0489,2024-05-01,Alimentos,589,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0490,2024-01-02,Brinquedos,1902,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0491,2024-06-30,Alimentos,200,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0492,2024-01-23,Alimentos,1036,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0493,2024-04-25,Bebidas,222,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0494,2024-06-25,Higiene,2045,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0495,2024-02-13,Jardinagem,302,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0496,2024-03-26,Jardinagem,6371,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0497,2024-03-11,Jardinagem,3211,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0498,2024-05-17,Jardinagem,2679,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0499,2024-05-10,Bebidas,6111,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0500,2024-04-28,Jardinagem,486,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0501,2024-06-08,Alimentos,1063,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0502,2024-03-18,Limpeza,3348,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0503,2024-04-04,Bebidas,846,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0504,2024-03-04,Jardinagem,201,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0505,2024-07-12,Jardinagem,3888,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0506,2024-06-30,Bebidas,4729,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0507,2024-08-13,Jardinagem,2805,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0508,2024-01-06,Bebidas,236,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0509,2024-06-30,Brinquedos,549,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0510,2024-08-06,Papelaria,228,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0511,2024-03-31,Limpeza,4271,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0512,2024-01-17,Bebidas,239,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0513,2024-06-12,Higiene,2659,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0514,2024-04-08,Bebidas,470,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0515,2024-02-11,Alimentos,6646,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0516,2024-08-10,Alimentos,305,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0517,2024-02-14,Alimentos,454,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0518,2024-07-04,Higiene,200,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0519,2024-04-05,Bebidas,292,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0520,2024-06-14,Jardinagem,209,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0521,2024-06-02,Higiene,206,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0522,2024-06-22,Alimentos,369,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0523,2024-01-10,Brinquedos,206,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0524,2024-03-10,Jardinagem,794,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0525,2024-04-22,Higiene,4384,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0526,2024-05-01,Alimentos,236,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0527,2024-03-13,Eletrônicos,200,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0528,2024-07-26,Alimentos,1102,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0529,2024-04-26,Alimentos,9139,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0530,2024-02-18,Bebidas,348,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0531,2024-08-10,Alimentos,210,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0532,2024-01-04,Jardinagem,1054,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0533,2024-02-15,Higiene,4036,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0534,2024-01-09,Alimentos,1541,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0535,2024-05-01,Jardinagem,4760,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0536,2024-02-09,Brinquedos,2206,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0537,2024-01-23,Alimentos,6686,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0538,2024-06-14,Alimentos,375,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0539,2024-07-09,Higiene,504,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0540,2024-07-20,Eletrônicos,22898,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0541,2024-01-05,Bebidas,3339,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0542,2024-05-28,Alimentos,732,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0543,2024-01-04,Papelaria,712,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0544,2024-08-26,Higiene,1145,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0545,2024-04-10,Bebidas,211,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0546,2024-03-26,Eletrônicos,1712,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0547,2024-02-12,Jardinagem,4603,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0548,2024-03-18,Jardinagem,5897,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0549,2024-06-16,Bebidas,232,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0550,2024-07-19,Brinquedos,364,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0551,2024-04-04,Limpeza,1063,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0552,2024-05-18,Papelaria,363,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0553,2024-04-29,Alimentos,9022,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0554,2024-06-16,Higiene,3529,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0555,2024-02-15,Jardinagem,5737,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0556,2024-07-25,Higiene,1258,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0557,2024-01-12,Bebidas,2185,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0558,2024-05-23,Limpeza,3121,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0559,2024-07-13,Alimentos,6121,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0560,2024-08-20,Alimentos,2129,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0561,2024-04-16,Higiene,5005,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0562,2024-05-08,Brinquedos,2694,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0563,2024-05-07,Brinquedos,2167,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0564,2024-06-09,Bebidas,2370,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0565,2024-08-21,Eletrônicos,31273,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0566,2024-02-04,Higiene,458,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0567,2024-08-25,Bebidas,5393,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0568,2024-01-12,Limpeza,1668,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0569,2024-04-15,Papelaria,679,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0570,2024-01-06,Eletrônicos,2605,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0571,2024-04-22,Alimentos,403,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0572,2024-07-10,Limpeza,2421,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0573,2024-04-18,Jardinagem,3505,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0574,2024-01-11,Papelaria,2820,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0575,2024-02-28,Eletrônicos,16875,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0576,2024-05-08,Limpeza,2708,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0577,2024-06-30,Alimentos,7137,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0578,2024-06-04,Bebidas,790,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0579,2024-07-24,Brinquedos,10820,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0580,2024-01-30,Bebidas,261,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0581,2024-05-10,Alimentos,2727,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0582,2024-02-14,Alimentos,451,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0583,2024-04-21,Limpeza,2683,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0584,2024-08-19,Higiene,4556,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0585,2024-06-27,Brinquedos,4285,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0586,2024-02-20,Alimentos,295,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0587,2024-01-30,Limpeza,411,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0588,2024-03-23,Alimentos,8459,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0589,2024-03-31,Brinquedos,945,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0590,2024-07-10,Limpeza,220,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0591,2024-01-28,Alimentos,221,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0592,2024-06-18,Eletrônicos,22321,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0593,2024-07-17,Alimentos,560,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0594,2024-07-24,Papelaria,472,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0595,2024-03-05,Eletrônicos,738,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0596,2024-08-27,Bebidas,200,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0597,2024-02-11,Papelaria,1243,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0598,2024-04-14,Alimentos,3144,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0599,2024-02-29,Brinquedos,323,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0600,2024-08-17,Bebidas,5194,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0601,2024-04-30,Brinquedos,327,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0602,2024-01-11,Papelaria,201,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0603,2024-07-31,Higiene,277,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0604,2024-04-15,Brinquedos,8883,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0605,2024-02-22,Alimentos,398,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0606,2024-08-20,Jardinagem,331,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0607,2024-04-25,Jardinagem,213,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0608,2024-06-25,Papelaria,614,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0609,2024-03-26,Alimentos,6069,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0610,2024-05-17,Alimentos,908,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0611,2024-02-01,Jardinagem,810,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0612,2024-07-25,Bebidas,207,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0613,2024-07-31,Bebidas,4109,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0614,2024-05-27,Brinquedos,1354,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0615,2024-01-05,Jardinagem,840,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0616,2024-08-03,Jardinagem,1376,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0617,2024-01-11,Bebidas,3652,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0618,2024-05-14,Papelaria,2736,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0619,2024-06-28,Limpeza,353,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0620,2024-03-07,Papelaria,1106,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0621,2024-05-29,Higiene,295,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0622,2024-08-04,Jardinagem,336,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0623,2024-06-02,Bebidas,231,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0624,2024-01-30,Limpeza,2324,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0625,2024-03-13,Higiene,1169,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0626,2024-04-19,Brinquedos,1604,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0627,2024-01-13,Eletrônicos,35540,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0628,2024-05-08,Alimentos,1494,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0629,2024-08-16,Alimentos,284,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0630,2024-06-16,Bebidas,2950,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0631,2024-06-17,Bebidas,5514,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0632,2024-08-08,Alimentos,5656,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0633,2024-08-15,Alimentos,2624,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0634,2024-01-11,Limpeza,201,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0635,2024-08-15,Alimentos,246,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0636,2024-03-13,Jardinagem,610,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0637,2024-04-26,Papelaria,628,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0638,2024-02-15,Bebidas,838,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0639,2024-02-03,Alimentos,7130,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0640,2024-05-30,Alimentos,200,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0641,2024-07-29,Papelaria,870,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0642,2024-04-11,Bebidas,6095,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0643,2024-08-05,Alimentos,5286,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0644,2024-01-20,Bebidas,1826,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0645,2024-08-02,Papelaria,2741,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0646,2024-08-05,Bebidas,6013,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0647,2024-04-23,Eletrônicos,12246,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0648,2024-04-07,Eletrônicos,3517,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0649,2024-01-14,Limpeza,4045,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0650,2024-01-07,Higiene,3502,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0651,2024-08-23,Alimentos,3006,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0652,2024-02-18,Brinquedos,2125,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0653,2024-08-15,Higiene,542,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0654,2024-06-14,Bebidas,633,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0655,2024-07-08,Alimentos,709,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0656,2024-03-01,Alimentos,5588,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0657,2024-05-08,Papelaria,412,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0658,2024-05-30,Alimentos,1897,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0659,2024-07-11,Jardinagem,4521,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0660,2024-07-16,Alimentos,205,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0661,2024-04-25,Alimentos,2730,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0662,2024-06-21,Limpeza,2785,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0663,2024-07-01,Alimentos,2421,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0664,2024-08-24,Eletrônicos,26698,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0665,2024-04-16,Higiene,614,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0666,2024-03-14,Eletrônicos,291,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0667,2024-05-18,Brinquedos,8529,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0668,2024-08-09,Alimentos,8371,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0669,2024-04-08,Eletrônicos,7521,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0670,2024-04-28,Alimentos,5540,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0671,2024-06-01,Higiene,1421,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0672,2024-03-01,Bebidas,6154,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0673,2024-08-24,Alimentos,3093,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0674,2024-04-25,Limpeza,4203,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0675,2024-01-25,Eletrônicos,590,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0676,2024-03-18,Limpeza,2264,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0677,2024-06-24,Alimentos,200,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0678,2024-07-24,Alimentos,264,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0679,2024-02-28,Alimentos,200,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0680,2024-05-08,Higiene,309,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0681,2024-04-17,Alimentos,4677,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0682,2024-08-05,Alimentos,4292,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0683,2024-06-25,Bebidas,453,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0684,2024-06-06,Limpeza,1748,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0685,2024-05-03,Bebidas,5097,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0686,2024-08-17,Papelaria,2138,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0687,2024-08-24,Jardinagem,213,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0688,2024-02-02,Bebidas,1544,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0689,2024-02-15,Higiene,607,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0690,2024-06-05,Limpeza,512,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0691,2024-04-11,Limpeza,793,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0692,2024-04-05,Bebidas,3394,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0693,2024-08-08,Alimentos,245,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0694,2024-03-10,Alimentos,266,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0695,2024-07-21,Brinquedos,2014,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0696,2024-02-14,Papelaria,1087,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0697,2024-06-05,Brinquedos,290,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0698,2024-01-30,Limpeza,4591,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0699,2024-06-14,Eletrônicos,3635,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0700,2024-07-21,Bebidas,4532,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0701,2024-02-08,Jardinagem,2317,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0702,2024-06-10,Alimentos,3422,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0703,2024-04-01,Alimentos,1734,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0704,2024-06-05,Brinquedos,7382,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0705,2024-03-25,Jardinagem,4254,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0706,2024-01-12,Eletrônicos,247,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0707,2024-05-31,Higiene,574,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0708,2024-01-29,Brinquedos,2182,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0709,2024-05-14,Limpeza,307,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0710,2024-02-29,Eletrônicos,909,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0711,2024-06-26,Higiene,3359,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0712,2024-03-17,Alimentos,1515,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0713,2024-07-31,Jardinagem,6284,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0714,2024-04-26,Brinquedos,786,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0715,2024-08-10,Bebidas,220,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0716,2024-02-13,Papelaria,203,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0717,2024-04-28,Alimentos,200,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0718,2024-04-27,Alimentos,6707,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0719,2024-06-01,Eletrônicos,18587,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0720,2024-07-13,Brinquedos,1557,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0721,2024-08-10,Eletrônicos,1201,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0722,2024-07-16,Brinquedos,4618,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0723,2024-07-20,Bebidas,4929,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0724,2024-07-12,Papelaria,1107,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0725,2024-04-12,Alimentos,6086,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0726,2024-02-17,Brinquedos,200,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0727,2024-03-27,Alimentos,212,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0728,2024-05-15,Brinquedos,2063,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0729,2024-02-25,Brinquedos,2548,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0730,2024-07-06,Limpeza,814,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0731,2024-02-16,Brinquedos,2120,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0732,2024-05-25,Papelaria,200,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0733,2024-08-04,Jardinagem,4190,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0734,2024-05-02,Bebidas,352,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0735,2024-07-09,Alimentos,205,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0736,2024-07-25,Eletrônicos,470,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0737,2024-05-31,Alimentos,2048,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0738,2024-04-05,Jardinagem,219,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0739,2024-04-07,Papelaria,305,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0740,2024-01-05,Brinquedos,9444,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0741,2024-05-10,Bebidas,2999,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0742,2024-07-28,Bebidas,951,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0743,2024-04-01,Alimentos,1783,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0744,2024-07-11,Alimentos,3099,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0745,2024-01-07,Alimentos,8471,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0746,2024-01-13,Limpeza,555,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0747,2024-04-23,Alimentos,8742,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0748,2024-03-15,Alimentos,4428,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0749,2024-01-10,Limpeza,2484,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0750,2024-01-19,Limpeza,2516,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0751,2024-02-07,Eletrônicos,18908,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0752,2024-03-16,Limpeza,200,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0753,2024-04-09,Jardinagem,2309,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0754,2024-04-13,Bebidas,573,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0755,2024-08-17,Eletrônicos,34268,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0756,2024-05-18,Jardinagem,2478,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0757,2024-02-11,Jardinagem,6402,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0758,2024-02-27,Brinquedos,3821,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0759,2024-06-23,Eletrônicos,13998,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0760,2024-02-08,Papelaria,204,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0761,2024-07-23,Bebidas,310,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0762,2024-05-18,Jardinagem,497,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0763,2024-01-02,Bebidas,224,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0764,2024-06-26,Brinquedos,1717,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0765,2024-07-10,Jardinagem,280,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0766,2024-07-09,Limpeza,2495,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0767,2024-03-08,Bebidas,1961,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0768,2024-08-09,Alimentos,920,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0769,2024-04-27,Bebidas,1959,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0770,2024-07-19,Alimentos,4810,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0771,2024-03-23,Limpeza,2388,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0772,2024-05-12,Higiene,200,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0773,2024-07-21,Papelaria,1136,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0774,2024-05-04,Higiene,205,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0775,2024-05-19,Brinquedos,1285,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0776,2024-01-05,Bebidas,367,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0777,2024-05-10,Jardinagem,2479,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0778,2024-08-02,Eletrônicos,11809,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0779,2024-03-08,Papelaria,1873,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0780,2024-05-21,Higiene,2155,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0781,2024-03-18,Bebidas,608,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0782,2024-05-02,Limpeza,2426,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0783,2024-08-19,Eletrônicos,5621,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0784,2024-06-15,Papelaria,1852,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0785,2024-03-16,Bebidas,202,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0786,2024-07-02,Higiene,200,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0787,2024-06-14,Higiene,1465,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0788,2024-03-02,Jardinagem,4179,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0789,2024-03-18,Eletrônicos,4039,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0790,2024-02-16,Papelaria,383,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0791,2024-03-27,Papelaria,1568,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0792,2024-01-03,Alimentos,5859,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0793,2024-02-12,Alimentos,4552,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0794,2024-07-08,Eletrônicos,718,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0795,2024-01-10,Alimentos,219,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0796,2024-07-09,Papelaria,241,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0797,2024-01-04,Bebidas,5744,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0798,2024-03-18,Brinquedos,2273,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0799,2024-03-03,Alimentos,2206,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0800,2024-07-29,Bebidas,202,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0801,2024-05-22,Limpeza,1412,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0802,2024-06-01,Bebidas,4493,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0803,2024-03-26,Papelaria,1523,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0804,2024-03-03,Alimentos,4280,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0805,2024-05-31,Limpeza,202,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0806,2024-08-23,Brinquedos,965,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0807,2024-06-28,Eletrônicos,29696,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0808,2024-01-04,Limpeza,2610,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0809,2024-01-23,Eletrônicos,5160,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0810,2024-03-13,Brinquedos,8320,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0811,2024-03-04,Limpeza,627,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0812,2024-05-12,Bebidas,5487,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0813,2024-05-02,Alimentos,6457,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0814,2024-05-18,Limpeza,213,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0815,2024-04-23,Alimentos,502,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0816,2024-08-22,Limpeza,295,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0817,2024-03-10,Limpeza,307,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0818,2024-01-27,Papelaria,609,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0819,2024-08-18,Alimentos,2761,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0820,2024-04-01,Jardinagem,207,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0821,2024-01-10,Higiene,1213,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0822,2024-07-23,Brinquedos,697,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0823,2024-06-09,Alimentos,2223,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0824,2024-02-07,Eletrônicos,1584,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0825,2024-07-28,Bebidas,4012,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0826,2024-06-20,Eletrônicos,33285,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0827,2024-02-19,Higiene,473,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0828,2024-03-13,Higiene,268,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0829,2024-06-19,Limpeza,314,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0830,2024-07-29,Alimentos,4783,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0831,2024-02-05,Bebidas,441,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0832,2024-06-30,Eletrônicos,11923,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0833,2024-05-25,Bebidas,247,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0834,2024-01-24,Bebidas,228,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0835,2024-03-27,Eletrônicos,203,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0836,2024-06-13,Papelaria,215,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0837,2024-01-17,Limpeza,233,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0838,2024-01-10,Papelaria,951,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0839,2024-03-13,Jardinagem,1127,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0840,2024-07-15,Jardinagem,4337,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0841,2024-03-23,Jardinagem,267,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0842,2024-05-15,Eletrônicos,26114,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0843,2024-03-24,Jardinagem,3698,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0844,2024-06-26,Eletrônicos,5016,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0845,2024-06-30,Limpeza,814,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0846,2024-01-16,Jardinagem,205,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0847,2024-01-23,Higiene,1129,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0848,2024-02-21,Alimentos,6514,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0849,2024-01-02,Alimentos,5246,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0850,2024-07-01,Papelaria,623,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0851,2024-06-10,Alimentos,7789,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0852,2024-04-28,Alimentos,2045,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0853,2024-04-26,Jardinagem,932,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0854,2024-01-03,Papelaria,2134,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0855,2024-01-17,Bebidas,1780,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0856,2024-06-01,Alimentos,7757,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0857,2024-05-23,Bebidas,202,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0858,2024-06-02,Papelaria,414,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0859,2024-04-12,Limpeza,2001,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0860,2024-07-12,Limpeza,914,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0861,2024-01-13,Limpeza,249,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0862,2024-02-29,Higiene,2573,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0863,2024-03-26,Alimentos,284,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0864,2024-05-25,Jardinagem,3521,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0865,2024-02-16,Papelaria,2515,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0866,2024-05-01,Alimentos,646,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0867,2024-03-04,Alimentos,2351,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0868,2024-03-28,Papelaria,242,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0869,2024-03-16,Alimentos,203,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0870,2024-04-27,Higiene,4791,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0871,2024-06-05,Limpeza,433,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0872,2024-04-24,Papelaria,1504,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0873,2024-08-18,Eletrônicos,2100,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0874,2024-08-22,Alimentos,833,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0875,2024-04-13,Eletrônicos,10834,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0876,2024-06-15,Eletrônicos,1601,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0877,2024-02-25,Limpeza,346,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0878,2024-07-03,Limpeza,3471,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0879,2024-02-27,Eletrônicos,10952,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0880,2024-04-14,Eletrônicos,939,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0881,2024-01-31,Higiene,570,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0882,2024-08-27,Higiene,2767,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0883,2024-06-28,Jardinagem,1125,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0884,2024-01-31,Papelaria,245,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0885,2024-07-17,Alimentos,233,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0886,2024-04-17,Papelaria,227,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0887,2024-08-22,Brinquedos,327,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0888,2024-04-26,Bebidas,458,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0889,2024-01-05,Alimentos,206,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0890,2024-07-24,Alimentos,233,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0891,2024-05-25,Jardinagem,221,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0892,2024-07-21,Eletrônicos,280,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0893,2024-02-18,Papelaria,2473,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0894,2024-02-24,Eletrônicos,16360,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0895,2024-03-12,Higiene,1435,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0896,2024-04-20,Jardinagem,3775,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0897,2024-01-05,Higiene,809,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.
+PED-0898,2024-02-06,Eletrônicos,699,"Entrega antecipada a pedido do cliente, com conferência de itens na doca e aceite assinado pelo responsável da unidade de destino."
+PED-0899,2024-08-25,Higiene,327,"Pedido recorrente, sem divergências desde o início do contrato; reposição automática ativada para os itens de maior giro."
+PED-0900,2024-07-20,Bebidas,5464,Cliente pediu revisão de preço após a negociação do trimestre; condição especial aprovada pela diretoria comercial em reunião de segunda-feira.

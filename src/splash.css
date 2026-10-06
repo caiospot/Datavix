@@ -1,0 +1,20 @@
+#dvs{position:fixed;inset:0;z-index:99999;background:#0b0d0a;color:#eef0eb;display:grid;place-items:center;font:400 14px/1.4 'Geist',system-ui,-apple-system,'Segoe UI',sans-serif;transition:opacity .45s ease,visibility .45s}
+#dvs.out{opacity:0;visibility:hidden;pointer-events:none}
+#dvs .in{display:grid;justify-items:center;gap:22px;padding:24px;text-align:center}
+#dvs svg{width:min(210px,52vw);height:auto;overflow:visible}
+#dvs .ln{stroke:#eef0eb;stroke-opacity:.34;stroke-width:.8;fill:none}
+#dvs .dt{fill:#eef0eb}
+#dvs .lf{fill:#d4ff00;fill-opacity:.22;stroke:#d4ff00;stroke-opacity:.85;stroke-width:.8}
+#dvs .rt{fill:none;stroke:#eef0eb;stroke-opacity:.6;stroke-width:1}
+#dvs .g{transform-origin:110px 110px;opacity:0;animation:dvsg 3.2s cubic-bezier(.2,.8,.2,1) infinite}
+#dvs .g1{animation-delay:.05s}#dvs .g2{animation-delay:.4s}#dvs .g3{animation-delay:.8s}
+@keyframes dvsg{0%{opacity:0;transform:scale(.25)}35%,78%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.04)}}
+#dvs .brand{font:500 13px 'Geist Mono',ui-monospace,'SF Mono',Menlo,monospace;letter-spacing:.32em;display:flex;align-items:center;gap:10px}
+#dvs .brand i{width:9px;height:9px;background:#d4ff00;border-radius:2px;display:inline-block}
+#dvs .tag{border:0;padding:0;border-radius:0;background:none;white-space:nowrap;color:#eef0eb;font:400 15px/1.2 'Geist',system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+#dvs .tag b{font-weight:700;color:#d4ff00}
+#dvs .bar{width:150px;height:2px;background:rgba(238,240,235,.16);border-radius:2px;overflow:hidden}
+#dvs .bar i{display:block;width:40%;height:100%;background:#d4ff00;animation:dvsb 1.3s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes dvsb{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
+#dvs .st{font:400 11px 'Geist Mono',ui-monospace,'SF Mono',Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:rgba(238,240,235,.55);min-height:16px}
+@media (prefers-reduced-motion:reduce){#dvs .g{animation:none;opacity:1}#dvs .bar i{animation:none;width:100%;opacity:.5}}

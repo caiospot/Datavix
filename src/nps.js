@@ -136,7 +136,7 @@ function npsOpen(kind, moment, topic) {
 // transparência: exatamente o que vai e o que nunca vai
 function npsExplain() {
   const li = a => `<ul class="nc-list">${a.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`;
-  modal({ title: T('nps_d_t'), body: `<h4 class="nc-sub">${T('nps_d_yes')}</h4>${li(T('nps_d_y'))}<h4 class="nc-sub">${T('nps_d_no')}</h4>${li(T('nps_d_n'))}<p class="note" style="margin:12px 0 0">${T('nps_d_id')}: <code>${esc(npsState().id)}</code></p>`, actions: [{ label: T('nps_close'), v: null, kind: 'primary' }] });
+  modal({ title: T('nps_d_t'), body: `<h4 class="nc-sub">${T('nps_d_yes')}</h4>${li(T('nps_d_y'))}<h4 class="nc-sub">${T('nps_d_no')}</h4>${li(T('nps_d_n'))}<p class="note" style="margin:12px 0 0">${T('nps_d_id')}: <code>${esc(npsState().id)}</code></p><p class="note" style="margin:8px 0 0"><button type="button" class="nc-link" data-pv="1">${esc(privT().title)}</button></p>`, actions: [{ label: T('nps_close'), v: null, kind: 'primary' }], onOpen: m => { const b = m.querySelector('[data-pv="1"]'); if (b) b.addEventListener('click', e => { e.stopPropagation(); openPrivacy(); }, true); } });
 }
 // "Enviar feedback": abre a pergunta quando a pessoa quiser, sem regra de frequência
 function npsManual() { npsSession.asked = false; npsOpen('nps', 'manual'); }

@@ -12,6 +12,7 @@ function modal(o) {
     const box = m.querySelector('.mdl-box'), input = m.querySelector('#mdl-input');
     const done = (v, a) => { document.removeEventListener('keydown', onKey, true); m.remove(); if (!document.querySelector('.mdl')) document.body.classList.remove('mdl-open'); if (prev && prev.focus) prev.focus({ preventScroll: true }); res(v === null ? null : { v, text: input ? input.value : '', action: a }); };
     const onKey = e => {
+      if (m !== [...document.querySelectorAll('.mdl')].pop()) return; // com modais empilhados, só o de cima reage
       if (e.key === 'Escape' && o.closable !== false) { e.preventDefault(); e.stopPropagation(); done(null); }
       else if (e.key === 'Enter' && input && e.target === input) { e.preventDefault(); const p = (o.actions || []).findIndex(a => a.kind === 'primary'); if (p >= 0) done(o.actions[p].v, o.actions[p]); }
       else if (e.key === 'Tab') { const f = [...box.querySelectorAll('button,input,select,textarea,[href]')].filter(x => !x.disabled && x.offsetParent !== null); if (!f.length) return; const i = f.indexOf(document.activeElement); if (e.shiftKey && (i <= 0)) { e.preventDefault(); f[f.length - 1].focus(); } else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); } }

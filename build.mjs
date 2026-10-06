@@ -5,7 +5,7 @@ const b64 = s => Buffer.from(s, 'utf8').toString('base64');
 const b64f = p => fs.readFileSync(new URL(p, import.meta.url)).toString('base64');
 const worker = [r('vendor/papaparse.min.js'), r('vendor/xlsx.full.min.js'), r('src/parser.worker.js')].join('\n;\n');
 const shared = [r('src/i18n.js'), r('src/i18n-charts.js'), r('src/data.js'), r('src/piece.js'), r('src/charts.js'), r('src/cardcol.js'), r('src/organism.js'), r('src/rays.js'), r('src/river.js'), r('src/fan.js'), r('src/ridge.js'), r('src/flow.js'), r('src/altviews.js'), r('src/runtime.js')].join('\n');
-const js = [shared, r('src/store.js'), r('src/modal.js'), r('src/landing.js'), r('src/export.js'), r('src/pwa.js'), r('src/nps.js'), r('src/ui.js')].join('\n');
+const js = [shared, r('src/store.js'), r('src/modal.js'), r('src/landing.js'), r('src/export.js'), r('src/pwa.js'), r('src/nps.js'), r('src/privacy.js'), r('src/ui.js')].join('\n');
 const fonts = r('vendor/fonts/fonts-embedded.css');
 // tela de carregamento: SVG de uma árvore radial mínima, gerada aqui com números fixos (sem aleatório em tempo de execução)
 function splashHtml() {
@@ -56,7 +56,7 @@ let html = r('src/index.template.html')
   .replace('__JS__', () => js.replace(/<\/script/gi, '<\\/script').replace(/<!--/g, '<\\!--'));
 import crypto from 'node:crypto';
 const BUILD = crypto.createHash('sha1').update(html.replace('__DVCFG__', '')).digest('hex').slice(0, 10);
-html = html.replace('__DVCFG__', () => JSON.stringify({ build: BUILD, nps: NPS_URL ? { url: NPS_URL, token: NPS_TOKEN } : null }));
+html = html.replace('__DVCFG__', () => JSON.stringify({ build: BUILD, nps: NPS_URL ? { url: NPS_URL, token: NPS_TOKEN } : null, contact: process.env.DATAVIX_CONTACT_EMAIL || '' }));
 fs.writeFileSync(new URL('index.html', import.meta.url), html);
 fs.mkdirSync(new URL('test/', import.meta.url), { recursive: true });
 fs.writeFileSync(new URL('test/dev.html', import.meta.url), html.replace("connect-src blob: data:", "connect-src blob: data: 'self'").replace('<script>window.__DV=', '<script>window.__DV_NPS={url:"/nps",token:"dev-token"};window.__DV='));

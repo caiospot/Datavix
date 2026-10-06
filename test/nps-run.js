@@ -2,6 +2,7 @@
   const D = window.__datavix, S = D.S, sleep = ms => new Promise(r => setTimeout(r, ms)), out = {}, errs = [];
   console.error = (...a) => { errs.push(a.map(String).join(' ').slice(0, 200)); };
   window.addEventListener('error', e => errs.push('ERR ' + e.message));
+  for (const k of ['org', 'rays', 'river', 'fan', 'ridge', 'flow']) localStorage.setItem('dv-' + k + '-tutorial', '1'); // tutorial aberto bloqueia a pesquisa (regra do NPS)
   localStorage.setItem('dv-nps', JSON.stringify({ id: 'test-anon-id', usage: { gen: 3, exp: 0, pres: 0 } }));
   const pt = [...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'PT'); if (pt) pt.click();
   S.user = { guest: true }; S.br = { audience: 'director', decision: 'prioritize', message: 'Titulo secreto da peça', story: 'compare', tone: 'tech', place: 'screen' };

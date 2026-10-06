@@ -582,6 +582,7 @@ document.addEventListener('click', e => {
     case 'bg': if (P) { const cur = bgBase(P.bg); P.bg = v === 'light' || v === 'dark' ? { ...P.bg, mode: v } : { ...P.bg, mode: v, [v === 'solid' ? 'color' : 'base']: cur }; pushHist(); refreshAll(false); } break;
     case 'present': if (P && P.host) { P.pres = startPresentation({ root: $('#piece'), ix: P.host.ix, P, onEnd: n => { npsTrack('pres'); if (n >= 2) npsMoment('pres'); } }); } break;
     case 'feedback': npsManual(); break;
+    case 'privacy': openPrivacy(); break;
     case 'ex': if (P) doExport(v); break;
     case 'undo': restore(-1); break;
     case 'redo': restore(1); break;

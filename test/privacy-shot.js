@@ -1,0 +1,1 @@
+(async () => { await new Promise(r => setTimeout(r, 1500)); const b = [...document.querySelectorAll('button')].find(x => x.textContent.trim() === 'PT'); if (b) b.click(); await new Promise(r => setTimeout(r, 400)); document.querySelector('[data-a=privacy]').click(); await new Promise(r => setTimeout(r, 500)); return 'ok'; })()

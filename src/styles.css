@@ -399,3 +399,10 @@ body.mdl-open { overflow: hidden; }
 .opt.other { border-style: dashed; }
 .ob-other { display: grid; gap: 6px; margin-top: 16px; }
 .ob-other ~ .row { margin-top: 26px; }
+/* política de privacidade (modal) */
+.pv { font-size: 14px; line-height: 1.6; }
+.pv-h { margin: 22px 0 6px; font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.pv-s { margin: 14px 0 4px; font-weight: 600; font-size: 14px; }
+.pv-p { margin: 0 0 10px; }
+.pv a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.pv .nc-list { font-size: 14px; line-height: 1.6; }

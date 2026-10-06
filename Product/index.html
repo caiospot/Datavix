@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Datavix</title>
+  <meta name="description" content="Datavix — plataforma de visualização de dados. Carregue um CSV e explore gráficos interativos.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><span class="logo" aria-hidden="true"></span> Datavix</div>
+    <div class="actions">
+      <label class="btn" for="file">Carregar CSV</label>
+      <input id="file" type="file" accept=".csv,text/csv" hidden>
+      <button class="btn ghost" id="sample" type="button">Dados de exemplo</button>
+      <button class="btn ghost" id="theme" type="button" aria-label="Alternar tema">Tema</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="kpis" id="kpis" aria-label="Indicadores"></section>
+
+    <section class="panel">
+      <div class="controls">
+        <label>Tipo
+          <select id="type">
+            <option value="bar">Barras</option>
+            <option value="line">Linha</option>
+            <option value="donut">Rosca</option>
+          </select>
+        </label>
+        <label>Categoria (X)<select id="xcol"></select></label>
+        <label>Métrica (Y)<select id="ycol"></select></label>
+        <label>Agregação
+          <select id="agg">
+            <option value="sum">Soma</option>
+            <option value="avg">Média</option>
+            <option value="count">Contagem</option>
+            <option value="max">Máximo</option>
+            <option value="min">Mínimo</option>
+          </select>
+        </label>
+      </div>
+      <div id="chart" class="chart" role="img" aria-label="Gráfico"></div>
+      <div id="tip" class="tip" hidden></div>
+    </section>
+
+    <section class="panel">
+      <h2>Dados <small id="meta"></small></h2>
+      <div class="table-wrap"><table id="table"></table></div>
+    </section>
+  </main>
+
+  <footer>Datavix · tudo roda no seu navegador, nenhum dado é enviado.</footer>
+  <script src="app.js"></script>
+</body>
+</html>

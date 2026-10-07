@@ -187,3 +187,7 @@ Object.assign(I18N.en, {
 /* ---- painel em abas e fontes ---- */
 Object.assign(I18N.pt, { tab_chart: 'Gráfico', tab_style: 'Visual', tab_share: 'Exportar', fc_sober: 'Sóbrio', fc_editorial: 'Editorial', fc_tech: 'Tecnológico', fc_bold: 'Expressivo', fp_sample: 'Receita por categoria' });
 Object.assign(I18N.en, { tab_chart: 'Chart', tab_style: 'Style', tab_share: 'Export', fc_sober: 'Clean', fc_editorial: 'Editorial', fc_tech: 'Technical', fc_bold: 'Expressive', fp_sample: 'Revenue by category' });
+
+/* ---- apresentação ---- */
+Object.assign(I18N.pt, { pres_start: 'Começar', pres_keys: '← → navegar · Esc sair' });
+Object.assign(I18N.en, { pres_start: 'Start', pres_keys: '← → navigate · Esc exit' });

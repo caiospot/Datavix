@@ -239,3 +239,92 @@
   .piece[data-lay='narrow']:not(.presenting) .pcard.pin .cardx { width: 40px; height: 40px; }
 }
 @media (hover: none) and (max-width: 900px) { .piece[data-lay='narrow']:not(.presenting) .pcard.ov, .piece[data-lay='narrow']:not(.presenting) .pcard.hov { display: none; } }
+
+/* ===== apresentação v2: cena de abertura, gráfico como protagonista, legenda grande, progresso e brilho de fundo ===== */
+.pglow, .pprog, .pintro, .phint { display: none; }
+.piece.presenting, .piece.presenting[data-lay] { grid-template-columns: clamp(300px, 28vw, 500px) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); grid-template-areas: 'c1 c3'; gap: 0 3vw; padding: 8vh 4vw 9vh; }
+.piece.presenting .c1 { display: flex; flex-direction: column; gap: 5vh; overflow: visible; min-height: 0; }
+.piece.presenting .insights, .piece.presenting .ctrls, .piece.presenting .c1x, .piece.presenting .foot, .piece.presenting .caption, .piece.presenting.org-mode .caption { display: none !important; }
+.piece.presenting .phead { gap: 4px; }
+.piece.presenting h1, .piece.presenting.big h1, .piece.presenting.org-mode .phead h1 { font-size: clamp(15px, 1.35vw, 22px); line-height: 1.2; opacity: .85; max-width: 26ch; font-weight: var(--pt-w, 600); }
+.piece.presenting .psub, .piece.presenting.big .psub { font-size: clamp(11px, .85vw, 13px); opacity: .55; }
+.piece.presenting .c3 { grid-area: c3; padding-top: 0; }
+/* cartão fixado (clique num item) sobe sobre a coluna esquerda; visão geral e prévia ficam escondidas */
+.piece.presenting .c2 { position: absolute; left: 4vw; bottom: 8vh; width: clamp(300px, 28vw, 500px); height: auto; z-index: 6; display: block; overflow: visible; }
+.piece.presenting .c2 .pcard { display: none; }
+.piece.presenting .c2 .pcard.pin { display: flex; max-height: 46vh; height: auto; box-shadow: 0 24px 60px rgba(0, 0, 0, .45), 0 0 0 1px var(--o-accent, var(--accent, #d4ff00)); }
+/* brilho de fundo que respira, na cor de destaque da peça */
+.piece.presenting .pglow { display: block; position: absolute; inset: -20%; pointer-events: none; z-index: 0; opacity: .5; background: radial-gradient(42% 38% at 78% 30%, color-mix(in srgb, var(--accent, #d4ff00) 22%, transparent), transparent 70%), radial-gradient(38% 34% at 18% 82%, color-mix(in srgb, var(--accent, #d4ff00) 12%, transparent), transparent 72%); animation: pdrift 22s ease-in-out infinite alternate; }
+@keyframes pdrift { from { transform: translate3d(-2%, -1%, 0) scale(1); } to { transform: translate3d(3%, 2%, 0) scale(1.08); } }
+.piece.presenting .c1, .piece.presenting .c3 { position: relative; z-index: 1; }
+/* progresso */
+.piece.presenting .pprog { display: flex; gap: 4px; position: absolute; top: 0; left: 0; right: 0; padding: 0 4vw; height: 3px; z-index: 8; margin-top: clamp(10px, 2.2vh, 22px); }
+.pseg { flex: 1; height: 3px; border-radius: 3px; background: color-mix(in srgb, currentColor 16%, transparent); position: relative; overflow: hidden; }
+.pseg::after { content: ''; position: absolute; inset: 0; background: currentColor; opacity: .5; transform: scaleX(0); transform-origin: left; transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
+.pseg.done::after { transform: scaleX(1); }
+.pseg.cur::after { transform: scaleX(1); background: var(--accent, #d4ff00); opacity: 1; }
+/* corpo da coluna esquerda: legenda do passo, cálculo e dados principais */
+.pbody { display: grid; gap: clamp(14px, 2.4vh, 26px); align-content: start; min-height: 0; }
+.pcap2 { border-left: 4px solid var(--accent, #d4ff00); padding-left: clamp(14px, 1.4vw, 24px); animation: pcin .7s cubic-bezier(.2, .8, .2, 1) both; }
+.pc-h { font-family: var(--pt-font, inherit); font-weight: var(--pt-w, 600); font-size: clamp(30px, 3.5vw, 62px); line-height: 1.05; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.pc-h.long { font-size: clamp(21px, 2.2vw, 38px); line-height: 1.18; letter-spacing: -.01em; }
+.pc-s { margin-top: clamp(8px, 1.4vh, 16px); font: 400 clamp(13px, 1.15vw, 19px)/1.3 var(--mono, 'Geist Mono', ui-monospace, monospace); letter-spacing: .02em; opacity: .75; animation: pcin .7s .12s cubic-bezier(.2, .8, .2, 1) both; }
+.pcalc { font-size: clamp(12px, .95vw, 15px); line-height: 1.45; padding: clamp(10px, 1.4vh, 16px) clamp(12px, 1.2vw, 18px); border-radius: 10px; background: color-mix(in srgb, currentColor 7%, transparent); border: 1px solid color-mix(in srgb, currentColor 14%, transparent); display: grid; gap: 4px; animation: pcin .7s .28s cubic-bezier(.2, .8, .2, 1) both; }
+.pcalc .pk { font: 500 10px var(--mono, ui-monospace, monospace); letter-spacing: .12em; text-transform: uppercase; opacity: .6; }
+.pcalc .pf { font-weight: 600; } .pcalc .pm { opacity: .75; }
+.pcalc .pr { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid color-mix(in srgb, currentColor 10%, transparent); padding-top: 4px; }
+.pfacts { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(10px, 1.6vh, 18px) clamp(14px, 1.6vw, 28px); animation: pcin .7s .1s cubic-bezier(.2, .8, .2, 1) both; }
+.pfact { display: grid; gap: 3px; border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent); padding-top: 8px; min-width: 0; }
+.pfact span { font: 500 10px var(--mono, ui-monospace, monospace); letter-spacing: .12em; text-transform: uppercase; opacity: .55; }
+.pfact b { font-weight: 600; font-size: clamp(15px, 1.5vw, 24px); overflow-wrap: anywhere; line-height: 1.15; }
+@keyframes pcin { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+/* abertura */
+.piece.presenting .pintro { display: grid; position: absolute; inset: 0; z-index: 7; align-content: center; padding: 0 8vw; cursor: pointer; opacity: 0; visibility: hidden; transform: translateY(-3vh) scale(1.02); transition: opacity .8s ease, transform .9s cubic-bezier(.2, .8, .2, 1), visibility 0s .8s; }
+.piece.presenting.pintro-on .pintro { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.pi-in { display: grid; gap: clamp(12px, 2.4vh, 28px); max-width: 1300px; justify-items: start; }
+.pi-eye { font: 400 clamp(11px, .95vw, 15px) var(--mono, ui-monospace, monospace); letter-spacing: .16em; text-transform: uppercase; opacity: .6; }
+.pi-title { margin: 0; font-family: var(--pt-font, inherit); font-weight: var(--pt-w, 600); text-transform: none; font-size: clamp(34px, 5.6vw, 100px); line-height: 1.02; letter-spacing: -.025em; max-width: 18ch; overflow-wrap: anywhere; }
+.pi-hero { display: flex; align-items: baseline; flex-wrap: wrap; gap: 1vw 2vw; margin-top: clamp(4px, 2vh, 28px); }
+.pi-num { font: 700 clamp(60px, 11vw, 200px)/.9 Doto, 'Geist Mono', ui-monospace, monospace; color: var(--accent, #d4ff00); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.pi-lab { font: 500 clamp(11px, 1.1vw, 17px) var(--mono, ui-monospace, monospace); letter-spacing: .14em; text-transform: uppercase; opacity: .75; max-width: 28ch; }
+.pi-sub { font-size: clamp(13px, 1.2vw, 19px); opacity: .6; max-width: 60ch; margin-top: -6px; }
+.pi-go { margin-top: clamp(10px, 3vh, 36px); background: var(--accent, #d4ff00); color: #0b0d0a; border: 0; border-radius: 999px; padding: clamp(10px, 1.4vh, 16px) clamp(22px, 2.2vw, 36px); font: 600 clamp(14px, 1.2vw, 18px) var(--sans, inherit); cursor: pointer; animation: ppulse 2.4s ease-in-out infinite; }
+@keyframes ppulse { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent, #d4ff00) 45%, transparent); } 50% { box-shadow: 0 0 0 14px transparent; } }
+.piece.presenting .c3 { transition: opacity .9s ease, filter .9s ease, transform 1.1s cubic-bezier(.2, .8, .2, 1); }
+.piece.presenting.pintro-on .c3 { opacity: .14; filter: blur(8px); transform: scale(1.05); pointer-events: none; }
+.piece.presenting .c1 .phead, .piece.presenting .pbody { transition: opacity .7s .2s ease, transform .9s .2s cubic-bezier(.2, .8, .2, 1); }
+.piece.presenting.pintro-on .c1 .phead, .piece.presenting.pintro-on .pbody { opacity: 0; transform: translateX(-3vw); }
+.piece.presenting .plogo { z-index: 9; }
+.piece.presenting .phint { display: block; position: absolute; left: 4vw; bottom: clamp(14px, 2.6vh, 28px); z-index: 8; font: 400 12px var(--mono, ui-monospace, monospace); letter-spacing: .06em; opacity: .4; pointer-events: none; animation: phintout 1s 6s ease forwards; }
+.piece.presenting.pintro-on .phint { opacity: .5; animation: none; }
+@keyframes phintout { to { opacity: 0; } }
+.piece.presenting .pnav { right: 4vw; bottom: clamp(12px, 2.4vh, 26px); z-index: 8; opacity: .75; }
+.pnav button { width: 40px; height: 40px; }
+@media (max-width: 900px) {
+  .piece.presenting, .piece.presenting[data-lay] { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); grid-template-areas: 'c1' 'c3'; gap: 2vh 0; padding: 9vh 5vw 11vh; }
+  .piece.presenting .c1 { gap: 2vh; }
+  .piece.presenting h1, .piece.presenting.big h1, .piece.presenting.org-mode .phead h1 { padding-right: 120px; font-size: clamp(13px, 3.8vw, 17px); }
+  .pc-h { font-size: clamp(22px, 7vw, 34px); } .pc-h.long { font-size: clamp(17px, 5vw, 24px); }
+  .pfacts, .pcalc { display: none; }
+  .pi-title { font-size: clamp(30px, 10vw, 52px); } .pi-num { font-size: clamp(54px, 20vw, 110px); }
+  .piece.presenting .c2 { left: 5vw; right: 5vw; width: auto; bottom: 12vh; }
+  .piece.presenting .pprog { padding: 0 5vw; } .piece.presenting .phint { left: 5vw; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pglow, .pcap2, .pc-s, .pcalc, .pfacts, .pi-go { animation: none !important; }
+  .piece.presenting .c3, .piece.presenting .pintro, .piece.presenting .c1 .phead, .piece.presenting .pbody, .pseg::after { transition: none !important; }
+}
+.piece.presenting .plogo { top: clamp(22px, 4.4vh, 44px); }
+.piece.presenting.pintro-on .pnav { opacity: 0; pointer-events: none; }
+
+.pctx { display: none; }
+.piece.presenting .pctx { display: grid; gap: 4px; position: absolute; left: 4vw; bottom: clamp(44px, 9vh, 90px); z-index: 5; max-width: clamp(260px, 26vw, 460px); transition: opacity .5s ease; animation: pcin .8s .3s cubic-bezier(.2, .8, .2, 1) both; }
+.pctx .pk { font: 500 10px var(--mono, ui-monospace, monospace); letter-spacing: .12em; text-transform: uppercase; opacity: .55; }
+.pctx b { font: 700 clamp(30px, 3.4vw, 60px)/.95 Doto, 'Geist Mono', ui-monospace, monospace; color: var(--accent, #d4ff00); letter-spacing: -.02em; }
+.pctx small { font-size: clamp(11px, .9vw, 14px); opacity: .55; }
+.piece.presenting.pintro-on .pctx, .piece.presenting:has(.pcard.pin) .pctx { opacity: 0; pointer-events: none; }
+@media (max-width: 900px) { .piece.presenting .pctx { display: none; } }
+@media (prefers-reduced-motion: reduce) { .pctx { animation: none !important; } }
+.piece.presenting, .piece.presenting[data-lay] { overflow: hidden; overflow: clip; }
+.piece.presenting .pglow { inset: 0; }
+@media (max-width: 900px) { .piece.presenting .phint { display: none; } }

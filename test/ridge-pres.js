@@ -16,7 +16,7 @@
   await new Promise(r => setTimeout(r, 900));
   const caps = [], eng = document.querySelector('.altview')._org.engine;
   for (let k = 0; k < 14; k++) {
-    caps.push((document.querySelector('#pcap').innerText || '').slice(0, 70) + ' | vis=' + eng.nVis + ' spot=' + eng.spot);
+    caps.push((document.querySelector('.pbody').innerText || '').slice(0, 70) + ' | vis=' + eng.nVis + ' spot=' + eng.spot);
     const cnt = document.querySelector('#pcount').innerText;
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
     await new Promise(r => setTimeout(r, 650));

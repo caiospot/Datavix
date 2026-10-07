@@ -167,27 +167,52 @@ function buildSteps(P, meta) {
     steps.push({ id: 't3', caption: T('top_n', 3), state: { sel: L.slice(0, 3) } });
     steps.push({ id: 't5', caption: T('top_n', 5), state: { sel: L.slice(0, 5) } });
   }
-  P.insights.forEach((i, k) => steps.push({ id: 'i' + k, caption: i.text, state: null }));
+  P.insights.forEach((i, k) => steps.push({ id: 'i' + k, caption: i.text, state: null, calc: i.calc || null }));
   if (steps.length > 1 && !P.insights.length) steps.push({ id: 'end', caption: '', state: null });
   return steps;
 }
 
+// contagem do número principal: só interpola a animação; o valor final é sempre o do cálculo
+function presCountUp(el, card, ms, isActive) {
+  if (!el) return;
+  const fin = () => { el.textContent = kpiFmt(card); };
+  if (RM || !window.requestAnimationFrame) { fin(); return; }
+  const t0 = performance.now(), v = card.value;
+  const f = t => { const k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 4); if (k < 1 && isActive()) { el.textContent = kpiFmt({ ...card, value: v * e }); requestAnimationFrame(f); } else fin(); };
+  el.textContent = kpiFmt({ ...card, value: 0 }); requestAnimationFrame(f);
+}
+
 function startPresentation(o) {
-  const { root, ix, P } = o, steps = o.steps || buildSteps(P, ix.meta);
-  const cap = root.querySelector('#pcap'), cnt = root.querySelector('#pcount');
-  let i = 0, active = true, seen = 0;
-  root.classList.add('presenting');
+  const { root, ix, P } = o, steps = o.steps || buildSteps(P, ix.meta), doc = root.ownerDocument;
+  const cnt = root.querySelector('#pcount'), c1 = root.querySelector('.c1');
+  let i = -1, active = true, seen = 0, hero = null, ov = null;
+  try { hero = kpiCards(P.built, LANG, T)[0] || null; ov = genOverview(P); } catch (e) { /* sem indicador principal: a abertura mostra só o título */ }
+  const mk = (cls, html) => { const d = doc.createElement('div'); d.className = cls; if (html !== undefined) d.innerHTML = html; return d; };
+  const glow = mk('pglow'), prog = mk('pprog'), pbody = mk('pbody'), hint = mk('phint', esc(T('pres_keys'))), pctx = hero ? mk('pctx', `<span class="pk">[ ${esc(hero.label)} ]</span><b>${esc(kpiFmt(hero))}</b>${hero.sub ? `<small>${esc(hero.sub)}</small>` : ''}`) : null;
+  const segs = steps.map(() => prog.appendChild(mk('pseg')));
+  const intro = mk('pintro', `<div class="pi-in"><div class="pi-eye">${esc(subtitleOf(P))}</div><h2 class="pi-title">${esc(P.title)}</h2>${hero ? `<div class="pi-hero"><span class="pi-num" data-num></span><span class="pi-lab">${esc(hero.label)}</span></div>${hero.sub ? `<div class="pi-sub">${esc(hero.sub)}</div>` : ''}` : ''}<button type="button" class="pi-go" data-p="next">${esc(T('pres_start'))} →</button></div>`);
+  root.prepend(glow); root.append(prog, intro, hint); if (pctx) root.append(pctx); if (c1) c1.append(pbody);
+  root.classList.add('presenting', 'pintro-on');
   if (root.requestFullscreen) root.requestFullscreen().catch(() => {});
+  const factsHtml = () => ov && ov.left && ov.left.length ? `<div class="pfacts">${ov.left.slice(0, 4).map(([k, v]) => `<div class="pfact"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('')}</div>` : '';
+  const calcHtml = c => c ? `<div class="pcalc"><div class="pk">[ ${esc(T('see_calc'))} ]</div><div class="pf">${esc(c.title)}</div><div class="pm">${esc(c.formula)}</div>${c.rows.map(r => `<div class="pr"><span>${esc(r.k)}</span><b>${esc(r.v)}${r.n ? ` · ${fmtInt(r.n, LANG)} ${esc(T('calc_rows'))}` : ''}</b></div>`).join('')}</div>` : '';
+  const rail = s => {
+    if (!s.caption) { pbody.innerHTML = factsHtml(); return; }
+    const parts = s.calc ? [s.caption] : s.caption.split(' · '), head = parts[0], sub = parts.slice(1).join(' · ');
+    pbody.innerHTML = `<div class="pcap2"><div class="pc-h${head.length > 56 ? ' long' : ''}">${esc(head)}</div>${sub ? `<div class="pc-s">${esc(sub)}</div>` : ''}</div>${calcHtml(s.calc)}`;
+  };
   async function show(n) {
-    i = Math.max(0, Math.min(steps.length - 1, n)); seen = Math.max(seen, i);
-    const s = steps[i];
-    cap.textContent = s.caption || ''; cap.style.display = s.caption ? '' : 'none';
-    cnt.textContent = `${String(i + 1).padStart(2, '0')}/${String(steps.length).padStart(2, '0')}`;
+    i = Math.max(-1, Math.min(steps.length - 1, n));
+    root.classList.toggle('pintro-on', i < 0);
+    segs.forEach((g, k) => { g.classList.toggle('done', k < i); g.classList.toggle('cur', k === i); });
+    if (i < 0) { cnt.textContent = ''; presCountUp(intro.querySelector('[data-num]'), hero, 2200, () => active && i < 0); await ix.setState(null); return; }
+    seen = Math.max(seen, i); const s = steps[i];
+    rail(s); cnt.textContent = `${String(i + 1).padStart(2, '0')}/${String(steps.length).padStart(2, '0')}`;
     await ix.setState(s.state);
   }
   function stop() {
     if (!active) return; active = false;
-    root.classList.remove('presenting'); cap.textContent = '';
+    root.classList.remove('presenting', 'pintro-on'); [glow, prog, intro, hint, pbody, pctx].forEach(x => x && x.remove());
     document.removeEventListener('keydown', onKey, true); document.removeEventListener('fullscreenchange', onFs); root.removeEventListener('click', onClick);
     if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
     ix.setState(null);
@@ -197,15 +222,16 @@ function startPresentation(o) {
     if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); e.stopPropagation(); show(i + 1); }
     else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); e.stopPropagation(); show(i - 1); }
     else if (e.key === 'Escape') { e.preventDefault(); stop(); }
-    else if (e.key === 'Home') show(0); else if (e.key === 'End') show(steps.length - 1);
+    else if (e.key === 'Home') show(-1); else if (e.key === 'End') show(steps.length - 1);
   };
   const onFs = () => { if (!document.fullscreenElement) stop(); };
   const onClick = e => {
     const b = e.target.closest('[data-p]');
     if (b) { if (b.dataset.p === 'next') show(i + 1); else if (b.dataset.p === 'prev') show(i - 1); else stop(); }
+    else if (i < 0 && e.target.closest('.pintro')) show(0);
   };
   document.addEventListener('keydown', onKey, true); document.addEventListener('fullscreenchange', onFs); root.addEventListener('click', onClick);
-  show(0);
+  show(-1);
   return { stop, show, steps };
 }
 

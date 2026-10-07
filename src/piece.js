@@ -101,7 +101,7 @@ function watchLayout(el) {
 function applyPieceCss(P, el) {
   el = el || document.getElementById('piece'); if (!el) return;
   const base = bgBase(P.bg), fg = readableOn(base);
-  const f = fontsOf(P);
+  const f = fontsOf(P); el.classList.toggle('big', !!P.big);
   el.style.background = bgCss(P.bg, P.colors[0]); el.style.color = fg; el.style.setProperty('--accent', P.colors[0]); el.style.setProperty('--pt-font', f.title); el.style.setProperty('--pt-w', f.tw); el.style.fontFamily = f.body;
   // cores do cartão e dos painéis laterais: seguem o fundo da peça
   el.style.setProperty('--o-card', mixHex(base, fg, 0.07)); el.style.setProperty('--o-fg', fg); el.style.setProperty('--o-muted', mixHex(fg, base, 0.5)); el.style.setProperty('--o-line', `rgba(${hexToRgb(fg).join(',')},.14)`); el.style.setProperty('--o-accent', P.colors[0]);

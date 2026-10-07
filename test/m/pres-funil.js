@@ -1,0 +1,5 @@
+(async () => { const sl = ms => new Promise(r => setTimeout(r, ms)); const D = window.__datavix, S = D.S; const n = +(location.hash.slice(1) || 1);
+  S.user = { guest: true }; S.br = { audience: 'director', decision: 'prioritize', time: 'full', message: '', story: null, tone: null, place: null }; for (const k of ['org', 'rays', 'river', 'fan', 'ridge', 'flow']) localStorage.setItem('dv-' + k + '-tutorial', '1');
+  D.loadBuffer('funil.csv', await (await fetch('/dados-teste/funil.csv')).arrayBuffer()); for (let i = 0; i < 80 && S.step !== 'preview'; i++) await sl(100); D.go('mapping'); await sl(300); document.querySelector('[data-a=generate]').click(); for (let i = 0; i < 80 && S.step !== 'editor'; i++) await sl(150); await sl(2500);
+  document.querySelector('[data-a=present]').click(); await sl(1200); await S.piece.pres.show(n); await sl(2800);
+  return JSON.stringify({ type: S.piece.type, n: S.piece.pres.steps.length, cnt: document.querySelector('#pcount').textContent, pbody: document.querySelectorAll('.pbody').length }); })()

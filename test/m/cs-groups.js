@@ -1,0 +1,6 @@
+(async () => { const D = window.__datavix, S = D.S, sleep = ms => new Promise(r => setTimeout(r, ms)), out = {};
+  S.user = { guest: true }; S.br = { audience: 'director', decision: 'prioritize', time: 'full', message: '', story: null, tone: null, place: null };
+  for (const f of ['lojas.csv', 'pedidos.csv', 'unidades.csv', 'vendas.csv']) { D.go('entry'); D.loadBuffer(f, await (await fetch('/dados-teste/' + f)).arrayBuffer()); for (let i = 0; i < 80 && S.step !== 'preview'; i++) await sleep(100); D.go('mapping'); await sleep(300); document.querySelector('[data-a=generate]').click(); for (let i = 0; i < 80 && S.step !== 'editor'; i++) await sleep(150); await sleep(600);
+    const b = S.piece.built, o = {}; for (const k in (b.cs || {})) { const d = b.cs[k]; if (!d) continue; o[k] = Object.keys(d).filter(x => Array.isArray(d[x])).map(x => x + '[' + d[x].length + ']' + String(JSON.stringify(d[x][0])).slice(0, 70)).join(' ; '); } if (b.org) o.organism = Object.keys(b.org).filter(x => Array.isArray(b.org[x])).map(x => x + '[' + b.org[x].length + ']' + String(JSON.stringify(b.org[x][0])).slice(0, 70)).join(' ; ');
+    out[f] = { type: S.piece.type, totX: (b.totX || []).length, totS: (b.totS || []).length, xIsTime: b.xIsTime, cs: o }; }
+  return JSON.stringify(out, null, 1); })()

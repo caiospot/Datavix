@@ -211,3 +211,19 @@ Object.assign(I18N.en, {
   vid_unsupported: 'This browser cannot record video. Use Chrome, Edge or Safari.', vid_keep: 'Keep this tab open and visible while recording.', vid_cancel: 'Cancel', vid_go: 'Record video',
   vid_rec: 'Recording…', vid_fail: m => `Could not record the video: ${m}`, vid_again: 'Record again', vid_dl: 'Download video', vid_share: 'Share', vid_webm_note: 'WebM',
 });
+
+/* ---- perguntas enxutas: o tempo disponível; o resto vem dos dados ou do editor ---- */
+Object.assign(I18N.pt, {
+  q_time: ['QUANTO TEMPO VOCÊ TEM PARA', 'contar?'],
+  entry_p: 'Responda 3 perguntas, suba a planilha e conte uma história com os seus números, em uma apresentação animada.',
+  auto_title: { flow: y => `Fluxo de ${y}`, by: (y, x) => `${y} por ${x}`, time: y => `${y} ao longo do tempo`, rel: (y, x) => `${y} e ${x}`, hist: x => `Distribuição de ${x}` },
+  style_h: 'Estilo', opt_big: 'Fontes maiores (projetor)',
+});
+Object.assign(I18N.en, {
+  q_time: ['HOW MUCH TIME DO YOU HAVE TO', 'tell it?'],
+  entry_p: 'Answer 3 questions, upload your spreadsheet and tell a story with your numbers, as an animated presentation.',
+  auto_title: { flow: y => `${y} flow`, by: (y, x) => `${y} by ${x}`, time: y => `${y} over time`, rel: (y, x) => `${y} and ${x}`, hist: x => `Distribution of ${x}` },
+  style_h: 'Style', opt_big: 'Larger text (projector)',
+});
+I18N.pt.o.time = { quick: ['2 minutos', 'Só o essencial: 3 slides'], normal: ['5 minutos', 'O principal, com as evidências: até 5 slides'], full: ['10 minutos ou mais', 'A história completa, sem cortes'] };
+I18N.en.o.time = { quick: ['2 minutes', 'Just the essentials: 3 slides'], normal: ['5 minutes', 'The main point with the evidence: up to 5 slides'], full: ['10 minutes or more', 'The full story, uncut'] };

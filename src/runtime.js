@@ -194,8 +194,10 @@ function presCountUp(el, text, ms, isActive) {
 }
 
 function startPresentation(o) {
+  if (o.root._pres && o.root._pres.alive()) return o.root._pres; // já está apresentando: nunca empilha uma segunda
   const { root, ix, P } = o, doc = root.ownerDocument, base = buildSteps(P, ix.meta);
   let story = []; try { story = o.steps ? [] : buildStory(P, ix.meta, base); } catch (e) { console.error(e); }
+  const cap = ({ quick: 3, normal: 5 })[P.br && P.br.time]; if (cap) story = storyCut(story, cap, P.br && P.br.decision); // o tempo escolhido define quantos atos entram
   const useStory = story.length >= 3, steps = o.steps || (useStory ? story : base), N = steps.length;
   const cnt = root.querySelector('#pcount'), c1 = root.querySelector('.c1'), nav = root.querySelector('#pnav'), hostRef = o.host || P.host, prevK = P.textK;
   const restyle = () => { try { if (hostRef && hostRef.restyle) hostRef.restyle(0); } catch (e) { /* segue */ } };
@@ -296,7 +298,8 @@ function startPresentation(o) {
   document.addEventListener('keydown', onKey, true); document.addEventListener('fullscreenchange', onFs); document.addEventListener('visibilitychange', onVis); root.addEventListener('click', onClick);
   root.addEventListener('touchstart', onTS, { passive: true }); root.addEventListener('touchend', onTE, { passive: true });
   show(-1);
-  return { stop, show, steps, setPlaying, isPlaying: () => playing };
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); // o foco não fica no botão que abriu a apresentação
+  return (root._pres = { stop, show, steps, setPlaying, isPlaying: () => playing, alive: () => active });
 }
 
 /* ---------------- host: decide entre Vizzu e visões próprias ---------------- */

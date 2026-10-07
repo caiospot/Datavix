@@ -385,10 +385,12 @@ function renderOrganism(P, el) {
     if (b) { const i = +b.dataset.c, cur = eng.st.colors ? new Set(eng.st.colors) : new Set(D.cols.map((_, k) => k)); if (!eng.st.colors) { cur.clear(); cur.add(i); } else { cur.has(i) ? cur.delete(i) : cur.add(i); } eng.setState({ colors: !cur.size || cur.size === D.cols.length ? null : [...cur] }); side(); }
     else if (a) { eng.setState({ colors: null }); side(); }
   });
-  el.addEventListener('click', e => {
+  if (el._csClick) el.removeEventListener('click', el._csClick); // o contêiner é reaproveitado a cada troca de gráfico: um ouvinte só
+  el._csClick = e => {
     if (e.target.closest('#orgpres')) { const bt = (piece && piece.querySelector('#pctrls [data-present]')) || document.querySelector('[data-a=present]'); if (bt) bt.click(); }
     else if (e.target.closest('#orgtut')) tour.start(true);
-  });
+  };
+  el.addEventListener('click', el._csClick);
   side0.addEventListener('mouseover', e => {
     const b = e.target.closest('.orgc'), r = e.target.closest('.orgr');
     eng.hov.col = b ? +b.dataset.c : -1; eng.hov.ent = r ? +r.dataset.e : -1; eng.kick();

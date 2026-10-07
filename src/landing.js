@@ -9,7 +9,7 @@ const LP = {
     chips: ['XLSX · XLS · CSV', 'Exporta HTML offline', 'PT / EN'], hero_cap: 'Árvore radial com dados fictícios. Passe o mouse.',
     how_k: 'Como funciona', how_h: ['Quatro passos, zero', 'designer'],
     steps: [
-      ['Responda 6 perguntas', 'Público, decisão, mensagem, tipo de história, tom e onde vai apresentar. O Datavix escolhe o gráfico e a paleta.', 'tela das 6 perguntas'],
+      ['Responda 3 perguntas', 'Para quem é, que decisão você quer provocar e quanto tempo tem. Depois da planilha, o Datavix mostra o que encontrou e escolhe o gráfico.', 'tela das 3 perguntas'],
       ['Suba a planilha', 'Excel ou CSV com dezenas de milhares de linhas. Reconhecemos colunas, datas, números em formato brasileiro e a qualidade dos dados.', 'tela de upload e prévia dos dados'],
       ['Veja a animação', 'O gráfico entra com animação orquestrada. Insights só aparecem com cálculo que os sustente, e o “ver cálculo” mostra a conta.', 'gráfico animado em tela cheia'],
       ['Edite e exporte', 'Troque gráfico, paleta, fundo e fontes. Exporte HTML interativo que abre offline, PNG ou um ZIP com um PNG por etapa.', 'editor com painel lateral'],
@@ -57,7 +57,7 @@ const LP = {
     chips: ['XLSX · XLS · CSV', 'Exports offline HTML', 'PT / EN'], hero_cap: 'Radial tree with sample data. Hover it.',
     how_k: 'How it works', how_h: ['Four steps, zero', 'designers'],
     steps: [
-      ['Answer 6 questions', 'Audience, decision, message, story type, tone and where you will present. Datavix picks the chart and palette.', 'the 6 questions screen'],
+      ['Answer 3 questions', 'Who it is for, which decision you want to trigger and how much time you have. After the spreadsheet, Datavix shows what it found and picks the chart.', 'the 3 questions screen'],
       ['Upload the spreadsheet', 'Excel or CSV with tens of thousands of rows. We detect columns, dates, number formats and data quality.', 'upload and data preview screen'],
       ['Watch it animate', 'The chart enters with orchestrated animation. Insights only appear when a calculation supports them, and “see calculation” shows the math.', 'full-screen animated chart'],
       ['Edit and export', 'Change chart, palette, background and fonts. Export interactive HTML that opens offline, a PNG, or a ZIP with one PNG per step.', 'editor with side panel'],

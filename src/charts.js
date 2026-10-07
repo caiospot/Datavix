@@ -153,10 +153,12 @@ function csMount(P, el, o, makeEngine, h) {
     else if (pinned !== null) card && card.unpin();
     else if (h.onEmpty) h.onEmpty();
   });
-  el.addEventListener('click', e => {
+  if (el._csClick) el.removeEventListener('click', el._csClick); // o contêiner é reaproveitado a cada troca de gráfico: um ouvinte só
+  el._csClick = e => {
     if (e.target.closest('#orgpres')) { const bt = (piece && piece.querySelector('#pctrls [data-present]')) || document.querySelector('[data-a=present]'); if (bt) bt.click(); }
     else if (e.target.closest('#orgtut')) tour.start(true);
-  });
+  };
+  el.addEventListener('click', el._csClick);
   const ctip = side0.querySelector('#orgctip');
   const hoverItem = id => { if (pinned !== null) return; eng.setHover(id); if (card) { if (id === null) card.out(); else card.over(h.model(id)); } if (list) list.hot(id, id !== null); };
   if (h.bindSide) h.bindSide(side0, { eng, refresh, ctip, hover: hoverItem, pick: pickItem });

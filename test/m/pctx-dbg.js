@@ -1,0 +1,6 @@
+(async () => { const sl = ms => new Promise(r => setTimeout(r, ms)); const D = window.__datavix, S = D.S;
+  S.user = { guest: true }; S.br = { audience: 'director', decision: 'prioritize', time: 'full', message: '', story: null, tone: null, place: null }; for (const k of ['org', 'rays', 'river', 'fan', 'ridge', 'flow']) localStorage.setItem('dv-' + k + '-tutorial', '1');
+  D.loadBuffer('pedidos.csv', await (await fetch('/dados-teste/pedidos.csv')).arrayBuffer()); for (let i = 0; i < 80 && S.step !== 'preview'; i++) await sl(100); D.go('mapping'); await sl(300); document.querySelector('[data-a=generate]').click(); for (let i = 0; i < 80 && S.step !== 'editor'; i++) await sl(150); await sl(2000);
+  document.querySelector('[data-a=present]').click(); await sl(2500); const p = document.querySelector('.pctx'), root = document.querySelector('#piece'); const cs = getComputedStyle(p);
+  const rules = []; for (const sh of document.styleSheets) { try { for (const r of sh.cssRules) { if (r.cssText && /pctx/.test(r.cssText)) rules.push(r.cssText.slice(0, 200)); } } catch (e) {} }
+  return JSON.stringify({ cls: root.className, opacity: cs.opacity, anim: cs.animationName, fill: cs.animationFillMode, rules }, null, 1); })()

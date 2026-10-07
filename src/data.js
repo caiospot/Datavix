@@ -86,6 +86,9 @@ function smallestDim(cols, lo, hi, exclude = []) {
   return ds.length ? ds[0][1] : -1;
 }
 
+// o tipo de análise sai dos dados: com data e medida é evolução no tempo; senão, comparação (a pessoa muda no mapeamento)
+function inferStory(cols) { return cols.some(c => c.kind === 'date') && bestMeasure(cols) >= 0 ? 'time' : 'compare'; }
+
 /* ---------- sugestão de mapeamento a partir do onboarding ---------- */
 function suggestMapping(story, cols, opt = {}) {
   const r = suggestMappingBase(story, cols, opt);

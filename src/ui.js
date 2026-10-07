@@ -5,18 +5,16 @@ const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* sem
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
+// só o que a planilha não revela: para quem, que decisão e quanto tempo. Mensagem, tipo de história, tom e local deixam de ser perguntados antes de ver os dados
 const OB = [
   { key: 'audience', q: 'q_audience', opts: ['board', 'clevel', 'director', 'team', 'client'] },
   { key: 'decision', q: 'q_decision', opts: ['invest', 'cut', 'prioritize', 'alert', 'celebrate'] },
-  { key: 'message', q: 'q_message', text: true },
-  { key: 'story', q: 'q_story', opts: ['time', 'compare', 'composition', 'distribution', 'relation', 'flow', 'geo'] },
-  { key: 'tone', q: 'q_tone', opts: ['corporate', 'editorial', 'tech', 'vibrant'], noOther: true },
-  { key: 'place', q: 'q_place', opts: ['screen', 'projector', 'mobile', 'slide'], noOther: true },
+  { key: 'time', q: 'q_time', opts: ['quick', 'normal', 'full'], noOther: true },
 ];
 
 const S = {
   lang: 'pt', ui: 'dark', step: 'entry', user: null, ob: 0,
-  br: { audience: null, decision: null, message: '', story: null, tone: null, place: null },
+  br: { audience: null, decision: null, time: null, message: '', story: null, tone: null, place: null },
   ds: null, mapping: null, nullPolicy: 'ignore', loading: null, error: null, sheets: null, fileName: null, isSample: false,
   menu: false, sheet: false, ptab: 'chart', fpOpen: false, piece: null, panelOpen: lsGet('dv-panel') !== '0',
 };
@@ -65,7 +63,7 @@ function onWorker(e) {
 }
 const KIND_OF_STORY = { time: 'time', compare: 'category', composition: 'category', geo: 'category', flow: 'category', relation: 'relation', distribution: 'hist' };
 const STORY_OF_KIND = { time: 'time', category: 'compare', relation: 'relation', hist: 'distribution' };
-function defaultMapping() { return suggestMapping(S.br.story || 'compare', S.ds.columns); }
+function defaultMapping() { return suggestMapping(S.br.story || inferStory(S.ds.columns), S.ds.columns); }
 
 function loadBuffer(name, buffer, sheet) {
   S.error = null; S.loading = { stage: 'read', pct: 0.02, t0: Date.now(), size: buffer.byteLength, got: false }; S.fileName = name; render();
@@ -192,7 +190,7 @@ async function openRecent(id) {
 /* ---- onboarding ---- */
 function onboarding() {
   const q = OB[S.ob], n = S.ob + 1, val = S.br[q.key];
-  const head = `<div class="prog"><span class="lbl">[ ${T('step')} // ${String(n).padStart(2, '0')} ]</span><div class="bar" role="progressbar" aria-valuemin="1" aria-valuemax="6" aria-valuenow="${n}"><i style="width:${(n / 6) * 100}%"></i></div><span class="num">${String(n).padStart(2, '0')}/06</span></div>`;
+  const head = `<div class="prog"><span class="lbl">[ ${T('step')} // ${String(n).padStart(2, '0')} ]</span><div class="bar" role="progressbar" aria-valuemin="1" aria-valuemax="${OB.length}" aria-valuenow="${n}"><i style="width:${(n / OB.length) * 100}%"></i></div><span class="num">${String(n).padStart(2, '0')}/${String(OB.length).padStart(2, '0')}</span></div>`;
   let body;
   if (q.text) {
     const len = [...S.br.message].length;
@@ -213,7 +211,7 @@ function onboarding() {
 function upload() {
   const loading = S.loading;
   return `<div class="wrap-narrow">
-    <div class="lbl">[ ${T('step')} // 07 ]</div><h2 style="margin-top:12px">${title2(T('up_h'))}</h2>
+    <div class="lbl">[ ${T('step')} // ${String(OB.length + 1).padStart(2, '0')} ]</div><h2 style="margin-top:12px">${title2(T('up_h'))}</h2>
     ${loading ? `<div class="drop"><div class="num" style="font-size:40px">${esc(S.fileName || '')}</div><p id="stage">${T('stage_read')}</p><div class="meter"><i style="width:${Math.round(loading.pct * 100)}%"></i></div><p class="note" id="elapsed" style="margin:12px 0 0"></p><p class="note" id="slowhint" style="margin:6px auto 0;max-width:46ch"></p><div class="row" style="justify-content:center;margin-top:14px"><button class="btn ghost sm" data-a="cancel-load">${T('cancel')}</button></div></div>` :
       `<div class="drop" id="drop"><p style="font-size:19px">${T('up_drop')}</p><p class="note">${T('up_formats')}</p>
         <div class="row" style="justify-content:center;margin-top:18px"><button class="btn" data-a="pick-file">${T('up_pick')}</button><button class="btn ghost" data-a="sample">${T('up_sample')}</button></div>
@@ -259,7 +257,7 @@ function preview() {
   const head = cols.map((c, i) => `<th class="${c.kind === 'number' || c.kind === 'date' ? 'num-c' : ''}">${esc(c.name)}<select data-c="retype" data-col="${i}" aria-label="${esc(T('kind')[c.kind])}: ${esc(c.name)}">${['date', 'number', 'category', 'geo', 'text'].map(k => `<option value="${k}" ${k === c.kind ? 'selected' : ''}>${T('kind')[k]}</option>`).join('')}</select></th>`).join('');
   const body = ds.preview.map(r => `<tr>${r.map((v, i) => `<td class="${cols[i].kind === 'number' || cols[i].kind === 'date' ? 'num-c' : ''}">${esc(v)}</td>`).join('')}</tr>`).join('');
   return `<div>
-    <div class="lbl">[ ${T('step')} // 08 ]</div><h2 style="margin-top:12px">${title2(T('pv_h'))}</h2><p class="sub">${T('pv_p')}</p>
+    <div class="lbl">[ ${T('step')} // ${String(OB.length + 2).padStart(2, '0')} ]</div><h2 style="margin-top:12px">${title2(T('pv_h'))}</h2><p class="sub">${T('pv_p')}</p>
     <div class="stats"><div><span class="num">${fmtInt(ds.rowCount, LANG)}</span><span class="lbl">${T('pv_rows')}</span></div><div><span class="num">${cols.length}</span><span class="lbl">${T('pv_cols')}</span></div><div><span class="num">${fmtInt(ds.dupRows, LANG)}</span><span class="lbl">${T('pv_dups')}</span></div><div><span class="num">${fmtInt(nullsTot, LANG)}</span><span class="lbl">${T('pv_nulls')}</span></div></div>
     <div class="tbl-wrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>
     <div class="grid2"><div class="card"><div class="lbl">[ ${T('q_h')} ]</div>
@@ -327,7 +325,7 @@ function mappingBody() {
 function mappingScreen() {
   const mb = mappingBody();
   return `<div class="wrap-narrow" style="max-width:860px">
-    <div class="lbl">[ ${T('step')} // 09 ]</div><h2 style="margin-top:12px">${title2(T('mp_h'))}</h2><p class="sub">${T('mp_p')}</p>
+    <div class="lbl">[ ${T('step')} // ${String(OB.length + 3).padStart(2, '0')} ]</div><h2 style="margin-top:12px">${title2(T('mp_h'))}</h2><p class="sub">${T('mp_p')}</p>
     ${mb.html}
     <div class="row" style="margin-top:30px"><button class="btn ghost" data-a="back-to" data-v="preview">← ${T('back')}</button><button class="btn" data-a="generate" ${mb.valid ? '' : 'disabled'}>${T('generate')} →</button></div></div>`;
 }
@@ -464,19 +462,33 @@ function dotsAnimate(canvas, { duration = 0, loop = false } = {}) {
 }
 
 /* ---------------- a peça ---------------- */
+// título sugerido pelos dados, enquanto a pessoa não escreveu a mensagem: ela edita no próprio título
+function autoTitle(b, type) {
+  const A = T('auto_title'), n = b.names || {}, cs = b.cs && b.cs[type];
+  // o título segue o gráfico escolhido: cada um olha os dados de um jeito
+  if (cs && type === 'fan') return A.by(cs.valName, cs.catName || cs.labName);
+  if (cs && type === 'rays') return A.by(cs.valName, cs.grpName || cs.entName);
+  if (cs && (type === 'river' || type === 'ridge')) return A.time(cs.valName);
+  if (cs && type === 'flow') return A.flow(cs.valName);
+  if (type === 'organism' && b.org) return /\(/.test(b.org.hubName) ? A.time(b.org.sizeName) : A.by(b.org.sizeName, b.org.hubName);
+  if (b.kind === 'relation') return A.rel(n.y || '', n.x || '');
+  if (b.kind === 'hist') return A.hist(n.x || '');
+  if (b.xIsTime) return A.time(n.y || '');
+  return A.by(n.y || '', n.x || '');
+}
 function makePiece() {
   const built = buildSeries(S.ds, S.mapping, { lang: LANG, nullPolicy: S.nullPolicy });
   const narrow = S.br.place === 'mobile' || innerWidth < 640;
-  const choice = chooseChart({ ...S.br, narrow }, S.mapping, built);
+  const choice = chooseChart({ ...S.br, story: S.br.story || S.mapping.story, narrow }, S.mapping, built);
   const reg = CHART_REG[choice.primary], csD = reg && built.cs && built.cs[choice.primary];
   const insights = csD && reg.insights ? reg.insights(csD, S.br, LANG, T) : computeInsights(built, S.br, LANG, T);
   const tone = TONE_DEFAULT[S.br.tone] || TONE_DEFAULT.corporate;
   S.dirty = true;
-  const P = { built, choice, insights, type: choice.primary, palId: tone.pal, colors: PALETTES[tone.pal].slice(), bg: { ...tone.bg }, id: newId(), hadIns: insights.length > 0, title: S.br.message.trim(), subtitle: null, foot: null, fontPair: tone.pair, opts: { ...DEFAULT_OPTS }, br: { ...S.br }, big: S.br.place === 'projector', place: S.br.place, fileName: S.fileName, isSample: S.isSample, lang: LANG, sort: 'value', host: null, hist: [], hi: -1 };
+  const P = { built, choice, insights, type: choice.primary, palId: tone.pal, colors: PALETTES[tone.pal].slice(), bg: { ...tone.bg }, id: newId(), hadIns: insights.length > 0, title: S.br.message.trim() || autoTitle(built, choice.primary), subtitle: null, foot: null, fontPair: tone.pair, opts: { ...DEFAULT_OPTS }, br: { ...S.br }, big: S.br.place === 'projector', place: S.br.place, fileName: S.fileName, isSample: S.isSample, lang: LANG, sort: 'value', host: null, hist: [], hi: -1 };
   P.hist.push(snap(P)); P.hi = 0;
   return P;
 }
-const snap = P => JSON.stringify({ type: P.type, palId: P.palId, colors: P.colors, bg: P.bg, title: P.title, sort: P.sort, fontPair: P.fontPair, opts: P.opts, subtitle: P.subtitle, foot: P.foot, insights: P.insights });
+const snap = P => JSON.stringify({ big: !!P.big, type: P.type, palId: P.palId, colors: P.colors, bg: P.bg, title: P.title, sort: P.sort, fontPair: P.fontPair, opts: P.opts, subtitle: P.subtitle, foot: P.foot, insights: P.insights });
 function pushHist() { const P = S.piece; P.hist = P.hist.slice(0, P.hi + 1); const s = snap(P); if (P.hist[P.hi] === s) return; P.hist.push(s); P.hi++; if (P.hist.length > 60) { P.hist.shift(); P.hi--; } markDirty(); refreshBar(); }
 const canUndo = () => S.piece && S.piece.hi > 0;
 const canRedo = () => S.piece && S.piece.hi < S.piece.hist.length - 1;
@@ -511,7 +523,7 @@ async function guard(kind) {
   if (r.v === 'save') await saveNow(r.text);
   return true;
 }
-function closeProject() { teardownChart(); S.piece = null; S.ds = null; S.mapping = null; S.dirty = false; S.br = { audience: null, decision: null, message: '', story: null, tone: null, place: null, other: {} }; }
+function closeProject() { teardownChart(); S.piece = null; S.ds = null; S.mapping = null; S.dirty = false; S.br = { audience: null, decision: null, time: null, message: '', story: null, tone: null, place: null, other: {} }; }
 window.addEventListener('beforeunload', e => { if (S.step === 'editor' && S.piece && S.dirty) { e.preventDefault(); e.returnValue = ''; } });
 function refreshBar() { refreshSaveChip(); $$('[data-a=undo]').forEach(b => (b.disabled = !canUndo())); $$('[data-a=redo]').forEach(b => (b.disabled = !canRedo())); }
 
@@ -538,13 +550,14 @@ function panel() {
     <div class="fp-list" id="fp-list" role="listbox" aria-label="${T('font_h')}"${S.fpOpen ? '' : ' hidden'}>${FONT_CATS.map(c => `<div class="fp-g" role="presentation">${T('fc_' + c)}</div>` + Object.keys(FONT_PAIRS).filter(k => FONT_PAIRS[k].cat === c).map(k => { const f = FONT_PAIRS[k]; return `<button type="button" role="option" class="fp-o" data-a="font" data-v="${k}" aria-selected="${P.fontPair === k}"><span class="fp-t" style="font-family:${f.title};font-weight:${f.tw}">${esc(T('fp_sample'))}</span><span class="fp-b" style="font-family:${f.body}">${esc(f.sample)}</span></button>`; }).join('')).join('')}</div></div>`;
   return `<div class="ptabs" role="tablist" aria-label="${T('sheet_h')}">${tabs.map(([k, l]) => `<button type="button" role="tab" id="ptab-${k}" data-a="ptab" data-v="${k}" aria-selected="${S.ptab === k}" tabindex="${S.ptab === k ? 0 : -1}">${T(l)}</button>`).join('')}</div>
   <section class="s1" data-t="chart"><h3>[ ${T('tg_h')} · ${T('tg_all', ALL_CHARTS.length)} ]</h3><h4 class="tg-sub first">${T('tg_rec')}</h4>${types}</section>
-  <section class="s1" data-t="style"><h3>[ ${T('pal_h')} ]</h3><div class="pals">${Object.keys(PALETTES).map(id => `<button class="pal" data-a="pal" data-v="${id}" aria-pressed="${P.palId === id}"><span>${T('pal')[id]}</span><span class="sw">${PALETTES[id].slice(0, 5).map(c => `<i style="background:${c}"></i>`).join('')}</span></button>`).join('')}</div>
+  <section class="s1" data-t="style"><h3>[ ${T('style_h')} ]</h3><div class="pals">${Object.keys(TONE_DEFAULT).map(k => { const tn = TONE_DEFAULT[k], on = P.palId === tn.pal && P.fontPair === tn.pair; return `<button class="pal" data-a="tone" data-v="${k}" aria-pressed="${on}"><span>${esc(I18N[LANG].o.tone[k][0])}</span><span class="sw">${PALETTES[tn.pal].slice(0, 4).map(c => `<i style="background:${c}"></i>`).join('')}</span></button>`; }).join('')}</div></section>
+  <section data-t="style"><h3>[ ${T('pal_h')} ]</h3><div class="pals">${Object.keys(PALETTES).map(id => `<button class="pal" data-a="pal" data-v="${id}" aria-pressed="${P.palId === id}"><span>${T('pal')[id]}</span><span class="sw">${PALETTES[id].slice(0, 5).map(c => `<i style="background:${c}"></i>`).join('')}</span></button>`).join('')}</div>
     <div class="picker"><input type="color" id="accent" value="${P.colors[0]}" aria-label="${T('pal_accent')}"><span class="note">${T('pal_accent')}</span></div>
     <div class="aa ${low ? 'low' : 'ok'}">${low ? '⚠ ' + T('aa_low', low) : '✓ ' + T('aa_ok')}</div></section>
   <section data-t="style"><h3>[ ${T('bg_h')} ]</h3><div class="bgs">${[['light', 'bg_light', '#f7f8f4'], ['dark', 'bg_dark', '#0b0d0a'], ['solid', 'bg_solid', P.bg.color], ['gradient', 'bg_grad', P.bg.base]].map(([m, k, c]) => `<button data-a="bg" data-v="${m}" aria-pressed="${P.bg.mode === m}"><i style="background:${m === 'gradient' ? `linear-gradient(135deg,${c},${mixHex(c, P.colors[0], 0.3)})` : c}"></i>${T(k)}</button>`).join('')}</div>
     ${P.bg.mode === 'solid' || P.bg.mode === 'gradient' ? `<div class="picker"><input type="color" id="bgcolor" value="${P.bg.mode === 'solid' ? P.bg.color : P.bg.base}" aria-label="${T('bg_h')}"></div>` : ''}</section>
   <section data-t="style"><h3>[ ${T('font_h')} ]</h3>${fontPicker}</section>
-  <section data-t="style"><h3>[ ${T('opt_h')} ]</h3><div class="sws">${[['legend', 'opt_legend'], ['grid', 'opt_grid'], ['labels', 'opt_labels'], ['annotations', 'opt_ann'], ['notes', 'opt_notes']].map(([k, l]) => `<button class="sw2" role="switch" data-a="opt" data-v="${k}" aria-checked="${k === 'labels' ? !!P.opts[k] : P.opts[k] !== false}"><span>${T(l)}</span><i></i></button>`).join('')}</div><p class="note" style="margin:8px 0 0">${T('labels_hint')} ${T('edit_hint')}</p></section>
+  <section data-t="style"><h3>[ ${T('opt_h')} ]</h3><div class="sws">${[['legend', 'opt_legend'], ['grid', 'opt_grid'], ['labels', 'opt_labels'], ['annotations', 'opt_ann'], ['notes', 'opt_notes']].map(([k, l]) => `<button class="sw2" role="switch" data-a="opt" data-v="${k}" aria-checked="${k === 'labels' ? !!P.opts[k] : P.opts[k] !== false}"><span>${T(l)}</span><i></i></button>`).join('')}</div><button class="sw2" role="switch" data-a="big" aria-checked="${!!P.big}" style="margin-top:6px"><span>${T('opt_big')}</span><i></i></button><p class="note" style="margin:8px 0 0">${T('labels_hint')} ${T('edit_hint')}</p></section>
   <section class="s1" data-t="share"><h3>[ ${T('ex_h')} ]</h3><div class="exps"><button class="btn sm" data-a="present">▶ ${T('present')}</button><button class="btn ghost sm" data-a="ex" data-v="html">${T('ex_html')}</button><button class="btn ghost sm" data-a="ex" data-v="png">${T('ex_png')}</button><button class="btn ghost sm" data-a="ex" data-v="png2">${T('ex_png2')}</button><button class="btn ghost sm" data-a="ex" data-v="steps">${T('ex_steps')}</button></div>
     <p class="note" style="margin:10px 0 0" id="exstat" role="status">${T('ex_note')}</p><p class="note" style="margin:4px 0 0">${T('present_hint')}</p></section>
   <section data-t="share"><h3>[ ${T('vid_h')} ]</h3><button class="btn sm" data-a="video">🎬 ${T('vid_btn')}</button><p class="note" style="margin:10px 0 0">${T('vid_note')}</p></section>
@@ -662,6 +675,8 @@ document.addEventListener('click', e => {
     case 'edit-data': openMapModal(); break;
     case 'mm-upload': { const x = $('.mdl-x'); if (x) x.click(); pickReplace(); break; }
     case 'opt': if (P) { P.opts[v] = P.opts[v] === false || !P.opts[v] ? true : false; if (v === 'annotations' || v === 'notes') { applyPieceCss(P); const pn = $('#panel'); if (pn) pn.innerHTML = panel(); pushHist(); } else { pushHist(); refreshAll(v !== 'grid'); } } break;
+    case 'tone': if (P && TONE_DEFAULT[v]) { const tn = TONE_DEFAULT[v]; P.palId = tn.pal; P.colors = PALETTES[tn.pal].slice(); P.bg = { ...tn.bg }; P.fontPair = tn.pair; pushHist(); fontEnsure(fontsOf(P).fams).then(() => refreshAll(false)); markDirty(); } break;
+    case 'big': if (P) { P.big = !P.big; pushHist(); refreshAll(false); markDirty(); } break;
     case 'ptab': S.ptab = v; { const pn = $('#panel'); if (pn) { pn.dataset.tab = v; pn.querySelectorAll('.ptabs [role=tab]').forEach(b => { const on = b.dataset.v === v; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; }); pn.scrollTop = 0; } } break;
     case 'fp-toggle': setFp(!S.fpOpen); break;
     case 'font': if (P && P.fontPair !== v) { S.fpOpen = false; P.fontPair = v; pushHist(); fontEnsure(fontsOf(P).fams).then(() => refreshAll(false)); } else setFp(false, true); break;

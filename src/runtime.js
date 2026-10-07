@@ -167,7 +167,11 @@ function buildSteps(P, meta) {
     steps.push({ id: 't3', caption: T('top_n', 3), state: { sel: L.slice(0, 3) } });
     steps.push({ id: 't5', caption: T('top_n', 5), state: { sel: L.slice(0, 5) } });
   }
-  P.insights.forEach((i, k) => steps.push({ id: 'i' + k, caption: i.text, state: null, calc: i.calc || null }));
+  P.insights.forEach((i, k) => {
+    // se o gráfico tem um passo para o item que o insight cita (primeira linha do cálculo), o passo do insight destaca o mesmo item
+    const subj = i.calc && i.calc.rows && i.calc.rows[0] ? String(i.calc.rows[0].k) : '', m = subj ? steps.find(x => x.state && x.caption && x.caption.startsWith(subj)) : null;
+    steps.push({ id: 'i' + k, caption: i.text, state: m ? m.state : null, calc: i.calc || null });
+  });
   if (steps.length > 1 && !P.insights.length) steps.push({ id: 'end', caption: '', state: null });
   return steps;
 }
@@ -183,56 +187,98 @@ function presCountUp(el, card, ms, isActive) {
 }
 
 function startPresentation(o) {
-  const { root, ix, P } = o, steps = o.steps || buildSteps(P, ix.meta), doc = root.ownerDocument;
-  const cnt = root.querySelector('#pcount'), c1 = root.querySelector('.c1');
-  let i = -1, active = true, seen = 0, hero = null, ov = null;
+  const { root, ix, P } = o, steps = o.steps || buildSteps(P, ix.meta), doc = root.ownerDocument, N = steps.length;
+  const cnt = root.querySelector('#pcount'), c1 = root.querySelector('.c1'), nav = root.querySelector('#pnav');
+  let i = -1, active = true, seen = 0, hero = null, ov = null, playing = false, speed = 1, timer = 0, token = 0, wl = null;
   try { hero = kpiCards(P.built, LANG, T)[0] || null; ov = genOverview(P); } catch (e) { /* sem indicador principal: a abertura mostra só o título */ }
   const mk = (cls, html) => { const d = doc.createElement('div'); d.className = cls; if (html !== undefined) d.innerHTML = html; return d; };
-  const glow = mk('pglow'), prog = mk('pprog'), pbody = mk('pbody'), hint = mk('phint', esc(T('pres_keys'))), pctx = hero ? mk('pctx', `<span class="pk">[ ${esc(hero.label)} ]</span><b>${esc(kpiFmt(hero))}</b>${hero.sub ? `<small>${esc(hero.sub)}</small>` : ''}`) : null;
-  const segs = steps.map(() => prog.appendChild(mk('pseg')));
-  const intro = mk('pintro', `<div class="pi-in"><div class="pi-eye">${esc(subtitleOf(P))}</div><h2 class="pi-title">${esc(P.title)}</h2>${hero ? `<div class="pi-hero"><span class="pi-num" data-num></span><span class="pi-lab">${esc(hero.label)}</span></div>${hero.sub ? `<div class="pi-sub">${esc(hero.sub)}</div>` : ''}` : ''}<button type="button" class="pi-go" data-p="next">${esc(T('pres_start'))} →</button></div>`);
-  root.prepend(glow); root.append(prog, intro, hint); if (pctx) root.append(pctx); if (c1) c1.append(pbody);
+  const coarse = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
+  const glow = mk('pglow'), prog = mk('pprog'), pbody = mk('pbody'), hint = mk('phint', esc(T(coarse ? 'pres_keys_m' : 'pres_keys'))), pctx = hero ? mk('pctx', `<span class="pk">[ ${esc(hero.label)} ]</span><b>${esc(kpiFmt(hero))}</b>${hero.sub ? `<small>${esc(hero.sub)}</small>` : ''}`) : null;
+  const segs = steps.map((s, k) => { const g = prog.appendChild(mk('pseg')); g.dataset.k = k; g.title = s.caption || T('pres_overview'); return g; });
+  const intro = mk('pintro', `<div class="pi-in"><div class="pi-eye">${esc(subtitleOf(P))}</div><h2 class="pi-title">${esc(P.title)}</h2>${hero ? `<div class="pi-hero"><span class="pi-num" data-num></span><span class="pi-lab">${esc(hero.label)}</span></div>${hero.sub ? `<div class="pi-sub">${esc(hero.sub)}</div>` : ''}` : ''}<div class="pi-btns"><button type="button" class="pi-go" data-p="next">${esc(T('pres_start'))} →</button><button type="button" class="pi-auto" data-p="auto">▶ ${esc(T('pres_auto'))}</button></div></div>`);
+  const lines = (P.insights || []).slice(0, 4).map(x => x.text);
+  const outro = mk('pouro', `<div class="pi-in"><div class="pi-eye">[ ${esc(T('pres_outro'))} ]</div><h2 class="pi-title">${esc(P.title)}</h2>${lines.length ? `<ol class="po-list">${lines.map((t, k) => `<li><span>${String(k + 1).padStart(2, '0')}</span>${esc(t)}</li>`).join('')}</ol>` : (ov && ov.left ? `<div class="pfacts po-facts">${ov.left.slice(0, 4).map(([k, v]) => `<div class="pfact"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('')}</div>` : '')}<div class="pi-btns"><button type="button" class="pi-go" data-p="restart">↺ ${esc(T('pres_again'))}</button><button type="button" class="pi-auto" data-p="exit">${esc(T('pres_exit'))}</button></div></div>`);
+  const playBtn = doc.createElement('button'), spdBtn = doc.createElement('button');
+  playBtn.type = spdBtn.type = 'button'; playBtn.dataset.p = 'play'; spdBtn.dataset.p = 'speed'; playBtn.className = 'pn-play'; spdBtn.className = 'pn-speed';
+  if (nav) nav.prepend(playBtn, spdBtn);
+  root.prepend(glow); root.append(prog, intro, outro, hint); if (pctx) root.append(pctx); if (c1) c1.append(pbody);
   root.classList.add('presenting', 'pintro-on');
   if (root.requestFullscreen) root.requestFullscreen().catch(() => {});
+  const lock = async () => { try { if (active && navigator.wakeLock && !wl) { wl = await navigator.wakeLock.request('screen'); wl.addEventListener('release', () => { wl = null; }); } } catch (e) { /* sem bloqueio de tela: segue */ } };
+  lock();
+  const paintPlay = () => { playBtn.textContent = playing ? '⏸' : '▶'; playBtn.setAttribute('aria-label', T(playing ? 'pres_pause' : 'pres_play')); playBtn.title = playBtn.getAttribute('aria-label'); spdBtn.textContent = speed + '×'; spdBtn.setAttribute('aria-label', T('pres_speed')); spdBtn.title = T('pres_speed'); root.classList.toggle('pplaying', playing); };
+  paintPlay();
   const factsHtml = () => ov && ov.left && ov.left.length ? `<div class="pfacts">${ov.left.slice(0, 4).map(([k, v]) => `<div class="pfact"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('')}</div>` : '';
-  const calcHtml = c => c ? `<div class="pcalc"><div class="pk">[ ${esc(T('see_calc'))} ]</div><div class="pf">${esc(c.title)}</div><div class="pm">${esc(c.formula)}</div>${c.rows.map(r => `<div class="pr"><span>${esc(r.k)}</span><b>${esc(r.v)}${r.n ? ` · ${fmtInt(r.n, LANG)} ${esc(T('calc_rows'))}` : ''}</b></div>`).join('')}</div>` : '';
+  const calcHtml = c => c ? `<details class="pcalc"${innerWidth > 900 ? ' open' : ''}><summary class="pk">[ ${esc(T('see_calc'))} ]</summary><div class="pf">${esc(c.title)}</div><div class="pm">${esc(c.formula)}</div>${c.rows.map(r => `<div class="pr"><span>${esc(r.k)}</span><b>${esc(r.v)}${r.n ? ` · ${fmtInt(r.n, LANG)} ${esc(T('calc_rows'))}` : ''}</b></div>`).join('')}</details>` : '';
   const rail = s => {
     if (!s.caption) { pbody.innerHTML = factsHtml(); return; }
     const parts = s.calc ? [s.caption] : s.caption.split(' · '), head = parts[0], sub = parts.slice(1).join(' · ');
     pbody.innerHTML = `<div class="pcap2"><div class="pc-h${head.length > 56 ? ' long' : ''}">${esc(head)}</div>${sub ? `<div class="pc-s">${esc(sub)}</div>` : ''}</div>${calcHtml(s.calc)}`;
   };
+  // tempo de leitura de cada passo: base + texto + cálculo, dividido pela velocidade
+  const holdMs = k => k < 0 ? 5200 : Math.round(Math.min(11000, Math.max(5000, 4200 + ((steps[k].caption || '').length) * 45 + (steps[k].calc ? 3500 : 0))) / speed);
+  const schedule = () => {
+    clearTimeout(timer); segs.forEach(g => g.classList.remove('run'));
+    if (!playing || !active || i >= N) return;
+    const ms = holdMs(i); if (i >= 0) { segs[i].style.setProperty('--d', ms + 'ms'); void segs[i].offsetWidth; segs[i].classList.add('run'); }
+    timer = setTimeout(() => show(i + 1), ms);
+  };
+  function setPlaying(v) {
+    playing = !!v; paintPlay();
+    if (playing) { lock(); if (i >= N) show(-1); else schedule(); } else { clearTimeout(timer); segs.forEach(g => g.classList.remove('run')); }
+  }
   async function show(n) {
-    i = Math.max(-1, Math.min(steps.length - 1, n));
-    root.classList.toggle('pintro-on', i < 0);
-    segs.forEach((g, k) => { g.classList.toggle('done', k < i); g.classList.toggle('cur', k === i); });
-    if (i < 0) { cnt.textContent = ''; presCountUp(intro.querySelector('[data-num]'), hero, 2200, () => active && i < 0); await ix.setState(null); return; }
-    seen = Math.max(seen, i); const s = steps[i];
-    rail(s); cnt.textContent = `${String(i + 1).padStart(2, '0')}/${String(steps.length).padStart(2, '0')}`;
-    await ix.setState(s.state);
+    const my = ++token; clearTimeout(timer);
+    i = Math.max(-1, Math.min(N, n));
+    root.classList.toggle('pintro-on', i < 0); root.classList.toggle('pouro-on', i >= N);
+    segs.forEach((g, k) => { g.classList.toggle('done', k < i); g.classList.toggle('cur', k === i); g.classList.remove('run'); });
+    if (i < 0) { cnt.textContent = ''; presCountUp(intro.querySelector('[data-num]'), hero, 2200, () => active && i < 0); await ix.setState(null); }
+    else if (i >= N) { seen = N; cnt.textContent = T('pres_end'); if (playing) { playing = false; paintPlay(); } await ix.setState(null); }
+    else { seen = Math.max(seen, i); const s = steps[i]; rail(s); cnt.textContent = `${String(i + 1).padStart(2, '0')}/${String(N).padStart(2, '0')}`; await ix.setState(s.state); }
+    if (my === token) schedule();
   }
   function stop() {
-    if (!active) return; active = false;
-    root.classList.remove('presenting', 'pintro-on'); [glow, prog, intro, hint, pbody, pctx].forEach(x => x && x.remove());
-    document.removeEventListener('keydown', onKey, true); document.removeEventListener('fullscreenchange', onFs); root.removeEventListener('click', onClick);
+    if (!active) return; active = false; clearTimeout(timer);
+    root.classList.remove('presenting', 'pintro-on', 'pouro-on', 'pplaying'); [glow, prog, intro, outro, hint, pbody, pctx, playBtn, spdBtn].forEach(x => x && x.remove());
+    document.removeEventListener('keydown', onKey, true); document.removeEventListener('fullscreenchange', onFs); document.removeEventListener('visibilitychange', onVis); root.removeEventListener('click', onClick);
+    root.removeEventListener('touchstart', onTS); root.removeEventListener('touchend', onTE);
+    if (wl) { wl.release().catch(() => {}); wl = null; }
     if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
     ix.setState(null);
     if (o.onEnd) o.onEnd(seen + 1);
   }
   const onKey = e => {
-    if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); e.stopPropagation(); show(i + 1); }
+    if (e.key === ' ') { e.preventDefault(); e.stopPropagation(); if (playing) setPlaying(false); else show(i + 1); }
+    else if (['ArrowRight', 'ArrowDown', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); e.stopPropagation(); show(i + 1); }
     else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); e.stopPropagation(); show(i - 1); }
     else if (e.key === 'Escape') { e.preventDefault(); stop(); }
-    else if (e.key === 'Home') show(-1); else if (e.key === 'End') show(steps.length - 1);
+    else if (e.key === 'Home') show(-1); else if (e.key === 'End') show(N - 1);
+    else if (e.key === 'p' || e.key === 'P' || e.key === 'k' || e.key === 'K') { e.preventDefault(); setPlaying(!playing); }
   };
   const onFs = () => { if (!document.fullscreenElement) stop(); };
+  const onVis = () => { if (document.hidden) { if (playing) setPlaying(false); } else lock(); };
+  const SPEEDS = [1, 1.5, 2];
   const onClick = e => {
     const b = e.target.closest('[data-p]');
-    if (b) { if (b.dataset.p === 'next') show(i + 1); else if (b.dataset.p === 'prev') show(i - 1); else stop(); }
-    else if (i < 0 && e.target.closest('.pintro')) show(0);
+    if (b) {
+      const a = b.dataset.p;
+      if (a === 'next') show(i + 1); else if (a === 'prev') show(i - 1); else if (a === 'exit') stop();
+      else if (a === 'play') setPlaying(!playing); else if (a === 'speed') { speed = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length]; paintPlay(); if (playing) schedule(); }
+      else if (a === 'auto') { setPlaying(true); show(0); } else if (a === 'restart') show(-1);
+      return;
+    }
+    const sg = e.target.closest('.pseg'); if (sg) { show(+sg.dataset.k); return; }
+    if (i < 0 && e.target.closest('.pintro')) show(0);
+    else if (playing && e.target.closest('.c3')) setPlaying(false); // mexer no gráfico (fixar um item) pausa a reprodução
   };
-  document.addEventListener('keydown', onKey, true); document.addEventListener('fullscreenchange', onFs); root.addEventListener('click', onClick);
+  // deslizar no celular: esquerda avança, direita volta
+  let sx = null, sy = 0, st = 0;
+  const onTS = e => { if (e.touches.length !== 1 || e.target.closest('button, a, input, select, textarea, .pcard, summary, .pseg')) { sx = null; return; } sx = e.touches[0].clientX; sy = e.touches[0].clientY; st = Date.now(); };
+  const onTE = e => { if (sx === null) return; const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy; sx = null; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5 && Date.now() - st < 900) show(dx < 0 ? i + 1 : i - 1); };
+  document.addEventListener('keydown', onKey, true); document.addEventListener('fullscreenchange', onFs); document.addEventListener('visibilitychange', onVis); root.addEventListener('click', onClick);
+  root.addEventListener('touchstart', onTS, { passive: true }); root.addEventListener('touchend', onTE, { passive: true });
   show(-1);
-  return { stop, show, steps };
+  return { stop, show, steps, setPlaying, isPlaying: () => playing };
 }
 
 /* ---------------- host: decide entre Vizzu e visões próprias ---------------- */

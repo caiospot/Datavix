@@ -191,3 +191,7 @@ Object.assign(I18N.en, { tab_chart: 'Chart', tab_style: 'Style', tab_share: 'Exp
 /* ---- apresentação ---- */
 Object.assign(I18N.pt, { pres_start: 'Começar', pres_keys: '← → navegar · Esc sair' });
 Object.assign(I18N.en, { pres_start: 'Start', pres_keys: '← → navigate · Esc exit' });
+
+/* ---- apresentação B: reprodução automática, resumo, celular ---- */
+Object.assign(I18N.pt, { pres_keys: '← → navegar · P reproduzir · Esc sair', pres_keys_m: 'Deslize para navegar', pres_auto: 'Reproduzir', pres_play: 'Reproduzir', pres_pause: 'Pausar', pres_speed: 'Velocidade', pres_outro: 'Em resumo', pres_again: 'Rever', pres_exit: 'Sair', pres_end: 'FIM', pres_overview: 'Visão geral' });
+Object.assign(I18N.en, { pres_keys: '← → navigate · P play · Esc exit', pres_keys_m: 'Swipe to navigate', pres_auto: 'Autoplay', pres_play: 'Play', pres_pause: 'Pause', pres_speed: 'Speed', pres_outro: 'Summary', pres_again: 'Watch again', pres_exit: 'Exit', pres_end: 'END', pres_overview: 'Overview' });

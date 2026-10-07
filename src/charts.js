@@ -12,6 +12,12 @@ function drawCsStatic(P, ctx, x, y, w, h, state) {
   if (P.type === 'organism') drawOrganismStatic(P, ctx, x, y, w, h, state);
   else if (CHART_REG[P.type]) CHART_REG[P.type].drawStatic(P, ctx, x, y, w, h, state);
 }
+// o texto dos gráficos de canvas acompanha P.textK (apresentação usa fonte maior); só a propriedade `font` do contexto é interceptada
+function csScaleFont(ctx, P) {
+  const d = Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype, 'font'); if (!d || !d.set) return ctx;
+  Object.defineProperty(ctx, 'font', { configurable: true, enumerable: true, get() { return d.get.call(this); }, set(v) { const k = P.textK || 1; d.set.call(this, k === 1 ? v : String(v).replace(/(\d+(?:\.\d+)?)px/, (m, x) => +(x * k).toFixed(2) + 'px')); } });
+  return ctx;
+}
 const csMeasureCtx = () => (csMeasureCtx._c || (csMeasureCtx._c = document.createElement('canvas').getContext('2d')));
 const csFmtDay = t => { const d = new Date(t), P2 = n => String(n).padStart(2, '0'); return LANG === 'en' ? `${d.getUTCFullYear()}-${P2(d.getUTCMonth() + 1)}-${P2(d.getUTCDate())}` : `${P2(d.getUTCDate())}/${P2(d.getUTCMonth() + 1)}/${d.getUTCFullYear()}`; };
 // intervalo "agradável" para anéis e eixos
@@ -97,7 +103,7 @@ function csMount(P, el, o, makeEngine, h) {
   if (c1x) { c1x.innerHTML = ''; c1x.appendChild(side0); }
   if (piece) piece.classList.add('org-mode');
   const cv = el.querySelector('#orgcv'), stage = el.querySelector('.orgstage');
-  const eng = makeEngine(orgTheme(P)); eng.ctx = cv.getContext('2d');
+  const eng = makeEngine(orgTheme(P)); eng.ctx = csScaleFont(cv.getContext('2d'), P);
   const fit = () => { const w = Math.max(200, stage.clientWidth), hh = Math.max(260, stage.clientHeight), dpr = Math.min(2, devicePixelRatio || 1); cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); eng.resize(w, hh, dpr); };
   const ro = new ResizeObserver(() => fit()); ro.observe(stage); fit();
   if (RM) eng.snap();

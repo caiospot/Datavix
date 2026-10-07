@@ -176,19 +176,30 @@ function buildSteps(P, meta) {
   return steps;
 }
 
-// contagem do número principal: só interpola a animação; o valor final é sempre o do cálculo
-function presCountUp(el, card, ms, isActive) {
-  if (!el) return;
-  const fin = () => { el.textContent = kpiFmt(card); };
-  if (RM || !window.requestAnimationFrame) { fin(); return; }
-  const t0 = performance.now(), v = card.value;
-  const f = t => { const k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 4); if (k < 1 && isActive()) { el.textContent = kpiFmt({ ...card, value: v * e }); requestAnimationFrame(f); } else fin(); };
-  el.textContent = kpiFmt({ ...card, value: 0 }); requestAnimationFrame(f);
+// contagem de um número já formatado ("2.7M", "39%", "36,2 mil", "13×"): mantém prefixo, unidade e casas decimais finais e só interpola o valor,
+// então a unidade nunca troca no meio (K para M) e a largura não oscila. O valor final é sempre o do cálculo.
+function numParts(txt) {
+  const m = String(txt).match(/^([^\d\-−+]*[\-−+]?)(\d[\d.,]*)(.*)$/s); if (!m) return null;
+  const dec = LANG === 'pt' ? ',' : '.', grp = LANG === 'pt' ? '.' : ',', clean = m[2].split(grp).join(''), k = clean.lastIndexOf(dec), v = parseFloat(clean.replace(dec, '.'));
+  return isFinite(v) ? { pre: m[1], v, dd: k >= 0 ? clean.length - k - 1 : 0, suf: m[3] } : null;
+}
+const numFrame = (q, k) => q.pre + new Intl.NumberFormat(LANG === 'pt' ? 'pt-BR' : 'en-US', { minimumFractionDigits: q.dd, maximumFractionDigits: q.dd }).format(q.v * k) + q.suf;
+function presCountUp(el, text, ms, isActive) {
+  if (!el) return; const q = RM ? null : numParts(text);
+  el.textContent = text; // texto final primeiro: mede a largura e a reserva, para o rótulo ao lado não pular
+  if (!q || !window.requestAnimationFrame) return;
+  const w = el.getBoundingClientRect().width; if (w) { el.style.display = 'inline-block'; el.style.minWidth = Math.ceil(w) + 'px'; el.style.textAlign = 'left'; }
+  const t0 = performance.now(), f = t => { const k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 4); if (k < 1 && isActive()) { el.textContent = numFrame(q, e); requestAnimationFrame(f); } else el.textContent = text; };
+  el.textContent = numFrame(q, 0); requestAnimationFrame(f);
 }
 
 function startPresentation(o) {
-  const { root, ix, P } = o, steps = o.steps || buildSteps(P, ix.meta), doc = root.ownerDocument, N = steps.length;
-  const cnt = root.querySelector('#pcount'), c1 = root.querySelector('.c1'), nav = root.querySelector('#pnav');
+  const { root, ix, P } = o, doc = root.ownerDocument, base = buildSteps(P, ix.meta);
+  let story = []; try { story = o.steps ? [] : buildStory(P, ix.meta, base); } catch (e) { console.error(e); }
+  const useStory = story.length >= 3, steps = o.steps || (useStory ? story : base), N = steps.length;
+  const cnt = root.querySelector('#pcount'), c1 = root.querySelector('.c1'), nav = root.querySelector('#pnav'), hostRef = o.host || P.host, prevK = P.textK;
+  const restyle = () => { try { if (hostRef && hostRef.restyle) hostRef.restyle(0); } catch (e) { /* segue */ } };
+  P.textK = 1.32; restyle(); // gráficos com fonte maior para ler à distância (hover e clique incluídos)
   let i = -1, active = true, seen = 0, hero = null, ov = null, playing = false, speed = 1, timer = 0, token = 0, wl = null;
   try { hero = kpiCards(P.built, LANG, T)[0] || null; ov = genOverview(P); } catch (e) { /* sem indicador principal: a abertura mostra só o título */ }
   const mk = (cls, html) => { const d = doc.createElement('div'); d.className = cls; if (html !== undefined) d.innerHTML = html; return d; };
@@ -196,7 +207,7 @@ function startPresentation(o) {
   const glow = mk('pglow'), prog = mk('pprog'), pbody = mk('pbody'), hint = mk('phint', esc(T(coarse ? 'pres_keys_m' : 'pres_keys'))), pctx = hero ? mk('pctx', `<span class="pk">[ ${esc(hero.label)} ]</span><b>${esc(kpiFmt(hero))}</b>${hero.sub ? `<small>${esc(hero.sub)}</small>` : ''}`) : null;
   const segs = steps.map((s, k) => { const g = prog.appendChild(mk('pseg')); g.dataset.k = k; g.title = s.caption || T('pres_overview'); return g; });
   const intro = mk('pintro', `<div class="pi-in"><div class="pi-eye">${esc(subtitleOf(P))}</div><h2 class="pi-title">${esc(P.title)}</h2>${hero ? `<div class="pi-hero"><span class="pi-num" data-num></span><span class="pi-lab">${esc(hero.label)}</span></div>${hero.sub ? `<div class="pi-sub">${esc(hero.sub)}</div>` : ''}` : ''}<div class="pi-btns"><button type="button" class="pi-go" data-p="next">${esc(T('pres_start'))} →</button><button type="button" class="pi-auto" data-p="auto">▶ ${esc(T('pres_auto'))}</button></div></div>`);
-  const lines = (P.insights || []).slice(0, 4).map(x => x.text);
+  const lines = (useStory ? story.slice(1).map(x => x.head) : (P.insights || []).map(x => x.text)).slice(0, 4);
   const outro = mk('pouro', `<div class="pi-in"><div class="pi-eye">[ ${esc(T('pres_outro'))} ]</div><h2 class="pi-title">${esc(P.title)}</h2>${lines.length ? `<ol class="po-list">${lines.map((t, k) => `<li><span>${String(k + 1).padStart(2, '0')}</span>${esc(t)}</li>`).join('')}</ol>` : (ov && ov.left ? `<div class="pfacts po-facts">${ov.left.slice(0, 4).map(([k, v]) => `<div class="pfact"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('')}</div>` : '')}<div class="pi-btns"><button type="button" class="pi-go" data-p="restart">↺ ${esc(T('pres_again'))}</button><button type="button" class="pi-auto" data-p="exit">${esc(T('pres_exit'))}</button></div></div>`);
   const playBtn = doc.createElement('button'), spdBtn = doc.createElement('button');
   playBtn.type = spdBtn.type = 'button'; playBtn.dataset.p = 'play'; spdBtn.dataset.p = 'speed'; playBtn.className = 'pn-play'; spdBtn.className = 'pn-speed';
@@ -210,13 +221,19 @@ function startPresentation(o) {
   paintPlay();
   const factsHtml = () => ov && ov.left && ov.left.length ? `<div class="pfacts">${ov.left.slice(0, 4).map(([k, v]) => `<div class="pfact"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('')}</div>` : '';
   const calcHtml = c => c ? `<details class="pcalc"${innerWidth > 900 ? ' open' : ''}><summary class="pk">[ ${esc(T('see_calc'))} ]</summary><div class="pf">${esc(c.title)}</div><div class="pm">${esc(c.formula)}</div>${c.rows.map(r => `<div class="pr"><span>${esc(r.k)}</span><b>${esc(r.v)}${r.n ? ` · ${fmtInt(r.n, LANG)} ${esc(T('calc_rows'))}` : ''}</b></div>`).join('')}</details>` : '';
+  const hlHead = s => { const h = String(s.head || s.caption), k = s.hl ? h.indexOf(s.hl) : -1; return k < 0 ? esc(h) : esc(h.slice(0, k)) + '<mark>' + esc(s.hl) + '</mark>' + esc(h.slice(k + s.hl.length)); };
   const rail = s => {
+    if (s.kick) { // slide de história: ato, frase com o número em destaque, o número que a prova e o cálculo
+      pbody.innerHTML = `<div class="pstory"><div class="ps-kick"><i>${esc(s.kick.n)}</i>${esc(s.kick.label)}</div><h2 class="ps-head${String(s.head).length > 90 ? ' long' : ''}">${hlHead(s)}</h2>${s.big ? `<div class="ps-big"><span class="ps-num" data-num>${esc(s.big.text)}</span><span class="ps-lab">${esc(s.big.label)}</span></div>` : ''}</div>${calcHtml(s.calc)}`;
+      if (s.big) { const at = i; presCountUp(pbody.querySelector('[data-num]'), s.big.text, 1400, () => active && i === at); }
+      return;
+    }
     if (!s.caption) { pbody.innerHTML = factsHtml(); return; }
     const parts = s.calc ? [s.caption] : s.caption.split(' · '), head = parts[0], sub = parts.slice(1).join(' · ');
     pbody.innerHTML = `<div class="pcap2"><div class="pc-h${head.length > 56 ? ' long' : ''}">${esc(head)}</div>${sub ? `<div class="pc-s">${esc(sub)}</div>` : ''}</div>${calcHtml(s.calc)}`;
   };
   // tempo de leitura de cada passo: base + texto + cálculo, dividido pela velocidade
-  const holdMs = k => k < 0 ? 5200 : Math.round(Math.min(11000, Math.max(5000, 4200 + ((steps[k].caption || '').length) * 45 + (steps[k].calc ? 3500 : 0))) / speed);
+  const holdMs = k => k < 0 ? 5200 : Math.round(Math.min(9500, Math.max(5000, 4200 + ((steps[k].caption || '').length) * 45 + (steps[k].calc ? 3500 : 0))) / speed);
   const schedule = () => {
     clearTimeout(timer); segs.forEach(g => g.classList.remove('run'));
     if (!playing || !active || i >= N) return;
@@ -232,7 +249,7 @@ function startPresentation(o) {
     i = Math.max(-1, Math.min(N, n));
     root.classList.toggle('pintro-on', i < 0); root.classList.toggle('pouro-on', i >= N);
     segs.forEach((g, k) => { g.classList.toggle('done', k < i); g.classList.toggle('cur', k === i); g.classList.remove('run'); });
-    if (i < 0) { cnt.textContent = ''; presCountUp(intro.querySelector('[data-num]'), hero, 2200, () => active && i < 0); await ix.setState(null); }
+    if (i < 0) { cnt.textContent = ''; if (hero) presCountUp(intro.querySelector('[data-num]'), kpiFmt(hero), 2200, () => active && i < 0); await ix.setState(null); }
     else if (i >= N) { seen = N; cnt.textContent = T('pres_end'); if (playing) { playing = false; paintPlay(); } await ix.setState(null); }
     else { seen = Math.max(seen, i); const s = steps[i]; rail(s); cnt.textContent = `${String(i + 1).padStart(2, '0')}/${String(N).padStart(2, '0')}`; await ix.setState(s.state); }
     if (my === token) schedule();
@@ -243,6 +260,7 @@ function startPresentation(o) {
     document.removeEventListener('keydown', onKey, true); document.removeEventListener('fullscreenchange', onFs); document.removeEventListener('visibilitychange', onVis); root.removeEventListener('click', onClick);
     root.removeEventListener('touchstart', onTS); root.removeEventListener('touchend', onTE);
     if (wl) { wl.release().catch(() => {}); wl = null; }
+    P.textK = prevK; restyle();
     if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
     ix.setState(null);
     if (o.onEnd) o.onEnd(seen + 1);

@@ -11,7 +11,7 @@
   document.querySelector('.panel .type[data-v=hbars]').click(); await sl(1800); document.querySelector('[data-a=present]').click(); await sl(800); pres = S.piece.pres; const n = pres.steps.length;
   click('.pn-speed'); click('.pn-speed'); out.speed = document.querySelector('.pn-speed').textContent; // 1x -> 1.5x -> 2x
   click('.pintro .pi-auto'); await sl(500); out.auto = { playing: pres.isPlaying(), step0: document.querySelector('#pcount').textContent, run: document.querySelectorAll('.pseg.run').length, playBtn: document.querySelector('.pn-play').textContent, cls: root().classList.contains('pplaying') };
-  await sl(4500); out.advanced = document.querySelector('#pcount').textContent;
+  await sl(9000); out.advanced = document.querySelector('#pcount').textContent;
   key(' '); await sl(300); out.pausedBySpace = { playing: pres.isPlaying(), run: document.querySelectorAll('.pseg.run').length }; const holdAt = document.querySelector('#pcount').textContent; await sl(3200); out.holdsWhilePaused = holdAt === document.querySelector('#pcount').textContent;
   key('p'); await sl(300); out.resumedByP = pres.isPlaying(); click('.c3 .vzbox'); await sl(300); out.pausedByChartClick = !pres.isPlaying();
   click('.pn-play'); out.resumedByBtn = pres.isPlaying(); await pres.show(n - 1); await sl(8500);

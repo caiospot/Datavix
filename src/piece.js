@@ -153,7 +153,7 @@ function vzConfig(type, b, sortMode, opt = {}) {
   return { channels: { x: { set: ch.x, ...ax.x }, y: { set: ch.y, ...ax.y }, color: set(ch.color), size: set(ch.size), noop: set(ch.noop), label: set(ch.label) }, geometry, legend, title: null };
 }
 function vzStyle(P, o = {}) {
-  const base = bgBase(P.bg), fg = readableOn(base), muted = mixHex(fg, base, 0.38), size = o.size || (P.big ? 17 : 13), f = fontsOf(P);
+  const base = bgBase(P.bg), fg = readableOn(base), muted = mixHex(fg, base, 0.38), size = o.size || (P.big ? 17 : 13) * (P.textK || 1), f = fontsOf(P);
   // treemap: o rótulo fica dentro do retângulo colorido, então segue o contraste da paleta e não o do fundo
   const dark = P.colors.filter(c => readableOn(c) === '#0b0d0a').length >= P.colors.length / 2;
   const lab = P.type === 'treemap' ? (dark ? '#0b0d0a' : '#f4f5f0') : fg;

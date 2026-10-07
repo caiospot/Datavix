@@ -16,7 +16,7 @@
         types: P.choice.all, getType: () => P.type, getSort: () => P.sort,
         onType: t => host.setType(t),
         onSort: m => { P.sort = m; host.resort(); },
-        onPresent: () => startPresentation({ root, ix: host.ix, P }),
+        onPresent: () => startPresentation({ root, ix: host.ix, P, host }),
       },
     });
     if (window.dvSplash) window.dvSplash.set(LANG === 'pt' ? 'Montando a visualização…' : 'Building the visualization…');

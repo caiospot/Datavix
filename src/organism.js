@@ -271,7 +271,7 @@ function renderOrganism(P, el) {
   if (c1x) { c1x.innerHTML = ''; c1x.appendChild(side0); }
   if (piece) piece.classList.add('org-mode');
   const $o = s => el.querySelector(s), $s = s => side0.querySelector(s), cv = $o('#orgcv'), stage = $o('.orgstage'), ctip = $s('#orgctip');
-  eng.ctx = cv.getContext('2d');
+  eng.ctx = csScaleFont(cv.getContext('2d'), P);
   const fit = () => { const w = Math.max(200, stage.clientWidth), h = Math.max(260, stage.clientHeight), dpr = Math.min(2, devicePixelRatio || 1); cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); eng.resize(w, h, dpr); };
   const ro = new ResizeObserver(() => fit()); ro.observe(stage); fit();
   if (RM) eng.snap();

@@ -183,3 +183,7 @@ Object.assign(I18N.en, {
   m_ios: ['Tap Share, the square with an arrow pointing up, in the Safari toolbar.', 'Scroll the list and choose "Add to Home Screen".', 'Tap "Add". Datavix then opens as a full-screen app.'],
   m_ios_note: 'On iPhone and iPad, installing is done from Safari.',
 });
+
+/* ---- painel em abas e fontes ---- */
+Object.assign(I18N.pt, { tab_chart: 'Gráfico', tab_style: 'Visual', tab_share: 'Exportar', fc_sober: 'Sóbrio', fc_editorial: 'Editorial', fc_tech: 'Tecnológico', fc_bold: 'Expressivo', fp_sample: 'Receita por categoria' });
+Object.assign(I18N.en, { tab_chart: 'Chart', tab_style: 'Style', tab_share: 'Export', fc_sober: 'Clean', fc_editorial: 'Editorial', fc_tech: 'Technical', fc_bold: 'Expressive', fp_sample: 'Revenue by category' });

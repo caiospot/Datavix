@@ -1,0 +1,155 @@
+{
+ "Inter": [
+  {
+   "weight": "400 700",
+   "file": "inter-400_700.woff2",
+   "bytes": 48432
+  }
+ ],
+ "Manrope": [
+  {
+   "weight": "400 800",
+   "file": "manrope-400_800.woff2",
+   "bytes": 24576
+  }
+ ],
+ "DM Sans": [
+  {
+   "weight": "400 700",
+   "file": "dm-sans-400_700.woff2",
+   "bytes": 36980
+  }
+ ],
+ "IBM Plex Sans": [
+  {
+   "weight": "400",
+   "file": "ibm-plex-sans-400.woff2",
+   "bytes": 40240
+  },
+  {
+   "weight": "600",
+   "file": "ibm-plex-sans-600.woff2",
+   "bytes": 40240
+  }
+ ],
+ "Plus Jakarta Sans": [
+  {
+   "weight": "400 700",
+   "file": "plus-jakarta-sans-400_700.woff2",
+   "bytes": 27272
+  }
+ ],
+ "Playfair Display": [
+  {
+   "weight": "400 800",
+   "file": "playfair-display-400_800.woff2",
+   "bytes": 38460
+  }
+ ],
+ "Source Serif 4": [
+  {
+   "weight": "400 700",
+   "file": "source-serif-4-400_700.woff2",
+   "bytes": 50952
+  }
+ ],
+ "Source Sans 3": [
+  {
+   "weight": "400 700",
+   "file": "source-sans-3-400_700.woff2",
+   "bytes": 28804
+  }
+ ],
+ "DM Serif Display": [
+  {
+   "weight": "400",
+   "file": "dm-serif-display-400.woff2",
+   "bytes": 17844
+  }
+ ],
+ "Instrument Serif": [
+  {
+   "weight": "400",
+   "file": "instrument-serif-400.woff2",
+   "bytes": 15040
+  }
+ ],
+ "Libre Baskerville": [
+  {
+   "weight": "400 700",
+   "file": "libre-baskerville-400_700.woff2",
+   "bytes": 33852
+  }
+ ],
+ "Space Grotesk": [
+  {
+   "weight": "400 700",
+   "file": "space-grotesk-400_700.woff2",
+   "bytes": 22320
+  }
+ ],
+ "JetBrains Mono": [
+  {
+   "weight": "400 700",
+   "file": "jetbrains-mono-400_700.woff2",
+   "bytes": 31340
+  }
+ ],
+ "IBM Plex Mono": [
+  {
+   "weight": "400",
+   "file": "ibm-plex-mono-400.woff2",
+   "bytes": 10052
+  },
+  {
+   "weight": "500",
+   "file": "ibm-plex-mono-500.woff2",
+   "bytes": 10060
+  },
+  {
+   "weight": "600",
+   "file": "ibm-plex-mono-600.woff2",
+   "bytes": 10120
+  }
+ ],
+ "Space Mono": [
+  {
+   "weight": "400",
+   "file": "space-mono-400.woff2",
+   "bytes": 9464
+  },
+  {
+   "weight": "700",
+   "file": "space-mono-700.woff2",
+   "bytes": 9552
+  }
+ ],
+ "Sora": [
+  {
+   "weight": "400 700",
+   "file": "sora-400_700.woff2",
+   "bytes": 25240
+  }
+ ],
+ "Outfit": [
+  {
+   "weight": "400 700",
+   "file": "outfit-400_700.woff2",
+   "bytes": 32228
+  }
+ ],
+ "Syne": [
+  {
+   "weight": "400 800",
+   "file": "syne-400_800.woff2",
+   "bytes": 34560
+  }
+ ],
+ "Bebas Neue": [
+  {
+   "weight": "400",
+   "file": "bebas-neue-400.woff2",
+   "bytes": 8596
+  }
+ ]
+}

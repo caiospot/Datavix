@@ -18,7 +18,7 @@ const S = {
   lang: 'pt', ui: 'dark', step: 'entry', user: null, ob: 0,
   br: { audience: null, decision: null, message: '', story: null, tone: null, place: null },
   ds: null, mapping: null, nullPolicy: 'ignore', loading: null, error: null, sheets: null, fileName: null, isSample: false,
-  menu: false, sheet: false, piece: null, panelOpen: lsGet('dv-panel') !== '0',
+  menu: false, sheet: false, ptab: 'chart', fpOpen: false, piece: null, panelOpen: lsGet('dv-panel') !== '0',
 };
 
 /* ---------------- worker embutido ---------------- */
@@ -519,7 +519,7 @@ function editor() {
   const P = S.piece;
   return `<div class="editor${S.panelOpen ? '' : ' nopanel'}${S.sheet ? ' sheet-open' : ''}" id="editor"><div class="stage">${pieceHtml(P, { editable: true })}</div>
     <div class="sheet" id="sheet"><div class="sheet-h" id="sheet-h"><i class="grab" aria-hidden="true"></i><span class="lbl">[ ${T('sheet_h')} ]</span><button class="ico" data-a="sheet-close" aria-label="${T('sheet_close')}">✕</button></div>
-      <aside class="panel" id="panel" aria-label="Editor">${panel()}</aside></div>
+      <aside class="panel" id="panel" aria-label="Editor" data-tab="${S.ptab}">${panel()}</aside></div>
     <nav class="mbar" aria-label="${T('sheet_h')}"><button class="ico" data-a="undo" aria-label="${T('undo')}" ${canUndo() ? '' : 'disabled'}>↶</button><button class="ico" data-a="redo" aria-label="${T('redo')}" ${canRedo() ? '' : 'disabled'}>↷</button>
       <button class="btn" data-a="sheet-toggle" aria-expanded="${!!S.sheet}" aria-controls="sheet">✎ ${T('m_edit')}</button><button class="btn ghost" data-a="present">▶ ${T('m_present')}</button></nav></div>`;
 }
@@ -527,28 +527,33 @@ function panel() {
   const P = S.piece, base = bgBase(P.bg), low = P.colors.filter(c => contrast(c, base) < 3).length;
   // todos os gráficos, sempre: recomendados (sugerido + alternativas), outros disponíveis e os que precisam de outros dados (com o motivo)
   const avail = new Set(P.choice.all), rec = [P.choice.primary, ...P.choice.alts], more = P.choice.all.filter(t => !rec.includes(t)), need = ALL_CHARTS.filter(t => !avail.has(t));
-  const typeBtn = (t, tag) => `<button class="type" data-a="type" data-v="${t}" aria-pressed="${P.type === t}"><small>${tag || '&nbsp;'}</small>${T('chart')[t]}</button>`;
-  const offBtn = t => `<button class="type off" data-a="type" data-v="${t}" aria-pressed="false" title="${esc(T('why_' + t))}"><small>${T('tg_fix')}</small>${T('chart')[t]}<span class="why">${esc(T('why_' + t))}</span></button>`;
+  const typeBtn = (t, tag) => `<button class="type" data-a="type" data-v="${t}" aria-pressed="${P.type === t}"><span class="tico">${chartIcon(t)}</span><span class="tmeta"><small>${tag || '&nbsp;'}</small>${T('chart')[t]}</span></button>`;
+  const offBtn = t => `<button class="type off" data-a="type" data-v="${t}" aria-pressed="false" title="${esc(T('why_' + t))}"><span class="tico">${chartIcon(t)}</span><span class="tmeta"><small>${T('tg_fix')}</small>${T('chart')[t]}<span class="why">${esc(T('why_' + t))}</span></span></button>`;
   const types = `<div class="types">${rec.map((t, i) => typeBtn(t, i === 0 ? T('tg_sug') : T('tg_alt'))).join('')}</div>`
     + (more.length ? `<h4 class="tg-sub">${T('tg_more')}</h4><div class="types">${more.map(t => typeBtn(t)).join('')}</div>` : '')
     + (need.length ? `<h4 class="tg-sub">${T('tg_need')}</h4><div class="types">${need.map(offBtn).join('')}</div>` : '');
-  return `<section><h3>[ ${T('tg_h')} · ${T('tg_all', ALL_CHARTS.length)} ]</h3><h4 class="tg-sub first">${T('tg_rec')}</h4>${types}</section>
-  <section><h3>[ ${T('pal_h')} ]</h3><div class="pals">${Object.keys(PALETTES).map(id => `<button class="pal" data-a="pal" data-v="${id}" aria-pressed="${P.palId === id}"><span>${T('pal')[id]}</span><span class="sw">${PALETTES[id].slice(0, 5).map(c => `<i style="background:${c}"></i>`).join('')}</span></button>`).join('')}</div>
+  const tabs = [['chart', 'tab_chart'], ['style', 'tab_style'], ['share', 'tab_share']];
+  const fpCur = FONT_PAIRS[P.fontPair] || FONT_PAIRS.modern;
+  const fontPicker = `<div class="fp" id="fp"><button type="button" class="fp-btn" data-a="fp-toggle" aria-haspopup="listbox" aria-expanded="${!!S.fpOpen}" aria-controls="fp-list"><span class="fp-aa" style="font-family:${fpCur.title};font-weight:${fpCur.tw}">Aa</span><span class="fp-nm"><b>${esc(fpCur.sample)}</b><small>${T('fc_' + fpCur.cat)}</small></span><i aria-hidden="true">▾</i></button>
+    <div class="fp-list" id="fp-list" role="listbox" aria-label="${T('font_h')}"${S.fpOpen ? '' : ' hidden'}>${FONT_CATS.map(c => `<div class="fp-g" role="presentation">${T('fc_' + c)}</div>` + Object.keys(FONT_PAIRS).filter(k => FONT_PAIRS[k].cat === c).map(k => { const f = FONT_PAIRS[k]; return `<button type="button" role="option" class="fp-o" data-a="font" data-v="${k}" aria-selected="${P.fontPair === k}"><span class="fp-t" style="font-family:${f.title};font-weight:${f.tw}">${esc(T('fp_sample'))}</span><span class="fp-b" style="font-family:${f.body}">${esc(f.sample)}</span></button>`; }).join('')).join('')}</div></div>`;
+  return `<div class="ptabs" role="tablist" aria-label="${T('sheet_h')}">${tabs.map(([k, l]) => `<button type="button" role="tab" id="ptab-${k}" data-a="ptab" data-v="${k}" aria-selected="${S.ptab === k}" tabindex="${S.ptab === k ? 0 : -1}">${T(l)}</button>`).join('')}</div>
+  <section class="s1" data-t="chart"><h3>[ ${T('tg_h')} · ${T('tg_all', ALL_CHARTS.length)} ]</h3><h4 class="tg-sub first">${T('tg_rec')}</h4>${types}</section>
+  <section class="s1" data-t="style"><h3>[ ${T('pal_h')} ]</h3><div class="pals">${Object.keys(PALETTES).map(id => `<button class="pal" data-a="pal" data-v="${id}" aria-pressed="${P.palId === id}"><span>${T('pal')[id]}</span><span class="sw">${PALETTES[id].slice(0, 5).map(c => `<i style="background:${c}"></i>`).join('')}</span></button>`).join('')}</div>
     <div class="picker"><input type="color" id="accent" value="${P.colors[0]}" aria-label="${T('pal_accent')}"><span class="note">${T('pal_accent')}</span></div>
     <div class="aa ${low ? 'low' : 'ok'}">${low ? '⚠ ' + T('aa_low', low) : '✓ ' + T('aa_ok')}</div></section>
-  <section><h3>[ ${T('bg_h')} ]</h3><div class="bgs">${[['light', 'bg_light', '#f7f8f4'], ['dark', 'bg_dark', '#0b0d0a'], ['solid', 'bg_solid', P.bg.color], ['gradient', 'bg_grad', P.bg.base]].map(([m, k, c]) => `<button data-a="bg" data-v="${m}" aria-pressed="${P.bg.mode === m}"><i style="background:${m === 'gradient' ? `linear-gradient(135deg,${c},${mixHex(c, P.colors[0], 0.3)})` : c}"></i>${T(k)}</button>`).join('')}</div>
+  <section data-t="style"><h3>[ ${T('bg_h')} ]</h3><div class="bgs">${[['light', 'bg_light', '#f7f8f4'], ['dark', 'bg_dark', '#0b0d0a'], ['solid', 'bg_solid', P.bg.color], ['gradient', 'bg_grad', P.bg.base]].map(([m, k, c]) => `<button data-a="bg" data-v="${m}" aria-pressed="${P.bg.mode === m}"><i style="background:${m === 'gradient' ? `linear-gradient(135deg,${c},${mixHex(c, P.colors[0], 0.3)})` : c}"></i>${T(k)}</button>`).join('')}</div>
     ${P.bg.mode === 'solid' || P.bg.mode === 'gradient' ? `<div class="picker"><input type="color" id="bgcolor" value="${P.bg.mode === 'solid' ? P.bg.color : P.bg.base}" aria-label="${T('bg_h')}"></div>` : ''}</section>
-  <section><h3>[ ${T('font_h')} ]</h3><div class="fonts">${Object.keys(FONT_PAIRS).map(k => `<button class="fpair" data-a="font" data-v="${k}" aria-pressed="${P.fontPair === k}"><span class="fs" style="font-family:${FONT_PAIRS[k].title.replace(/"/g, "'")}">Aa</span><span>${FONT_PAIRS[k].sample}</span></button>`).join('')}</div></section>
-  <section><h3>[ ${T('opt_h')} ]</h3><div class="sws">${[['legend', 'opt_legend'], ['grid', 'opt_grid'], ['labels', 'opt_labels'], ['annotations', 'opt_ann'], ['notes', 'opt_notes']].map(([k, l]) => `<button class="sw2" role="switch" data-a="opt" data-v="${k}" aria-checked="${k === 'labels' ? !!P.opts[k] : P.opts[k] !== false}"><span>${T(l)}</span><i></i></button>`).join('')}</div><p class="note" style="margin:8px 0 0">${T('labels_hint')} ${T('edit_hint')}</p></section>
-  <section><h3>[ ${T('ex_h')} ]</h3><div class="exps"><button class="btn sm" data-a="present">▶ ${T('present')}</button><button class="btn ghost sm" data-a="ex" data-v="html">${T('ex_html')}</button><button class="btn ghost sm" data-a="ex" data-v="png">${T('ex_png')}</button><button class="btn ghost sm" data-a="ex" data-v="png2">${T('ex_png2')}</button><button class="btn ghost sm" data-a="ex" data-v="steps">${T('ex_steps')}</button></div>
+  <section data-t="style"><h3>[ ${T('font_h')} ]</h3>${fontPicker}</section>
+  <section data-t="style"><h3>[ ${T('opt_h')} ]</h3><div class="sws">${[['legend', 'opt_legend'], ['grid', 'opt_grid'], ['labels', 'opt_labels'], ['annotations', 'opt_ann'], ['notes', 'opt_notes']].map(([k, l]) => `<button class="sw2" role="switch" data-a="opt" data-v="${k}" aria-checked="${k === 'labels' ? !!P.opts[k] : P.opts[k] !== false}"><span>${T(l)}</span><i></i></button>`).join('')}</div><p class="note" style="margin:8px 0 0">${T('labels_hint')} ${T('edit_hint')}</p></section>
+  <section class="s1" data-t="share"><h3>[ ${T('ex_h')} ]</h3><div class="exps"><button class="btn sm" data-a="present">▶ ${T('present')}</button><button class="btn ghost sm" data-a="ex" data-v="html">${T('ex_html')}</button><button class="btn ghost sm" data-a="ex" data-v="png">${T('ex_png')}</button><button class="btn ghost sm" data-a="ex" data-v="png2">${T('ex_png2')}</button><button class="btn ghost sm" data-a="ex" data-v="steps">${T('ex_steps')}</button></div>
     <p class="note" style="margin:10px 0 0" id="exstat" role="status">${T('ex_note')}</p><p class="note" style="margin:4px 0 0">${T('present_hint')}</p></section>
-  <section><h3>[ ${T('data_h')} ]</h3><button class="btn ghost sm" data-a="edit-data">${T('edit_data')}</button></section>${npsOn() ? `<section><h3>[ ${T('nps_fb_h')} ]</h3><button class="btn ghost sm" data-a="feedback">${T('nps_fb')}</button></section>` : ''}`;
+  <section data-t="share"><h3>[ ${T('data_h')} ]</h3><button class="btn ghost sm" data-a="edit-data">${T('edit_data')}</button></section>${npsOn() ? `<section data-t="share"><h3>[ ${T('nps_fb_h')} ]</h3><button class="btn ghost sm" data-a="feedback">${T('nps_fb')}</button></section>` : ''}`;
 }
 
 /* ---------------- Vizzu no editor ---------------- */
 async function mountChart() {
   const P = S.piece; if (!P) return;
-  applyPieceCss(P);
+  applyPieceCss(P); await fontEnsure(fontsOf(P).fams);
   const box = $('#vz');
   try {
     if (S.step !== 'editor' || S.piece !== P) return;
@@ -566,7 +571,7 @@ async function mountChart() {
 }
 function teardownChart() { const P = S.piece; if (P && P.host) { P.host.destroy(); P.host = null; } }
 async function refreshAll(withConfig) {
-  const P = S.piece; applyPieceCss(P); const pn = $('#panel'); if (pn) pn.innerHTML = panel(); refreshBar();
+  const P = S.piece; await fontEnsure(fontsOf(P).fams); applyPieceCss(P); const pn = $('#panel'); if (pn) pn.innerHTML = panel(); refreshBar();
   if (!P.host) return;
   if (withConfig) await P.host.setType(P.type); else await P.host.restyle();
 }
@@ -586,6 +591,11 @@ function setSheet(on) {
   const sh = $('#sheet'); if (sh) sh.style.transform = '';
   if (S.sheet) { setTimeout(() => { const v = $('#vz'); if (v && v.scrollIntoView) v.scrollIntoView({ block: 'start', behavior: RM ? 'auto' : 'smooth' }); }, 80); }
 }
+function setFp(on, focusBtn) {
+  S.fpOpen = !!on; const fp = $('#fp'); if (!fp) return;
+  const l = fp.querySelector('.fp-list'), b = fp.querySelector('.fp-btn'); l.hidden = !S.fpOpen; b.setAttribute('aria-expanded', String(S.fpOpen));
+  if (S.fpOpen) { fontEnsure(Object.values(FONT_PAIRS).flatMap(f => f.fams)); const cur = l.querySelector('[aria-selected=true]') || l.querySelector('.fp-o'); if (cur) { cur.scrollIntoView({ block: 'nearest' }); cur.focus({ preventScroll: true }); } } else if (focusBtn) b.focus();
+}
 function openIosInstall() {
   modal({ title: T('m_ios_h'), body: `<ol class="ios-steps">${T('m_ios').map(x => `<li>${esc(x)}</li>`).join('')}</ol><p class="note" style="margin:10px 0 0">${T('m_ios_note')}</p>`, actions: [{ label: T('nps_close'), v: null, kind: 'primary' }] });
 }
@@ -600,6 +610,7 @@ function openIosInstall() {
 
 /* ---------------- eventos ---------------- */
 document.addEventListener('click', e => {
+  if (S.fpOpen && !e.target.closest('#fp')) setFp(false);
   const t = e.target.closest('[data-a]'); if (!t) return;
   const a = t.dataset.a, v = t.dataset.v;
   const P = S.piece;
@@ -649,7 +660,9 @@ document.addEventListener('click', e => {
     case 'edit-data': openMapModal(); break;
     case 'mm-upload': { const x = $('.mdl-x'); if (x) x.click(); pickReplace(); break; }
     case 'opt': if (P) { P.opts[v] = P.opts[v] === false || !P.opts[v] ? true : false; if (v === 'annotations' || v === 'notes') { applyPieceCss(P); const pn = $('#panel'); if (pn) pn.innerHTML = panel(); pushHist(); } else { pushHist(); refreshAll(v !== 'grid'); } } break;
-    case 'font': if (P && P.fontPair !== v) { P.fontPair = v; pushHist(); Promise.all(['600 20px Lora', '600 20px "Geist Mono"', '400 14px Geist'].map(f => document.fonts.load(f).catch(() => 0))).then(() => refreshAll(false)); } break;
+    case 'ptab': S.ptab = v; { const pn = $('#panel'); if (pn) { pn.dataset.tab = v; pn.querySelectorAll('.ptabs [role=tab]').forEach(b => { const on = b.dataset.v === v; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; }); pn.scrollTop = 0; } } break;
+    case 'fp-toggle': setFp(!S.fpOpen); break;
+    case 'font': if (P && P.fontPair !== v) { S.fpOpen = false; P.fontPair = v; pushHist(); fontEnsure(fontsOf(P).fams).then(() => refreshAll(false)); } else setFp(false, true); break;
     case 'idel': if (P) { P.insights.splice(+t.dataset.i, 1); $('#pins').innerHTML = insightsHtml(P, true); pushHist(); } break;
     case 'projects': openProjects(); break;
     case 'open-rec': { const id = t.dataset.id, x = $('.mdl .mdl-x'); if (x) x.click(); guard('new').then(ok => { if (ok) openRecent(id); }); break; }
@@ -706,6 +719,15 @@ document.addEventListener('focusout', e => {
   else if (t.classList && t.classList.contains('itext')) { const i = P.insights[+t.dataset.i]; if (i && txt !== i.text) { i.text = txt; i.edited = true; pushHist(); $('#pins').innerHTML = insightsHtml(P, true); } }
 });
 document.addEventListener('keydown', e => {
+  const fpEl = e.target.closest && e.target.closest('#fp');
+  if (fpEl && S.fpOpen) {
+    const opts = [...fpEl.querySelectorAll('.fp-o')], i = opts.indexOf(document.activeElement);
+    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setFp(false, true); return; }
+    if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) { e.preventDefault(); const n = e.key === 'Home' ? 0 : e.key === 'End' ? opts.length - 1 : Math.max(0, Math.min(opts.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1))); opts[n].focus(); return; }
+  }
+  if (fpEl && !S.fpOpen && e.target.classList.contains('fp-btn') && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) { e.preventDefault(); setFp(true); return; }
+  const tab = e.target.closest && e.target.closest('.ptabs [role=tab]');
+  if (tab && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) { e.preventDefault(); const ts = [...tab.parentElement.children], n = ts[(ts.indexOf(tab) + (e.key === 'ArrowRight' ? 1 : ts.length - 1)) % ts.length]; n.focus(); n.click(); n.focus(); return; }
   if (e.key === 'Escape' && !document.querySelector('.mdl')) { if (S.menu) { setMenu(false); return; } if (S.sheet) { setSheet(false); return; } }
   if (S.step === 'editor' && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && !(e.target.isContentEditable)) { e.preventDefault(); restore(e.shiftKey ? 1 : -1); }
   if (e.key === 'Enter' && (e.target.id === 'ptitle' || e.target.id === 'psub' || e.target.id === 'pfoot' || (e.target.classList && e.target.classList.contains('itext')))) { e.preventDefault(); e.target.blur(); }

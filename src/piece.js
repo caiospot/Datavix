@@ -21,11 +21,34 @@ const TONE_DEFAULT = {
   vibrant: { pal: 'vibrant', bg: { mode: 'gradient', color: '#14102b', base: '#14102b' }, pair: 'modern' },
 };
 // pares tipográficos: título + corpo/gráfico. Todas as fontes vão embutidas no arquivo.
+// pares de fontes do editor: título + texto. cat: sober | editorial | tech | bold. tw: peso do título (fontes de peso único usam 400).
+// fams: famílias que precisam estar carregadas (Geist, Geist Mono e Lora já vêm no CSS do app; as demais vêm de FONT_LIB).
+const FB = { sans: 'system-ui, sans-serif', serif: 'Georgia, serif', mono: 'ui-monospace, Menlo, monospace' };
+const fpair = (cat, tf, tk, bf, bk, tw) => ({ cat, tw: tw || 600, sample: tf === bf ? tf : tf + ' + ' + bf, title: `'${tf}', ${FB[tk]}`, body: `'${bf}', ${FB[bk]}`, fams: [...new Set([tf, bf])] });
 const FONT_PAIRS = {
-  modern: { title: "'Geist', system-ui, sans-serif", body: "'Geist', system-ui, sans-serif", sample: 'Geist' },
-  editorial: { title: "'Lora', Georgia, serif", body: "'Geist', system-ui, sans-serif", sample: 'Lora + Geist' },
-  tech: { title: "'Geist Mono', ui-monospace, Menlo, monospace", body: "'Geist', system-ui, sans-serif", sample: 'Geist Mono + Geist' },
+  modern: fpair('sober', 'Geist', 'sans', 'Geist', 'sans'),
+  inter: fpair('sober', 'Inter', 'sans', 'Inter', 'sans'),
+  manrope: fpair('sober', 'Manrope', 'sans', 'Manrope', 'sans'),
+  dmsans: fpair('sober', 'DM Sans', 'sans', 'DM Sans', 'sans'),
+  plex: fpair('sober', 'IBM Plex Sans', 'sans', 'IBM Plex Sans', 'sans'),
+  jakarta: fpair('sober', 'Plus Jakarta Sans', 'sans', 'Plus Jakarta Sans', 'sans'),
+  editorial: fpair('editorial', 'Lora', 'serif', 'Geist', 'sans'),
+  playfair: fpair('editorial', 'Playfair Display', 'serif', 'Inter', 'sans'),
+  sourceserif: fpair('editorial', 'Source Serif 4', 'serif', 'Source Sans 3', 'sans'),
+  dmserif: fpair('editorial', 'DM Serif Display', 'serif', 'DM Sans', 'sans', 400),
+  instrument: fpair('editorial', 'Instrument Serif', 'serif', 'Inter', 'sans', 400),
+  baskerville: fpair('editorial', 'Libre Baskerville', 'serif', 'Source Sans 3', 'sans'),
+  tech: fpair('tech', 'Geist Mono', 'mono', 'Geist', 'sans'),
+  grotesk: fpair('tech', 'Space Grotesk', 'sans', 'Space Grotesk', 'sans'),
+  jetbrains: fpair('tech', 'JetBrains Mono', 'mono', 'Inter', 'sans'),
+  plexmono: fpair('tech', 'IBM Plex Mono', 'mono', 'IBM Plex Sans', 'sans'),
+  spacemono: fpair('tech', 'Space Mono', 'mono', 'Space Grotesk', 'sans', 700),
+  sora: fpair('bold', 'Sora', 'sans', 'Sora', 'sans'),
+  outfit: fpair('bold', 'Outfit', 'sans', 'Outfit', 'sans'),
+  syne: fpair('bold', 'Syne', 'sans', 'Inter', 'sans', 700),
+  bebas: fpair('bold', 'Bebas Neue', 'sans', 'Inter', 'sans', 400),
 };
+const FONT_CATS = ['sober', 'editorial', 'tech', 'bold'];
 const fontsOf = P => FONT_PAIRS[P.fontPair] || FONT_PAIRS.modern;
 const DEFAULT_OPTS = { legend: true, grid: true, labels: false, annotations: true, notes: true };
 // tudo que a peça precisa para ser reaberta (HTML exportado, projetos recentes)
@@ -79,7 +102,7 @@ function applyPieceCss(P, el) {
   el = el || document.getElementById('piece'); if (!el) return;
   const base = bgBase(P.bg), fg = readableOn(base);
   const f = fontsOf(P);
-  el.style.background = bgCss(P.bg, P.colors[0]); el.style.color = fg; el.style.setProperty('--accent', P.colors[0]); el.style.setProperty('--pt-font', f.title); el.style.fontFamily = f.body;
+  el.style.background = bgCss(P.bg, P.colors[0]); el.style.color = fg; el.style.setProperty('--accent', P.colors[0]); el.style.setProperty('--pt-font', f.title); el.style.setProperty('--pt-w', f.tw); el.style.fontFamily = f.body;
   // cores do cartão e dos painéis laterais: seguem o fundo da peça
   el.style.setProperty('--o-card', mixHex(base, fg, 0.07)); el.style.setProperty('--o-fg', fg); el.style.setProperty('--o-muted', mixHex(fg, base, 0.5)); el.style.setProperty('--o-line', `rgba(${hexToRgb(fg).join(',')},.14)`); el.style.setProperty('--o-accent', P.colors[0]);
   el.classList.toggle('no-ann', P.opts.annotations === false); el.classList.toggle('no-notes', P.opts.notes === false);

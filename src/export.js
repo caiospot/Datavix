@@ -15,7 +15,7 @@ function buildExportHtml(P) {
     .replace(/</g, '\\u003c').split(String.fromCharCode(0x2028)).join('\\u2028').split(String.fromCharCode(0x2029)).join('\\u2029');
   const csp = "default-src 'none'; script-src 'unsafe-inline' 'wasm-unsafe-eval' blob:; worker-src blob:; connect-src blob: data:; style-src 'unsafe-inline'; font-src data:; img-src data: blob:";
   return '<!doctype html><html lang="' + (LANG === 'pt' ? 'pt-BR' : 'en') + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(P.title) + '</title>'
-    + '<meta http-equiv="Content-Security-Policy" content="' + csp + '"><style>' + decB64('splash-css') + '</style><style>' + decB64('exp-css') + '</style></head><body>' + decB64('splash-html') + '<div id="app"></div>'
+    + '<meta http-equiv="Content-Security-Policy" content="' + csp + '"><style>' + decB64('splash-css') + '</style><style>' + decB64('exp-css') + '</style><style>' + fontFaceCss(fontsOf(P).fams) + '</style></head><body>' + decB64('splash-html') + '<div id="app"></div>'
     + '<script id="dv-data" type="application/json">' + data + '</script>'
     + '<script id="vz-js" type="text/plain">' + b64text('vz-js') + '</script><script id="vz-wasm" type="text/plain">' + b64text('vz-wasm') + '</script>'
     + '<script>' + decB64('exp-src') + '\n' + decB64('exp-boot') + '</script></body></html>';
@@ -44,9 +44,9 @@ async function renderPng(P, o = {}) {
   ctx.fillRect(0, 0, W, H);
   try { await document.fonts.load("700 20px 'Doto'"); await document.fonts.ready; } catch (e) { /* segue com fonte do sistema */ }
   const ft = fontsOf(P), fam = ft.body, tfam = ft.title;
-  try { await document.fonts.load(`600 20px ${tfam}`); } catch (e) { /* segue */ }
+  try { await fontEnsure(ft.fams); await document.fonts.load(`${ft.tw} 20px ${tfam}`); await document.fonts.load(`400 20px ${fam}`); } catch (e) { /* segue */ }
   let y = pad * 0.8;
-  y = wrapText(ctx, P.title, pad, y, W - 2 * pad, 66 * sc, `600 ${58 * sc}px ${tfam}`, fg) + 6 * sc;
+  y = wrapText(ctx, P.title, pad, y, W - 2 * pad, 66 * sc, `${ft.tw} ${58 * sc}px ${tfam}`, fg) + 6 * sc;
   y = wrapText(ctx, subtitleOf(P), pad, y, W - 2 * pad, 32 * sc, `400 ${22 * sc}px ${fam}`, muted) + 20 * sc;
   if (o.caption) {
     const top = y;

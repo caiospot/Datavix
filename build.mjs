@@ -5,7 +5,10 @@ const b64 = s => Buffer.from(s, 'utf8').toString('base64');
 const b64f = p => fs.readFileSync(new URL(p, import.meta.url)).toString('base64');
 const worker = [r('vendor/papaparse.min.js'), r('vendor/xlsx.full.min.js'), r('src/parser.worker.js')].join('\n;\n');
 const shared = [r('src/i18n.js'), r('src/i18n-charts.js'), r('src/data.js'), r('src/piece.js'), r('src/charts.js'), r('src/cardcol.js'), r('src/organism.js'), r('src/rays.js'), r('src/river.js'), r('src/fan.js'), r('src/ridge.js'), r('src/flow.js'), r('src/altviews.js'), r('src/runtime.js')].join('\n');
-const js = [shared, r('src/store.js'), r('src/modal.js'), r('src/landing.js'), r('src/export.js'), r('src/pwa.js'), r('src/nps.js'), r('src/privacy.js'), r('src/ui.js')].join('\n');
+// biblioteca de fontes do editor (vendor/fonts/lib, ver scripts/fetch-fonts.mjs): vira um objeto { família: [{ w, b: base64 }] }; só entra no app
+const fontIndex = JSON.parse(r('vendor/fonts/lib/index.json'));
+const fontLib = 'const FONT_LIB = ' + JSON.stringify(Object.fromEntries(Object.entries(fontIndex).map(([fam, faces]) => [fam, faces.map(f => ({ w: f.weight, b: b64f('vendor/fonts/lib/' + f.file) }))]))) + ';\n';
+const js = [shared, r('src/store.js'), r('src/modal.js'), r('src/landing.js'), r('src/export.js'), r('src/pwa.js'), r('src/nps.js'), r('src/privacy.js'), fontLib + r('src/fontlib.js'), r('src/icons.js'), r('src/ui.js')].join('\n');
 const fonts = r('vendor/fonts/fonts-embedded.css');
 // tela de carregamento: SVG de uma árvore radial mínima, gerada aqui com números fixos (sem aleatório em tempo de execução)
 function splashHtml() {

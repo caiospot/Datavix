@@ -422,3 +422,22 @@
 }
 @media (prefers-reduced-motion: reduce) { .pstory { animation: none !important; } .piece.presenting .pbody { transition: none !important; } }
 .piece.presenting:has(.pcard.hov, .pcard.pin) .phint { opacity: 0 !important; }
+
+/* ===== slides do construtor de história: diagnóstico, implicações, prioridades, plano e decisão ===== */
+.ps-head.ask { font-size: clamp(30px, 3.4vw, 64px); line-height: 1.08; }
+.ps-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.ps-chips span { border: 1px solid color-mix(in srgb, currentColor 22%, transparent); border-radius: 999px; padding: .35em .9em; font-size: clamp(12px, 1.05vw, 17px); opacity: .9; }
+.ps-chips b { color: var(--accent, #d4ff00); font-weight: 700; }
+.ps-list { margin: 0; padding: 0; list-style: none; display: grid; gap: clamp(12px, 2.2vh, 24px); }
+.ps-list li { border-left: 4px solid var(--accent, #d4ff00); padding-left: clamp(12px, 1.2vw, 20px); font-family: var(--pt-font, inherit); font-weight: var(--pt-w, 600); font-size: clamp(20px, 2.1vw, 36px); line-height: 1.2; letter-spacing: -.01em; }
+.ps-rank { margin: 0; padding: 0; list-style: none; display: grid; gap: clamp(8px, 1.6vh, 16px); }
+.ps-rank li { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: clamp(10px, 1vw, 18px); border-bottom: 1px solid color-mix(in srgb, currentColor 14%, transparent); padding-bottom: clamp(6px, 1vh, 12px); font-size: clamp(16px, 1.55vw, 27px); }
+.ps-rank i { font-style: normal; display: inline-grid; place-items: center; width: 1.9em; height: 1.9em; border-radius: 50%; background: var(--accent, #d4ff00); color: #0b0d0a; font: 700 .8em var(--mono, ui-monospace, monospace); }
+.ps-rank .k { font-weight: 600; overflow-wrap: anywhere; } .ps-rank b { font: 700 1em Doto, 'Geist Mono', monospace; color: var(--accent, #d4ff00); }
+.ps-rank em { font-style: normal; font: 500 .6em var(--mono, ui-monospace, monospace); opacity: .6; }
+.ps-plan { display: grid; gap: clamp(10px, 1.8vh, 18px); }
+.pl-row { border: 1px solid color-mix(in srgb, currentColor 18%, transparent); border-radius: 10px; padding: clamp(10px, 1.4vh, 16px) clamp(12px, 1.2vw, 18px); background: color-mix(in srgb, currentColor 5%, transparent); }
+.pl-a { font-weight: 600; font-size: clamp(16px, 1.6vw, 28px); line-height: 1.2; }
+.pl-m { margin-top: 6px; font: 400 clamp(11px, .95vw, 15px)/1.4 var(--mono, ui-monospace, monospace); letter-spacing: .02em; opacity: .75; }
+@media (max-width: 900px) { .ps-head.ask { font-size: clamp(22px, 7vw, 34px); } .ps-list li { font-size: clamp(16px, 4.6vw, 22px); } .ps-rank li { font-size: clamp(14px, 4vw, 18px); } .pl-a { font-size: clamp(14px, 4vw, 18px); } }
+.piece.presenting.pnoctx .pctx { opacity: 0 !important; pointer-events: none; }

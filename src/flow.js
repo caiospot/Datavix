@@ -65,7 +65,7 @@ function flowInsights(D, briefing, lang, T) {
   if (worst && worst.d > 0.05) out.push({ id: 'flow_drop', text: T('flow_ins_drop', D.stages[worst.s].name, D.stages[worst.s + 1].name, pct(worst.d)), calc: { title: T('flow_ins_drop_t'), formula: T('flow_ins_drop_f'), rows: [{ k: D.stages[worst.s].name, v: f(C.T[worst.s]) }, { k: D.stages[worst.s + 1].name, v: f(C.T[worst.s + 1]) }, { k: T('variation'), v: '-' + pct(worst.d) }], base } });
   const full = D.paths.filter(p => p[0].length === nS)[0] || D.paths[0];
   if (full && t0 > 0) out.push({ id: 'flow_path', text: T('flow_ins_path', full[0].map((c, s) => D.stages[s].cats[c]).join(' → '), pct(full[1] / t0)), calc: { title: T('flow_ins_path_t'), formula: T('flow_ins_path_f'), rows: [{ k: full[0].map((c, s) => D.stages[s].cats[c]).join(' → '), v: f(full[1]), n: full[2] }, { k: D.stages[0].name, v: f(t0) }, { k: T('share'), v: pct(full[1] / t0) }], base } });
-  return out.slice(0, (INSIGHT_LIMIT[briefing.audience] || 2) + 1);
+  return out.slice(0, briefing.limit || (INSIGHT_LIMIT[briefing.audience] || 2) + 1);
 }
 
 /* ---------------- motor ---------------- */

@@ -59,7 +59,7 @@ function ridgeInsights(D, briefing, lang, T) {
     const a = D.m.reduce((s, r) => s + r[0].reduce((x, y) => x + y, 0), 0), b = D.m.reduce((s, r) => s + r[1].reduce((x, y) => x + y, 0), 0), f = v => fmtNum(v, D.unit, lang);
     if (b > 0) { const d = fmtPct((a / b - 1) * 100, lang); out.push({ id: 'ridge_cmp', text: T('ridge_ins', D.comps[0].label, D.comps[1].label, d, f(a), f(b)), calc: { title: T('ridge_ins_t'), formula: T('ridge_ins_f'), rows: [{ k: D.comps[0].label, v: f(a) }, { k: D.comps[1].label, v: f(b) }, { k: T('variation'), v: d }], base: `${T('cs_aggs')[D.agg]} · ${D.valName}` } }); }
   }
-  return out.slice(0, Math.max(1, (INSIGHT_LIMIT[briefing.audience] || 2) + (D.comps.length === 2 ? 1 : 0)));
+  return out.slice(0, briefing.limit || Math.max(1, (INSIGHT_LIMIT[briefing.audience] || 2) + (D.comps.length === 2 ? 1 : 0)));
 }
 
 /* ---------------- motor ---------------- */

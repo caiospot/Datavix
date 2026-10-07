@@ -604,8 +604,10 @@ function computeInsights(built, briefing, lang, T) {
   // faixas de histograma: só participação e pico fazem sentido (outlier sobre contagem de faixas confunde)
   if (built.kind === 'hist') { delete out.outlier; delete out.low; }
   const order = INSIGHT_ORDER[briefing.decision] || INSIGHT_ORDER.prioritize;
-  const limit = INSIGHT_LIMIT[briefing.audience] || 2;
-  return order.filter(k => out[k]).slice(0, limit).map((k, i) => ({ id: k, ...out[k] }));
+  const limit = briefing.limit || INSIGHT_LIMIT[briefing.audience] || 2;
+  // briefing.all (construtor de história): todos os candidatos, os da decisão primeiro
+  const keys = briefing.all ? [...order.filter(k => out[k]), ...Object.keys(out).filter(k => !order.includes(k))] : order.filter(k => out[k]);
+  return keys.slice(0, limit).map((k, i) => ({ id: k, ...out[k] }));
 }
 
 /* ---------- contraste (WCAG) ---------- */

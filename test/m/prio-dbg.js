@@ -1,0 +1,6 @@
+(async () => { const sl = ms => new Promise(r => setTimeout(r, ms)); const D = window.__datavix, S = D.S;
+  S.user = { guest: true }; S.br = { audience: 'director', decision: 'prioritize', time: 'full', message: '', story: null, tone: null, place: null }; for (const k of ['org', 'rays', 'river', 'fan', 'ridge', 'flow']) localStorage.setItem('dv-' + k + '-tutorial', '1');
+  D.loadBuffer('pedidos.csv', await (await fetch('/dados-teste/pedidos.csv')).arrayBuffer()); for (let i = 0; i < 80 && S.step !== 'preview'; i++) await sl(100); D.go('mapping'); await sl(300); document.querySelector('[data-a=generate]').click(); for (let i = 0; i < 80 && S.step !== 'editor'; i++) await sl(150); await sl(1500);
+  const P = S.piece; P.sb = { msg: '', center: 'st-lead', ev: [], diag: { fact: null, text: '' }, impl: [], prio: { crit: 'top', n: 3 }, plan: [], ask: '' };
+  const meta = makeMeta(P), steps = buildSteps(P, meta), st = storyFromAnswers(P, meta, steps), pr = st.find(s => s.type === 'prio'), lead = st.find(s => s.id === 'st-lead');
+  return JSON.stringify({ prioState: pr && pr.state, leadState: lead && lead.state, groups: storyGroups(P) && storyGroups(P).list.slice(0, 3).map(x => x.label), stepCaps: steps.slice(0, 4).map(s => s.caption), stepStates: steps.slice(0, 4).map(s => s.state) }, null, 1); })()

@@ -8,7 +8,7 @@ const shared = [r('src/i18n.js'), r('src/i18n-charts.js'), r('src/data.js'), r('
 // biblioteca de fontes do editor (vendor/fonts/lib, ver scripts/fetch-fonts.mjs): vira um objeto { família: [{ w, b: base64 }] }; só entra no app
 const fontIndex = JSON.parse(r('vendor/fonts/lib/index.json'));
 const fontLib = 'const FONT_LIB = ' + JSON.stringify(Object.fromEntries(Object.entries(fontIndex).map(([fam, faces]) => [fam, faces.map(f => ({ w: f.weight, b: b64f('vendor/fonts/lib/' + f.file) }))]))) + ';\n';
-const js = [shared, r('src/store.js'), r('src/modal.js'), r('src/landing.js'), r('src/export.js'), r('src/mp4.js'), r('src/video.js'), r('src/pwa.js'), r('src/nps.js'), r('src/privacy.js'), fontLib + r('src/fontlib.js'), r('src/icons.js'), r('src/ui.js')].join('\n');
+const js = [shared, r('src/store.js'), r('src/modal.js'), r('src/landing.js'), r('src/export.js'), r('src/mp4.js'), r('src/video.js'), r('src/builder.js'), r('src/pwa.js'), r('src/nps.js'), r('src/privacy.js'), fontLib + r('src/fontlib.js'), r('src/icons.js'), r('src/ui.js')].join('\n');
 const fonts = r('vendor/fonts/fonts-embedded.css');
 // tela de carregamento: SVG de uma árvore radial mínima, gerada aqui com números fixos (sem aleatório em tempo de execução)
 function splashHtml() {
@@ -62,7 +62,7 @@ const BUILD = crypto.createHash('sha1').update(html.replace('__DVCFG__', '')).di
 html = html.replace('__DVCFG__', () => JSON.stringify({ build: BUILD, nps: NPS_URL ? { url: NPS_URL, token: NPS_TOKEN } : null, contact: process.env.DATAVIX_CONTACT_EMAIL || '', site: process.env.DATAVIX_SITE || '' }));
 fs.writeFileSync(new URL('index.html', import.meta.url), html);
 fs.mkdirSync(new URL('test/', import.meta.url), { recursive: true });
-fs.writeFileSync(new URL('test/dev.html', import.meta.url), html.replace("connect-src blob: data:", "connect-src blob: data: 'self'").replace('<script>window.__DV=', '<script>window.__DV_NPS={url:"/nps",token:"dev-token"};window.__DV='));
+fs.writeFileSync(new URL('test/dev.html', import.meta.url), html.replace("connect-src blob: data:", "connect-src blob: data: 'self'").replace('<script>window.__DV=', '<script>window.__DV_NPS={url:"/nps",token:"dev-token"};window.__DV_NOFIND=true;window.__DV='));
 // pasta pronta para publicar (Netlify, Cloudflare Pages, GitHub Pages...): app + manifesto + service worker + ícones
 const dist = new URL('dist/', import.meta.url); fs.mkdirSync(new URL('icons/', dist), { recursive: true });
 fs.writeFileSync(new URL('index.html', dist), html);

@@ -40,9 +40,12 @@ function vLogo(ctx, cx, y, size, color) {
 function videoPlan(P, fmt) {
   const meta = P.host.ix.meta, base = buildSteps(P, meta), isIns = s => /^i\d/.test(s.id), sq = fmt === 'square';
   let hero = null, ov = null; try { hero = kpiCards(P.built, LANG, T)[0] || null; ov = genOverview(P); } catch (e) { /* sem indicador */ }
-  let story = []; try { story = buildStory(P, meta, base); } catch (e) { console.error(e); }
-  const scenes = [{ kind: 'hook', ms: 2700 }];
-  if (story.length >= 3) story.slice(0, 4).forEach(s => scenes.push({ kind: 'step', ms: s.calc ? 3400 : 2800, kick: s.kick.label, head: s.head, sub: '', calc: s.calc, state: s.state }));
+  let story = []; try { story = P.sb ? storyFromAnswers(P, meta, base) : buildStory(P, meta, base); } catch (e) { console.error(e); }
+  const scenes = [{ kind: 'hook', ms: 2700 }], SLx = STORY_TXT[LANG] || STORY_TXT.pt;
+  const listOf = s => (s.type === 'prio' ? s.rank.map(r => `${r.n}. ${r.k}, ${r.v}${r.s ? ' (' + r.s + ')' : ''}`) : s.type === 'impl' ? s.lines : s.type === 'plan' ? s.rows.map(r => [r.a, r.o, r.d].filter(Boolean).join(' · ')) : s.type === 'diag' ? (s.chips || []).map(c => `${c.text} ${c.label}`) : null);
+  // roteiro guiado: o vídeo mostra até 5 atos; ficam o panorama, o centro, o diagnóstico, as prioridades e a decisão, e o resto preenche pela ordem
+  const pickV = arr => { if (arr.length <= 5) return arr; const must = new Set([0, 1]); arr.forEach((s, i) => { if (s.type === 'diag' || s.type === 'prio' || s.type === 'ask') must.add(i); }); const keep = new Set([...must].slice(0, 5)); for (let i = 0; i < arr.length && keep.size < 5; i++) keep.add(i); return arr.filter((s, i) => keep.has(i)); };
+  if (story.length >= 3) (P.sb ? pickV(story) : story.slice(0, 4)).forEach(s => { const ls = listOf(s); scenes.push({ kind: 'step', ms: s.calc || ls ? 3600 : 2800, kick: s.kick.label, head: s.type === 'impl' || s.type === 'plan' ? s.kick.label : s.head, sub: '', calc: ls ? null : s.calc, list: ls, state: s.state }); });
   else {
     const cut = c => { const p = c.split(' · '); return [p[0], p.slice(1).join(' · ')]; };
     const seg = base.filter(s => s.id !== 'overview' && s.id !== 'end' && !isIns(s) && s.caption).slice(0, 2), ins = base.filter(isIns).slice(0, 2);
@@ -50,7 +53,8 @@ function videoPlan(P, fmt) {
     seg.forEach(s => { const [h, sub] = cut(s.caption); scenes.push({ kind: 'step', ms: 2500, head: h, sub, state: s.state }); });
     ins.forEach(s => scenes.push({ kind: 'step', ms: 3500, head: s.caption, sub: '', calc: s.calc, state: s.state }));
   }
-  const lines = (story.length >= 3 ? story.slice(1).map(x => x.head) : (P.insights || []).map(x => x.text)).slice(0, sq ? 2 : 4);
+  const sumLine = x => (x.type === 'prio' ? `${x.head}: ${x.rank.map(r => r.k).join(', ')}` : x.type === 'plan' ? x.rows.map(r => r.a).join(' · ') : x.head);
+  const lines = (story.length >= 3 ? (P.sb ? story.filter(x => x.id !== 'st-ov').slice(-4) : story.slice(1)).map(sumLine) : (P.insights || []).map(x => x.text)).slice(0, sq ? 2 : 4);
   scenes.push({ kind: 'summary', ms: 3000, lines, facts: ov && ov.left ? ov.left.slice(0, 4) : [] }, { kind: 'brand', ms: 2600 });
   let t = 0; scenes.forEach(s => { s.t0 = t; t += s.ms; s.t1 = t; }); scenes.total = t;
   const stepsOnly = scenes.filter(s => s.kind === 'step');
@@ -136,11 +140,14 @@ function videoRender(P, fmt, plan, th, prep) {
     const e = vEase(lt / 550), sq = fmt === 'square', y0 = F.headY + (1 - e) * 36; ctx.save(); ctx.globalAlpha = alpha * e;
     const maxW = W - 2 * M; let top = y0;
     if (sc.kick) { ctx.font = `500 ${sq ? 24 : 30}px 'Geist Mono', ui-monospace, monospace`; ctx.fillStyle = th.accent; ctx.textBaseline = 'top'; ctx.fillText(String(sc.kick).toUpperCase().split('').join(sq ? '' : ''), M, top); top += sq ? 34 : 46; }
-    const f = vFit(ctx, sc.head, maxW, tfam, tw, sq && sc.calc ? [52, 46, 40] : F.head, sq && sc.calc ? 2 : 3);
+    const f = vFit(ctx, sc.head, maxW, tfam, tw, sq && (sc.calc || sc.list) ? [52, 46, 40] : F.head, sc.list || (sq && sc.calc) ? 2 : 3);
     let y = vDrawLines(ctx, f.lines, M, top, f.size * 1.08, `${tw} ${f.size}px ${tfam}`, th.fg);
     ctx.fillStyle = th.accent; ctx.fillRect(M - 28, top + 6, 8, f.lines.length * f.size * 1.08 - 12);
     if (sc.sub) { y += 14; y = vDrawLines(ctx, vLines(ctx, sc.sub, maxW, `400 ${F.sub}px 'Geist Mono', ui-monospace, monospace`).slice(0, 2), M, y, F.sub * 1.3, `400 ${F.sub}px 'Geist Mono', ui-monospace, monospace`, th.muted); }
-    if (sc.calc) {
+    if (sc.list && sc.list.length) {
+      y += sq ? 8 : 16; ctx.globalAlpha = alpha * vEase((lt - 250) / 500); const lf = `500 ${sq ? 25 : 33}px ${fam}`, lh = (sq ? 25 : 33) * 1.25;
+      sc.list.slice(0, sq ? 3 : 4).forEach(t => { const ls = vLines(ctx, t, maxW - 30, lf).slice(0, sq ? 1 : 2); ctx.fillStyle = th.accent; ctx.fillRect(M, y + 4, 6, ls.length * lh - 8); y = vDrawLines(ctx, ls, M + 24, y, lh, lf, th.fg) + 8; });
+    } else if (sc.calc) {
       y += sq ? 8 : 18; const c = sc.calc, cf = `400 ${F.calc}px ${fam}`; ctx.globalAlpha = alpha * vEase((lt - 350) / 500);
       y = vDrawLines(ctx, vLines(ctx, c.formula, maxW, cf).slice(0, sq ? 1 : 2), M, y, F.calc * 1.35, cf, th.muted);
       (c.rows || []).slice(0, 2).forEach(r => { y += 4; ctx.font = `600 ${F.calc}px ${fam}`; ctx.fillStyle = th.fg; ctx.fillText(`${r.k}`, M, y); const vw = ctx.measureText(`${r.v}`).width; ctx.fillText(`${r.v}`, W - M - vw, y); ctx.fillStyle = th.muted; ctx.fillRect(M, y + F.calc * 1.3, W - 2 * M, 1); y += F.calc * 1.55; });

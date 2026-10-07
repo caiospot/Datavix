@@ -52,7 +52,7 @@ const FONT_CATS = ['sober', 'editorial', 'tech', 'bold'];
 const fontsOf = P => FONT_PAIRS[P.fontPair] || FONT_PAIRS.modern;
 const DEFAULT_OPTS = { legend: true, grid: true, labels: false, annotations: true, notes: true };
 // tudo que a peça precisa para ser reaberta (HTML exportado, projetos recentes)
-const pieceData = P => ({ built: P.built, insights: P.insights, choice: P.choice, type: P.type, palId: P.palId, colors: P.colors, bg: P.bg, title: P.title, subtitle: P.subtitle || null, foot: P.foot || null, fontPair: P.fontPair, opts: P.opts, sort: P.sort, big: P.big, place: P.place, fileName: P.fileName, isSample: P.isSample, lang: P.lang || LANG, br: P.br || null, hadIns: !!P.hadIns });
+const pieceData = P => ({ sb: P.sb || null, built: P.built, insights: P.insights, choice: P.choice, type: P.type, palId: P.palId, colors: P.colors, bg: P.bg, title: P.title, subtitle: P.subtitle || null, foot: P.foot || null, fontPair: P.fontPair, opts: P.opts, sort: P.sort, big: P.big, place: P.place, fileName: P.fileName, isSample: P.isSample, lang: P.lang || LANG, br: P.br || null, hadIns: !!P.hadIns });
 const chartOpt = (P, extra) => ({ labels: !!P.opts.labels, legend: P.opts.legend !== false, ...extra });
 const mixHex = (a, b, t) => { const A = hexToRgb(a), B = hexToRgb(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
 const bgBase = bg => (bg.mode === 'light' ? '#f7f8f4' : bg.mode === 'dark' ? '#0b0d0a' : bg.mode === 'solid' ? bg.color : bg.base);

@@ -25,7 +25,7 @@ function createCardCol(root, o = {}) {
   const api = {
     over(m) { if (!pinned) { hover = m; paint(); } },
     out() { if (hover) { hover = null; paint(); } },
-    pin(m) { pinned = m; hover = null; paint(); const c2 = root.querySelector('#pc2'); if (c2 && root.dataset.lay === 'narrow' && c2.scrollIntoView) c2.scrollIntoView({ block: 'nearest', behavior: RM ? 'auto' : 'smooth' }); },
+    pin(m) { pinned = m; hover = null; paint(); const c2 = root.querySelector('#pc2'); if (c2 && root.dataset.lay === 'narrow' && !(window.innerWidth <= 900) && c2.scrollIntoView) c2.scrollIntoView({ block: 'nearest', behavior: RM ? 'auto' : 'smooth' }); },
     unpin() { if (!pinned) return; pinned = null; paint(); if (api.onUnpin) api.onUnpin(); },
     reset() { pinned = null; hover = null; overview = null; api.onUnpin = null; last = ''; paint(); },
     setOverview(m) { overview = m; ver++; paint(); },

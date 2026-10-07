@@ -4,7 +4,9 @@ const pwaWeb = /^https?:$/.test(location.protocol);
 let pwaPrompt = null;
 const pwaStandalone = () => (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
 const pwaCanInstall = () => !!pwaPrompt && !pwaStandalone();
-function pwaRefreshBtn() { const b = document.getElementById('pwa-btn'); if (b) b.hidden = !pwaCanInstall(); }
+function pwaRefreshBtn() { document.querySelectorAll('#pwa-btn,[data-pwa]').forEach(b => { b.hidden = !pwaCanInstall(); }); }
+// iPhone/iPad não têm o aviso de instalação: a instalação é manual, pelo Safari (Compartilhar > Adicionar à Tela de Início)
+const pwaIosCanAdd = () => pwaWeb && !window.__DV_NPS && /iPhone|iPad|iPod/.test(navigator.userAgent) && !pwaStandalone();
 async function pwaInstall() {
   if (!pwaPrompt) return; const p = pwaPrompt; pwaPrompt = null; pwaRefreshBtn();
   try { p.prompt(); await p.userChoice; } catch (e) { /* o navegador recusou */ }

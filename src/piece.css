@@ -12,7 +12,10 @@
 .piece[data-lay='mid'] .c2 .pcard { flex: 1 1 55%; max-height: none; height: 100%; }
 .piece[data-lay='mid'] .c2 .plist { flex: 1 1 45%; }
 .piece[data-lay='mid'] .c3, .piece[data-lay='narrow'] .c3 { position: static; }
-.piece[data-lay='narrow'] { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'c1' 'c3' 'c2'; gap: 18px; padding: 22px 18px; }
+.piece[data-lay='narrow'] { display: flex; flex-direction: column; align-items: stretch; gap: 16px; padding: 18px 14px 20px; min-height: 0; }
+.piece[data-lay='narrow'] .c1 { display: contents; }
+.piece[data-lay='narrow'] .c2, .piece[data-lay='narrow'] .c3 { align-self: stretch; }
+.piece[data-lay='narrow'] .phead { order: 1; } .piece[data-lay='narrow'] .c3 { order: 2; } .piece[data-lay='narrow'] .ctrls { order: 3; } .piece[data-lay='narrow'] .insights { order: 4; } .piece[data-lay='narrow'] .c1x { order: 5; } .piece[data-lay='narrow'] .c2 { order: 6; }
 .piece[data-lay='narrow'] .c2 { position: static; height: auto; }
 .piece[data-lay='narrow'] .c2 .pcard { flex: none; max-height: 420px; }
 .piece[data-lay='narrow'] .c2 .plist { flex: none; height: 380px; }
@@ -225,3 +228,14 @@
 .rsel { width: 100%; background: transparent; color: inherit; border: 1px solid var(--o-line, rgba(128, 128, 128, .35)); border-radius: 6px; padding: 7px 8px; font: inherit; font-size: 12px; }
 .rsel option { color: #0b0d0a; }
 .rsl { width: 100%; margin: 0; accent-color: var(--accent, #d4ff00); }
+
+@media (pointer: coarse) { .chipb { padding: 8px 14px; } .sortl select { font-size: 16px; padding: 7px 12px; } .zoom input[type='range'] { width: 150px; height: 28px; } .pnav button { width: 44px; height: 44px; } }
+
+/* celular: o cartão fixado sobe como um cartão flutuante na base da tela; visão geral e prévia (hover) não ocupam espaço */
+@media (max-width: 900px) {
+  .piece[data-lay='narrow']:not(.presenting) .c2 { display: contents; }
+  .piece[data-lay='narrow']:not(.presenting) .plist { order: 6; }
+  .piece[data-lay='narrow']:not(.presenting) .pcard.pin { position: fixed; left: 10px; right: 10px; bottom: calc(var(--bar-h, 0px) + 10px + env(safe-area-inset-bottom)); z-index: 45; max-height: min(46svh, 420px); height: auto; overflow: auto; box-shadow: 0 18px 50px rgba(0, 0, 0, .5), 0 0 0 1px var(--o-accent, #d4ff00); }
+  .piece[data-lay='narrow']:not(.presenting) .pcard.pin .cardx { width: 40px; height: 40px; }
+}
+@media (hover: none) and (max-width: 900px) { .piece[data-lay='narrow']:not(.presenting) .pcard.ov, .piece[data-lay='narrow']:not(.presenting) .pcard.hov { display: none; } }

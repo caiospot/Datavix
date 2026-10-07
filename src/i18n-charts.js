@@ -167,3 +167,19 @@ Object.assign(I18N.en, {
   ob_other_l: 'Describe it in a few words (optional)', ob_other_note: 'If the description has a word Datavix recognizes, it uses the closest option; otherwise it goes with the most neutral choice. You can change everything later in the editor.',
   ob_other_ph: { audience: 'E.g.: meeting with the advisory board', decision: 'E.g.: decide which channel gets more budget', story: 'E.g.: how revenue varies across stores' },
 });
+
+/* ---- celular: menu, painel em folha e instalação no iPhone ---- */
+Object.assign(I18N.pt, {
+  menu_h: 'Menu', menu_open: 'Abrir menu', menu_close: 'Fechar menu', m_lang: 'Idioma', m_theme: 'Tema', m_light: 'Claro', m_dark: 'Escuro',
+  m_edit: 'Editar', m_present: 'Apresentar', sheet_h: 'Editar peça', sheet_close: 'Fechar painel', sheet_open: 'Abrir painel de edição',
+  m_ios_item: 'Instalar no iPhone', m_ios_h: 'Instalar no iPhone ou iPad',
+  m_ios: ['Toque em Compartilhar, o quadrado com a seta para cima, na barra do Safari.', 'Role a lista e escolha "Adicionar à Tela de Início".', 'Toque em "Adicionar". O Datavix passa a abrir como um app, em tela cheia.'],
+  m_ios_note: 'No iPhone e no iPad a instalação é feita pelo Safari.',
+});
+Object.assign(I18N.en, {
+  menu_h: 'Menu', menu_open: 'Open menu', menu_close: 'Close menu', m_lang: 'Language', m_theme: 'Theme', m_light: 'Light', m_dark: 'Dark',
+  m_edit: 'Edit', m_present: 'Present', sheet_h: 'Edit piece', sheet_close: 'Close panel', sheet_open: 'Open edit panel',
+  m_ios_item: 'Install on iPhone', m_ios_h: 'Install on iPhone or iPad',
+  m_ios: ['Tap Share, the square with an arrow pointing up, in the Safari toolbar.', 'Scroll the list and choose "Add to Home Screen".', 'Tap "Add". Datavix then opens as a full-screen app.'],
+  m_ios_note: 'On iPhone and iPad, installing is done from Safari.',
+});

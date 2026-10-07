@@ -18,7 +18,7 @@ const S = {
   lang: 'pt', ui: 'dark', step: 'entry', user: null, ob: 0,
   br: { audience: null, decision: null, message: '', story: null, tone: null, place: null },
   ds: null, mapping: null, nullPolicy: 'ignore', loading: null, error: null, sheets: null, fileName: null, isSample: false,
-  piece: null, panelOpen: lsGet('dv-panel') !== '0',
+  menu: false, sheet: false, piece: null, panelOpen: lsGet('dv-panel') !== '0',
 };
 
 /* ---------------- worker embutido ---------------- */
@@ -118,21 +118,40 @@ function sampleCsv() {
 
 /* ---------------- renderização ---------------- */
 function header() {
-  const inEditor = S.step === 'editor';
+  const inEditor = S.step === 'editor', mine = (S.recents || []).length, dark = S.ui === 'dark';
   const ctl = inEditor ? `<button class="ico" data-a="panel" title="${T('panel_toggle')}" aria-label="${T('panel_toggle')}" aria-pressed="${S.panelOpen}">◨</button><button class="ico" data-a="undo" title="${T('undo')}" aria-label="${T('undo')}" ${canUndo() ? '' : 'disabled'}>↶</button><button class="ico" data-a="redo" title="${T('redo')}" aria-label="${T('redo')}" ${canRedo() ? '' : 'disabled'}>↷</button><span class="savechip" id="savechip" role="status"></span><button class="btn sm" data-a="save">${T('mdl_save')}</button>` : '';
+  const seg = `<div class="seg" role="group" aria-label="Idioma / Language"><button data-a="lang" data-v="pt" aria-pressed="${S.lang === 'pt'}">PT</button><button data-a="lang" data-v="en" aria-pressed="${S.lang === 'en'}">EN</button></div>`;
+  // celular e tablet vertical: só a ação principal e o menu "burger"; o resto vai para a gaveta
+  const prim = S.step === 'entry' ? `<button class="btn sm" data-a="start">${LPT().start}</button>` : inEditor ? `<button class="btn sm" data-a="save">${T('mdl_save')}</button>` : '';
+  const row = (a, label) => `<button class="dr-row" data-a="${a}"><span>${label}</span><i aria-hidden="true">→</i></button>`;
+  const drawer = `<div class="drawer${S.menu ? ' open' : ''}" id="drawer" aria-hidden="${!S.menu}"><div class="dr-ov" data-a="menu-close"></div>
+    <div class="dr-box" role="dialog" aria-modal="true" aria-label="${T('menu_h')}">
+      <div class="dr-h"><span class="lbl">[ ${T('menu_h')} ]</span><button class="ico" data-a="menu-close" aria-label="${T('menu_close')}">✕</button></div>
+      <div class="dr-list">${S.step === 'entry' ? LPT().nav.map(([id, l]) => `<a class="dr-row" href="#${id}" data-a="anchor"><span>${esc(l)}</span><i aria-hidden="true">→</i></a>`).join('') : ''}
+        ${inEditor ? row('save', T('mdl_save')) : ''}${mine ? row('projects', `${LPT().mine} · ${mine}`) : ''}${S.piece || S.user ? row('new', T('restart')) : ''}
+        <button class="dr-row" data-a="pwa-install" data-pwa="1" ${pwaCanInstall() ? '' : 'hidden'}><span>⤓ ${T('pwa_install')}</span><i aria-hidden="true">→</i></button>${pwaIosCanAdd() ? row('pwa-ios', T('m_ios_item')) : ''}
+      </div>
+      <div class="dr-opts"><div class="dr-opt"><span class="lbl">${T('m_lang')}</span>${seg}</div>
+        <div class="dr-opt"><span class="lbl">${T('m_theme')}</span><button class="btn ghost sm" data-a="ui" aria-label="Tema / Theme">${dark ? '☀ ' + T('m_light') : '☾ ' + T('m_dark')}</button></div></div>
+      <div class="dr-foot">${npsOn() ? `<button class="dr-link" data-a="feedback">${T('nps_fb')}</button>` : ''}<button class="dr-link" data-a="privacy">${esc(privT().link)}</button>${S.user ? `<button class="dr-link" data-a="logout">${T('logout')}</button>` : ''}</div>
+    </div></div>`;
   return `<header class="top${S.step === 'entry' ? ' lp at-top' : ''}">
     <button class="brand" data-a="home" title="${T('home')}" aria-label="Datavix, ${T('home')}"><i></i>DATAVIX</button>
     ${S.step === 'entry' ? `<nav class="lp-nav" aria-label="Menu">${LPT().nav.map(([id, l]) => `<a href="#${id}" data-a="anchor">${esc(l)}</a>`).join('')}</nav>` : ''}
     <div class="top-r">
-      <button class="btn ghost sm hide-s" id="pwa-btn" data-a="pwa-install" ${pwaCanInstall() ? '' : 'hidden'}>⤓ ${T('pwa_install')}</button>${ctl}${(S.recents || []).length ? `<button class="btn ghost sm" data-a="projects">${LPT().mine} · ${S.recents.length}</button>` : ''}${S.piece || S.user ? `<button class="btn ghost sm" data-a="new">${T('restart')}</button>` : ''}
-      <div class="seg" role="group" aria-label="Idioma / Language"><button data-a="lang" data-v="pt" aria-pressed="${S.lang === 'pt'}">PT</button><button data-a="lang" data-v="en" aria-pressed="${S.lang === 'en'}">EN</button></div>
-      <button class="ico" data-a="ui" title="Tema / Theme" aria-label="Tema / Theme">${S.ui === 'dark' ? '☀' : '☾'}</button>
+      <button class="btn ghost sm hide-s" id="pwa-btn" data-a="pwa-install" ${pwaCanInstall() ? '' : 'hidden'}>⤓ ${T('pwa_install')}</button>${ctl}${mine ? `<button class="btn ghost sm" data-a="projects">${LPT().mine} · ${mine}</button>` : ''}${S.piece || S.user ? `<button class="btn ghost sm" data-a="new">${T('restart')}</button>` : ''}
+      ${seg}
+      <button class="ico" data-a="ui" title="Tema / Theme" aria-label="Tema / Theme">${dark ? '☀' : '☾'}</button>
       ${S.user ? `<button class="btn ghost sm" data-a="logout">${T('logout')}</button>` : S.step === 'entry' ? `<button class="btn sm" data-a="start">${LPT().start}</button>` : ''}
-    </div></header>`;
+    </div>
+    <div class="top-m">${prim}<button class="ico burger" data-a="menu" aria-label="${T('menu_open')}" aria-expanded="${!!S.menu}" aria-controls="drawer"><i></i><i></i><i></i></button></div></header>${drawer}`;
 }
 
 function render() {
   document.documentElement.dataset.ui = S.ui;
+  if (S.step !== 'editor') S.sheet = false;
+  document.body.classList.toggle('menu-open', !!S.menu); document.body.classList.toggle('sheet-open', !!S.sheet);
+  const tc = document.querySelector('meta[name=theme-color]'); if (tc) tc.content = S.ui === 'dark' ? '#0b0d0a' : '#f8f9f5';
   const root = $('#root');
   const screens = { entry, ob: onboarding, upload, sheet: sheetPick, preview, mapping: mappingScreen, gen: generating, editor };
   if (S.step !== 'editor') teardownChart();
@@ -498,7 +517,11 @@ function refreshBar() { refreshSaveChip(); $$('[data-a=undo]').forEach(b => (b.d
 
 function editor() {
   const P = S.piece;
-  return `<div class="editor${S.panelOpen ? '' : ' nopanel'}" id="editor"><div class="stage">${pieceHtml(P, { editable: true })}</div><aside class="panel" id="panel" aria-label="Editor">${panel()}</aside></div>`;
+  return `<div class="editor${S.panelOpen ? '' : ' nopanel'}${S.sheet ? ' sheet-open' : ''}" id="editor"><div class="stage">${pieceHtml(P, { editable: true })}</div>
+    <div class="sheet" id="sheet"><div class="sheet-h" id="sheet-h"><i class="grab" aria-hidden="true"></i><span class="lbl">[ ${T('sheet_h')} ]</span><button class="ico" data-a="sheet-close" aria-label="${T('sheet_close')}">✕</button></div>
+      <aside class="panel" id="panel" aria-label="Editor">${panel()}</aside></div>
+    <nav class="mbar" aria-label="${T('sheet_h')}"><button class="ico" data-a="undo" aria-label="${T('undo')}" ${canUndo() ? '' : 'disabled'}>↶</button><button class="ico" data-a="redo" aria-label="${T('redo')}" ${canRedo() ? '' : 'disabled'}>↷</button>
+      <button class="btn" data-a="sheet-toggle" aria-expanded="${!!S.sheet}" aria-controls="sheet">✎ ${T('m_edit')}</button><button class="btn ghost" data-a="present">▶ ${T('m_present')}</button></nav></div>`;
 }
 function panel() {
   const P = S.piece, base = bgBase(P.bg), low = P.colors.filter(c => contrast(c, base) < 3).length;
@@ -548,11 +571,39 @@ async function refreshAll(withConfig) {
   if (withConfig) await P.host.setType(P.type); else await P.host.restyle();
 }
 
+/* ---------------- menu (gaveta) e painel em folha: celular e tablet vertical ---------------- */
+function setMenu(on, quiet) {
+  S.menu = !!on; const d = $('#drawer'); if (!d) return;
+  d.classList.toggle('open', S.menu); d.setAttribute('aria-hidden', String(!S.menu)); document.body.classList.toggle('menu-open', S.menu);
+  const b = $('.burger'); if (b) { b.setAttribute('aria-expanded', String(S.menu)); b.setAttribute('aria-label', T(S.menu ? 'menu_close' : 'menu_open')); }
+  if (quiet) return;
+  if (S.menu) setTimeout(() => { const c = d.querySelector('.dr-h .ico'); if (c) c.focus(); }, 30); else if (b) b.focus();
+}
+function setSheet(on) {
+  S.sheet = !!on; const ed = $('#editor'); if (!ed) return;
+  ed.classList.toggle('sheet-open', S.sheet); document.body.classList.toggle('sheet-open', S.sheet);
+  const b = $('.mbar [data-a=sheet-toggle]'); if (b) b.setAttribute('aria-expanded', String(S.sheet));
+  const sh = $('#sheet'); if (sh) sh.style.transform = '';
+  if (S.sheet) { setTimeout(() => { const v = $('#vz'); if (v && v.scrollIntoView) v.scrollIntoView({ block: 'start', behavior: RM ? 'auto' : 'smooth' }); }, 80); }
+}
+function openIosInstall() {
+  modal({ title: T('m_ios_h'), body: `<ol class="ios-steps">${T('m_ios').map(x => `<li>${esc(x)}</li>`).join('')}</ol><p class="note" style="margin:10px 0 0">${T('m_ios_note')}</p>`, actions: [{ label: T('nps_close'), v: null, kind: 'primary' }] });
+}
+// arrastar a alça para baixo fecha o painel
+(() => {
+  let y0 = null, dy = 0;
+  document.addEventListener('pointerdown', e => { const h = e.target.closest('#sheet-h'); if (!h || e.target.closest('button')) return; y0 = e.clientY; dy = 0; h.setPointerCapture(e.pointerId); });
+  document.addEventListener('pointermove', e => { if (y0 === null) return; dy = Math.max(0, e.clientY - y0); const sh = $('#sheet'); if (sh) sh.style.transform = `translateY(${dy}px)`; });
+  const end = () => { if (y0 === null) return; const sh = $('#sheet'); y0 = null; if (dy > 90) setSheet(false); else if (sh) sh.style.transform = ''; };
+  document.addEventListener('pointerup', end); document.addEventListener('pointercancel', end);
+})();
+
 /* ---------------- eventos ---------------- */
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-a]'); if (!t) return;
   const a = t.dataset.a, v = t.dataset.v;
   const P = S.piece;
+  if (S.menu && t.closest('#drawer') && !['lang', 'ui', 'menu', 'menu-close'].includes(a)) setMenu(false, true); // a gaveta fecha ao escolher um item
   switch (a) {
     case 'lang': setLang(v); if (S.step === 'editor') { rebuildPieceForLang(); } render(); break;
     case 'ui': S.ui = S.ui === 'dark' ? 'light' : 'dark'; render(); break;
@@ -582,6 +633,11 @@ document.addEventListener('click', e => {
     case 'bg': if (P) { const cur = bgBase(P.bg); P.bg = v === 'light' || v === 'dark' ? { ...P.bg, mode: v } : { ...P.bg, mode: v, [v === 'solid' ? 'color' : 'base']: cur }; pushHist(); refreshAll(false); } break;
     case 'present': if (P && P.host) { P.pres = startPresentation({ root: $('#piece'), ix: P.host.ix, P, onEnd: n => { npsTrack('pres'); if (n >= 2) npsMoment('pres'); } }); } break;
     case 'feedback': npsManual(); break;
+    case 'menu': setMenu(!S.menu); break;
+    case 'menu-close': setMenu(false); break;
+    case 'sheet-toggle': setSheet(!S.sheet); break;
+    case 'sheet-close': setSheet(false); break;
+    case 'pwa-ios': openIosInstall(); break;
     case 'privacy': openPrivacy(); break;
     case 'ex': if (P) doExport(v); break;
     case 'undo': restore(-1); break;
@@ -650,6 +706,7 @@ document.addEventListener('focusout', e => {
   else if (t.classList && t.classList.contains('itext')) { const i = P.insights[+t.dataset.i]; if (i && txt !== i.text) { i.text = txt; i.edited = true; pushHist(); $('#pins').innerHTML = insightsHtml(P, true); } }
 });
 document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !document.querySelector('.mdl')) { if (S.menu) { setMenu(false); return; } if (S.sheet) { setSheet(false); return; } }
   if (S.step === 'editor' && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z' && !(e.target.isContentEditable)) { e.preventDefault(); restore(e.shiftKey ? 1 : -1); }
   if (e.key === 'Enter' && (e.target.id === 'ptitle' || e.target.id === 'psub' || e.target.id === 'pfoot' || (e.target.classList && e.target.classList.contains('itext')))) { e.preventDefault(); e.target.blur(); }
   if (e.key === 'Enter' && e.target.id === 'msg' && !e.shiftKey) { e.preventDefault(); nextOb(); }

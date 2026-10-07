@@ -7,7 +7,7 @@ function fanSuggest(cols) {
   const value = bestMeasure(cols); if (value < 0) return null;
   const n = Math.max(0, ...cols.map(csColRows)); if (n < 12) return null;
   const lab = cols.map((c, i) => i).filter(i => csIsEntCol(cols[i]) && csDistinct(cols[i]) >= 12 && csDistinct(cols[i]) / n >= 0.6).sort((a, b) => csDistinct(cols[b]) - csDistinct(cols[a]))[0];
-  const cat = cols.map((c, i) => i).filter(i => i !== lab && (cols[i].kind === 'category' || cols[i].kind === 'geo') && cols[i].codes && csAvgLen(cols[i]) <= 45 && distinctOf(cols[i]) >= 2 && distinctOf(cols[i]) <= 12)
+  const cat = cols.map((c, i) => i).filter(i => i !== lab && isGroupDim(cols[i]) && cols[i].codes && csAvgLen(cols[i]) <= 45 && distinctOf(cols[i]) >= 2 && distinctOf(cols[i]) <= 12)
     .sort((a, b) => Math.abs(distinctOf(cols[a]) - 6) - Math.abs(distinctOf(cols[b]) - 6))[0];
   const vc = cols[value];
   return { label: lab === undefined ? -1 : lab, value, cat: cat === undefined ? -1 : cat, agg: vc.unit === '%' || RAYS_AVG_HINT.test(vc.name) ? 'mean' : 'sum' };

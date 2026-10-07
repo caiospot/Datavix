@@ -14,7 +14,7 @@ function riverSuggest(cols) {
   const value = bestMeasure(cols); if (value < 0) return null;
   const period = cols.findIndex(c => c.kind === 'date' && riverGrain(c.min, c.max));
   if (period < 0) return null;
-  const ok = cols.map((c, i) => i).filter(i => (cols[i].kind === 'category' || cols[i].kind === 'geo') && cols[i].codes && csAvgLen(cols[i]) <= 45 && distinctOf(cols[i]) >= 3 && distinctOf(cols[i]) <= 60);
+  const ok = cols.map((c, i) => i).filter(i => isGroupDim(cols[i]) && cols[i].codes && csAvgLen(cols[i]) <= 45 && distinctOf(cols[i]) >= 3 && distinctOf(cols[i]) <= 60);
   const few = ok.filter(i => distinctOf(cols[i]) <= RIVER_MAX_CAT).sort((a, b) => Math.abs(distinctOf(cols[a]) - 6) - Math.abs(distinctOf(cols[b]) - 6));
   const cat = few.length ? few[0] : ok.sort((a, b) => distinctOf(cols[a]) - distinctOf(cols[b]))[0];
   if (cat === undefined) return null;

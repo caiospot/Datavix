@@ -70,24 +70,38 @@ function bucketLabel(ms, grain, lang) {
 const grainName = (g, lang) => ({ day: ['dia', 'day'], week: ['semana', 'week'], month: ['mês', 'month'], quarter: ['trimestre', 'quarter'], year: ['ano', 'year'] }[g][lang === 'en' ? 1 : 0]);
 
 /* ---------- utilidades de coluna ---------- */
-const isDim = c => c.kind === 'category' || c.kind === 'geo';
-const isMeasure = c => c.kind === 'number';
+// papéis vindos da leitura da planilha (understand.js): dados pessoais, texto livre, colunas vazias/constantes ou desligadas não entram nos gráficos
+const colUsable = c => c.use !== false && !(c.role && (c.role === 'pii' || c.role === 'text' || c.role === 'empty' || c.role === 'constant'));
+const isDim = c => (c.kind === 'category' || c.kind === 'geo') && colUsable(c);
+const isGroupDim = c => isDim(c) && c.role !== 'id'; // escolhas automáticas: código/identificador só serve de rótulo
+const isMeasure = c => c.kind === 'number' && colUsable(c) && c.role !== 'id';
 const MONEY_HINT = /receita|valor|venda|faturamento|revenue|total|amount|sales|realizado|custo|cost|lucro|profit/i;
 const COUNTISH = /qtd|quant|^id$|codigo|código|qty|count/i;
 
+// rótulos que dizem "não sei" (Sem grupo, N/A, Outros...) nunca lideram, dominam ou explicam nada numa história
+const PLACEHOLDER = /^(sem [\p{L} ]{2,30}|n\/?[ad]|nd|n\/d|n[aã]o (informad[oa]|se aplica|identificad[oa]|classificad[oa]|preenchid[oa])|outr[oa]s?|desconhecid[oa]|unknown|none|null|nulo|vazi[oa]|-+|\?+|no (category|data|group|segment)|others?|not (informed|available|applicable)|blank|\(blank\))\.?$/iu;
+const isPlaceholderLabel = l => PLACEHOLDER.test(String(l == null ? '' : l).trim());
 function distinctOf(c) { return c.dict ? c.dict.length : c.distinct || 0; }
 function bestMeasure(cols, exclude = []) {
+  if (cols.shape === 'cases') return -1; // casos: o número é a contagem de linhas, nunca uma soma escolhida pelo app
   const nums = cols.map((c, i) => [c, i]).filter(([c, i]) => isMeasure(c) && !exclude.includes(i));
   return (nums.find(([c]) => MONEY_HINT.test(c.name)) || nums.find(([c]) => !COUNTISH.test(c.name)) || nums[0] || [null, -1])[1];
 }
 function smallestDim(cols, lo, hi, exclude = []) {
-  const ds = cols.map((c, i) => [c, i]).filter(([c, i]) => isDim(c) && !exclude.includes(i) && distinctOf(c) >= lo && distinctOf(c) <= hi);
+  const ds = cols.map((c, i) => [c, i]).filter(([c, i]) => isGroupDim(c) && !exclude.includes(i) && distinctOf(c) >= lo && distinctOf(c) <= hi);
   ds.sort((a, b) => distinctOf(a[0]) - distinctOf(b[0]));
   return ds.length ? ds[0][1] : -1;
 }
 
 // o tipo de análise sai dos dados: com data e medida é evolução no tempo; senão, comparação (a pessoa muda no mapeamento)
-function inferStory(cols) { return cols.some(c => c.kind === 'date') && bestMeasure(cols) >= 0 ? 'time' : 'compare'; }
+// planilha de casos (cada linha é um atendimento/resposta): não há valor a somar, então conta linhas
+// em planilha de casos, a data do caso é a da resposta ou do registro, não a de metadados (início, conclusão, última edição)
+function bestDate(cols) {
+  const ds = cols.map((c, i) => [c, i]).filter(([c]) => c.kind === 'date' && colUsable(c)); if (!ds.length) return -1;
+  const sc = ([c]) => (/resposta|response|abertura|opened|created|criad|registro|data do (caso|atendimento|contato)|^data$|^date$/i.test(c.name) ? 3 : 0) - (/modified|completion|conclus|atualiz|fim|end|start time|disparo/i.test(c.name) ? 2 : 0) + (c.n ? (c.n - c.nulls) / c.n : 0);
+  return ds.sort((a, b) => sc(b) - sc(a))[0][1];
+}
+function inferStory(cols) { return cols.some(c => c.kind === 'date' && colUsable(c)) && (cols.shape === 'cases' || bestMeasure(cols) >= 0) ? 'time' : 'compare'; }
 
 /* ---------- sugestão de mapeamento a partir do onboarding ---------- */
 function suggestMapping(story, cols, opt = {}) {
@@ -98,8 +112,20 @@ function suggestMapping(story, cols, opt = {}) {
 }
 function suggestMappingBase(story, cols, opt = {}) {
   const m = { story, kind: 'category', x: -1, y: -1, series: -1, size: -1, entity: -1, agg: 'sum', grain: 'auto' };
-  const firstDate = cols.findIndex(c => c.kind === 'date');
-  const y = bestMeasure(cols);
+  const cases = (opt.shape || cols.shape) === 'cases';
+  const firstDate = cases ? bestDate(cols) : cols.findIndex(c => c.kind === 'date' && colUsable(c));
+  const y = cases ? -1 : bestMeasure(cols);
+  if (cases) { // casos e pesquisas: o número é a contagem de linhas (e a taxa de cada resposta), nunca uma soma inventada
+    const mc = { ...m, agg: 'count' };
+    if (story === 'time' && firstDate >= 0) return { ...mc, kind: 'time', x: firstDate, series: -1 };
+    const dims = cols.map((c, i) => i).filter(i => isGroupDim(cols[i]) && distinctOf(cols[i]) >= 2 && distinctOf(cols[i]) <= MAX_CATS && cols[i].role !== 'flag');
+    const lenOk = dims.filter(i => { const d = cols[i].dict || []; let t = 0; const k = Math.min(d.length, 40); for (let j = 0; j < k; j++) t += d[j].length; return !k || t / k <= 45; });
+    const pool = (lenOk.length ? lenOk : dims), pick = pool.filter(i => distinctOf(cols[i]) >= 3).sort((a, b) => Math.abs(distinctOf(cols[a]) - 7) - Math.abs(distinctOf(cols[b]) - 7))[0] ?? pool[0];
+    const flag = cols.findIndex(c => c.role === 'flag' && isDim(c));
+    const x = pick ?? (flag >= 0 ? flag : -1);
+    if (x >= 0) return { ...mc, kind: 'category', x, series: -1 };
+    if (firstDate >= 0) return { ...mc, kind: 'time', x: firstDate, series: -1 };
+  }
   if ((story === 'time') && firstDate >= 0 && y >= 0) {
     return { ...m, kind: 'time', x: firstDate, y, series: smallestDim(cols, 2, MAX_SERIES) };
   }
@@ -119,7 +145,7 @@ function suggestMappingBase(story, cols, opt = {}) {
   }
   // comparação, composição, geografia, fluxo (sankey/mapa chegam na fase 1b), ou fallback de tempo sem data
   const dimIdx = story === 'geo' ? cols.findIndex(c => c.kind === 'geo') : -1;
-  const dims = cols.map((c, i) => i).filter(i => isDim(cols[i]));
+  const dims = cols.map((c, i) => i).filter(i => isGroupDim(cols[i]));
   const fit = dims.filter(i => distinctOf(cols[i]) >= 2 && distinctOf(cols[i]) <= MAX_CATS).sort((a, b) => distinctOf(cols[b]) - distinctOf(cols[a]));
   const x = dimIdx >= 0 ? dimIdx : (fit[0] ?? dims[0] ?? -1);
   const series = story === 'composition' && x >= 0 ? smallestDim(cols, 2, MAX_SERIES, [x]) : -1;
@@ -133,7 +159,7 @@ function suggestOrg(cols) {
   // categorias com frases longas (descrições) não servem de entidade nem de cor
   const avgLen = c => { const d = c.dict || []; if (!d.length) return 0; let t = 0; const k = Math.min(d.length, 60); for (let i = 0; i < k; i++) t += d[i].length; return t / k; };
   const dims = cols.map((c, i) => i).filter(i => isDim(cols[i]) && avgLen(cols[i]) <= 45);
-  const dateIdx = cols.findIndex(c => c.kind === 'date');
+  const dateIdx = cols.shape === 'cases' ? bestDate(cols) : cols.findIndex(c => c.kind === 'date');
   let hub = dateIdx;
   if (hub < 0) { const h = dims.filter(i => distinctOf(cols[i]) >= 3 && distinctOf(cols[i]) <= ORG_MAX_HUB).sort((a, b) => distinctOf(cols[a]) - distinctOf(cols[b]))[0]; hub = h === undefined ? -1 : h; }
   const ents = dims.filter(i => i !== hub && distinctOf(cols[i]) >= 4 && distinctOf(cols[i]) <= 80).sort((a, b) => distinctOf(cols[b]) - distinctOf(cols[a]));
@@ -588,8 +614,9 @@ function computeInsights(built, briefing, lang, T) {
   if (shareSrc && sum > 0) {
     const ts = shareSrc.reduce((a, b) => a + (b.value || 0), 0);
     const top = shareSrc.reduce((a, b) => ((b.value || 0) > (a.value || 0) ? b : a));
+    const topReal = isPlaceholderLabel(top.label) ? null : top;
     const share = ts > 0 ? top.value / ts * 100 : 0;
-    if (share >= 40 && top.label) out.dominant = { text: T('ins_dominant', top.label, fmtPct(share, lang).replace('+', '')), calc: { title: T('calc_dominant'), formula: T('f_share'), rows: [{ k: top.label, v: f(top.value), n: top.rows }, { k: T('total'), v: f(ts) }, { k: T('share'), v: fmtPct(share, lang).replace('+', '') }], base: base() } };
+    if (share >= 40 && top.label && topReal) out.dominant = { text: T('ins_dominant', top.label, fmtPct(share, lang).replace('+', '')), calc: { title: T('calc_dominant'), formula: T('f_share'), rows: [{ k: top.label, v: f(top.value), n: top.rows }, { k: T('total'), v: f(ts) }, { k: T('share'), v: fmtPct(share, lang).replace('+', '') }], base: base() } };
   }
   // outlier (IQR 1,5x)
   if (vals.length >= 8) {

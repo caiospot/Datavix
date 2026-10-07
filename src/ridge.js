@@ -7,7 +7,7 @@ const RIDGE_MAX_E = 24, RIDGE_GROW_S = 2.6, RIDGE_TUT_KEY = 'dv-ridge-tutorial',
 function ridgeSuggest(cols) {
   const value = bestMeasure(cols); if (value < 0) return null;
   const time = cols.findIndex(c => c.kind === 'date' && riverGrain(c.min, c.max)); if (time < 0) return null;
-  const dims = cols.map((c, i) => i).filter(i => (cols[i].kind === 'category' || cols[i].kind === 'geo') && cols[i].codes && csAvgLen(cols[i]) <= 45);
+  const dims = cols.map((c, i) => i).filter(i => isGroupDim(cols[i]) && cols[i].codes && csAvgLen(cols[i]) <= 45);
   const comp = dims.find(i => distinctOf(cols[i]) === 2);
   const ents = dims.filter(i => i !== comp && distinctOf(cols[i]) >= 3 && distinctOf(cols[i]) <= 60).sort((a, b) => Math.abs(distinctOf(cols[a]) - 10) - Math.abs(distinctOf(cols[b]) - 10));
   if (!ents.length) return null;

@@ -16,7 +16,7 @@ function csAvgLen(c) {
   return k ? tot / k : 0;
 }
 function csDistinct(c) { if (c.dict) return c.dict.length; const s = new Set(), t = c.texts || [], n = Math.min(t.length, 6000); for (let i = 0; i < n; i++) if (t[i]) s.add(t[i]); return s.size; }
-const csIsEntCol = c => (c.kind === 'category' || c.kind === 'geo' || c.kind === 'text') && csAvgLen(c) <= 40;
+const csIsEntCol = c => colUsable(c) && (c.kind === 'category' || c.kind === 'geo' || c.kind === 'text') && csAvgLen(c) <= 40;
 // quão "aninhado" é o grupo na entidade: parcela das entidades que pertencem a um único grupo
 function csPurity(ec, gc) {
   const le = csLabeler(ec), n = Math.min(csColRows(ec), 6000), m = new Map();
@@ -33,7 +33,7 @@ function raysSuggest(cols) {
   const uni = i => (n ? csDistinct(cols[i]) / n : 0), ok = i => csDistinct(cols[i]) <= RAYS_MAX * 2;
   ents.sort((a, b) => (uni(b) >= 0.9) - (uni(a) >= 0.9) || ok(b) - ok(a) || csDistinct(cols[b]) - csDistinct(cols[a]));
   const entity = ents[0], ec = cols[entity];
-  const gc = cols.map((c, i) => i).filter(i => i !== entity && (cols[i].kind === 'category' || cols[i].kind === 'geo') && cols[i].codes && distinctOf(cols[i]) >= 2 && distinctOf(cols[i]) <= 12)
+  const gc = cols.map((c, i) => i).filter(i => i !== entity && isGroupDim(cols[i]) && cols[i].codes && distinctOf(cols[i]) >= 2 && distinctOf(cols[i]) <= 12)
     .map(i => ({ i, p: csPurity(ec, cols[i]), d: distinctOf(cols[i]) })).filter(x => x.p >= 0.85).sort((a, b) => Math.abs(a.d - 6) - Math.abs(b.d - 6))[0];
   const vc = cols[value], agg = vc.unit === '%' || RAYS_AVG_HINT.test(vc.name) ? 'mean' : 'sum';
   return { entity, value, group: gc ? gc.i : -1, agg };

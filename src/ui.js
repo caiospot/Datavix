@@ -52,10 +52,11 @@ function onWorker(e) {
     if (S.replace) return finishReplace(m);
     S.loading = null; S.ds = m; S.fileName = m.fileName;
     if (!m.rowCount || !m.columns.length) return go('upload', T('up_empty'));
+    S._rt = new Set(); rdStart(S.ds); rdRetype();
     S.mapping = defaultMapping();
     go('preview');
   } else if (m.type === 'retyped') {
-    S.ds.columns[m.col] = m.column; if (S.mapModal) { refreshMapModal(); return; } S.mapping = defaultMapping(); render();
+    S.ds.columns[m.col] = m.column; rdStart(S.ds, true); rdRetype(); if (S.mapModal) { refreshMapModal(); return; } S.mapping = defaultMapping(); render();
   } else if (m.type === 'error') {
     if (S.replace) { S.replace = null; S.loading = null; go('editor'); toast(T('up_fail', m.message)); return; }
     S.loading = null; go('upload', m.message === 'empty' ? T('up_empty') : /password|encrypt|ZIP|CFB|Bad compressed/i.test(m.message) ? T('up_locked') : T('up_fail', m.message));
@@ -151,7 +152,7 @@ function render() {
   document.body.classList.toggle('menu-open', !!S.menu); document.body.classList.toggle('sheet-open', !!S.sheet);
   const tc = document.querySelector('meta[name=theme-color]'); if (tc) tc.content = S.ui === 'dark' ? '#0b0d0a' : '#f8f9f5';
   const root = $('#root');
-  const screens = { entry, ob: onboarding, upload, sheet: sheetPick, preview, mapping: mappingScreen, gen: generating, find: findScreen, story: storyScreen, editor };
+  const screens = { entry, ob: onboarding, upload, sheet: sheetPick, preview, mapping: mappingScreen, gen: generating, read: readScreen, find: findScreen, story: storyScreen, editor };
   if (S.step !== 'editor') teardownChart();
   landingUnmount();
   root.innerHTML = header() + (S.step === 'editor' ? editor() : S.step === 'entry' ? `<main class="landing">${landingHtml()}</main>` : `<main><div class="screen">${screens[S.step]()}</div></main>`);
@@ -253,7 +254,6 @@ function preview() {
   const nullCols = cols.filter(c => c.nulls > 0).sort((a, b) => b.nulls - a.nulls).slice(0, 4);
   const amb = cols.find(c => c.kind === 'date' && c.ambiguous);
   const out = cols.filter(c => c.kind === 'number' && c.outliers > 0 && c.outliers / ds.rowCount > 0.005).slice(0, 2);
-  const pii = piiCols(ds);
   const head = cols.map((c, i) => `<th class="${c.kind === 'number' || c.kind === 'date' ? 'num-c' : ''}">${esc(c.name)}<select data-c="retype" data-col="${i}" aria-label="${esc(T('kind')[c.kind])}: ${esc(c.name)}">${['date', 'number', 'category', 'geo', 'text'].map(k => `<option value="${k}" ${k === c.kind ? 'selected' : ''}>${T('kind')[k]}</option>`).join('')}</select></th>`).join('');
   const body = ds.preview.map(r => `<tr>${r.map((v, i) => `<td class="${cols[i].kind === 'number' || cols[i].kind === 'date' ? 'num-c' : ''}">${esc(v)}</td>`).join('')}</tr>`).join('');
   return `<div>
@@ -267,9 +267,8 @@ function preview() {
       <p class="note" style="margin:8px 0 0">${T('null_hint')}</p></div>
       <div>${ds.encoding ? `<div class="note">${T('enc_note', ds.encoding, ds.delimiter)}</div>` : ''}
       ${amb ? `<div class="warn"><span>${T('amb_date', esc(amb.name))}</span><button class="btn ghost sm" data-a="swapdate" data-col="${cols.indexOf(amb)}">${T('amb_swap')}</button></div>` : ''}
-      ${pii.map(n => `<div class="warn"><span>${T('pii', esc(n))}</span></div>`).join('')}
       ${out.map(c => `<div class="warn"><span>${T('outl', fmtInt(c.outliers, LANG), esc(c.name))}</span></div>`).join('')}</div></div>
-    <div class="row" style="margin-top:30px"><button class="btn ghost" data-a="back-to" data-v="upload">← ${T('back')}</button><button class="btn" data-a="to-mapping">${T('next')} →</button></div>
+    <div class="row" style="margin-top:30px"><button class="btn ghost" data-a="back-to" data-v="upload">← ${T('back')}</button><button class="btn" data-a="to-read">${T('next')} →</button></div>
   </div>`;
 }
 
@@ -325,9 +324,9 @@ function mappingBody() {
 function mappingScreen() {
   const mb = mappingBody();
   return `<div class="wrap-narrow" style="max-width:860px">
-    <div class="lbl">[ ${T('step')} // ${String(OB.length + 3).padStart(2, '0')} ]</div><h2 style="margin-top:12px">${title2(T('mp_h'))}</h2><p class="sub">${T('mp_p')}</p>
+    <div class="lbl">[ ${T('step')} // ${String(OB.length + 4).padStart(2, '0')} ]</div><h2 style="margin-top:12px">${title2(T('mp_h'))}</h2><p class="sub">${T('mp_p')}</p>
     ${mb.html}
-    <div class="row" style="margin-top:30px"><button class="btn ghost" data-a="back-to" data-v="preview">← ${T('back')}</button><button class="btn" data-a="generate" ${mb.valid ? '' : 'disabled'}>${T('generate')} →</button></div></div>`;
+    <div class="row" style="margin-top:30px"><button class="btn ghost" data-a="back-to" data-v="read">← ${T('back')}</button><button class="btn" data-a="generate" ${mb.valid ? '' : 'disabled'}>${T('generate')} →</button></div></div>`;
 }
 
 /* ---- editar mapeamento (modal) e troca de planilha ---- */
@@ -405,7 +404,7 @@ async function replaceSheet(file) {
 function finishReplace(m) {
   const r = S.replace; S.replace = null; S.loading = null;
   if (!m.rowCount || !m.columns.length) { S.ds = r.prevDs; go('editor'); toast(T('up_empty')); return; }
-  S.ds = m; S.fileName = m.fileName; S.mapping = defaultMapping();
+  S.ds = m; S.fileName = m.fileName; S._rt = new Set(); rdStart(m); rdRetype(); rdApply(); S.mapping = defaultMapping();
   // mantém os papéis das colunas quando a nova planilha tem colunas com os mesmos nomes
   if (r.names && S.mapping.org) { const find = n => (n ? m.columns.findIndex(c => c.name.toLowerCase() === n.toLowerCase()) : -1); for (const k of ['hub', 'entity', 'color', 'size']) { const i = find(r.names[k]); if (i >= 0) S.mapping.org[k] = i; } delete S.mapping.org.details; }
   for (const id in (r.csNames || {})) { const mp = S.mapping.cs && S.mapping.cs[id] || (S.mapping.cs = S.mapping.cs || {}, S.mapping.cs[id] = csBlank(CHART_REG[id])), nm = r.csNames[id]; for (const k in nm) { const i = nm[k] ? m.columns.findIndex(c => c.name.toLowerCase() === nm[k].toLowerCase()) : -1; if (i >= 0) mp[k] = i; } delete mp.details; }
@@ -651,6 +650,7 @@ document.addEventListener('click', e => {
     case 'back-to': go(v === 'ob' ? 'ob' : v); if (v === 'ob') { S.ob = 5; render(); } break;
     case 'nulls': S.nullPolicy = v; $$('.radio button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === v)); break;
     case 'swapdate': getWorker().postMessage({ type: 'retype', col: +t.dataset.col, kind: 'date', order: 'MDY' }); break;
+    case 'to-read': go('read'); break;
     case 'to-mapping': go('mapping'); break;
     case 'generate': go('gen'); break;
     case 'type': pickChart(v); break;

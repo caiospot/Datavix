@@ -81,6 +81,7 @@ function storyGroups(P) {
   else if (cs && t === 'river') { g = mp(cs.cats); name = cs.catName; }
   else if (cs && t === 'ridge') { g = mp(cs.ents); name = cs.entName; }
   else if (t === 'organism' && b.org) { g = mp(b.org.ents); name = b.org.entName; }
+  if (g) g = g.filter(x => !isPlaceholderLabel(x.label));
   return g && g.length >= 3 ? { list: g, name: name || '' } : null;
 }
 

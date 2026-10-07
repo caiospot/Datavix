@@ -5,7 +5,7 @@ const FLOW_MAX_ST = 5, FLOW_MAX_PATHS = 6000, FLOW_GROW_S = 2.8, FLOW_TUT_KEY = 
 
 /* ---------------- dados ---------------- */
 function flowSuggest(cols) {
-  const cand = cols.map((c, i) => i).filter(i => (cols[i].kind === 'category' || cols[i].kind === 'geo') && cols[i].codes && csAvgLen(cols[i]) <= 45 && distinctOf(cols[i]) >= 2 && distinctOf(cols[i]) <= 30).slice(0, FLOW_MAX_ST);
+  const cand = cols.map((c, i) => i).filter(i => isGroupDim(cols[i]) && cols[i].codes && csAvgLen(cols[i]) <= 45 && distinctOf(cols[i]) >= 2 && distinctOf(cols[i]) <= 30).slice(0, FLOW_MAX_ST);
   if (cand.length < 2) return null;
   const vi = bestMeasure(cols), vc = vi >= 0 ? cols[vi] : null, o = { s1: cand[0], s2: cand[1], s3: cand[2] ?? -1, s4: cand[3] ?? -1, s5: cand[4] ?? -1 };
   return { ...o, value: vc && MONEY_HINT.test(vc.name) ? vi : -1, agg: 'sum' };

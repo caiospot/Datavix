@@ -44,6 +44,8 @@ function decimalVote(t) {
   }
   return 0;
 }
+// "11 dias", "16 Dias.", "3h": número com unidade escrita junto (só quando a pessoa/leitura pede)
+const UNIT_TAIL = /\s*(dias?|d|meses|m[eê]s|semanas?|horas?|h|min(utos?)?|anos?|days?|months?|weeks?|hours?|years?)\.?\s*$/i;
 function parseNum(s, comma) {
   const c = cleanNumStr(s);
   if (!c) return NaN;
@@ -138,7 +140,7 @@ function buildColumn(name, vals, hint) {
     for (let i = 0; i < n; i++) {
       const v = vals[i];
       if (isNull(v)) { arr[i] = NaN; nulls++; continue; }
-      const x = typeof v === 'number' ? v : v instanceof Date ? v.getTime() : parseNum(v, comma);
+      const x = typeof v === 'number' ? v : v instanceof Date ? v.getTime() : parseNum(hint.units && typeof v === 'string' ? v.replace(UNIT_TAIL, '') : v, comma);
       if (Number.isNaN(x)) { arr[i] = NaN; nulls++; } else { arr[i] = x; parsed++; }
     }
     col.data = arr; col.unit = hint.unit || null; col.comma = comma;
@@ -304,6 +306,7 @@ self.onmessage = e => {
     } else if (m.type === 'retype') {
       const c = m.col;
       const hint = inferKindForced(c, m.kind);
+      if (m.units) hint.units = true;
       if (m.order) { hint.order = m.order; hint.ambiguous = false; }
       RAW.hints[c] = hint;
       const col = buildColumn(RAW.header[c], RAW.cols[c], hint);

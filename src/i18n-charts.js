@@ -195,3 +195,19 @@ Object.assign(I18N.en, { pres_start: 'Start', pres_keys: '← → navigate · Es
 /* ---- apresentação B: reprodução automática, resumo, celular ---- */
 Object.assign(I18N.pt, { pres_keys: '← → navegar · P reproduzir · Esc sair', pres_keys_m: 'Deslize para navegar', pres_auto: 'Reproduzir', pres_play: 'Reproduzir', pres_pause: 'Pausar', pres_speed: 'Velocidade', pres_outro: 'Em resumo', pres_again: 'Rever', pres_exit: 'Sair', pres_end: 'FIM', pres_overview: 'Visão geral' });
 Object.assign(I18N.en, { pres_keys: '← → navigate · P play · Esc exit', pres_keys_m: 'Swipe to navigate', pres_auto: 'Autoplay', pres_play: 'Play', pres_pause: 'Pause', pres_speed: 'Speed', pres_outro: 'Summary', pres_again: 'Watch again', pres_exit: 'Exit', pres_end: 'END', pres_overview: 'Overview' });
+
+/* ---- vídeo para redes sociais ---- */
+Object.assign(I18N.pt, {
+  vid_h: 'Vídeo para redes', vid_btn: 'Gerar vídeo (MP4)', vid_note: 'Um vídeo animado de uns 20 s, com o logotipo DATAVIX, pronto para Reels, TikTok, Shorts e LinkedIn.',
+  vid_warn: 'O vídeo mostra os números e os textos desta peça. Ao postar, você os torna públicos.', vid_format: 'Formato', vid_vertical: 'Reels · TikTok · Shorts · Stories', vid_square: 'Feed · LinkedIn',
+  vid_len: n => `Duração: cerca de ${n} s, sem áudio.`, vid_fmt_mp4: 'Arquivo MP4 (H.264), aceito pelas redes.', vid_fmt_webm: 'Este navegador grava WebM; algumas redes exigem MP4 (use o Chrome ou o Safari).',
+  vid_unsupported: 'Este navegador não consegue gravar vídeo. Use o Chrome, o Edge ou o Safari.', vid_keep: 'Mantenha esta aba aberta e visível durante a gravação.', vid_cancel: 'Cancelar', vid_go: 'Gravar vídeo',
+  vid_rec: 'Gravando…', vid_fail: m => `Não foi possível gravar o vídeo: ${m}`, vid_again: 'Gravar de novo', vid_dl: 'Baixar vídeo', vid_share: 'Compartilhar', vid_webm_note: 'WebM',
+});
+Object.assign(I18N.en, {
+  vid_h: 'Social video', vid_btn: 'Create video (MP4)', vid_note: 'A ~20 s animated video with the DATAVIX logo, ready for Reels, TikTok, Shorts and LinkedIn.',
+  vid_warn: 'The video shows the numbers and texts of this piece. When you post it, you make them public.', vid_format: 'Format', vid_vertical: 'Reels · TikTok · Shorts · Stories', vid_square: 'Feed · LinkedIn',
+  vid_len: n => `Length: about ${n} s, no audio.`, vid_fmt_mp4: 'MP4 file (H.264), accepted by the networks.', vid_fmt_webm: 'This browser records WebM; some networks require MP4 (use Chrome or Safari).',
+  vid_unsupported: 'This browser cannot record video. Use Chrome, Edge or Safari.', vid_keep: 'Keep this tab open and visible while recording.', vid_cancel: 'Cancel', vid_go: 'Record video',
+  vid_rec: 'Recording…', vid_fail: m => `Could not record the video: ${m}`, vid_again: 'Record again', vid_dl: 'Download video', vid_share: 'Share', vid_webm_note: 'WebM',
+});

@@ -8,7 +8,7 @@ const shared = [r('src/i18n.js'), r('src/i18n-charts.js'), r('src/data.js'), r('
 // biblioteca de fontes do editor (vendor/fonts/lib, ver scripts/fetch-fonts.mjs): vira um objeto { família: [{ w, b: base64 }] }; só entra no app
 const fontIndex = JSON.parse(r('vendor/fonts/lib/index.json'));
 const fontLib = 'const FONT_LIB = ' + JSON.stringify(Object.fromEntries(Object.entries(fontIndex).map(([fam, faces]) => [fam, faces.map(f => ({ w: f.weight, b: b64f('vendor/fonts/lib/' + f.file) }))]))) + ';\n';
-const js = [shared, r('src/store.js'), r('src/modal.js'), r('src/landing.js'), r('src/export.js'), r('src/pwa.js'), r('src/nps.js'), r('src/privacy.js'), fontLib + r('src/fontlib.js'), r('src/icons.js'), r('src/ui.js')].join('\n');
+const js = [shared, r('src/store.js'), r('src/modal.js'), r('src/landing.js'), r('src/export.js'), r('src/mp4.js'), r('src/video.js'), r('src/pwa.js'), r('src/nps.js'), r('src/privacy.js'), fontLib + r('src/fontlib.js'), r('src/icons.js'), r('src/ui.js')].join('\n');
 const fonts = r('vendor/fonts/fonts-embedded.css');
 // tela de carregamento: SVG de uma árvore radial mínima, gerada aqui com números fixos (sem aleatório em tempo de execução)
 function splashHtml() {
@@ -42,7 +42,7 @@ const splash = splashHtml();
 // NPS: o endereço (Google Apps Script) e o token entram só na hora do build, por variável de ambiente; sem eles o NPS fica desligado
 const NPS_URL = process.env.DATAVIX_NPS_URL || '', NPS_TOKEN = process.env.DATAVIX_NPS_TOKEN || '';
 const npsHosts = NPS_URL ? ' https://script.google.com https://script.googleusercontent.com' : '';
-const CSP = `default-src 'none'; script-src 'unsafe-inline' 'wasm-unsafe-eval' blob:; worker-src 'self' blob:; connect-src blob: data:${npsHosts}; manifest-src 'self'; style-src 'unsafe-inline'; font-src data:; img-src 'self' data: blob:`;
+const CSP = `default-src 'none'; script-src 'unsafe-inline' 'wasm-unsafe-eval' blob:; worker-src 'self' blob:; connect-src blob: data:${npsHosts}; manifest-src 'self'; media-src blob:; style-src 'unsafe-inline'; font-src data:; img-src 'self' data: blob:`;
 let html = r('src/index.template.html')
   .replace('__CSP__', () => CSP)
   .replace('__CSS__', () => fonts + '\n' + r('src/styles.css') + '\n' + r('src/piece.css'))
@@ -59,7 +59,7 @@ let html = r('src/index.template.html')
   .replace('__JS__', () => js.replace(/<\/script/gi, '<\\/script').replace(/<!--/g, '<\\!--'));
 import crypto from 'node:crypto';
 const BUILD = crypto.createHash('sha1').update(html.replace('__DVCFG__', '')).digest('hex').slice(0, 10);
-html = html.replace('__DVCFG__', () => JSON.stringify({ build: BUILD, nps: NPS_URL ? { url: NPS_URL, token: NPS_TOKEN } : null, contact: process.env.DATAVIX_CONTACT_EMAIL || '' }));
+html = html.replace('__DVCFG__', () => JSON.stringify({ build: BUILD, nps: NPS_URL ? { url: NPS_URL, token: NPS_TOKEN } : null, contact: process.env.DATAVIX_CONTACT_EMAIL || '', site: process.env.DATAVIX_SITE || '' }));
 fs.writeFileSync(new URL('index.html', import.meta.url), html);
 fs.mkdirSync(new URL('test/', import.meta.url), { recursive: true });
 fs.writeFileSync(new URL('test/dev.html', import.meta.url), html.replace("connect-src blob: data:", "connect-src blob: data: 'self'").replace('<script>window.__DV=', '<script>window.__DV_NPS={url:"/nps",token:"dev-token"};window.__DV='));

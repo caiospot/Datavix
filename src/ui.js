@@ -547,6 +547,7 @@ function panel() {
   <section data-t="style"><h3>[ ${T('opt_h')} ]</h3><div class="sws">${[['legend', 'opt_legend'], ['grid', 'opt_grid'], ['labels', 'opt_labels'], ['annotations', 'opt_ann'], ['notes', 'opt_notes']].map(([k, l]) => `<button class="sw2" role="switch" data-a="opt" data-v="${k}" aria-checked="${k === 'labels' ? !!P.opts[k] : P.opts[k] !== false}"><span>${T(l)}</span><i></i></button>`).join('')}</div><p class="note" style="margin:8px 0 0">${T('labels_hint')} ${T('edit_hint')}</p></section>
   <section class="s1" data-t="share"><h3>[ ${T('ex_h')} ]</h3><div class="exps"><button class="btn sm" data-a="present">▶ ${T('present')}</button><button class="btn ghost sm" data-a="ex" data-v="html">${T('ex_html')}</button><button class="btn ghost sm" data-a="ex" data-v="png">${T('ex_png')}</button><button class="btn ghost sm" data-a="ex" data-v="png2">${T('ex_png2')}</button><button class="btn ghost sm" data-a="ex" data-v="steps">${T('ex_steps')}</button></div>
     <p class="note" style="margin:10px 0 0" id="exstat" role="status">${T('ex_note')}</p><p class="note" style="margin:4px 0 0">${T('present_hint')}</p></section>
+  <section data-t="share"><h3>[ ${T('vid_h')} ]</h3><button class="btn sm" data-a="video">🎬 ${T('vid_btn')}</button><p class="note" style="margin:10px 0 0">${T('vid_note')}</p></section>
   <section data-t="share"><h3>[ ${T('data_h')} ]</h3><button class="btn ghost sm" data-a="edit-data">${T('edit_data')}</button></section>${npsOn() ? `<section data-t="share"><h3>[ ${T('nps_fb_h')} ]</h3><button class="btn ghost sm" data-a="feedback">${T('nps_fb')}</button></section>` : ''}`;
 }
 
@@ -650,6 +651,7 @@ document.addEventListener('click', e => {
     case 'sheet-close': setSheet(false); break;
     case 'pwa-ios': openIosInstall(); break;
     case 'privacy': openPrivacy(); break;
+    case 'video': openVideoDialog(); break;
     case 'ex': if (P) doExport(v); break;
     case 'undo': restore(-1); break;
     case 'redo': restore(1); break;

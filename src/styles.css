@@ -526,3 +526,16 @@ body.mdl-open { overflow: hidden; }
 .tico { height: 62px; }
 .type .cico { width: 58px; height: 38px; }
 @media (max-width: 900px) { .editor .panel, .editor.nopanel .panel { padding-top: 0; } .ptabs { padding-top: 6px; } }
+
+/* ===== vídeo para redes ===== */
+.vd-warn { color: var(--warn); margin: 0 0 12px; }
+.vd-fmts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.vd-fmt { display: grid; gap: 4px; justify-items: start; text-align: left; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; color: var(--fg); }
+.vd-fmt[aria-pressed='true'] { border-color: var(--sel); box-shadow: inset 0 0 0 1px var(--sel); }
+.vd-fmt strong { font: 500 18px var(--mono); } .vd-fmt small { color: var(--muted); font-size: 12px; line-height: 1.3; }
+.vd-ico { display: block; border: 2px solid currentColor; border-radius: 3px; opacity: .8; }
+.vd-ico.v { width: 18px; height: 32px; } .vd-ico.s { width: 26px; height: 26px; }
+.vd-stage { margin: 0 auto; background: #000; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+.vd-stage.vertical { aspect-ratio: 9 / 16; max-height: min(58vh, 520px); } .vd-stage.square { aspect-ratio: 1; max-height: min(52vh, 440px); }
+.vd-live, .vd-video { width: 100%; height: 100%; display: block; object-fit: contain; }
+.vd-prog { height: 4px; background: var(--line); border-radius: 4px; margin-top: 10px; overflow: hidden; } .vd-prog i { display: block; height: 100%; width: 0; background: var(--lime); }

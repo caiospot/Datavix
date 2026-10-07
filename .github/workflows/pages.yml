@@ -23,6 +23,7 @@ jobs:
           DATAVIX_NPS_URL: ${{ secrets.DATAVIX_NPS_URL }}
           DATAVIX_NPS_TOKEN: ${{ secrets.DATAVIX_NPS_TOKEN }}
           DATAVIX_CONTACT_EMAIL: ${{ vars.DATAVIX_CONTACT_EMAIL }}
+          DATAVIX_SITE: ${{ vars.DATAVIX_SITE }}
         run: node build.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

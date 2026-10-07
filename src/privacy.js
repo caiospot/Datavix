@@ -1,11 +1,11 @@
 /* Datavix: política de privacidade (PT/EN), aberta em modal pelo rodapé e pela pesquisa de satisfação.
    O texto descreve o que o código faz hoje: se mudar o que é guardado ou enviado, atualize aqui e PRIV_DATE. */
-const PRIV_DATE = '2026-10-06';
+const PRIV_DATE = '2026-10-07';
 const PRIV_ISSUES = 'https://github.com/caiospot/Datavix/issues';
 const PRIV = {
   pt: {
     title: 'Política de Privacidade',
-    upd: 'Atualizada em 6 de outubro de 2026',
+    upd: 'Atualizada em 7 de outubro de 2026',
     close: 'Fechar',
     link: 'Privacidade',
     sec: [
@@ -25,7 +25,7 @@ const PRIV = {
           'Projetos recentes: ao salvar, o app guarda neste navegador (IndexedDB) um resumo da peça: os dados já agregados usados no gráfico, o título, o nome do arquivo e as configurações visuais, até 20 projetos. Isso pode incluir nomes de categorias e valores da sua planilha. Você apaga cada projeto no app ou limpando os dados do site no navegador.',
           'Preferências (localStorage): se o painel lateral fica aberto, quais tutoriais você já viu e, se a pesquisa de satisfação estiver ativa, um contador de uso e as datas das últimas perguntas.',
           'Uso offline: ao instalar o app (PWA), o navegador guarda uma cópia dos arquivos do Datavix para ele abrir sem internet.',
-          'Arquivos exportados (HTML, PNG, ZIP) são salvos no seu computador. O HTML exportado contém os dados do gráfico, funciona sem internet e não carrega rastreadores. Pense bem antes de compartilhá-lo.',
+          'Arquivos exportados (HTML, PNG, ZIP e vídeo MP4) são salvos no seu computador. O HTML exportado contém os dados do gráfico, funciona sem internet e não carrega rastreadores. O vídeo é gerado no seu navegador e mostra os números e textos da peça. Pense bem antes de compartilhar ou postar.',
         ]],
       ]],
       ['Pesquisa de satisfação (NPS e 👍/👎)', [
@@ -75,7 +75,7 @@ const PRIV = {
   },
   en: {
     title: 'Privacy Policy',
-    upd: 'Updated on October 6, 2026',
+    upd: 'Updated on October 7, 2026',
     close: 'Close',
     link: 'Privacy',
     sec: [
@@ -95,7 +95,7 @@ const PRIV = {
           'Recent projects: when you save, the app keeps in this browser (IndexedDB) a summary of the piece: the already aggregated data used by the chart, the title, the file name and the visual settings, up to 20 projects. This may include category names and values from your spreadsheet. You delete each project in the app or by clearing the site data in your browser.',
           'Preferences (localStorage): whether the side panel is open, which tutorials you have already seen and, if the satisfaction survey is active, a usage counter and the dates of the last questions.',
           'Offline use: when you install the app (PWA), the browser keeps a copy of the Datavix files so it can open without internet.',
-          'Exported files (HTML, PNG, ZIP) are saved to your computer. The exported HTML contains the chart data, works offline and loads no trackers. Think before sharing it.',
+          'Exported files (HTML, PNG, ZIP and MP4 video) are saved to your computer. The exported HTML contains the chart data, works offline and loads no trackers. The video is generated in your browser and shows the numbers and texts of the piece. Think before sharing or posting.',
         ]],
       ]],
       ['Satisfaction survey (NPS and 👍/👎)', [

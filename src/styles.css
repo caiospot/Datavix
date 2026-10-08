@@ -201,8 +201,8 @@ body.mdl-open { overflow: hidden; }
 .mdl-a { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; padding: 16px 22px 20px; }
 .btn.text { background: none; border: 0; color: var(--muted); padding: 12px 10px; font-weight: 500; }
 .btn.text:hover { color: var(--fg); }
-#toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; z-index: 9600; background: var(--lime); color: var(--ink); font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 10px 18px; border-radius: 999px; transition: opacity .2s, transform .25s cubic-bezier(.2, .8, .2, 1); }
-#toast.on { opacity: 1; transform: translate(-50%, 0); }
+#toast { position: fixed; left: 0; right: 0; margin-inline: auto; width: max-content; max-width: calc(100vw - 28px); bottom: 28px; transform: translateY(20px); opacity: 0; pointer-events: none; z-index: 9600; background: var(--lime); color: var(--ink); font: 500 12px/1.45 var(--mono); letter-spacing: .05em; text-transform: uppercase; text-align: center; padding: 11px 20px; border-radius: 18px; box-shadow: 0 10px 30px rgba(0, 0, 0, .35); overflow-wrap: anywhere; transition: opacity .2s, transform .25s cubic-bezier(.2, .8, .2, 1); }
+#toast.on { opacity: 1; transform: none; }
 
 .mm { display: grid; gap: 4px; }
 .mm-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
@@ -212,8 +212,9 @@ body.mdl-open { overflow: hidden; }
 .mm-name { width: 100%; min-width: 96px; background: transparent; border: 1px solid transparent; border-bottom-color: var(--line); color: var(--fg); font: 500 12px var(--mono); padding: 4px 2px; border-radius: 0; margin-bottom: 4px; }
 .mm-name:hover, .mm-name:focus { border-color: var(--line); background: var(--bg2); outline: none; }
 .mm th select { width: 100%; }
-#toast.act { pointer-events: auto; display: flex; align-items: center; gap: 14px; }
-#toast.act button { background: var(--ink); color: var(--lime); border: 0; border-radius: 999px; padding: 4px 12px; font: 500 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+#toast.act { pointer-events: auto; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px 14px; }
+#toast.act .tmsg { flex: 1 1 auto; min-width: 0; }
+#toast.act button { flex: none; white-space: nowrap; background: var(--ink); color: var(--lime); border: 0; border-radius: 999px; padding: 7px 16px; min-height: 32px; font: 600 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
 
 /* ---------------- landing ---------------- */
 .landing { max-width: none; padding: 0; }

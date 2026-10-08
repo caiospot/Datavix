@@ -2,8 +2,8 @@
  * tempo real com MediaRecorder. Gráficos Vizzu animam de verdade numa instância própria fora da tela; os demais (canvas próprio, calendário, KPI)
  * usam o mesmo desenho estático do PNG, com revelação e transições. Os números vêm sempre dos cálculos da peça. */
 const VID_FMT = {
-  vertical: { w: 1080, h: 1920, logoY: 150, headY: 255, headH: 480, chart: { x: 50, y: 700, w: 980, h: 820 }, progY: 1572, head: [92, 74, 60], sub: 38, calc: 29 },
-  square: { w: 1080, h: 1080, logoY: 66, headY: 128, headH: 250, chart: { x: 50, y: 400, w: 980, h: 590 }, progY: 1030, head: [62, 52, 44], sub: 30, calc: 24 },
+  vertical: { w: 1080, h: 1920, logoY: 150, headY: 255, headH: 480, chart: { x: 50, y: 700, w: 980, h: 820 }, progY: 1572, head: [72, 60, 50], sub: 36, calc: 28 },
+  square: { w: 1080, h: 1080, logoY: 66, headY: 128, headH: 250, chart: { x: 50, y: 400, w: 980, h: 590 }, progY: 1030, head: [50, 42, 36], sub: 28, calc: 23 },
 };
 const VID_SITE = (window.__DV && window.__DV.site) || 'caiospot.github.io/Datavix';
 const VID_FPS = 30;
@@ -156,7 +156,7 @@ function videoRender(P, fmt, plan, th, prep) {
     const e = vEase(lt / 550), sq = fmt === 'square', y0 = F.headY + (1 - e) * 36; ctx.save(); ctx.globalAlpha = alpha * e;
     const maxW = W - 2 * M; let top = y0;
     if (sc.kick) { ctx.font = `500 ${sq ? 24 : 30}px 'Geist Mono', ui-monospace, monospace`; ctx.fillStyle = th.accent; ctx.textBaseline = 'top'; ctx.fillText(String(sc.kick).toUpperCase().split('').join(sq ? '' : ''), M, top); top += sq ? 34 : 46; }
-    const f = vFit(ctx, sc.head, maxW, tfam, tw, sq && (sc.calc || sc.list) ? [52, 46, 40] : F.head, sc.list || (sq && sc.calc) ? 2 : 3);
+    const f = vFit(ctx, sc.head, maxW, tfam, tw, sq && (sc.calc || sc.list) ? [42, 37, 32] : F.head, sc.list || (sq && sc.calc) ? 2 : 3);
     let y = vDrawLines(ctx, f.lines, M, top, f.size * 1.08, `${tw} ${f.size}px ${tfam}`, th.fg);
     ctx.fillStyle = th.accent; ctx.fillRect(M - 28, top + 6, 8, f.lines.length * f.size * 1.08 - 12);
     if (sc.sub) { y += 14; y = vDrawLines(ctx, vLines(ctx, sc.sub, maxW, `400 ${F.sub}px 'Geist Mono', ui-monospace, monospace`).slice(0, 2), M, y, F.sub * 1.3, `400 ${F.sub}px 'Geist Mono', ui-monospace, monospace`, th.muted); }
@@ -172,7 +172,7 @@ function videoRender(P, fmt, plan, th, prep) {
   };
   const hookScene = (sc, lt, alpha) => {
     ctx.save(); ctx.globalAlpha = alpha; const maxW = W - 2 * M, e = vEase(lt / 600), sq = fmt === 'square';
-    const f = vFit(ctx, P.title, maxW, tfam, tw, sq ? [78, 64, 54] : [108, 90, 74, 60], sq ? 2 : 3);
+    const f = vFit(ctx, P.title, maxW, tfam, tw, sq ? [62, 52, 44] : [84, 70, 58, 48], sq ? 2 : 3);
     ctx.globalAlpha = alpha * e; vDrawLines(ctx, f.lines, M, F.headY + (1 - e) * 40, f.size * 1.05, `${tw} ${f.size}px ${tfam}`, th.fg);
     if (plan.hero) {
       const k = vEase((lt - 350) / 1900), fin = kpiFmt(plan.hero), q = numParts(fin), txt = k >= 1 || !q ? fin : numFrame(q, k);
@@ -187,7 +187,7 @@ function videoRender(P, fmt, plan, th, prep) {
   const summaryScene = (sc, lt, alpha) => {
     ctx.save(); const maxW = W - 2 * M - 40, e = vEase(lt / 500); ctx.globalAlpha = alpha * e; ctx.textBaseline = 'top';
     ctx.font = `500 ${fmt === 'square' ? 28 : 34}px 'Geist Mono', ui-monospace, monospace`; ctx.fillStyle = th.muted; ctx.fillText(`[ ${T('pres_outro').toUpperCase()} ]`, M, F.headY);
-    let y = F.headY + (fmt === 'square' ? 56 : 80); const fsz = fmt === 'square' ? [44, 38] : [60, 50, 42];
+    let y = F.headY + (fmt === 'square' ? 56 : 80); const fsz = fmt === 'square' ? [36, 32] : [48, 42, 36];
     if (sc.lines.length) sc.lines.forEach((tx, k) => { ctx.globalAlpha = alpha * vEase((lt - 250 - k * 260) / 500); const f = vFit(ctx, tx, maxW, fam, 500, fsz, fmt === 'square' ? 3 : 4), h = f.lines.length * f.size * 1.25; ctx.fillStyle = th.accent; ctx.fillRect(M, y + 4, 8, h - 8); vDrawLines(ctx, f.lines, M + 32, y, f.size * 1.25, `500 ${f.size}px ${fam}`, th.fg); y += h + (fmt === 'square' ? 24 : 40); });
     else sc.facts.forEach(([k, v], n) => { ctx.globalAlpha = alpha * vEase((lt - 250 - n * 220) / 500); ctx.font = `500 ${fmt === 'square' ? 24 : 30}px 'Geist Mono', ui-monospace, monospace`; ctx.fillStyle = th.muted; ctx.fillText(String(k).toUpperCase(), M, y); ctx.font = `600 ${fmt === 'square' ? 42 : 56}px ${fam}`; ctx.fillStyle = th.fg; ctx.fillText(String(v), M, y + 40); y += fmt === 'square' ? 96 : 128; });
     ctx.restore();

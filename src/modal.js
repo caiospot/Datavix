@@ -27,7 +27,8 @@ function modal(o) {
 let _toastT = null;
 function toast(msg, act) {
   let t = document.getElementById('toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
-  t.textContent = msg; t.classList.toggle('act', !!act);
+  t.textContent = ''; t.classList.toggle('act', !!act);
+  if (act) { const m = document.createElement('span'); m.className = 'tmsg'; m.textContent = msg; t.appendChild(m); } else t.textContent = msg;
   if (act) { const b = document.createElement('button'); b.type = 'button'; b.textContent = act.label; b.onclick = () => { t.classList.remove('on'); act.fn(); }; t.appendChild(b); }
   t.classList.add('on'); clearTimeout(_toastT); _toastT = setTimeout(() => t.classList.remove('on'), act ? 7000 : 2400);
 }

@@ -266,8 +266,8 @@
 /* corpo da coluna esquerda: legenda do passo, cálculo e dados principais */
 .pbody { display: grid; gap: clamp(14px, 2.4vh, 26px); align-content: start; min-height: 0; }
 .pcap2 { border-left: 4px solid var(--accent, #d4ff00); padding-left: clamp(14px, 1.4vw, 24px); animation: pcin .7s cubic-bezier(.2, .8, .2, 1) both; }
-.pc-h { font-family: var(--pt-font, inherit); font-weight: var(--pt-w, 600); font-size: clamp(30px, 3.5vw, 62px); line-height: 1.05; letter-spacing: -.02em; overflow-wrap: anywhere; }
-.pc-h.long { font-size: clamp(21px, 2.2vw, 38px); line-height: 1.18; letter-spacing: -.01em; }
+.pc-h { font-family: var(--pt-font, inherit); font-weight: var(--pt-w, 600); font-size: clamp(26px, 2.8vw, 46px); line-height: 1.08; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.pc-h.long { font-size: clamp(19px, 1.8vw, 30px); line-height: 1.18; letter-spacing: -.01em; }
 .pc-s { margin-top: clamp(8px, 1.4vh, 16px); font: 400 clamp(13px, 1.15vw, 19px)/1.3 var(--mono, 'Geist Mono', ui-monospace, monospace); letter-spacing: .02em; opacity: .75; animation: pcin .7s .12s cubic-bezier(.2, .8, .2, 1) both; }
 .pcalc { font-size: clamp(12px, .95vw, 15px); line-height: 1.45; padding: clamp(10px, 1.4vh, 16px) clamp(12px, 1.2vw, 18px); border-radius: 10px; background: color-mix(in srgb, currentColor 7%, transparent); border: 1px solid color-mix(in srgb, currentColor 14%, transparent); display: grid; gap: 4px; animation: pcin .7s .28s cubic-bezier(.2, .8, .2, 1) both; }
 .pcalc .pk { font: 500 10px var(--mono, ui-monospace, monospace); letter-spacing: .12em; text-transform: uppercase; opacity: .6; }
@@ -283,7 +283,7 @@
 .piece.presenting.pintro-on .pintro { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
 .pi-in { display: grid; gap: clamp(12px, 2.4vh, 28px); max-width: 1300px; justify-items: start; }
 .pi-eye { font: 400 clamp(11px, .95vw, 15px) var(--mono, ui-monospace, monospace); letter-spacing: .16em; text-transform: uppercase; opacity: .6; }
-.pi-title { margin: 0; font-family: var(--pt-font, inherit); font-weight: var(--pt-w, 600); text-transform: none; font-size: clamp(34px, 5.6vw, 100px); line-height: 1.02; letter-spacing: -.025em; max-width: 18ch; overflow-wrap: anywhere; }
+.pi-title { margin: 0; font-family: var(--pt-font, inherit); font-weight: var(--pt-w, 600); text-transform: none; font-size: clamp(30px, 4.2vw, 72px); line-height: 1.04; letter-spacing: -.025em; max-width: 20ch; overflow-wrap: anywhere; }
 .pi-hero { display: flex; align-items: baseline; flex-wrap: wrap; gap: 1vw 2vw; margin-top: clamp(4px, 2vh, 28px); }
 .pi-num { font: 700 clamp(60px, 11vw, 200px)/.9 Doto, 'Geist Mono', ui-monospace, monospace; color: var(--accent, #d4ff00); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .pi-lab { font: 500 clamp(11px, 1.1vw, 17px) var(--mono, ui-monospace, monospace); letter-spacing: .14em; text-transform: uppercase; opacity: .75; max-width: 28ch; }
@@ -304,9 +304,9 @@
   .piece.presenting, .piece.presenting[data-lay] { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); grid-template-areas: 'c1' 'c3'; gap: 2vh 0; padding: 9vh 5vw 11vh; }
   .piece.presenting .c1 { gap: 2vh; }
   .piece.presenting h1, .piece.presenting.big h1, .piece.presenting.org-mode .phead h1 { padding-right: 120px; font-size: clamp(13px, 3.8vw, 17px); }
-  .pc-h { font-size: clamp(22px, 7vw, 34px); } .pc-h.long { font-size: clamp(17px, 5vw, 24px); }
+  .pc-h { font-size: clamp(19px, 5.6vw, 28px); } .pc-h.long { font-size: clamp(15px, 4.2vw, 20px); }
   .pfacts, .pcalc { display: none; }
-  .pi-title { font-size: clamp(30px, 10vw, 52px); } .pi-num { font-size: clamp(54px, 20vw, 110px); }
+  .pi-title { font-size: clamp(25px, 7.6vw, 40px); } .pi-num { font-size: clamp(54px, 20vw, 110px); }
   .piece.presenting .c2 { left: 5vw; right: 5vw; width: auto; bottom: 12vh; }
   .piece.presenting .pprog { padding: 0 5vw; } .piece.presenting .phint { left: 5vw; }
 }
@@ -354,7 +354,7 @@
 .po-list li:nth-child(2) { animation-delay: .12s; } .po-list li:nth-child(3) { animation-delay: .24s; } .po-list li:nth-child(4) { animation-delay: .36s; }
 .po-list li span { font: 500 clamp(11px, .9vw, 14px) var(--mono, ui-monospace, monospace); letter-spacing: .1em; opacity: .55; }
 .po-facts { margin-top: 8px; max-width: 60ch; }
-.pouro .pi-title { font-size: clamp(26px, 3.6vw, 60px); max-width: 24ch; }
+.pouro .pi-title { font-size: clamp(22px, 2.8vw, 44px); max-width: 24ch; }
 /* celular em retrato: legenda no alto, gráfico no meio, barra de navegação embaixo; o cálculo fica recolhido */
 @media (max-width: 900px) {
   .piece.presenting .pcalc { display: grid; font-size: 12px; padding: 8px 10px; } .piece.presenting .pcalc:not([open]) > :not(summary) { display: none; }
@@ -372,9 +372,9 @@
 @media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
   .piece.presenting, .piece.presenting[data-lay] { grid-template-columns: minmax(200px, 36vw) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); grid-template-areas: 'c1 c3'; gap: 0 3vw; padding: 5vh 4vw 15vh; }
   .piece.presenting .c1 .pbody { order: 0; }
-  .pc-h { font-size: clamp(20px, 4.4vw, 34px); } .pc-h.long { font-size: clamp(15px, 2.6vw, 22px); }
+  .pc-h { font-size: clamp(18px, 3.6vw, 28px); } .pc-h.long { font-size: clamp(14px, 2.2vw, 19px); }
   .piece.presenting .psub { display: none; }
-  .pi-title { font-size: clamp(26px, 6vw, 52px); } .pi-num { font-size: clamp(48px, 14vw, 100px); }
+  .pi-title { font-size: clamp(23px, 5vw, 42px); } .pi-num { font-size: clamp(48px, 14vw, 100px); }
   .piece.presenting .pnav { bottom: 10px; }
   .piece.presenting .pcalc { font-size: 11px; }
 }
@@ -388,8 +388,8 @@
 .pstory { display: grid; gap: clamp(12px, 2.2vh, 26px); align-content: start; animation: pcin .7s cubic-bezier(.2, .8, .2, 1) both; }
 .ps-kick { display: flex; align-items: center; gap: 12px; font: 500 clamp(11px, .95vw, 15px) var(--mono, 'Geist Mono', ui-monospace, monospace); letter-spacing: .16em; text-transform: uppercase; color: var(--accent, #d4ff00); }
 .ps-kick i { font-style: normal; display: inline-grid; place-items: center; min-width: 2.2em; height: 2.2em; padding: 0 .5em; border-radius: 999px; background: var(--accent, #d4ff00); color: #0b0d0a; letter-spacing: 0; font-weight: 700; }
-.ps-head { margin: 0; font-family: var(--pt-font, inherit); font-weight: var(--pt-w, 600); text-transform: none; font-size: clamp(26px, 2.8vw, 52px); line-height: 1.12; letter-spacing: -.02em; overflow-wrap: anywhere; }
-.ps-head.long { font-size: clamp(21px, 2.15vw, 38px); line-height: 1.2; letter-spacing: -.012em; }
+.ps-head { margin: 0; font-family: var(--pt-font, inherit); font-weight: var(--pt-w, 600); text-transform: none; font-size: clamp(22px, 2.2vw, 40px); line-height: 1.14; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.ps-head.long { font-size: clamp(18px, 1.75vw, 29px); line-height: 1.2; letter-spacing: -.012em; }
 .ps-head mark { background: none; color: var(--accent, #d4ff00); }
 .ps-big { display: flex; align-items: baseline; gap: clamp(10px, 1.2vw, 20px); flex-wrap: wrap; margin-top: clamp(2px, 1vh, 12px); }
 .ps-num { font: 700 clamp(56px, 6.6vw, 124px)/.92 Doto, 'Geist Mono', ui-monospace, monospace; color: var(--accent, #d4ff00); letter-spacing: -.02em; }
@@ -412,19 +412,19 @@
 .piece.presenting:has(.pcard.hov, .pcard.pin) .pbody { opacity: 0; transform: translateX(-2vw); pointer-events: none; transition-delay: 0s; transition-duration: .2s, .3s; }
 .piece.presenting:has(.pcard.hov) .pctx { opacity: 0 !important; }
 @media (max-width: 900px) {
-  .ps-head { font-size: clamp(20px, 6vw, 30px); } .ps-head.long { font-size: clamp(16px, 4.6vw, 22px); } .ps-num { font-size: clamp(44px, 15vw, 84px); } .ps-lab { font-size: 11px; }
+  .ps-head { font-size: clamp(18px, 5.2vw, 26px); } .ps-head.long { font-size: clamp(15px, 4.2vw, 20px); } .ps-num { font-size: clamp(44px, 15vw, 84px); } .ps-lab { font-size: 11px; }
   .piece.presenting .c2 { left: 4vw; right: 4vw; width: auto; top: auto; bottom: 12vh; }
   .piece.presenting .c2 .pcard.hov, .piece.presenting .c2 .pcard.pin { font-size: 15px; max-height: 44vh; }
 }
 @media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
-  .ps-head { font-size: clamp(16px, 3.2vw, 26px); } .ps-head.long { font-size: clamp(14px, 2.6vw, 20px); } .ps-num { font-size: clamp(36px, 9vw, 64px); }
+  .ps-head { font-size: clamp(15px, 2.8vw, 22px); } .ps-head.long { font-size: clamp(13px, 2.3vw, 18px); } .ps-num { font-size: clamp(36px, 9vw, 64px); }
   .piece.presenting .c2 { left: 4vw; right: auto; width: min(44vw, 380px); top: 14vh; bottom: 16vh; }
 }
 @media (prefers-reduced-motion: reduce) { .pstory { animation: none !important; } .piece.presenting .pbody { transition: none !important; } }
 .piece.presenting:has(.pcard.hov, .pcard.pin) .phint { opacity: 0 !important; }
 
 /* ===== slides do construtor de história: diagnóstico, implicações, prioridades, plano e decisão ===== */
-.ps-head.ask { font-size: clamp(30px, 3.4vw, 64px); line-height: 1.08; }
+.ps-head.ask { font-size: clamp(26px, 2.8vw, 50px); line-height: 1.08; }
 .ps-chips { display: flex; flex-wrap: wrap; gap: 10px; }
 .ps-chips span { border: 1px solid color-mix(in srgb, currentColor 22%, transparent); border-radius: 999px; padding: .35em .9em; font-size: clamp(12px, 1.05vw, 17px); opacity: .9; }
 .ps-chips b { color: var(--accent, #d4ff00); font-weight: 700; }
@@ -439,7 +439,7 @@
 .pl-row { border: 1px solid color-mix(in srgb, currentColor 18%, transparent); border-radius: 10px; padding: clamp(10px, 1.4vh, 16px) clamp(12px, 1.2vw, 18px); background: color-mix(in srgb, currentColor 5%, transparent); }
 .pl-a { font-weight: 600; font-size: clamp(16px, 1.6vw, 28px); line-height: 1.2; }
 .pl-m { margin-top: 6px; font: 400 clamp(11px, .95vw, 15px)/1.4 var(--mono, ui-monospace, monospace); letter-spacing: .02em; opacity: .75; }
-@media (max-width: 900px) { .ps-head.ask { font-size: clamp(22px, 7vw, 34px); } .ps-list li { font-size: clamp(16px, 4.6vw, 22px); } .ps-rank li { font-size: clamp(14px, 4vw, 18px); } .pl-a { font-size: clamp(14px, 4vw, 18px); } }
+@media (max-width: 900px) { .ps-head.ask { font-size: clamp(20px, 6vw, 30px); } .ps-list li { font-size: clamp(16px, 4.6vw, 22px); } .ps-rank li { font-size: clamp(14px, 4vw, 18px); } .pl-a { font-size: clamp(14px, 4vw, 18px); } }
 .piece.presenting.pnoctx .pctx { opacity: 0 !important; pointer-events: none; }
 .ps-bars { display: flex; flex-direction: column; gap: clamp(5px, .8vh, 9px); margin-top: clamp(8px, 1.4vh, 16px); max-width: min(100%, 520px); }
 .ps-bar { display: grid; grid-template-columns: minmax(70px, 34%) 1fr auto; align-items: center; gap: 10px; font-size: clamp(12px, 1vw, 15px); }

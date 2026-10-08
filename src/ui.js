@@ -491,7 +491,7 @@ function makePiece() {
   const choice = chooseChart({ ...S.br, story: S.br.story || S.mapping.story, narrow }, S.mapping, built);
   const reg = CHART_REG[choice.primary], csD = reg && built.cs && built.cs[choice.primary];
   const insights = csD && reg.insights ? reg.insights(csD, S.br, LANG, T) : computeInsights(built, S.br, LANG, T);
-  const tone = TONE_DEFAULT[S.br.tone] || TONE_DEFAULT.corporate;
+  const tone = TONE_DEFAULT[S.br.tone] || TONE_DEFAULT.tech; // a primeira vista do gráfico é sempre escura (combina com a marca); o claro é uma escolha no painel
   S.dirty = true;
   const P = { built, cases: S.read && S.read.shape === 'cases' ? casesAnalyze(S.ds) : null, choice, insights, type: choice.primary, palId: tone.pal, colors: PALETTES[tone.pal].slice(), bg: { ...tone.bg }, id: newId(), hadIns: insights.length > 0, title: S.br.message.trim() || (S.read && S.read.shape === 'cases' ? autoTitle(built, choice.primary).replace(/^(Rows|Linhas)\b/, LANG === 'en' ? 'Cases' : 'Casos') : autoTitle(built, choice.primary)), subtitle: null, foot: null, fontPair: tone.pair, opts: { ...DEFAULT_OPTS }, br: { ...S.br }, big: S.br.place === 'projector', place: S.br.place, fileName: S.fileName, isSample: S.isSample, lang: LANG, sort: 'value', host: null, hist: [], hi: -1 };
   P.hist.push(snap(P)); P.hi = 0;

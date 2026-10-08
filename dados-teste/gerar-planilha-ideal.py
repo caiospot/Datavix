@@ -3,6 +3,7 @@
 todos os gráficos e recursos do Datavix. Abas:
   Vendas      planilha de valores (soma): todos os 17 gráficos, filtros, detalhes, avisos de qualidade, unificação de rótulos
   Casos CX    planilha de casos/pesquisa (conta linhas): taxas, impacto, onde varia, causas, termos, dados pessoais fora
+  Mapa        pontos com UF, latitude e longitude: mapas de bolhas e de isolinhas
   Funil       etapas em sequência com valor: fluxo (Sankey)
   Resumo      já somado por mês e região, com meta: dispersão e bolhas
   Leia-me     o que cada aba exercita
@@ -213,6 +214,20 @@ for row in rs.iter_rows(min_row=2, min_col=1, max_col=1):
 style(rs)
 
 # =====================================================================================
+# 4b) Mapa: pontos com latitude e longitude (mapa de isolinhas) e UF (mapa de bolhas)
+# =====================================================================================
+mp = wb.create_sheet('Mapa')
+mp.append(['Unidade', 'UF', 'Latitude', 'Longitude', 'Faturamento (R$)', 'Visitas por dia'])
+CEN = {'SP': (-22.3, -48.6, 1.7), 'RJ': (-22.4, -43.0, 0.9), 'MG': (-19.0, -44.5, 2.0), 'ES': (-19.9, -40.5, 0.6), 'PR': (-24.9, -51.5, 1.3), 'RS': (-29.8, -53.0, 1.6), 'SC': (-27.3, -50.5, 0.9),
+       'BA': (-12.5, -41.5, 2.0), 'PE': (-8.3, -37.5, 1.2), 'CE': (-5.2, -39.4, 1.0), 'DF': (-15.8, -47.9, 0.2), 'GO': (-16.0, -49.5, 1.4), 'AM': (-3.5, -62.0, 2.0), 'PA': (-4.0, -52.0, 2.0)}
+for i in range(1, 421):
+    uf = pick(list(UF_W.items())); la, lo, sp = CEN[uf]; lat = round(la + R.gauss(0, sp * 0.45), 4); lon = round(lo + R.gauss(0, sp * 0.45), 4)
+    # o faturamento sobe para o sudeste e cai para o norte, com um pouco de ruído
+    base = 3.4e5 * (1 + 0.9 * math.exp(-((lat + 23.0) ** 2 + (lon + 46.5) ** 2) / 40) - 0.003 * max(0, lat + 12) ** 2 / 4)
+    mp.append([f'Unidade {i:03d}', uf, lat, lon, round(max(8e4, base * R.uniform(0.7, 1.35)), 2), int(R.uniform(80, 900))])
+style(mp)
+
+# =====================================================================================
 # 5) Leia-me
 # =====================================================================================
 lm = wb.create_sheet('Leia-me')
@@ -220,6 +235,7 @@ lm.append(['Aba', 'O que exercita no Datavix', 'Como testar'])
 for r in [
     ['Vendas', 'Planilha de valores (somar). Evolução no tempo, comparação, composição, dispersão e bolhas, calendário, leque, rios, cordilheira, raios, fluxo e árvore radial. Dados pessoais (e-mail e responsável) saem por padrão; identificador (Pedido) vira rótulo; Observação é texto de detalhe; 4% de vazios em Desconto e 6% em NPS; 3 pontos fora da curva em Receita; variações de escrita em Canal e Produto aparecem como rótulos parecidos; "Sem segmento" e "N/A" nunca lideram.', 'Escolha a aba Vendas. Em "O que é cada linha?" fica "Valores". Troque o gráfico no painel: todos os 17 aparecem.'],
     ['Casos CX', 'Planilha de casos (contar linhas). Taxa de resolução entre respostas válidas, impacto da resolução em "rechama" e "satisfeito", onde a taxa varia (jornada, touchpoint, segmento), causas mais frequentes, termos do texto livre, NPS, esforço escrito como "11 dias", dados pessoais fora, rótulos "SIM/Resolvido com sucesso/NÃO/Não resolvido" para classificar.', 'Escolha Casos CX. Em "Como li a sua planilha" confira o tipo "Casos ou respostas" e como cada resposta sim/não foi contada. Use "Guiar em 3 perguntas".'],
+    ['Mapa', 'Pontos com UF, latitude e longitude: mapa de bolhas do Brasil (por UF) e mapa de isolinhas (faturamento estimado entre os pontos).', 'Escolha a aba Mapa e o gráfico Mapa de isolinhas ou Mapa de bolhas.'],
     ['Funil', 'Etapas em sequência (origem, qualificação, proposta, resultado) com valor: fluxo (Sankey) e conversão.', 'Escolha Funil e o gráfico Funil de fluxo.'],
     ['Resumo', 'Planilha já somada (mês × região) com meta: dispersão realizado × meta, bolhas com tamanho em pedidos, evolução e participação por região.', 'Escolha Resumo. Cada linha já é um total (mês × região); se quiser, marque "Resumo já somado" em "O que é cada linha?".'],
 ]:

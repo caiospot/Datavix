@@ -117,7 +117,7 @@ function gal2Fit(mode, built, briefing) {
 const galClamp = orgClamp;
 Object.assign(GalEngine.prototype, {
   layoutXY() {
-    if (this.D.mode === 'box') return this.layoutBox(); if (this.D.mode === 'words') return this.layoutWords();
+    if (this.D.mode === 'box') return this.layoutBox(); if (this.D.mode === 'words') return this.layoutWords(); if (this.D.mode === 'bubmap') return this.layoutMap(); if (this.D.mode === 'isomap') return this.layoutIso();
     const { D, N } = this, W = this.w, H = this.h, mode = D.mode, polar = mode === 'radial' || mode === 'radar';
     this.titles = []; this.geo = { panels: [] }; const T0 = () => ({ cx: 0, cy: 0, r0: 0, r1: 0, a0: 0, a1: 0, x: 0, y: 0, r: 0, w: 0, h: 0 });
     N.forEach(n => { n.tal = n.vis ? 1 : 0; n.t = Object.assign(T0(), n.t ? { x: n.t.x, y: n.t.y } : { x: W / 2, y: H / 2 }); n.gd = (n.it.x || 0) / Math.max(1, D.xs.length); });
@@ -146,7 +146,7 @@ Object.assign(GalEngine.prototype, {
     const { th, N, D } = this, fg = th.fg, base = th.base, mode = D.mode; if (!opt || opt.clear !== false) ctx.clearRect(0, 0, this.w, this.h);
     const [br, bg2, bb] = hexToRgb(base); this.light = br + bg2 + bb > 450; const fr = orgStage(this.grow, 0, 0.25), hv = this.hoverId !== null ? N[this.hoverId] : null;
     if (br + bg2 + bb < 330) { if (!this.stars) { const sr = orgRand(31); this.stars = Array.from({ length: 60 }, () => [sr(), sr(), 0.5 + sr() * 1.1, 0.12 + sr() * 0.35]); } ctx.fillStyle = rgba(fg, 1); for (const s of this.stars) { ctx.globalAlpha = s[3] * fr; ctx.beginPath(); ctx.arc(s[0] * this.w, s[1] * this.h, s[2], 0, ORG_TAU); ctx.fill(); } ctx.globalAlpha = 1; }
-    if (mode === 'box') return this.drawBox(ctx, hv, fr); if (mode === 'words') return this.drawWords(ctx, hv, fr);
+    if (mode === 'box') return this.drawBox(ctx, hv, fr); if (mode === 'words') return this.drawWords(ctx, hv, fr); if (mode === 'bubmap') return this.drawMap(ctx, hv, fr); if (mode === 'isomap') return this.drawIso(ctx, hv, fr);
     if (mode === 'radial' || mode === 'radar') return this.drawPolar(ctx, hv, fr);
     const ticks = csNiceTicks(Math.max(D.yMax, 0), 3), f = galClamp(Math.min(this.geo.panels[0] ? this.geo.panels[0].pw / 24 : 10, 12), 9, 12);
     ctx.textBaseline = 'middle';
@@ -202,7 +202,7 @@ Object.assign(GalEngine.prototype, {
     if (hv && hv.al > 0.4) { const p = orgEase(orgClamp((this.grow - 0.05) / 0.8)), x = cx + (hv.g.x - cx) * p, y = cy + (hv.g.y - cy) * p, s = mode === 'radar' ? hv.it.txt : fmtNum(hv.it.v, D.unit, LANG); ctx.font = `700 ${f}px ${th.font}`; ctx.textAlign = 'center'; ctx.lineWidth = 4; ctx.strokeStyle = rgba(base, 0.92); ctx.strokeText(s, x, y - 14); ctx.fillStyle = rgba(fg, 1); ctx.fillText(s, x, y - 14); }
   },
   pickXY(mx, my) {
-    const D = this.D; if (D.mode === 'box' || D.mode === 'words') return this.pickBoxWords(mx, my); let best = null, bd = 1e9;
+    const D = this.D; if (D.mode === 'box' || D.mode === 'words') return this.pickBoxWords(mx, my); if (D.mode === 'bubmap' || D.mode === 'isomap') return this.pickMap(mx, my); let best = null, bd = 1e9;
     for (const n of this.N) {
       if (n.al < 0.4) continue; const g = n.g;
       if (D.mode === 'cols') { if (mx >= g.x - 2 && mx <= g.x + g.w + 2 && my >= g.y - 2 && my <= g.y + g.h + 2) return n.i; continue; }

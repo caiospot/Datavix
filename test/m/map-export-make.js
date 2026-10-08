@@ -1,0 +1,11 @@
+// Fluxo novo: Guiar em 3 perguntas (tese, roteiro em cartões, decisão) com planilha sintética de casos. Rodar com ?find
+(async () => {
+  const D = window.__datavix, S = D.S, sl = ms => new Promise(r => setTimeout(r, ms)), out = {}, errs = [], ok = (k, v) => { out[k] = v ? 'ok' : 'FALHOU'; };
+  console.error = (...a) => errs.push(a.map(String).join(' ').slice(0, 160)); window.addEventListener('error', e => errs.push('ERR ' + e.message));
+  const J = ['Jornada A', 'jornada a', 'Jornada B', 'Jornada C', 'Sem jornada'], R = ['SIM', 'NÃO', 'Não resolvido', 'SIM', 'NÃO'];
+  const rows = ['Protocolo;Data;Jornada;Resolvido;Satisfeito;Retorna;Causa;Comentário'];
+  for (let i = 0; i < 120; i++) rows.push([100000 + i, `${String(1 + i % 27).padStart(2, '0')}/${String(1 + i % 6).padStart(2, '0')}/2026`, J[i % 5], R[i % 5], R[i % 5] === 'SIM' ? 'SIM' : (i % 4 ? 'NÃO' : 'SIM'), R[i % 5] === 'SIM' ? (i % 7 ? 'NÃO' : 'SIM') : (i % 3 ? 'SIM' : 'NÃO'), R[i % 5] === 'SIM' ? '' : ['Erro operacional', 'Falta de alçada', 'Regra de negócio'][i % 3], `Relato de ${['lentidão no atendimento', 'falha no pagamento', 'problema técnico recorrente', 'demora na visita'][i % 4]} e pedido de retorno formal, caso ${i}, com detalhes adicionais sobre a rotina da operação.`].join(';'));
+  const buf = await (await fetch('/dados-teste/datavix-planilha-ideal.xlsx')).arrayBuffer(); S.user = { guest: true }; S.br = { area: null, audience: 'director', decision: 'prioritize', time: 'full', message: '', story: null, tone: 'tech', place: 'screen' };
+  D.loadBuffer('ideal.xlsx', buf, 'Vendas'); for (let i = 0; i < 150 && S.step !== 'preview'; i++) await sl(100); await sl(500); D.go('mapping'); await sl(400); document.querySelector('[data-a=generate]').click();
+  for (let i = 0; i < 100 && S.step !== 'editor' && S.step !== 'find'; i++) await sl(150); if (S.step === 'find') D.go('editor'); await sl(1200);
+  document.querySelector('#panel .type[data-v=bubmap]').click(); await sl(2500); const P = S.piece; await fetch('/save?name=map-export.html', { method: 'POST', body: new Blob([buildExportHtml(P)], { type: 'text/html' }) }); return 'saved ' + P.type; })()

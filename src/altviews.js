@@ -1,7 +1,7 @@
 /* Datavix: visões que não passam pelo Vizzu: heatmap de calendário e cartões de indicadores (KPI).
  * Compartilhado entre o editor, o HTML exportado e o PNG. */
 
-const DOM_TYPES = new Set(['organism', 'rays', 'river', 'fan', 'ridge', 'flow', 'pie', 'donut', 'pies', 'donuts', 'packed', 'cols', 'lines', 'radial', 'radar', 'box', 'words', 'calendar', 'kpi']);
+const DOM_TYPES = new Set(['organism', 'rays', 'river', 'fan', 'ridge', 'flow', 'pie', 'donut', 'pies', 'donuts', 'packed', 'cols', 'lines', 'radial', 'radar', 'box', 'words', 'bubmap', 'isomap', 'calendar', 'kpi']);
 
 /* ---------- calendário: o desenho é uma lista de formas, usada em SVG (tela) e canvas (PNG) ---------- */
 function calLayout(P, W, o = {}) {

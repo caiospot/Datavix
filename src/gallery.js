@@ -3,7 +3,7 @@
  * Os números vêm sempre da planilha (soma ou contagem; as bolhas aceitam média). Valores negativos ficam de fora das fatias e são avisados. */
 const GAL_SLICES = 7, GAL_SLICES_MULTI = 6, GAL_PANELS = 12, GAL_BUBBLES = 80, GAL_GROW_S = 1.5;
 const GAL_ID_HINT = /id|c[oó]digo|code|cod\b|n[uú]mero|num\b/i;
-const GAL_XY = new Set(['cols', 'lines', 'radial', 'radar', 'box', 'words']); // colunas, linhas, linha radial e radar: motor em gallery2.js
+const GAL_XY = new Set(['cols', 'lines', 'radial', 'radar', 'box', 'words', 'bubmap', 'isomap']); // colunas, linhas, linha radial e radar: motor em gallery2.js
 
 /* ---------------- dados ---------------- */
 const galIsAvg = c => c && (c.unit === '%' || RAYS_AVG_HINT.test(c.name));

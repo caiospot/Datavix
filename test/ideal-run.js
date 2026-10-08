@@ -4,7 +4,7 @@
   console.error = (...a) => errs.push(a.map(String).join(' ').slice(0, 160)); window.addEventListener('error', e => errs.push('ERR ' + e.message));
   const buf = await (await fetch('/dados-teste/datavix-planilha-ideal.xlsx')).arrayBuffer();
   const only = decodeURIComponent(location.hash.slice(1));
-  for (const sh of ['Vendas', 'Casos CX', 'Funil', 'Resumo']) {
+  for (const sh of ['Vendas', 'Casos CX', 'Funil', 'Resumo', 'Mapa']) {
     if (only && only !== sh) continue;
     S.user = { guest: true }; S.br = { audience: 'director', decision: 'prioritize', time: 'full', message: '', story: null, tone: 'tech', place: 'screen' };
     D.go('entry'); D.loadBuffer('ideal.xlsx', buf.slice(0), sh);

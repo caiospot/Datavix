@@ -42,3 +42,14 @@ Iguais aos do gate 26: mapeamento no bloco do gráfico, mouse com cartão e list
 - **Nuvem de palavras**: as 60 palavras que mais se repetem em uma coluna de texto livre, com o tamanho pela quantidade de linhas em que cada uma aparece (4+ letras, sem conectivos e sem as que estão em mais de 60% das linhas; variações da mesma palavra contam à parte, dito na nota). Posicionamento em espiral sem sobreposição, cores da paleta, destaque ao passar o mouse. Só aparece como opção quando há uma coluna de texto livre com 10+ linhas preenchidas; usa as mesmas palavras ignoradas da análise de casos.
 
 Passos de apresentação (as 3 maiores medianas e a caixa mais larga; as 3 palavras mais citadas), PNG, HTML, vídeo e mapeamento como nos demais. Testes: `gal-run.js` e `gal-pres.js` (`?sheet=Casos%20CX#words` para a nuvem).
+
+---
+
+# Gate 29 · Galeria (4): mapas
+
+- **Mapa de bolhas** (`src/gallery4.js`): uma bolha por estado do Brasil, na posição do centro do estado, com a **área proporcional ao valor** e a cor pela região (Norte, Nordeste, Centro-Oeste, Sudeste, Sul; a legenda isola regiões). Reconhece a coluna de estado por **sigla ou nome** (com ou sem acento, ex.: "SP", "São Paulo", "sao paulo"); linhas com estado não reconhecido ficam de fora e a nota avisa. Passar o mouse numa bolha ou no estado mostra o cartão (região, posição, parte do total).
+- **Mapa de isolinhas**: precisa de colunas de **latitude e longitude** (reconhecidas pelo nome e pela faixa de valores) e de um valor numérico. O valor entre os pontos é **estimado** pela média ponderada dos 12 vizinhos mais próximos (mais perto pesa mais); onde não há pontos por perto o mapa fica vazio, para não inventar dado. São 6 níveis (entre os percentis 10 e 90), com o campo colorido suave, as linhas de nível, os pontos da planilha e a legenda; passar o mouse numa linha destaca o nível e o cartão mostra a parte do mapa acima dele e quantos pontos. A nota avisa que é uma estimativa.
+- **Contornos**: os 27 estados vêm das malhas do IBGE (CC BY 4.0), simplificados e embutidos no arquivo (cerca de 20 KB, `vendor/geo/brasil-uf.json`, gerado por `scripts/make-brasil.py`); nada é baixado na hora e o HTML exportado leva o mapa junto. Os mapas citam "Contornos: IBGE".
+- A planilha ideal ganhou a aba **Mapa** (420 pontos com UF, latitude, longitude e faturamento) e o teste `gal-run.js` cobre os dois (`?sheet=Mapa#isomap`).
+
+Limites: só Brasil por estado; cidades e outros países ficam de fora (o isolinhas funciona com qualquer lat/long, mas desenha só o contorno do Brasil por baixo).

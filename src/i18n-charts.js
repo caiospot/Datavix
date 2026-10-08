@@ -327,3 +327,23 @@ Object.assign(I18N.en, {
   gal3_note_b: (val, cat, n, tot) => `One box per “${cat}” (${n}${tot > n ? ' of ' + tot : ''}): distribution of “${val}” across the spreadsheet rows, ordered by the median.`, gal3_note_w: (col, n, tot, filled) => `The ${n} most frequent words in “${col}” (${tot} different across ${filled} rows with text).`,
   gal3_sum: n => `${n} items`, why_box: 'Needs a category with 2 to 12 items (5+ values each) and a numeric column', why_words: 'Needs a free-text column with 10+ filled rows',
 });
+
+/* ---- galeria 4: mapa de bolhas e mapa de isolinhas ---- */
+Object.assign(I18N.pt.chart, { bubmap: 'Mapa de bolhas', isomap: 'Mapa de isolinhas' });
+Object.assign(I18N.en.chart, { bubmap: 'Bubble map', isomap: 'Isoline map' });
+Object.assign(I18N.pt, {
+  bubmap_h: 'Mapa de bolhas', bubmap_help: 'Uma bolha por estado do Brasil, com a área proporcional ao valor e a cor pela região.', isomap_h: 'Mapa de isolinhas', isomap_help: 'Linhas que ligam os pontos de mesmo valor, a partir da latitude e da longitude de cada linha da planilha.',
+  gal4_geo: 'Estado (UF ou nome)', gal4_lat: 'Latitude', gal4_lon: 'Longitude', gal4_val: 'Valor (curvas de nível)', gal4_rank_b: 'Maiores estados', gal4_rank_i: 'Parte do mapa acima de cada nível',
+  gal4_base_b: 'A área de cada bolha é proporcional ao valor; as bolhas ficam no centro de cada estado. Contornos: IBGE.', gal4_base_i: 'Valores entre os pontos são estimados pela média ponderada dos vizinhos (mais perto pesa mais); áreas sem pontos por perto ficam vazias. Contornos: IBGE.',
+  gal4_states: 'Estados', gal4_levels: 'Níveis', gal4_area: 'Área do mapa acima do nível', gal4_pts: 'Pontos', gal4_of: 'de', gal4_ofmap: 'da área', gal4_iso_note: 'Estimativa a partir dos pontos da planilha.',
+  gal4_note_b: (how, val, geo, n) => `Uma bolha por estado de “${geo}” (${n}): ${how} de “${val}”.`, gal4_unknown: n => `${n} linha(s) com estado não reconhecido ficaram de fora.`, gal4_note_i: (val, k, n) => `${k} níveis de “${val}”, estimados com ${n} pontos (latitude e longitude da planilha).`,
+  gal4_sum: n => `${n} itens`, why_bubmap: 'Precisa de uma coluna de estados (UF ou nome) com 3+ estados', why_isomap: 'Precisa de colunas de latitude e longitude e de um valor numérico',
+});
+Object.assign(I18N.en, {
+  bubmap_h: 'Bubble map', bubmap_help: 'One bubble per Brazilian state, with area proportional to the value and color by region.', isomap_h: 'Isoline map', isomap_help: 'Lines joining points of equal value, from the latitude and longitude of each spreadsheet row.',
+  gal4_geo: 'State (abbreviation or name)', gal4_lat: 'Latitude', gal4_lon: 'Longitude', gal4_val: 'Value (contour levels)', gal4_rank_b: 'Largest states', gal4_rank_i: 'Share of the map above each level',
+  gal4_base_b: 'Each bubble’s area is proportional to the value; bubbles sit at the center of each state. Outlines: IBGE.', gal4_base_i: 'Values between points are estimated as a weighted average of the neighbors (closer weighs more); areas with no points nearby stay empty. Outlines: IBGE.',
+  gal4_states: 'States', gal4_levels: 'Levels', gal4_area: 'Map area above the level', gal4_pts: 'Points', gal4_of: 'of', gal4_ofmap: 'of the area', gal4_iso_note: 'Estimated from the spreadsheet points.',
+  gal4_note_b: (how, val, geo, n) => `One bubble per “${geo}” state (${n}): ${how} of “${val}”.`, gal4_unknown: n => `${n} row(s) with an unrecognized state were left out.`, gal4_note_i: (val, k, n) => `${k} levels of “${val}”, estimated from ${n} points (latitude and longitude from the spreadsheet).`,
+  gal4_sum: n => `${n} items`, why_bubmap: 'Needs a column of states (abbreviation or name) with 3+ states', why_isomap: 'Needs latitude and longitude columns and a numeric value',
+});

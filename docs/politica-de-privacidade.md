@@ -20,12 +20,20 @@ Texto em `src/privacy.js` (PT/EN), aberto em modal pelo link **Privacidade** no 
 | Campos enviados no NPS | `npsPayload` em `nps.js` |
 | Google Apps Script / planilha do responsável | `nps/apps-script/Code.gs` |
 | Hospedagem GitHub Pages | `.github/workflows/pages.yml` |
+| Análise de uso (Microsoft Clarity): só no site publicado, só com aceite, app mascarado | `analytics.js`, CSP em `build.mjs`, `data-clarity-mask` |
 
 ## Manutenção
-Se o app passar a guardar ou enviar algo novo (novo campo no NPS, analytics, outro serviço), atualize `src/privacy.js` e `PRIV_DATE`, e a data "Atualizada em" nos dois idiomas.
+Se o app passar a guardar ou enviar algo novo (novo campo no NPS, outro serviço de análise), atualize `src/privacy.js` e `PRIV_DATE`, e a data "Atualizada em" nos dois idiomas.
 
 ## Pedidos de exclusão
 A pessoa informa o código anônimo (mostrado em "O que é enviado?") ou o e-mail deixado. Na planilha, filtre a coluna `id` (ou `email`) na aba NPS e apague as linhas.
 
 ## Teste
-`test/privacy.js`: link no rodapé nos dois idiomas, modal com 10 seções, contato, Esc fecha só o modal de cima, atalho a partir de "O que é enviado?".
+`test/privacy.js`: link no rodapé nos dois idiomas, modal com 11 seções, contato, Esc fecha só o modal de cima, atalho a partir de "O que é enviado?".
+
+## Microsoft Clarity (adicionado em 8/10/2026)
+- Id do projeto no `build.mjs` (público). `DATAVIX_CLARITY_ID=''` no build desliga tudo (CSP inclusive); `DATAVIX_CLARITY_HOST` muda o endereço em que ele pode rodar (padrão `caiospot.github.io`: testes locais e a prévia na rede nunca carregam).
+- Só carrega depois do aceite no aviso da página inicial; recusar ou ignorar = nada carregado. Rodapé "Análise de uso" muda a escolha. A escolha fica em `localStorage` (`dv-analytics`).
+- O app inteiro (menos a página inicial) e a lista de projetos salvos levam `data-clarity-mask="True"`. **No painel do Clarity, deixe o modo de máscara em "Strict"** (Settings → Masking), como segunda camada.
+- O HTML exportado nunca carrega o Clarity. O app instalado (PWA) abre o mesmo site e vale o mesmo aceite.
+- Teste: `test/analytics-check.js`.

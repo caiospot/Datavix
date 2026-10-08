@@ -138,7 +138,7 @@ function landingHtml() {
   <section class="lp-sec lp-faq" id="faq"><div class="lbl">[ ${esc(L.faq_k)} ]</div>
     <div>${L.faq.concat(npsOn() ? [[T('nps_faq_q'), T('nps_faq_a')]] : []).map(f => `<details><summary>${esc(f[0])}</summary><p>${esc(f[1])}</p></details>`).join('')}</div></section>
   <section class="lp-final"><h2>${lpTitle(L.cta_h[0], L.cta_h[1])}</h2><div class="row" style="justify-content:center;margin-top:26px">${cta}</div></section>
-  <footer class="lp-foot"><span class="brand-s"><i></i>DATAVIX</span><span class="note">${esc(L.hero_k)} · ${esc(L.foot)} · <button type="button" class="lp-fb" data-a="privacy">${esc(privT().link)}</button>${npsOn() ? ` · <button type="button" class="lp-fb" data-a="feedback">${esc(T('nps_fb'))}</button>` : ''}</span></footer></div>`;
+  <footer class="lp-foot"><span class="brand-s"><i></i>DATAVIX</span><span class="note">${esc(L.hero_k)} · ${esc(L.foot)} · <button type="button" class="lp-fb" data-a="privacy">${esc(privT().link)}</button>${npsOn() ? ` · <button type="button" class="lp-fb" data-a="feedback">${esc(T('nps_fb'))}</button>` : ''}${anFooter()}</span></footer></div>`;
 }
 
 /* ---- árvore radial ao vivo no hero (dados fictícios, mesmo motor do produto) ---- */

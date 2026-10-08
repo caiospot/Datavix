@@ -653,3 +653,10 @@ details.rd-grp > summary .rd-gh { position: relative; padding: 10px 12px; border
 .lp-also b { display: inline-flex; align-items: center; gap: 8px; }
 .lp-also b .cico { width: 26px; height: auto; color: var(--lime); stroke-width: 1.9; }
 [data-ui='light'] .lp-also b .cico { color: var(--fg); }
+
+/* aviso de análise de uso (só no site publicado) */
+.anbar { position: fixed; left: 22px; bottom: 22px; z-index: 9300; width: min(400px, calc(100vw - 28px)); background: var(--card); color: var(--fg); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; box-shadow: 0 18px 50px rgba(0, 0, 0, .35); }
+.anbar b { display: block; font-size: 15px; }
+.anbar p { margin: 8px 0 12px; font-size: 13px; line-height: 1.5; color: var(--muted); }
+.an-a { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+@media (max-width: 560px) { .anbar { left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); width: auto; } }

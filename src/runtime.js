@@ -196,7 +196,7 @@ function presCountUp(el, text, ms, isActive) {
 // visual próprio dos atos de casos e pesquisas: barras de taxa ou contagem, com linha de referência opcional
 function vizHtml(v) {
   const mark = v.ref ? `<s style="left:${Math.max(0, Math.min(100, v.ref.p))}%"></s>` : '';
-  return `<div class="pv"><div class="pv-t">${esc(v.title)}</div>${v.rows.map((r, k) => `<div class="pv-r${r.hi ? ' hi' : ''}" style="--d:${k * 70}ms"><span class="pv-k" title="${esc(r.k)}">${esc(r.k)}</span><span class="pv-b"><i style="--w:${Math.max(1.5, Math.min(100, r.p))}%"></i>${mark}</span><b>${esc(r.t)}</b>${r.sub ? `<em>${esc(r.sub)}</em>` : ''}</div>`).join('')}${v.ref ? `<div class="pv-n"><span class="pv-key"></span>${esc(v.ref.label)}</div>` : ''}${v.note ? `<div class="pv-n">${esc(v.note)}</div>` : ''}</div>`;
+  return `<div class="vz"><div class="vz-t">${esc(v.title)}</div>${v.rows.map((r, k) => `<div class="vz-r${r.hi ? ' hi' : ''}" style="--d:${k * 70}ms"><span class="vz-k" title="${esc(r.k)}">${esc(r.k)}</span><span class="vz-b"><i style="--w:${Math.max(1.5, Math.min(100, r.p))}%"></i>${mark}</span><b>${esc(r.t)}</b>${r.sub ? `<em>${esc(r.sub)}</em>` : ''}</div>`).join('')}${v.ref ? `<div class="vz-n"><span class="vz-key"></span>${esc(v.ref.label)}</div>` : ''}${v.note ? `<div class="vz-n">${esc(v.note)}</div>` : ''}</div>`;
 }
 function startPresentation(o) {
   if (o.root._pres && o.root._pres.alive()) return o.root._pres; // já está apresentando: nunca empilha uma segunda

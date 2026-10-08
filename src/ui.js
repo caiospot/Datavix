@@ -158,7 +158,7 @@ function render() {
   if (S.step !== 'editor') teardownChart();
   landingUnmount();
   root.innerHTML = header() + (S.step === 'editor' ? editor() : S.step === 'entry' ? `<main class="landing">${landingHtml()}</main>` : `<main><div class="screen">${screens[S.step]()}</div></main>`);
-  after(S.step);
+  after(S.step); anMask(S.step);
 }
 function after(step) {
   if (step === 'entry') landingMount();
@@ -761,5 +761,5 @@ render();
 // a tela de carregamento sai quando a interface e as fontes estão prontas (no máximo 2,5 s de espera pelas fontes)
 Promise.race([Promise.all(['400 14px Geist', '400 14px "Geist Mono"', '700 14px Doto'].map(f => document.fonts.load(f).catch(() => 0))), new Promise(r => setTimeout(r, 2500))]).then(() => { if (window.dvSplash) setTimeout(window.dvSplash.done, RM ? 0 : Math.max(350, 1100 - performance.now())); });
 listProjects().then(r => { S.recents = r || []; if (S.recents.length) render(); });
-pwaInit();
+pwaInit(); anInit();
 window.__datavix = { S, render, go, loadBuffer, renderPng, buildExportHtml, startPresentation, buildSteps };

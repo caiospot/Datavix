@@ -1,19 +1,19 @@
 /* Datavix: política de privacidade (PT/EN), aberta em modal pelo rodapé e pela pesquisa de satisfação.
    O texto descreve o que o código faz hoje: se mudar o que é guardado ou enviado, atualize aqui e PRIV_DATE. */
-const PRIV_DATE = '2026-10-07';
+const PRIV_DATE = '2026-10-08';
 const PRIV_ISSUES = 'https://github.com/caiospot/Datavix/issues';
 const PRIV = {
   pt: {
     title: 'Política de Privacidade',
-    upd: 'Atualizada em 7 de outubro de 2026',
+    upd: 'Atualizada em 8 de outubro de 2026',
     close: 'Fechar',
     link: 'Privacidade',
     sec: [
       ['Em resumo', [
         ['ul', [
           'A sua planilha é lida e processada no seu navegador. Ela não é enviada para nenhum servidor.',
-          'Não usamos cookies, anúncios nem ferramentas de análise de uso (analytics).',
-          'A única coisa que pode sair do seu navegador é a sua resposta à pesquisa de satisfação, e só se você decidir responder.',
+          'Não usamos anúncios. A análise de uso do site (Microsoft Clarity) só liga se você aceitar e nunca registra o conteúdo da sua planilha.',
+          'Só saem do seu navegador, e só se você quiser: a sua resposta à pesquisa de satisfação e, se você aceitar, dados anônimos de uso do site.',
         ]],
       ]],
       ['Quem é o responsável', [
@@ -23,7 +23,7 @@ const PRIV = {
         ['ul', [
           'A planilha: é lida por um leitor que roda no próprio navegador. O arquivo e o seu conteúdo não são enviados para nós nem para terceiros.',
           'Projetos recentes: ao salvar, o app guarda neste navegador (IndexedDB) um resumo da peça: os dados já agregados usados no gráfico, o título, o nome do arquivo e as configurações visuais, até 20 projetos. Isso pode incluir nomes de categorias e valores da sua planilha. Você apaga cada projeto no app ou limpando os dados do site no navegador.',
-          'Preferências (localStorage): se o painel lateral fica aberto, quais tutoriais você já viu e, se a pesquisa de satisfação estiver ativa, um contador de uso e as datas das últimas perguntas.',
+          'Preferências (localStorage): se o painel lateral fica aberto, quais tutoriais você já viu, a sua escolha sobre a análise de uso e, se a pesquisa de satisfação estiver ativa, um contador de uso e as datas das últimas perguntas.',
           'Uso offline: ao instalar o app (PWA), o navegador guarda uma cópia dos arquivos do Datavix para ele abrir sem internet.',
           'Arquivos exportados (HTML, PNG, ZIP e vídeo MP4) são salvos no seu computador. O HTML exportado contém os dados do gráfico, funciona sem internet e não carrega rastreadores. O vídeo é gerado no seu navegador e mostra os números e textos da peça. Pense bem antes de compartilhar ou postar.',
         ]],
@@ -50,8 +50,25 @@ const PRIV = {
         ['p', 'Usamos as respostas para melhorar o produto, entender se os gráficos sugeridos funcionam e, se você pediu, entrar em contato. Mantemos as respostas por até 24 meses; depois disso elas são apagadas ou anonimizadas. Não vendemos nem compartilhamos as respostas com terceiros.'],
         ['p', 'Base legal: o seu consentimento (art. 7º, I da LGPD). Responder é voluntário e você pode retirar o consentimento a qualquer momento, pedindo a exclusão.'],
       ]],
+      ['Análise de uso (Microsoft Clarity)', [
+        ['p', 'No site publicado, a página inicial pergunta se você aceita que o Microsoft Clarity, serviço da Microsoft, meça como o site é usado. Se você recusar ou não responder, nada é carregado. Você muda a escolha quando quiser, no link "Análise de uso" do rodapé da página inicial.'],
+        ['h', 'O que o Clarity pode registrar, se você aceitar'],
+        ['ul', [
+          'Cliques, movimentos do mouse, rolagem e toques, e as páginas e telas visitadas.',
+          'Tipo de dispositivo, navegador, sistema operacional, tamanho de tela e uma localização aproximada (país e cidade, pelo endereço IP).',
+          'Gravações anônimas da navegação e mapas de calor, usados para achar pontos em que o uso trava.',
+          'Identificadores em cookies da Microsoft (como _clck e _clsk), para reconhecer a mesma visita.',
+        ]],
+        ['h', 'O que não é registrado'],
+        ['ul', [
+          'Os textos e números das telas do app (perguntas, leitura da planilha, editor, apresentação): essas telas ficam marcadas como mascaradas para o Clarity. Na página inicial, a lista de projetos salvos também fica mascarada.',
+          'O arquivo da planilha e o seu conteúdo, que nunca saem do navegador.',
+          'O HTML exportado, que não carrega nenhum rastreador.',
+        ]],
+        ['p', 'A Microsoft trata esses dados na infraestrutura dela, que pode ficar fora do Brasil (transferência internacional, art. 33 da LGPD), e os mantém pelo prazo definido na política dela. Não usamos os dados para publicidade nem os vendemos. Base legal: o seu consentimento (art. 7º, I da LGPD). Ao recusar depois de ter aceitado, o Clarity para de ser usado e os cookies dele são apagados. Política de privacidade da Microsoft: privacy.microsoft.com.'],
+      ]],
       ['Hospedagem e conexões', [
-        ['p', 'O site é servido pelo GitHub Pages. Ao acessar o site, o GitHub pode registrar dados da requisição, como o endereço IP, segundo a política de privacidade dele. Depois de carregado, o Datavix não faz outras conexões além da resposta à pesquisa de satisfação (Google). As fontes e as bibliotecas vêm embutidas no app, sem CDN de terceiros.'],
+        ['p', 'O site é servido pelo GitHub Pages. Ao acessar o site, o GitHub pode registrar dados da requisição, como o endereço IP, segundo a política de privacidade dele. Depois de carregado, o Datavix não faz outras conexões além da resposta à pesquisa de satisfação (Google) e, se você aceitar, da análise de uso (Microsoft Clarity). As fontes e as bibliotecas vêm embutidas no app, sem CDN de terceiros.'],
       ]],
       ['Seus direitos', [
         ['p', 'Pela LGPD (art. 18) você pode pedir: confirmação de que tratamos seus dados, acesso, correção, anonimização, bloqueio ou eliminação, portabilidade, informação sobre com quem compartilhamos e a revogação do consentimento.'],
@@ -62,7 +79,7 @@ const PRIV = {
         ['p', 'O Datavix não é direcionado a crianças e adolescentes e não coleta dados deles de forma intencional.'],
       ]],
       ['Segurança', [
-        ['p', 'O site usa HTTPS e uma política de segurança de conteúdo (CSP) que impede o app de se conectar a outros endereços além dos necessários para a pesquisa. O acesso à planilha com as respostas é restrito ao responsável.'],
+        ['p', 'O site usa HTTPS e uma política de segurança de conteúdo (CSP) que impede o app de se conectar a outros endereços além dos necessários para a pesquisa e, se você aceitar, para a análise de uso. O acesso à planilha com as respostas é restrito ao responsável.'],
       ]],
       ['Alterações', [
         ['p', 'Se essa política mudar, atualizamos a data no topo. Mudanças relevantes são avisadas no próprio site.'],
@@ -75,15 +92,15 @@ const PRIV = {
   },
   en: {
     title: 'Privacy Policy',
-    upd: 'Updated on October 7, 2026',
+    upd: 'Updated on October 8, 2026',
     close: 'Close',
     link: 'Privacy',
     sec: [
       ['In short', [
         ['ul', [
           'Your spreadsheet is read and processed in your browser. It is not sent to any server.',
-          'We use no cookies, ads or usage analytics.',
-          'The only thing that can leave your browser is your answer to the satisfaction survey, and only if you choose to answer.',
+          'We use no ads. Site usage analytics (Microsoft Clarity) only turns on if you accept and never records your spreadsheet content.',
+          'Only these leave your browser, and only if you want: your answer to the satisfaction survey and, if you accept, anonymous site usage data.',
         ]],
       ]],
       ['Who is responsible', [
@@ -93,7 +110,7 @@ const PRIV = {
         ['ul', [
           'The spreadsheet: it is read by a reader running in the browser itself. The file and its contents are not sent to us or to third parties.',
           'Recent projects: when you save, the app keeps in this browser (IndexedDB) a summary of the piece: the already aggregated data used by the chart, the title, the file name and the visual settings, up to 20 projects. This may include category names and values from your spreadsheet. You delete each project in the app or by clearing the site data in your browser.',
-          'Preferences (localStorage): whether the side panel is open, which tutorials you have already seen and, if the satisfaction survey is active, a usage counter and the dates of the last questions.',
+          'Preferences (localStorage): whether the side panel is open, which tutorials you have already seen, your choice about usage analytics and, if the satisfaction survey is active, a usage counter and the dates of the last questions.',
           'Offline use: when you install the app (PWA), the browser keeps a copy of the Datavix files so it can open without internet.',
           'Exported files (HTML, PNG, ZIP and MP4 video) are saved to your computer. The exported HTML contains the chart data, works offline and loads no trackers. The video is generated in your browser and shows the numbers and texts of the piece. Think before sharing or posting.',
         ]],
@@ -120,8 +137,25 @@ const PRIV = {
         ['p', 'We use the answers to improve the product, to understand whether suggested charts work and, if you asked, to get in touch. We keep answers for up to 24 months; after that they are deleted or anonymized. We do not sell or share the answers with third parties.'],
         ['p', 'Legal basis: your consent (art. 7, I of the LGPD). Answering is voluntary and you can withdraw consent at any time by asking for deletion.'],
       ]],
+      ['Usage analytics (Microsoft Clarity)', [
+        ['p', 'On the published site, the home page asks whether you accept Microsoft Clarity, a Microsoft service, measuring how the site is used. If you decline or do not answer, nothing is loaded. You can change the choice any time with the "Usage analytics" link in the footer of the home page.'],
+        ['h', 'What Clarity may record, if you accept'],
+        ['ul', [
+          'Clicks, mouse movement, scrolling and taps, and the pages and screens visited.',
+          'Device type, browser, operating system, screen size and an approximate location (country and city, from the IP address).',
+          'Anonymous session recordings and heatmaps, used to find where use gets stuck.',
+          'Identifiers in Microsoft cookies (such as _clck and _clsk), to recognize the same visit.',
+        ]],
+        ['h', 'What is not recorded'],
+        ['ul', [
+          'The texts and numbers on the app screens (questions, spreadsheet reading, editor, presentation): these screens are marked as masked for Clarity. On the home page, the saved projects list is masked too.',
+          'The spreadsheet file and its contents, which never leave the browser.',
+          'The exported HTML, which loads no tracker at all.',
+        ]],
+        ['p', 'Microsoft processes this data on its own infrastructure, which may be outside Brazil (international transfer, art. 33 of the LGPD), and keeps it for the period set in its own policy. We do not use the data for advertising or sell it. Legal basis: your consent (art. 7, I of the LGPD). If you decline after having accepted, Clarity stops being used and its cookies are deleted. Microsoft privacy policy: privacy.microsoft.com.'],
+      ]],
       ['Hosting and connections', [
-        ['p', 'The site is served by GitHub Pages. When you visit the site, GitHub may log request data such as the IP address, under its own privacy policy. Once loaded, Datavix makes no other connections besides the satisfaction survey answer (Google). Fonts and libraries are embedded in the app, with no third-party CDN.'],
+        ['p', 'The site is served by GitHub Pages. When you visit the site, GitHub may log request data such as the IP address, under its own privacy policy. Once loaded, Datavix makes no other connections besides the satisfaction survey answer (Google) and, if you accept, usage analytics (Microsoft Clarity). Fonts and libraries are embedded in the app, with no third-party CDN.'],
       ]],
       ['Your rights', [
         ['p', 'Under the LGPD (art. 18) you may ask for: confirmation that we process your data, access, correction, anonymization, blocking or deletion, portability, information about who we share data with, and withdrawal of consent.'],
@@ -132,7 +166,7 @@ const PRIV = {
         ['p', 'Datavix is not aimed at children or teenagers and does not knowingly collect their data.'],
       ]],
       ['Security', [
-        ['p', 'The site uses HTTPS and a content security policy (CSP) that keeps the app from connecting to addresses other than those needed for the survey. Access to the spreadsheet with the answers is restricted to the maintainer.'],
+        ['p', 'The site uses HTTPS and a content security policy (CSP) that keeps the app from connecting to addresses other than those needed for the survey and, if you accept, for usage analytics. Access to the spreadsheet with the answers is restricted to the maintainer.'],
       ]],
       ['Changes', [
         ['p', 'If this policy changes, we update the date at the top. Relevant changes are announced on the site itself.'],

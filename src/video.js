@@ -45,7 +45,7 @@ function videoPlan(P, fmt) {
   const listOf = s => (s.type === 'prio' ? s.rank.map(r => `${r.n}. ${r.k}, ${r.v}${r.s ? ' (' + r.s + ')' : ''}`) : s.type === 'impl' ? s.lines : s.type === 'plan' ? s.rows.map(r => [r.a, r.o, r.d].filter(Boolean).join(' · ')) : s.type === 'diag' ? (s.chips || []).map(c => `${c.text} ${c.label}`) : null);
   // roteiro guiado: o vídeo mostra até 5 atos; ficam o panorama, o centro, o diagnóstico, as prioridades e a decisão, e o resto preenche pela ordem
   const pickV = arr => { if (arr.length <= 5) return arr; const must = new Set([0, 1]); arr.forEach((s, i) => { if (s.type === 'diag' || s.type === 'prio' || s.type === 'ask') must.add(i); }); const keep = new Set([...must].slice(0, 5)); for (let i = 0; i < arr.length && keep.size < 5; i++) keep.add(i); return arr.filter((s, i) => keep.has(i)); };
-  if (story.length >= 3) (P.sb ? pickV(story) : story.slice(0, 4)).forEach(s => { const ls = listOf(s); scenes.push({ kind: 'step', ms: s.calc || ls ? 3600 : 2800, kick: s.kick.label, head: s.type === 'impl' || s.type === 'plan' ? s.kick.label : s.head, sub: '', calc: ls ? null : s.calc, list: ls, state: s.state }); });
+  if (story.length >= 3) (P.sb ? pickV(story) : story.slice(0, 4)).forEach(s => { const ls = listOf(s); scenes.push({ kind: 'step', ms: s.calc || ls ? 3600 : 2800, kick: s.kick.label, head: s.type === 'impl' || s.type === 'plan' ? s.kick.label : s.head, sub: '', calc: ls ? null : s.calc, list: ls, state: s.state, viz: s.viz || null }); });
   else {
     const cut = c => { const p = c.split(' · '); return [p[0], p.slice(1).join(' · ')]; };
     const seg = base.filter(s => s.id !== 'overview' && s.id !== 'end' && !isIns(s) && s.caption).slice(0, 2), ins = base.filter(isIns).slice(0, 2);
@@ -120,6 +120,21 @@ function videoRender(P, fmt, plan, th, prep) {
   const sceneAt = t => { for (let i = 0; i < plan.scenes.length; i++) if (t < plan.scenes[i].t1) return i; return plan.scenes.length - 1; };
   // camada do gráfico: Vizzu ao vivo ou imagem estática; transparência e revelação por cena
   const stepImg = sc => (sc.kind === 'step' ? sc.img : sc.kind === 'hook' ? plan.firstStep.img : sc.kind === 'summary' ? plan.lastStep.img : null);
+  // barras dos atos de casos, desenhadas no lugar do gráfico
+  const drawViz = (v, lt, alpha) => {
+    const c = F.chart, rows = v.rows.slice(0, 7), fs = fmt === 'square' ? 24 : 30, rh = Math.min(fmt === 'square' ? 62 : 96, (c.h - 90) / Math.max(1, rows.length)), kw = c.w * 0.34, vw = 170, bx = c.x + kw + 14, bw = c.w - kw - vw - 28;
+    ctx.save(); ctx.textBaseline = 'middle';
+    ctx.globalAlpha = alpha; ctx.font = `500 ${fs - 6}px 'Geist Mono', ui-monospace, monospace`; ctx.fillStyle = th.muted; ctx.fillText(String(v.title).toUpperCase().slice(0, 44), c.x, c.y + 14);
+    rows.forEach((r, k) => {
+      const e = vEase((lt - 250 - k * 120) / 600), y = c.y + 60 + k * rh + rh / 2; ctx.globalAlpha = alpha * Math.min(1, e * 2);
+      ctx.font = `500 ${fs}px ${fam}`; ctx.fillStyle = th.fg; const k0 = String(r.ks || r.k); let kt = k0; while (kt.length > 4 && ctx.measureText(kt).width > kw) kt = kt.slice(0, -2); ctx.fillText(kt === k0 ? kt : kt.trimEnd() + '…', c.x, y);
+      ctx.fillStyle = th.muted; ctx.globalAlpha = alpha * Math.min(1, e * 2) * 0.35; ctx.fillRect(bx, y - 13, bw, 26);
+      ctx.globalAlpha = alpha * Math.min(1, e * 2); ctx.fillStyle = r.hi === false ? th.muted : th.accent; ctx.fillRect(bx, y - 13, bw * Math.max(0.015, Math.min(1, r.p / 100)) * e, 26);
+      if (v.ref) { ctx.fillStyle = th.fg; ctx.fillRect(bx + bw * Math.min(1, v.ref.p / 100) - 1, y - 18, 3, 36); }
+      ctx.textAlign = 'right'; ctx.font = `700 ${fs + 2}px ${fam}`; ctx.fillStyle = th.fg; ctx.fillText(r.t, c.x + c.w, y); ctx.textAlign = 'left';
+    });
+    ctx.restore();
+  };
   const drawChart = (t, i) => {
     const sc = plan.scenes[i], prev = plan.scenes[i - 1], lt = t - sc.t0; let a = 0, reveal = 1;
     if (sc.kind === 'hook') a = 0;
@@ -127,6 +142,7 @@ function videoRender(P, fmt, plan, th, prep) {
     else if (sc.kind === 'summary') a = 0.12;
     if (a <= 0.01) return;
     ctx.save(); ctx.beginPath(); ctx.rect(F.chart.x, F.chart.y, F.chart.w * reveal, F.chart.h); ctx.clip();
+    if (sc.kind === 'step' && sc.viz) { ctx.restore(); drawViz(sc.viz, lt, a); return; }
     if (prep.viz) { ctx.globalAlpha = a; ctx.drawImage(prep.viz.cnv, F.chart.x, F.chart.y, F.chart.w, F.chart.h); }
     else {
       const fade = vEase(lt / 500);

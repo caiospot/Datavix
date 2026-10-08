@@ -152,7 +152,7 @@ function render() {
   document.body.classList.toggle('menu-open', !!S.menu); document.body.classList.toggle('sheet-open', !!S.sheet);
   const tc = document.querySelector('meta[name=theme-color]'); if (tc) tc.content = S.ui === 'dark' ? '#0b0d0a' : '#f8f9f5';
   const root = $('#root');
-  const screens = { entry, ob: onboarding, upload, sheet: sheetPick, preview, mapping: mappingScreen, gen: generating, read: readScreen, find: findScreen, story: storyScreen, editor };
+  const screens = { entry, ob: onboarding, upload, sheet: sheetPick, preview, mapping: mappingScreen, gen: generating, read: readScreen, find: findScreen, story: storyScreen, script: scriptScreen, editor };
   if (S.step !== 'editor') teardownChart();
   landingUnmount();
   root.innerHTML = header() + (S.step === 'editor' ? editor() : S.step === 'entry' ? `<main class="landing">${landingHtml()}</main>` : `<main><div class="screen">${screens[S.step]()}</div></main>`);
@@ -483,7 +483,7 @@ function makePiece() {
   const insights = csD && reg.insights ? reg.insights(csD, S.br, LANG, T) : computeInsights(built, S.br, LANG, T);
   const tone = TONE_DEFAULT[S.br.tone] || TONE_DEFAULT.corporate;
   S.dirty = true;
-  const P = { built, cases: S.read && S.read.shape === 'cases' ? casesAnalyze(S.ds) : null, choice, insights, type: choice.primary, palId: tone.pal, colors: PALETTES[tone.pal].slice(), bg: { ...tone.bg }, id: newId(), hadIns: insights.length > 0, title: S.br.message.trim() || autoTitle(built, choice.primary), subtitle: null, foot: null, fontPair: tone.pair, opts: { ...DEFAULT_OPTS }, br: { ...S.br }, big: S.br.place === 'projector', place: S.br.place, fileName: S.fileName, isSample: S.isSample, lang: LANG, sort: 'value', host: null, hist: [], hi: -1 };
+  const P = { built, cases: S.read && S.read.shape === 'cases' ? casesAnalyze(S.ds) : null, choice, insights, type: choice.primary, palId: tone.pal, colors: PALETTES[tone.pal].slice(), bg: { ...tone.bg }, id: newId(), hadIns: insights.length > 0, title: S.br.message.trim() || (S.read && S.read.shape === 'cases' ? autoTitle(built, choice.primary).replace(/^(Rows|Linhas)\b/, LANG === 'en' ? 'Cases' : 'Casos') : autoTitle(built, choice.primary)), subtitle: null, foot: null, fontPair: tone.pair, opts: { ...DEFAULT_OPTS }, br: { ...S.br }, big: S.br.place === 'projector', place: S.br.place, fileName: S.fileName, isSample: S.isSample, lang: LANG, sort: 'value', host: null, hist: [], hi: -1 };
   P.hist.push(snap(P)); P.hi = 0;
   return P;
 }
@@ -559,7 +559,7 @@ function panel() {
   <section data-t="style"><h3>[ ${T('opt_h')} ]</h3><div class="sws">${[['legend', 'opt_legend'], ['grid', 'opt_grid'], ['labels', 'opt_labels'], ['annotations', 'opt_ann'], ['notes', 'opt_notes']].map(([k, l]) => `<button class="sw2" role="switch" data-a="opt" data-v="${k}" aria-checked="${k === 'labels' ? !!P.opts[k] : P.opts[k] !== false}"><span>${T(l)}</span><i></i></button>`).join('')}</div><button class="sw2" role="switch" data-a="big" aria-checked="${!!P.big}" style="margin-top:6px"><span>${T('opt_big')}</span><i></i></button><p class="note" style="margin:8px 0 0">${T('labels_hint')} ${T('edit_hint')}</p></section>
   <section data-t="share"><h3>[ ${T('ex_h')} ]</h3><div class="exps"><button class="btn sm" data-a="present">▶ ${T('present')}</button><button class="btn ghost sm" data-a="ex" data-v="html">${T('ex_html')}</button><button class="btn ghost sm" data-a="ex" data-v="png">${T('ex_png')}</button><button class="btn ghost sm" data-a="ex" data-v="png2">${T('ex_png2')}</button><button class="btn ghost sm" data-a="ex" data-v="steps">${T('ex_steps')}</button></div>
     <p class="note" style="margin:10px 0 0" id="exstat" role="status">${T('ex_note')}</p><p class="note" style="margin:4px 0 0">${T('present_hint')}</p></section>
-  <section class="s1" data-t="share"><h3>[ ${BT().panelH} ]</h3><div class="exps"><button class="btn sm" data-a="story-edit">✎ ${BT().panelBtn}</button><button class="btn ghost sm" data-a="story-find">${BT().panelFind}</button></div><p class="note" style="margin:10px 0 0">${BT().panelNote}</p></section>
+  <section class="s1" data-t="share"><h3>[ ${BT().panelH} ]</h3><div class="exps"><button class="btn sm" data-a="story-edit">✎ ${BT().panelBtn}</button><button class="btn ghost sm" data-a="story-detail">${BST().panelDetail}</button><button class="btn ghost sm" data-a="story-find">${BT().panelFind}</button></div><p class="note" style="margin:10px 0 0">${BT().panelNote}</p></section>
   <section data-t="share"><h3>[ ${T('vid_h')} ]</h3><button class="btn sm" data-a="video">🎬 ${T('vid_btn')}</button><p class="note" style="margin:10px 0 0">${T('vid_note')}</p></section>
   <section data-t="share"><h3>[ ${T('data_h')} ]</h3><button class="btn ghost sm" data-a="edit-data">${T('edit_data')}</button></section>${npsOn() ? `<section data-t="share"><h3>[ ${T('nps_fb_h')} ]</h3><button class="btn ghost sm" data-a="feedback">${T('nps_fb')}</button></section>` : ''}`;
 }

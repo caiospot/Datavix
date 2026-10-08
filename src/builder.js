@@ -51,7 +51,7 @@ function findScreen() {
   return `<div class="wrap-narrow fd" style="max-width:1000px">
     <div class="lbl">[ ${B.fdLbl} ]</div><h2 style="margin-top:12px">${title2(B.fdH)}</h2><p class="sub">${esc(B.fdP)}</p>
     <div class="fd-grid" role="radiogroup" aria-label="${esc(B.centerLbl)}">${ranked.map(f => bFactCard(f, { a: 'fd-pick', sel: S.find.center === f.id, badge: f.id === rec ? B.rec : '' })).join('')}</div>
-    <div class="fd-actions"><button class="btn ghost" data-a="back-to" data-v="mapping">← ${esc(B.back)}</button><div class="fd-ctas"><div><button class="btn" data-a="fd-guide">${esc(B.guide)} →</button><p class="note">${esc(B.guideHint)}</p></div><div><button class="btn ghost" data-a="fd-quick">${esc(B.quick)}</button><p class="note">${esc(B.quickHint)}</p></div></div></div>
+    <div class="fd-actions"><button class="btn ghost" data-a="back-to" data-v="mapping">← ${esc(B.back)}</button><div class="fd-ctas"><div><button class="btn" data-a="fd-guide3">${esc(BST().guide3)} →</button><p class="note">${esc(BST().guide3Hint)}</p></div><div><button class="btn ghost" data-a="fd-quick">${esc(B.quick)}</button><p class="note">${esc(B.quickHint)}</p></div><div><button class="btn text" data-a="fd-guide">${esc(BST().detailBtn)}</button></div></div></div>
   </div>`;
 }
 
@@ -93,6 +93,106 @@ function storyScreen() {
     <div class="row sb-nav"><button class="btn ghost" data-a="sb-back">← ${esc(B.back)}</button>${a.step > 0 ? `<button class="btn text" data-a="sb-skip">${esc(B.skip)}</button>` : ''}<button class="btn" data-a="${last ? 'sb-finish' : 'sb-next'}">${esc(last ? B.finish : B.next)} →</button></div></div>`;
 }
 
+
+/* ---- roteiro em três perguntas: tese, roteiro em cartões e decisão ---- */
+const BS = {
+  pt: {
+    lbl: 'ROTEIRO', q: [['QUAL É A', 'tese?'], ['COMO VAMOS', 'contar?'], ['O QUE VOCÊ QUER QUE', 'decidam?']],
+    help: ['Uma frase que o público leve para casa. Deixe em branco para usar a frase calculada, com o número e o cálculo da planilha.', 'O roteiro já vem montado com o que mais pesa para a sua decisão. Reordene, remova ou reescreva a frase de cada cartão: o número e o cálculo continuam os da planilha.', 'O último slide: o pedido. Seja específico.'],
+    thesisPh: 'Escreva a sua tese ou deixe em branco para usar a frase abaixo', centerLbl: 'Ponto central (vira a tese)', change: 'Trocar o ponto central',
+    effect: (a, d, t, n, m) => `Pelo que você respondeu (${a} · ${d} · ${t}), montei ${n} slides, cerca de ${m} min, com o que mais pesa para essa decisão.`,
+    card: { up: 'Subir', down: 'Descer', del: 'Remover', edit: 'Editar a frase', done: 'Pronto', reset: 'Voltar à frase original', add: 'Adicionar', thesis: 'Tese', fixed: 'abre a história', kept: 'O número em destaque e o cálculo continuam os da planilha.', ov: 'Panorama' },
+    viz: { bars: 'Gráfico de barras', hi: 'Destaque no gráfico', num: 'Número e cálculo' }, removed: 'Fora do roteiro', skipT: 'Pular', 
+    askPh: 'Ex.: Aprovar a revisão do processo nas jornadas com menor taxa de resolução', detail: 'Detalhar diagnóstico, prioridades e plano de ação', detailHint: 'Abre as perguntas detalhadas, mantendo este roteiro.',
+    guide3: 'Guiar em 3 perguntas', guide3Hint: 'Tese, roteiro em cartões e decisão pedida.', detailBtn: 'Modo detalhado (7 perguntas)', next: 'Continuar', back: 'Voltar', finish: 'Concluir história',
+    count: (n, m) => `Roteiro: ${n} slides, cerca de ${m} min`, panelDetail: 'Detalhar'
+  },
+  en: {
+    lbl: 'OUTLINE', q: [['WHAT IS THE', 'thesis?'], ['HOW WILL WE', 'tell it?'], ['WHAT DO YOU WANT THEM TO', 'decide?']],
+    help: ['One sentence the audience takes home. Leave it blank to use the calculated sentence, with the number and calculation from the spreadsheet.', 'The outline comes built with what weighs most for your decision. Reorder, remove or rewrite each card sentence: the number and calculation stay those of the spreadsheet.', 'The last slide: the ask. Be specific.'],
+    thesisPh: 'Write your thesis or leave blank to use the sentence below', centerLbl: 'Central point (becomes the thesis)', change: 'Change the central point',
+    effect: (a, d, t, n, m) => `From your answers (${a} · ${d} · ${t}), I built ${n} slides, about ${m} min, with what weighs most for that decision.`,
+    card: { up: 'Move up', down: 'Move down', del: 'Remove', edit: 'Edit sentence', done: 'Done', reset: 'Back to the original sentence', add: 'Add', thesis: 'Thesis', fixed: 'opens the story', kept: 'The highlighted number and the calculation stay those of the spreadsheet.', ov: 'Overview' },
+    viz: { bars: 'Bar chart', hi: 'Chart highlight', num: 'Number and calculation' }, removed: 'Left out of the outline', skipT: 'Skip',
+    askPh: 'E.g.: Approve the process review in the journeys with the lowest resolution rate', detail: 'Detail diagnosis, priorities and action plan', detailHint: 'Opens the detailed questions, keeping this outline.',
+    guide3: 'Guide me in 3 questions', guide3Hint: 'Thesis, outline cards and the ask.', detailBtn: 'Detailed mode (7 questions)', next: 'Continue', back: 'Back', finish: 'Finish story',
+    count: (n, m) => `Outline: ${n} slides, about ${m} min`, panelDetail: 'Detail'
+  }
+};
+const BST = () => BS[LANG] || BS.pt;
+// roteiro padrão: o ponto central abre a história; depois entram as evidências mais pesadas para a decisão, na ordem em que a história se conta
+function scDefaultScript(c, center) {
+  const P = c.P, cap = { quick: 2, normal: 4, full: 7 }[(P.br && P.br.time) || 'full'], order = c.cand.facts.filter(f => f.id !== 'st-ov').map(f => f.id);
+  const pick = c.cand.ranked.filter(f => f.id !== center).slice(0, cap).map(f => f.id);
+  return [center, ...order.filter(id => pick.includes(id))];
+}
+function scInit(from) {
+  const c = bCtx(), sb = S.piece.sb || {}, center = sb.script && sb.script[0] ? sb.script[0] : (sb.center && c.by(sb.center) ? sb.center : (S.find && c.by(S.find.center) ? S.find.center : c.cand.center));
+  return { step: 0, from: from || 'find', center, script: sb.script && sb.script.length ? sb.script.filter(id => c.by(id)) : scDefaultScript(c, center), edits: { ...(sb.edits || {}) }, thesis: sb.thesis || '', ask: sb.ask || '', edit: null };
+}
+function scAnswers(a) { return { script: a.script.slice(), edits: { ...a.edits }, thesis: a.thesis.trim(), center: a.script[0] || null, ev: a.script.slice(1), msg: a.thesis.trim(), diag: { fact: null, text: '' }, impl: [], prio: null, plan: [], ask: a.ask.trim(), ...(S.piece.sb && !S.piece.sb.script ? { diag: S.piece.sb.diag || { fact: null, text: '' }, impl: S.piece.sb.impl || [], prio: S.piece.sb.prio || null, plan: S.piece.sb.plan || [] } : {}) }; }
+function scStory(a) { try { const c = bCtx(); return storyFromAnswers({ ...c.P, sb: scAnswers(a) }, c.meta, c.steps) || []; } catch (e) { return []; } }
+function scCard(f, a, i, B) {
+  const edited = a.edits[f.id] != null, head = edited ? a.edits[f.id] : f.head, first = i === 0, last = i === a.script.length - 1, editing = a.edit === f.id;
+  const badge = f.viz ? B.viz.bars : f.state ? B.viz.hi : B.viz.num;
+  return `<div class="sc-card${first ? ' thesis' : ''}" data-id="${esc(f.id)}"><div class="sc-n">${String(i + 1).padStart(2, '0')}</div><div class="sc-b">
+    <div class="sc-k">${esc(first ? B.card.thesis : f.kick.label)}${first ? ` <small>· ${esc(B.card.fixed)}</small>` : ''}<span class="sc-vz">${esc(badge)}</span></div>
+    ${editing ? `<textarea class="field sb sc-ta" id="sc-edit-${i}" maxlength="320" aria-label="${esc(B.card.edit)}">${esc(head)}</textarea><p class="note">${esc(B.card.kept)}</p>` : `<div class="sc-h">${esc(head)}</div>`}
+    <div class="sc-m">${f.big ? `<span class="sc-big"><b>${esc(f.big.text)}</b> <small>${esc(f.big.label)}</small></span>` : ''}</div></div>
+    <div class="sc-ctl">${first ? '' : `<button type="button" class="btn ghost sm" data-a="sc-up" data-v="${i}" aria-label="${esc(B.card.up)}"${i < 2 ? ' disabled' : ''}>↑</button><button type="button" class="btn ghost sm" data-a="sc-down" data-v="${i}" aria-label="${esc(B.card.down)}"${last ? ' disabled' : ''}>↓</button>`}
+      <button type="button" class="btn ghost sm" data-a="${editing ? 'sc-editdone' : 'sc-edit'}" data-v="${esc(f.id)}">${esc(editing ? B.card.done : '✎')}</button>${edited && !editing ? `<button type="button" class="btn ghost sm" data-a="sc-reset" data-v="${esc(f.id)}" aria-label="${esc(B.card.reset)}" title="${esc(B.card.reset)}">↺</button>` : ''}${first ? '' : `<button type="button" class="btn ghost sm" data-a="sc-del" data-v="${i}" aria-label="${esc(B.card.del)}">×</button>`}</div></div>`;
+}
+function scBody(step) {
+  const B = BST(), a = S.sc, c = bCtx(), P = c.P, center = c.by(a.script[0]), sug = storySuggest(P, center);
+  if (step === 0) { const alts = c.cand.ranked.slice(0, 6);
+    return `<div class="sb-center"><span class="lbl">[ ${esc(B.centerLbl)} ]</span><p>${center ? esc(center.head) : ''}</p></div>
+      <textarea class="field sb" id="sc-thesis" maxlength="220" placeholder="${esc(B.thesisPh)}" aria-label="${esc(B.q[0].join(' '))}">${esc(a.thesis)}</textarea>${sbChips(sug.msg.filter(x => x !== P.title).slice(0, 2), 'scmsg')}
+      <details class="sc-alt"><summary>${esc(B.change)}</summary><div class="fd-grid sb-list">${alts.map(f => bFactCard(f, { a: 'sc-center', sel: a.script[0] === f.id })).join('')}</div></details>`; }
+  if (step === 1) { const out = c.cand.ranked.filter(f => !a.script.includes(f.id)), t = T('o'), br = P.br || {}, sl = scStory(a), n = sl.length, m = Math.max(1, Math.round(n * 0.75));
+    const eff = br.audience && br.decision && br.time ? `<p class="sc-eff">${esc(B.effect((t.audience[br.audience] || [''])[0], (t.decision[br.decision] || [''])[0].toLowerCase(), (t.time[br.time] || [''])[0], n, m))}</p>` : '';
+    return `${eff}<div class="sc-list">${a.script.map((id, i) => { const f = c.by(id); return f ? scCard(f, a, i, B) : ''; }).join('')}</div>
+      ${out.length ? `<div class="sc-out"><span class="lbl">[ ${esc(B.removed)} ]</span><div class="sc-chips">${out.map(f => `<button type="button" class="sb-chip" data-a="sc-add" data-v="${esc(f.id)}">+ ${esc(f.kick.label)}${f.big ? ` · ${esc(f.big.text)}` : ''}</button>`).join('')}</div></div>` : ''}`; }
+  return `<textarea class="field sb" id="sc-ask" maxlength="200" placeholder="${esc(B.askPh)}" aria-label="${esc(B.q[2].join(' '))}">${esc(a.ask)}</textarea>${sbChips(sug.ask ? [sug.ask] : [], 'scask')}
+    <div class="sc-detail"><button type="button" class="btn ghost sm" data-a="sc-detail">${esc(B.detail)}</button><p class="note">${esc(B.detailHint)}</p></div>`;
+}
+function scriptScreen() {
+  const B = BST(), a = S.sc, n = a.step + 1, last = a.step === 2, cnt = scStory(a).length;
+  return `<div class="wrap-narrow sb-screen sc-screen" style="max-width:900px"><div class="prog"><span class="lbl">[ ${B.lbl} // ${String(n).padStart(2, '0')}/03 ]</span><div class="bar" role="progressbar" aria-valuemin="1" aria-valuemax="3" aria-valuenow="${n}"><i style="width:${(n / 3) * 100}%"></i></div></div>
+    <h2>${title2(B.q[a.step])}</h2><p class="sb-help">${esc(B.help[a.step])}</p>${scBody(a.step)}
+    <p class="note sb-count">${esc(B.count(cnt, Math.max(1, Math.round(cnt * 0.75))))}</p>
+    <div class="row sb-nav"><button class="btn ghost" data-a="sc-back">← ${esc(B.back)}</button><button class="btn" data-a="${last ? 'sc-finish' : 'sc-next'}">${esc(last ? B.finish : B.next)} →</button></div></div>`;
+}
+function scFinish() {
+  const P = S.piece, ans = scAnswers(S.sc); P.sb = ans; if (ans.thesis) P.title = ans.thesis;
+  S.dirty = true; S.sc = null; S.find = null; S._bctx = null; go('editor');
+  const n = (() => { try { return (storyFromAnswers(P, makeMeta(P), buildSteps(P, makeMeta(P))) || []).length; } catch (e) { return 0; } })();
+  toast(BT().done(n, Math.max(1, Math.round(n * 0.75))));
+}
+function scStep(d) {
+  const a = S.sc; if (a.step + d < 0) { const from = a.from; S.sc = null; go(from === 'editor' ? 'editor' : 'find'); return; }
+  a.step = Math.max(0, Math.min(2, a.step + d)); a.edit = null; render(); window.scrollTo(0, 0);
+}
+function scClick(a, v, t) {
+  const A = S.sc, c = bCtx(); if (!A) return false;
+  if (a === 'sc-next') scStep(1); else if (a === 'sc-back') scStep(-1); else if (a === 'sc-finish') scFinish();
+  else if (a === 'sc-center') { const keep = A.script.filter(id => id !== v && id !== A.script[0]); A.script = [v, ...keep]; render(); }
+  else if (a === 'sc-up') { const i = +v; if (i >= 2) { [A.script[i - 1], A.script[i]] = [A.script[i], A.script[i - 1]]; render(); } }
+  else if (a === 'sc-down') { const i = +v; if (i < A.script.length - 1) { [A.script[i + 1], A.script[i]] = [A.script[i], A.script[i + 1]]; render(); } }
+  else if (a === 'sc-del') { A.script.splice(+v, 1); render(); }
+  else if (a === 'sc-add') { const order = c.cand.facts.map(f => f.id); A.script.push(v); const head = A.script.shift(), rest = A.script.sort((x, y) => order.indexOf(x) - order.indexOf(y)); A.script = [head, ...rest]; render(); }
+  else if (a === 'sc-edit') { A.edit = v; render(); } else if (a === 'sc-editdone') { A.edit = null; render(); }
+  else if (a === 'sc-reset') { delete A.edits[v]; render(); }
+  else if (a === 'sc-detail') { S.piece.sb = scAnswers(A); S.sb = sbInit(A.from); S.sc = null; go('story'); }
+  else if (a === 'sb-sug') { const k = t.dataset.k, sug = storySuggest(c.P, c.by(A.script[0])), txt = k === 'scmsg' ? sug.msg.filter(x => x !== c.P.title).slice(0, 2)[+v] : sug.ask; if (k === 'scmsg') A.thesis = txt; else A.ask = txt; render(); }
+  else return false;
+  return true;
+}
+function scInput(e) {
+  const t = e.target; if (!S.sc || !t.id || t.id.indexOf('sc-') !== 0) return; const a = S.sc;
+  if (t.id === 'sc-thesis') a.thesis = t.value; else if (t.id === 'sc-ask') a.ask = t.value;
+  else { const m = /^sc-edit-(\d+)$/.exec(t.id); if (m && a.script[+m[1]]) a.edits[a.script[+m[1]]] = t.value; }
+}
+
 function sbFinish() {
   const P = S.piece, ans = sbAnswers(S.sb); P.sb = ans;
   if (ans.msg) { P.title = ans.msg; }
@@ -102,7 +202,8 @@ function sbFinish() {
 }
 function fdQuick() {
   const P = S.piece, c = bCtx(), center = (S.find && c.by(S.find.center)) ? S.find.center : c.cand.center, cap = { quick: 1, normal: 2, full: 3 }[(P.br && P.br.time) || 'full'];
-  P.sb = { msg: '', center, ev: c.cand.ranked.filter(f => f.id !== center).slice(0, cap).map(f => f.id), diag: { fact: null, text: '' }, impl: [], prio: null, plan: [], ask: '' };
+  const script = scDefaultScript(c, center);
+  P.sb = { msg: '', center, ev: script.slice(1), script, edits: {}, thesis: '', diag: { fact: null, text: '' }, impl: [], prio: null, plan: [], ask: '' };
   S.dirty = true; S.find = null; go('editor');
 }
 function sbStep(d) {
@@ -115,13 +216,16 @@ function sbSkip() { // pular limpa a resposta desta pergunta
 }
 function builderClick(e) {
   const t = e.target.closest('[data-a]'); if (!t) return; const a = t.dataset.a, v = t.dataset.v;
-  if (!/^(fd|sb|story)-/.test(a)) return;
+  if (!/^(fd|sb|story|sc)-/.test(a)) return;
   e.stopPropagation();
   const P = S.piece;
   if (a === 'fd-pick') { S.find.center = v; document.querySelectorAll('.fd-main').forEach(b => { const on = b.dataset.v === v; b.setAttribute('aria-pressed', String(on)); b.closest('.fd-card').classList.toggle('on', on); }); }
   else if (a === 'fd-quick') fdQuick();
   else if (a === 'fd-guide') { S.sb = sbInit('find'); go('story'); }
-  else if (a === 'story-edit') { if (!P) return; S.find = null; S.sb = sbInit('editor'); go('story'); }
+  else if (a === 'fd-guide3') { S.sc = scInit('find'); go('script'); }
+  else if (a.indexOf('sc-') === 0 || (a === 'sb-sug' && S.sc)) { scClick(a, v, t); }
+  else if (a === 'story-edit') { if (!P) return; S.find = null; if (P.sb && !P.sb.script && (P.sb.diag && (P.sb.diag.fact || P.sb.diag.text) || (P.sb.impl || []).length || P.sb.prio || (P.sb.plan || []).length)) { S.sb = sbInit('editor'); go('story'); } else { S.sc = scInit('editor'); go('script'); } }
+  else if (a === 'story-detail') { if (!P) return; S.find = null; S.sb = sbInit('editor'); go('story'); }
   else if (a === 'story-find') { if (!P) return; S.find = null; go('find'); }
   else if (!S.sb) return;
   else if (a === 'sb-next') sbStep(1);
@@ -152,3 +256,5 @@ function builderInput(e) {
 document.addEventListener('click', builderClick, true);
 document.addEventListener('input', builderInput);
 document.addEventListener('change', builderInput);
+document.addEventListener('input', scInput);
+document.addEventListener('change', scInput);

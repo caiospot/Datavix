@@ -45,7 +45,7 @@ function casesAnalyze(ds) {
     const gs = c.dict.map((l, k) => ({ l, a: a[k], v: a[k] + b[k], r: csRate(a[k], b[k]) })).filter(g => g.v >= 8 && !isPlaceholderLabel(g.l));
     if (gs.length < 2) return;
     gs.sort((x, y) => x.r - y.r); const lo = gs[0], hi = gs[gs.length - 1];
-    if (hi.r - lo.r >= 15) wh.push({ k: 'where', o: out.name, g: c.name, lo: { l: lo.l, a: lo.a, v: lo.v }, hi: { l: hi.l, a: hi.a, v: hi.v }, all: { a: out.pos, v: out.valid }, spread: hi.r - lo.r });
+    if (hi.r - lo.r >= 15) wh.push({ k: 'where', o: out.name, g: c.name, lo: { l: lo.l, a: lo.a, v: lo.v }, hi: { l: hi.l, a: hi.a, v: hi.v }, all: { a: out.pos, v: out.valid }, spread: hi.r - lo.r, gs: gs.slice().reverse().slice(0, 10).map(g => ({ l: g.l, a: g.a, v: g.v })) });
   });
   wh.sort((a, b) => b.spread - a.spread);
   // respostas mais frequentes das colunas de causa ou motivo

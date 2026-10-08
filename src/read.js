@@ -16,7 +16,7 @@ const RDX = {
     mt: { score: 'nota (uso a média)', attr: 'taxa ou atributo (uso a média)', duration: 'duração (uso a média)', count: 'quantidade (somo)', amount: 'valor (somo)' },
     vals: n => `${n} valores distintos`, rowsOf: (a, b) => `${a} de ${b} linhas preenchidas`,
     mergeH: 'Rótulos parecidos', mergeP: 'Estes rótulos parecem ser a mesma coisa escrita de formas diferentes. Unificar muda só o agrupamento, nunca os números da planilha.', mergeSame: 'mesmo texto com pequenas diferenças', mergeFlag: 'mesma resposta, escritas diferentes (você decide)', rows: n => `${n} linhas`,
-    wh: { flags: n => `${n} colunas de sim/não`, texts: n => `${n} colunas de texto livre`, amounts: () => 'há valores para somar', numbers: () => 'há números para agregar', few: () => 'poucos números e categorias' }, open: 'ver colunas',
+    wh: { flags: n => `${n} colunas de sim/não`, texts: n => `${n} colunas de texto livre`, amounts: () => 'há valores para somar', numbers: () => 'há números para agregar', few: () => 'poucos números e categorias', nomeas: () => 'não há números para somar: conto as linhas' }, open: 'ver colunas',
     next: 'Continuar', back: 'Voltar', noMerge: 'Não encontrei rótulos parecidos.', hidden: 'fora dos gráficos', use: 'Usar esta coluna', skipped: n => `${n} coluna(s) de fora`,
     fv: { pos: 'conta como SIM', neg: 'conta como NÃO', na: 'fora da conta' }, fvH: 'Como contei cada resposta',
     sum: (nc, nu) => `${nc} colunas lidas, ${nu} em uso nos gráficos.`
@@ -35,7 +35,7 @@ const RDX = {
     mt: { score: 'score (I use the mean)', attr: 'rate or attribute (I use the mean)', duration: 'duration (I use the mean)', count: 'quantity (I sum)', amount: 'amount (I sum)' },
     vals: n => `${n} distinct values`, rowsOf: (a, b) => `${a} of ${b} rows filled`,
     mergeH: 'Similar labels', mergeP: 'These labels look like the same thing written in different ways. Merging only changes grouping, never the numbers in your sheet.', mergeSame: 'same text with small differences', mergeFlag: 'same answer, different wording (you decide)', rows: n => `${n} rows`,
-    wh: { flags: n => `${n} yes/no columns`, texts: n => `${n} free-text columns`, amounts: () => 'there are amounts to sum', numbers: () => 'there are numbers to aggregate', few: () => 'few numbers and categories' }, open: 'show columns',
+    wh: { flags: n => `${n} yes/no columns`, texts: n => `${n} free-text columns`, amounts: () => 'there are amounts to sum', numbers: () => 'there are numbers to aggregate', few: () => 'few numbers and categories', nomeas: () => 'there are no numbers to sum: I count rows' }, open: 'show columns',
     next: 'Continue', back: 'Back', noMerge: 'I found no similar labels.', hidden: 'kept out of charts', use: 'Use this column', skipped: n => `${n} column(s) left out`,
     fv: { pos: 'counts as YES', neg: 'counts as NO', na: 'left out' }, fvH: 'How I counted each answer',
     sum: (nc, nu) => `${nc} columns read, ${nu} used in charts.`

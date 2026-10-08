@@ -1,0 +1,5 @@
+(async () => { const sl = ms => new Promise(r => setTimeout(r, ms)), errs = [], out = {}; window.addEventListener('error', e => errs.push('ERR ' + e.message)); console.error = (...a) => errs.push(a.map(String).join(' ').slice(0, 140));
+  await sl(3500); const btn = document.querySelector('.chipb.present, [data-a=present], .present'); if (!btn) return 'sem botão ' + document.body.innerText.slice(0, 120); btn.click(); await sl(1500);
+  const key = k => document.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true })), root = document.querySelector('#piece'), labs = [], vz = [];
+  for (let i = 0; i < 8; i++) { key('ArrowRight'); await sl(700); const b = document.querySelector('.pbody'); labs.push(root.classList.contains('pouro-on') ? 'OUTRO' : (b.querySelector('.ps-kick') ? b.querySelector('.ps-kick').textContent : '?')); vz.push(root.classList.contains('pviz-on') ? document.querySelectorAll('.pv-r').length : 0); }
+  out.labels = labs; out.viz = vz; out.ext = performance.getEntriesByType('resource').filter(r => !/^(blob|data):/.test(r.name)).length; out.errs = errs.slice(0, 5); return JSON.stringify(out); })()

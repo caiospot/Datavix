@@ -101,6 +101,7 @@ function uShape(cols, nRows) {
   if (textShare >= 0.25) { cases += 2; why.push(['texts', texts]); } else if (texts >= 2) { cases += 1; why.push(['texts', texts]); }
   if (flags >= 2 && texts >= 2) cases += 1;
   if (amounts && flags < 4 && textShare < 0.25) cases -= 2;
+  if (!live.some(c => c.role === 'measure')) return { shape: 'cases', conf: cases >= 2 ? 'média' : 'baixa', why: [['nomeas', 0]] }; // sem número para somar, só dá para contar linhas
   if (cases >= 4) return { shape: 'cases', conf: cases >= 6 ? 'alta' : 'média', why };
   if (amounts || live.some(c => c.role === 'measure' && c.mtype !== 'score')) return { shape: 'ledger', conf: amounts ? 'alta' : 'média', why: [[amounts ? 'amounts' : 'numbers', 0]] };
   return { shape: 'summary', conf: 'baixa', why: [['few', 0]] };

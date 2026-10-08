@@ -3,7 +3,7 @@
  * Os números vêm sempre da planilha (soma ou contagem; as bolhas aceitam média). Valores negativos ficam de fora das fatias e são avisados. */
 const GAL_SLICES = 7, GAL_SLICES_MULTI = 6, GAL_PANELS = 12, GAL_BUBBLES = 80, GAL_GROW_S = 1.5;
 const GAL_ID_HINT = /id|c[oó]digo|code|cod\b|n[uú]mero|num\b/i;
-const GAL_XY = new Set(['cols', 'lines', 'radial', 'radar']); // colunas, linhas, linha radial e radar: motor em gallery2.js
+const GAL_XY = new Set(['cols', 'lines', 'radial', 'radar', 'box', 'words']); // colunas, linhas, linha radial e radar: motor em gallery2.js
 
 /* ---------------- dados ---------------- */
 const galIsAvg = c => c && (c.unit === '%' || RAYS_AVG_HINT.test(c.name));
@@ -117,7 +117,7 @@ class GalEngine {
   constructor(D, th, opt = {}) {
     this.D = D; this.th = th; this.rm = !!opt.rm; this.st = { hidden: new Set(), spot: null };
     this.hoverId = null; this.hovLg = -1; this.w = 800; this.h = 600; this.dpr = 1; this.grow = 0; this.moving = true; this.dirty = true;
-    const rnd = orgRand(13); this.N = D.items.map((it, i) => ({ i, it, vis: false, g: { cx: 0, cy: 0, r0: 0, r1: 0, a0: -Math.PI / 2, a1: -Math.PI / 2, x: 0, y: 0, r: 0, w: 0, h: 0 }, t: null, al: 0, tal: 0, dm: 1, rt: 0.8 + rnd() * 0.5, gd: i / Math.max(1, D.items.length), lab: null }));
+    const rnd = orgRand(13); this.N = D.items.map((it, i) => ({ i, it, vis: false, g: { cx: 0, cy: 0, r0: 0, r1: 0, a0: -Math.PI / 2, a1: -Math.PI / 2, x: 0, y: 0, r: 0, w: 0, h: 0, m1: 0, m2: 0, m3: 0, m4: 0 }, t: null, al: 0, tal: 0, dm: 1, rt: 0.8 + rnd() * 0.5, gd: i / Math.max(1, D.items.length), lab: null }));
     this.titles = []; this.center = null; this.layout(); this.snapPos();
   }
   setState(p) { const q = p || {}; this.st.hidden = new Set(q.hidden || []); this.spot = q.spot !== undefined ? q.spot : null; this.layout(); this.kick(); }
@@ -186,7 +186,7 @@ class GalEngine {
     this.grow = this.rm ? 1 : Math.min(1, this.grow + dt / GAL_GROW_S); let mv = this.grow < 1; const e1 = 1 - Math.exp(-dt * 6);
     for (const n of this.N) {
       const k = this.rm ? 1 : Math.min(1, e1 * n.rt), g = n.g, t = n.t;
-      for (const key of ['cx', 'cy', 'r0', 'r1', 'a0', 'a1', 'x', 'y', 'r', 'w', 'h']) { const d = t[key] - g[key], eps = key[0] === 'a' ? 2e-4 : 0.05; if (Math.abs(d) > eps) { g[key] += d * k; mv = true; } else g[key] = t[key]; }
+      for (const key of ['cx', 'cy', 'r0', 'r1', 'a0', 'a1', 'x', 'y', 'r', 'w', 'h', 'm1', 'm2', 'm3', 'm4']) { const d = t[key] - g[key], eps = key[0] === 'a' ? 2e-4 : 0.05; if (Math.abs(d) > eps) { g[key] += d * k; mv = true; } else g[key] = t[key]; }
       const d = n.tal - n.al; if (Math.abs(d) > 0.004) { n.al += d * k; mv = true; } else n.al = n.tal;
     }
     if (this.updateDim(dt, false)) mv = true; this.moving = mv;

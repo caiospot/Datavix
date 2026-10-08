@@ -33,3 +33,12 @@ Quatro gráficos novos no mesmo motor (`src/gallery2.js` estende o `GalEngine`):
 - **Radar**: um polígono por grupo (2 a 6) em até 6 indicadores; cada eixo vai de zero ao maior valor entre os grupos (100% = o maior), com soma ou média conforme a natureza do indicador (taxas, notas e durações usam média). Mapeamento com até 6 colunas numéricas à escolha.
 
 Iguais aos do gate 26: mapeamento no bloco do gráfico, mouse com cartão e lista, legenda que isola grupos, apresentação, PNG, HTML e vídeo, nomes e ícones em português e inglês. Os testes `gal-run.js` e `gal-pres.js` cobrem os quatro.
+
+---
+
+# Gate 28 · Galeria (3): distribuição e texto
+
+- **Box & Whisker** (`src/gallery3.js`): uma caixa por categoria (até 12, com 5+ valores cada), ordenadas pela mediana. A caixa vai do 1º ao 3º quartil, a linha grossa é a mediana, o losango é a média, os bigodes vão até 1,5× a amplitude da caixa e os pontos são os valores de fora. Calculado sobre as **linhas** da planilha (não sobre totais). Para uma ou duas categorias com valores muito distantes não esmagarem as demais, o eixo para perto dos bigodes e o que ficou de fora vira um contador na borda (▲ ou ▶ com a quantidade). Vertical quando cabe; horizontal quando há muitas categorias, rótulos longos ou tela estreita. Cartão com n, mínimo, quartis, máximo, média, amplitude da caixa e pontos fora.
+- **Nuvem de palavras**: as 60 palavras que mais se repetem em uma coluna de texto livre, com o tamanho pela quantidade de linhas em que cada uma aparece (4+ letras, sem conectivos e sem as que estão em mais de 60% das linhas; variações da mesma palavra contam à parte, dito na nota). Posicionamento em espiral sem sobreposição, cores da paleta, destaque ao passar o mouse. Só aparece como opção quando há uma coluna de texto livre com 10+ linhas preenchidas; usa as mesmas palavras ignoradas da análise de casos.
+
+Passos de apresentação (as 3 maiores medianas e a caixa mais larga; as 3 palavras mais citadas), PNG, HTML, vídeo e mapeamento como nos demais. Testes: `gal-run.js` e `gal-pres.js` (`?sheet=Casos%20CX#words` para a nuvem).

@@ -4,10 +4,11 @@
 const CS_OUT = /solucion|resolv|solved|sucesso|success|efic|atingi|conclu/i;
 const CS_CAUSE = /causa|motivo|reason|cause|raz[aã]o|\bdor\b|pain|problema|issue/i;
 const CS_TEXT = /voz|coment|comment|feedback|relato|d[oó]r|descri|detalh|diagn|causa|a[cç][aã]o|observa/i;
-const CS_STOP = new Set(('para com uma uns umas como mais mas pela pelo pelas pelos sobre entre quando onde porque que foi foram esta este isso essa esse ainda tambem apos cada seus suas dele dela eles elas muito sido sendo tinha tinham dos das nos nas num numa ser estar fazer feito fez havia nao sim seu sua pois tem tendo ter nessa nesse nesta neste esses essas depois antes sem ate aos estou estamos estao tenho temos tive fiz fica ficou ficam quer quero disse falou porem entao assim vai vou fosse sendo tambem pode podem deve devem foi eram era esta estao estava estavam desde aqui ali alem outro outra outros outras mesmo mesma ja so quanto qual quais ' +
+const CS_STOP_OLD = new Set(('para com uma uns umas como mais mas pela pelo pelas pelos sobre entre quando onde porque que foi foram esta este isso essa esse ainda tambem apos cada seus suas dele dela eles elas muito sido sendo tinha tinham dos das nos nas num numa ser estar fazer feito fez havia nao sim seu sua pois tem tendo ter nessa nesse nesta neste esses essas depois antes sem ate aos estou estamos estao tenho temos tive fiz fica ficou ficam quer quero disse falou porem entao assim vai vou fosse sendo tambem pode podem deve devem foi eram era esta estao estava estavam desde aqui ali alem outro outra outros outras mesmo mesma ja so quanto qual quais ' +
   'with that this have from were been they their there which would about will your what when more also than then into only some such other after before were while them these those over under because between during being does done make made very just like each both without within').split(' '));
 // o vocabulário da área (se houver) soma-se ao genérico
 const csRe = (base, area, field) => { const a = AREAS[area], r = a && a[field]; return r ? new RegExp(base.source + '|' + r.source, 'i') : base; };
+const CS_STOP = GAL_STOP; // as palavras sem informação são as mesmas da nuvem de palavras
 const csKey = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
 function csFlagInfo(ds) {

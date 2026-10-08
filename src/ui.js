@@ -282,7 +282,7 @@ function kindOk(cols) {
 const csBlank = reg => Object.fromEntries(reg.fields.map(f => [f.k, f.role === 'agg' ? 'sum' : -1]));
 // um bloco por gráfico de canvas registrado: colunas de cada papel + cálculo + resumo do que será desenhado
 function csMapBlocks(m, cols, built) {
-  const roleF = r => (r === 'ent' ? csIsEntCol : r === 'measure' ? isMeasure : r === 'dim' ? (c => isDim(c) && csAvgLen(c) <= 45) : r === 'period' ? (c => c.kind === 'date' || isDim(c)) : r === 'date' ? (c => c.kind === 'date') : () => true), idx = f => cols.map((c, i) => [c, i]).filter(([c]) => f(c));
+  const roleF = r => (r === 'ent' ? csIsEntCol : r === 'measure' ? isMeasure : r === 'dim' ? (c => isDim(c) && csAvgLen(c) <= 45) : r === 'period' ? (c => c.kind === 'date' || isDim(c)) : r === 'date' ? (c => c.kind === 'date') : r === 'txt' ? (c => wcTextCol(c)) : () => true), idx = f => cols.map((c, i) => [c, i]).filter(([c]) => f(c));
   return Object.values(CHART_REG).map(reg => {
     const mp = (m.cs && m.cs[reg.id]) || csBlank(reg), D = built && built.cs && built.cs[reg.id];
     const fields = reg.fields.map(f => f.role === 'agg'
@@ -475,6 +475,8 @@ function autoTitle(b, type) {
   if (cs && (type === 'lines' || (type === 'radial' && cs.time !== undefined))) return cs.xName && cs.time ? A.time(cs.valName) : A.by(cs.valName, cs.xName);
   if (cs && (type === 'cols' || type === 'radial')) return A.by(cs.valName, cs.xName);
   if (cs && type === 'radar') return A.by(cs.grpName, cs.xName);
+  if (cs && type === 'box') return A.by(cs.valName, cs.catName);
+  if (cs && type === 'words') return cs.catName;
   if (type === 'organism' && b.org) return /\(/.test(b.org.hubName) ? A.time(b.org.sizeName) : A.by(b.org.sizeName, b.org.hubName);
   if (b.kind === 'relation') return A.rel(n.y || '', n.x || '');
   if (b.kind === 'hist') return A.hist(n.x || '');

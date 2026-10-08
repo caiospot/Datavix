@@ -5,7 +5,7 @@
   const type = decodeURIComponent(location.hash.slice(1)) || 'donut';
   for (const k of ['org', 'rays', 'river', 'fan', 'ridge', 'flow', 'gal']) localStorage.setItem('dv-' + k + '-tutorial', '1');
   S.user = { guest: true }; S.br = { area: null, audience: 'director', decision: 'prioritize', time: 'full', message: '', story: null, tone: 'corporate', place: 'screen' };
-  const buf = await (await fetch('/dados-teste/datavix-planilha-ideal.xlsx')).arrayBuffer(); D.loadBuffer('ideal.xlsx', buf, 'Vendas');
+  const buf = await (await fetch('/dados-teste/datavix-planilha-ideal.xlsx')).arrayBuffer(); const sh = (location.search.match(/sheet=([^&]+)/) || [])[1]; D.loadBuffer('ideal.xlsx', buf, sh ? decodeURIComponent(sh) : 'Vendas');
   for (let i = 0; i < 150 && S.step !== 'preview'; i++) await sl(100); await sl(500); D.go('mapping'); await sl(400); document.querySelector('[data-a=generate]').click();
   for (let i = 0; i < 100 && S.step !== 'editor' && S.step !== 'find'; i++) await sl(150); if (S.step === 'find') D.go('editor'); await sl(1200);
   document.querySelector('#panel .type[data-v=' + type + ']').click(); await sl(2500); const md = document.querySelector('.mdl [data-m="1"]'); if (md) { md.click(); await sl(400); }

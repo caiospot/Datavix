@@ -4,7 +4,7 @@ const r = p => fs.readFileSync(new URL(p, import.meta.url), 'utf8');
 const b64 = s => Buffer.from(s, 'utf8').toString('base64');
 const b64f = p => fs.readFileSync(new URL(p, import.meta.url)).toString('base64');
 const worker = [r('vendor/papaparse.min.js'), r('vendor/xlsx.full.min.js'), r('src/parser.worker.js')].join('\n;\n');
-const shared = [r('src/i18n.js'), r('src/i18n-charts.js'), r('src/areas.js'), r('src/data.js'), r('src/piece.js'), r('src/charts.js'), r('src/cardcol.js'), r('src/organism.js'), r('src/rays.js'), r('src/river.js'), r('src/fan.js'), r('src/ridge.js'), r('src/flow.js'), r('src/gallery.js'), r('src/altviews.js'), r('src/story.js'), r('src/runtime.js')].join('\n');
+const shared = [r('src/i18n.js'), r('src/i18n-charts.js'), r('src/areas.js'), r('src/data.js'), r('src/piece.js'), r('src/charts.js'), r('src/cardcol.js'), r('src/organism.js'), r('src/rays.js'), r('src/river.js'), r('src/fan.js'), r('src/ridge.js'), r('src/flow.js'), r('src/gallery.js'), r('src/gallery2.js'), r('src/gallery3.js'), r('src/altviews.js'), r('src/story.js'), r('src/runtime.js')].join('\n');
 // biblioteca de fontes do editor (vendor/fonts/lib, ver scripts/fetch-fonts.mjs): vira um objeto { família: [{ w, b: base64 }] }; só entra no app
 const fontIndex = JSON.parse(r('vendor/fonts/lib/index.json'));
 const fontLib = 'const FONT_LIB = ' + JSON.stringify(Object.fromEntries(Object.entries(fontIndex).map(([fam, faces]) => [fam, faces.map(f => ({ w: f.weight, b: b64f('vendor/fonts/lib/' + f.file) }))]))) + ';\n';

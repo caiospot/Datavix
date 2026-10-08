@@ -305,3 +305,25 @@ Object.assign(I18N.en, {
   gal2_top: (k, tot) => `The ${k} largest of ${tot}.`, gal2_sum: (n, s) => `${n} points · ${s} ${s === 1 ? 'series' : 'series'}`,
   why_cols: 'Needs a period or category and, ideally, a group', why_lines: 'Needs a date with 6+ periods', why_radial: 'Needs a date spanning more than a year or a category with 5+ items', why_radar: 'Needs a group with 2 to 8 items and 3 or more numeric columns',
 });
+
+/* ---- galeria 3: box & whisker e nuvem de palavras ---- */
+Object.assign(I18N.pt.chart, { box: 'Box & Whisker', words: 'Nuvem de palavras' });
+Object.assign(I18N.en.chart, { box: 'Box & whisker', words: 'Word cloud' });
+Object.assign(I18N.pt, {
+  box_h: 'Box & Whisker', box_help: 'Como os valores se espalham em cada categoria: a caixa vai do 1º ao 3º quartil, a linha grossa é a mediana, o losango é a média e os pontos estão fora dos bigodes.', words_h: 'Nuvem de palavras', words_help: 'As palavras que mais se repetem no texto livre; o tamanho é em quantas linhas cada uma aparece.',
+  gal3_cat: 'Categoria (uma caixa por)', gal3_val: 'Valor (distribuição)', gal3_text: 'Texto livre (palavras)',
+  gal3_rank_b: 'Maiores medianas', gal3_rank_w: 'Palavras mais citadas', gal3_base_b: 'Caixa: 50% central dos valores. Bigodes: até 1,5× a amplitude da caixa. Pontos: fora dos bigodes.', gal3_base_w: 'Conta as linhas em que a palavra aparece (4+ letras, sem conectivos). Variações da mesma palavra contam à parte.',
+  gal3_n: 'Valores', gal3_min: 'Mínimo', gal3_q1: '1º quartil', gal3_q3: '3º quartil', gal3_max: 'Máximo', gal3_mean: 'Média', gal3_iqr: 'Amplitude da caixa', gal3_out: 'Pontos fora', gal3_median: 'Mediana', gal3_top: 'maior', gal3_values: 'valores',
+  gal3_rows: 'Linhas', gal3_of_filled: 'Das linhas com texto', gal3_rows_l: 'LINHAS COM A PALAVRA', gal3_words: 'Palavras', gal3_top_w: 'Mais citada', gal3_filled: 'Linhas com texto', gal3_distinct: 'Palavras diferentes',
+  gal3_note_b: (val, cat, n, tot) => `Uma caixa por “${cat}” (${n}${tot > n ? ' de ' + tot : ''}): distribuição de “${val}” nas linhas da planilha, ordenadas pela mediana.`, gal3_note_w: (col, n, tot, filled) => `As ${n} palavras mais frequentes de “${col}” (${tot} diferentes em ${filled} linhas com texto).`,
+  gal3_sum: n => `${n} itens`, why_box: 'Precisa de uma categoria com 2 a 12 itens (5+ valores cada) e uma coluna numérica', why_words: 'Precisa de uma coluna de texto livre com 10+ linhas preenchidas',
+});
+Object.assign(I18N.en, {
+  box_h: 'Box & whisker', box_help: 'How values spread inside each category: the box goes from the 1st to the 3rd quartile, the thick line is the median, the diamond is the mean and the dots lie beyond the whiskers.', words_h: 'Word cloud', words_help: 'The words that repeat most in the free text; size is the number of rows each word appears in.',
+  gal3_cat: 'Category (one box per)', gal3_val: 'Value (distribution)', gal3_text: 'Free text (words)',
+  gal3_rank_b: 'Highest medians', gal3_rank_w: 'Most cited words', gal3_base_b: 'Box: the central 50% of values. Whiskers: up to 1.5× the box range. Dots: beyond the whiskers.', gal3_base_w: 'Counts the rows where the word appears (4+ letters, no connectives). Variants of the same word count separately.',
+  gal3_n: 'Values', gal3_min: 'Minimum', gal3_q1: '1st quartile', gal3_q3: '3rd quartile', gal3_max: 'Maximum', gal3_mean: 'Mean', gal3_iqr: 'Box range', gal3_out: 'Dots beyond', gal3_median: 'Median', gal3_top: 'top', gal3_values: 'values',
+  gal3_rows: 'Rows', gal3_of_filled: 'Of rows with text', gal3_rows_l: 'ROWS WITH THE WORD', gal3_words: 'Words', gal3_top_w: 'Most cited', gal3_filled: 'Rows with text', gal3_distinct: 'Different words',
+  gal3_note_b: (val, cat, n, tot) => `One box per “${cat}” (${n}${tot > n ? ' of ' + tot : ''}): distribution of “${val}” across the spreadsheet rows, ordered by the median.`, gal3_note_w: (col, n, tot, filled) => `The ${n} most frequent words in “${col}” (${tot} different across ${filled} rows with text).`,
+  gal3_sum: n => `${n} items`, why_box: 'Needs a category with 2 to 12 items (5+ values each) and a numeric column', why_words: 'Needs a free-text column with 10+ filled rows',
+});

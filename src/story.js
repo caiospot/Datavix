@@ -110,6 +110,7 @@ function storyGroups(P) {
   else if (cs && t === 'rays') { const grp = cs.groups && cs.groups.length > 1; g = mp(grp ? cs.groups : cs.ents); name = grp ? cs.grpName : cs.entName; }
   else if (cs && t === 'river') { g = mp(cs.cats); name = cs.catName; }
   else if (cs && t === 'ridge') { g = mp(cs.ents); name = cs.entName; }
+  else if (cs && ['pie', 'donut', 'pies', 'donuts', 'packed'].includes(t)) { const m = new Map(); (cs.items || []).forEach(x => { if (x.oth) return; const o = m.get(x.label) || { label: x.label, value: 0, rows: 0 }; o.value += x.v; o.rows += x.n; m.set(x.label, o); }); g = [...m.values()]; name = cs.catName; }
   else if (t === 'organism' && b.org) { g = mp(b.org.ents); name = b.org.entName; }
   if (g) g = g.filter(x => !isPlaceholderLabel(x.label));
   return g && g.length >= 3 ? { list: g, name: name || '' } : null;

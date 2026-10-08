@@ -471,6 +471,7 @@ function autoTitle(b, type) {
   if (cs && type === 'rays') return A.by(cs.valName, cs.grpName || cs.entName);
   if (cs && (type === 'river' || type === 'ridge')) return A.time(cs.valName);
   if (cs && type === 'flow') return A.flow(cs.valName);
+  if (cs && ['pie', 'donut', 'pies', 'donuts', 'packed'].includes(type)) return A.by(cs.valName, cs.catName);
   if (type === 'organism' && b.org) return /\(/.test(b.org.hubName) ? A.time(b.org.sizeName) : A.by(b.org.sizeName, b.org.hubName);
   if (b.kind === 'relation') return A.rel(n.y || '', n.x || '');
   if (b.kind === 'hist') return A.hist(n.x || '');

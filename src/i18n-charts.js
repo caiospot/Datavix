@@ -245,3 +245,35 @@ I18N.en.o.area = {
 };
 I18N.pt.entry_p = 'Responda 4 perguntas, suba a planilha e conte uma história com os seus números, em uma apresentação animada.';
 I18N.en.entry_p = 'Answer 4 questions, upload your spreadsheet and tell a story with your numbers, as an animated presentation.';
+
+/* ---- galeria: pizza, rosca, várias pizzas, várias roscas, bolhas agrupadas ---- */
+Object.assign(I18N.pt.chart, { pie: 'Pizza', donut: 'Rosca', pies: 'Várias pizzas', donuts: 'Várias roscas', packed: 'Bolhas agrupadas' });
+Object.assign(I18N.en.chart, { pie: 'Pie chart', donut: 'Donut chart', pies: 'Multiple pies', donuts: 'Multiple donuts', packed: 'Packed bubbles' });
+Object.assign(I18N.pt, {
+  pie_h: 'Pizza', pie_help: 'A parte de cada categoria no total: uma fatia por categoria (as maiores e “Outros”).', donut_h: 'Rosca', donut_help: 'Como a pizza, com o total no centro.',
+  pies_h: 'Várias pizzas', pies_help: 'Uma pizza para cada grupo, com as mesmas cores por categoria, para comparar a composição.', donuts_h: 'Várias roscas', donuts_help: 'Uma rosca para cada grupo, com as mesmas cores por categoria.',
+  packed_h: 'Bolhas agrupadas', packed_help: 'Uma bolha por item, com a área proporcional ao valor, todas coladas num só bloco; a cor é o grupo.',
+  gal_cat: 'Categoria (fatias)', gal_val: 'Valor (tamanho da fatia)', gal_pan: 'Painel (uma por grupo)', gal_ent: 'Item (bolha)', gal_val_b: 'Valor (área da bolha)', gal_grpc: 'Grupo (cor)',
+  gal_none: 'Esta planilha não tem categorias e valores suficientes para este gráfico.', gal_legend: 'Grupos', gal_rank: 'Maiores fatias', gal_rank_b: 'Maiores bolhas',
+  gal_base: 'A área de cada fatia é proporcional ao valor; as percentagens somam 100% do que está visível.', gal_base_b: 'A área de cada bolha é proporcional ao valor.',
+  gal_pos: 'Posição', gal_of: (k, n) => `${k}º de ${n}`, gal_share: 'Parte do total', gal_share_p: 'Parte do painel', gal_vsavg: 'Contra a média', gal_top_share: 'A maior parte',
+  gal_note: (how, val, cat) => `Cada fatia é uma categoria de “${cat}”: ${how} de “${val}”.`, gal_note_m: (how, val, cat, grp, n) => `Uma por “${grp}” (${n}): em cada uma, ${how} de “${val}” por “${cat}”.`,
+  gal_note_b: (shown, total, how, val, ent) => `Cada bolha é um item de “${ent}”: ${how} de “${val}”. ${shown === total ? `${shown} itens.` : `Os ${shown} maiores de ${total} itens.`}`,
+  gal_dropped: n => `${n} valor(es) zero ou negativo(s) ficaram de fora.`, gal_sum: (n, p) => `${n} ${p ? 'partes' : 'fatias ou bolhas'}${p ? ' · ' + p + ' painéis' : ''}`,
+  tut_gal_1_t: 'Cada parte é um item', tut_gal_1_p: 'A área mostra o valor e a cor mostra a categoria ou o grupo. As maiores aparecem primeiro.', tut_gal_2_t: 'Passe o mouse e clique', tut_gal_2_p: 'A coluna do meio traz a lista completa e o cartão de detalhes. Passe o mouse numa parte ou numa linha; clique para fixar.',
+  why_pie: 'Precisa de uma categoria com 2 a 8 itens e um valor que some', why_donut: 'Precisa de uma categoria com 2 a 8 itens e um valor que some', why_pies: 'Precisa de duas categorias (partes e painéis) e um valor que some', why_donuts: 'Precisa de duas categorias (partes e painéis) e um valor que some', why_packed: 'Precisa de 10+ itens e um valor',
+});
+Object.assign(I18N.en, {
+  pie_h: 'Pie chart', pie_help: 'Each category’s part of the total: one slice per category (the largest and “Others”).', donut_h: 'Donut chart', donut_help: 'Like the pie, with the total in the middle.',
+  pies_h: 'Multiple pies', pies_help: 'One pie per group, with the same colors per category, to compare composition.', donuts_h: 'Multiple donuts', donuts_help: 'One donut per group, with the same colors per category.',
+  packed_h: 'Packed bubbles', packed_help: 'One bubble per item, with area proportional to the value, all packed into one block; color is the group.',
+  gal_cat: 'Category (slices)', gal_val: 'Value (slice size)', gal_pan: 'Panel (one per group)', gal_ent: 'Item (bubble)', gal_val_b: 'Value (bubble area)', gal_grpc: 'Group (color)',
+  gal_none: 'This spreadsheet does not have enough categories and values for this chart.', gal_legend: 'Groups', gal_rank: 'Largest slices', gal_rank_b: 'Largest bubbles',
+  gal_base: 'Each slice’s area is proportional to the value; percentages add up to 100% of what is visible.', gal_base_b: 'Each bubble’s area is proportional to the value.',
+  gal_pos: 'Rank', gal_of: (k, n) => `${k} of ${n}`, gal_share: 'Share of total', gal_share_p: 'Share of panel', gal_vsavg: 'Against the average', gal_top_share: 'Largest part',
+  gal_note: (how, val, cat) => `Each slice is a “${cat}” category: ${how} of “${val}”.`, gal_note_m: (how, val, cat, grp, n) => `One per “${grp}” (${n}): in each, ${how} of “${val}” by “${cat}”.`,
+  gal_note_b: (shown, total, how, val, ent) => `Each bubble is a “${ent}” item: ${how} of “${val}”. ${shown === total ? `${shown} items.` : `The ${shown} largest of ${total} items.`}`,
+  gal_dropped: n => `${n} zero or negative value(s) were left out.`, gal_sum: (n, p) => `${n} ${p ? 'parts' : 'slices or bubbles'}${p ? ' · ' + p + ' panels' : ''}`,
+  tut_gal_1_t: 'Each part is an item', tut_gal_1_p: 'Area shows the value and color shows the category or group. The largest come first.', tut_gal_2_t: 'Hover and click', tut_gal_2_p: 'The middle column has the full list and the details card. Hover a part or a row; click to pin.',
+  why_pie: 'Needs a category with 2 to 8 items and a value that adds up', why_donut: 'Needs a category with 2 to 8 items and a value that adds up', why_pies: 'Needs two categories (parts and panels) and a value that adds up', why_donuts: 'Needs two categories (parts and panels) and a value that adds up', why_packed: 'Needs 10+ items and a value',
+});

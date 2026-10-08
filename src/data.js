@@ -512,7 +512,7 @@ const CHART_TYPES = {
   relation: ['organism', 'bubble', 'scatter', 'kpi'],
 };
 // todos os gráficos que o Datavix oferece, na ordem em que aparecem quando não são recomendados
-const ALL_CHARTS = ['organism', 'rays', 'river', 'fan', 'ridge', 'flow', 'bars', 'hbars', 'stacked100', 'treemap', 'race', 'line', 'area', 'calendar', 'scatter', 'bubble', 'kpi'];
+const ALL_CHARTS = ['organism', 'rays', 'river', 'fan', 'ridge', 'flow', 'bars', 'hbars', 'stacked100', 'treemap', 'pie', 'donut', 'pies', 'donuts', 'packed', 'race', 'line', 'area', 'calendar', 'scatter', 'bubble', 'kpi'];
 function availableCharts(built) {
   const hasS = built.stats.sCount > 0;
   return CHART_TYPES[built.kind].concat(Object.keys(CHART_REG)).filter(t => {

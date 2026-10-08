@@ -258,7 +258,7 @@ function renderOrganism(P, el) {
   const n = D.hubs.length, piece = el.closest('.piece'), c1x = piece && piece.querySelector('#pc1x');
   const th0 = orgTheme(P), eng = new OrgEngine(D, th0, { rm: RM });
   const fmt = v => fmtNum(v, D.unit, lang), hubBase = D.hubName.replace(/ \(.*\)$/, '');
-  el.innerHTML = `<div class="org"><div class="orgstage"><canvas class="orgcv" id="orgcv" role="img" aria-label="${esc(P.title)}"></canvas>
+  el.innerHTML = `<div class="org"><div class="orgstage"><canvas class="orgcv" id="orgcv" role="img" aria-label="${esc(titleOf(P))}"></canvas>
     <div class="orgtools"><button type="button" id="orgpres">▶ ${T('present')}</button><button type="button" id="orgtut">? ${T('tut_help')}</button></div></div></div>`;
   // coluna 1: controles e leituras do gráfico (intervalo, legenda, mini-gráfico, ranking)
   const side0 = document.createElement('aside'); side0.className = 'orgside'; side0.style.fontFamily = fontsOf(P).body;

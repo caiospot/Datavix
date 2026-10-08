@@ -70,7 +70,7 @@ const sbChips = (arr, kind) => arr.length ? `<div class="sb-sugs"><span class="n
 function sbBody(step) {
   const B = BT(), a = S.sb, c = bCtx(), P = c.P, center = c.by(a.center), sug = storySuggest(P, center), L = STORY_TXT[LANG] || STORY_TXT.pt;
   if (step === 0) return `<div class="sb-center"><span class="lbl">[ ${esc(B.centerLbl)} ]</span><p>${center ? esc(center.head) : ''}</p></div>
-    <textarea class="field sb" id="sb-msg" maxlength="200" placeholder="${esc(B.msgPh)}" aria-label="${esc(B.q[0].join(' '))}">${esc(a.msg || P.title || '')}</textarea>${sbChips(sug.msg, 'msg')}`;
+    <textarea class="field sb" id="sb-msg" maxlength="200" placeholder="${esc(B.msgPh)}" aria-label="${esc(B.q[0].join(' '))}">${esc(a.msg || '')}</textarea>${sbChips(sug.msg, 'msg')}`;
   if (step === 1) { const others = c.cand.ranked.filter(f => f.id !== a.center), sugN = { quick: 1, normal: 2, full: 3 }[(P.br && P.br.time) || 'full'];
     return others.length ? `<p class="note">${esc(B.evCount(a.ev.filter(id => id !== a.center).length, sugN))}</p><div class="fd-grid sb-list">${others.map(f => bFactCard(f, { a: 'sb-ev', sel: a.ev.includes(f.id) })).join('')}</div>` : `<p class="note">${esc(B.evNone)}</p>`; }
   if (step === 2) { const rd = storyReadings(P, c.cand.facts);
@@ -99,9 +99,9 @@ const BS = {
   pt: {
     lbl: 'ROTEIRO', q: [['QUAL É A', 'tese?'], ['COMO VAMOS', 'contar?'], ['O QUE VOCÊ QUER QUE', 'decidam?']],
     help: ['Uma frase que o público leve para casa. Deixe em branco para usar a frase calculada, com o número e o cálculo da planilha.', 'O roteiro já vem montado com o que mais pesa para a sua decisão. Reordene, remova ou reescreva a frase de cada cartão: o número e o cálculo continuam os da planilha.', 'O último slide: o pedido. Seja específico.'],
-    thesisPh: 'Escreva a sua tese ou deixe em branco para usar a frase abaixo', centerLbl: 'Ponto central (vira a tese)', change: 'Trocar o ponto central',
+    thesisPh: 'Escreva a sua tese ou deixe em branco para usar a frase abaixo', titleLbl: 'Título da apresentação (o tema)', titleHint: 'Aparece no primeiro slide. Quem escreve é você.', centerLbl: 'Ponto central (vira a tese)', change: 'Trocar o ponto central',
     effect: (a, d, t, n, m) => `Pelo que você respondeu (${a} · ${d} · ${t}), montei ${n} slides, cerca de ${m} min, com o que mais pesa para essa decisão.`,
-    card: { up: 'Subir', down: 'Descer', del: 'Remover', edit: 'Editar a frase', done: 'Pronto', reset: 'Voltar à frase original', add: 'Adicionar', thesis: 'Tese', fixed: 'abre a história', kept: 'O número em destaque e o cálculo continuam os da planilha.', ov: 'Panorama' },
+    card: { ttl: 'Título do slide', up: 'Subir', down: 'Descer', del: 'Remover', edit: 'Editar a frase', done: 'Pronto', reset: 'Voltar à frase original', add: 'Adicionar', thesis: 'Tese', fixed: 'abre a história', kept: 'O número em destaque e o cálculo continuam os da planilha.', ov: 'Panorama' },
     viz: { bars: 'Gráfico de barras', hi: 'Destaque no gráfico', num: 'Número e cálculo' }, removed: 'Fora do roteiro', skipT: 'Pular', 
     askPh: 'Ex.: Aprovar a revisão do processo nas jornadas com menor taxa de resolução', detail: 'Detalhar diagnóstico, prioridades e plano de ação', detailHint: 'Abre as perguntas detalhadas, mantendo este roteiro.',
     guide3: 'Guiar em 3 perguntas', guide3Hint: 'Tese, roteiro em cartões e decisão pedida.', detailBtn: 'Modo detalhado (7 perguntas)', next: 'Continuar', back: 'Voltar', finish: 'Concluir história',
@@ -110,9 +110,9 @@ const BS = {
   en: {
     lbl: 'OUTLINE', q: [['WHAT IS THE', 'thesis?'], ['HOW WILL WE', 'tell it?'], ['WHAT DO YOU WANT THEM TO', 'decide?']],
     help: ['One sentence the audience takes home. Leave it blank to use the calculated sentence, with the number and calculation from the spreadsheet.', 'The outline comes built with what weighs most for your decision. Reorder, remove or rewrite each card sentence: the number and calculation stay those of the spreadsheet.', 'The last slide: the ask. Be specific.'],
-    thesisPh: 'Write your thesis or leave blank to use the sentence below', centerLbl: 'Central point (becomes the thesis)', change: 'Change the central point',
+    thesisPh: 'Write your thesis or leave blank to use the sentence below', titleLbl: 'Presentation title (the theme)', titleHint: 'Shown on the first slide. You write it.', centerLbl: 'Central point (becomes the thesis)', change: 'Change the central point',
     effect: (a, d, t, n, m) => `From your answers (${a} · ${d} · ${t}), I built ${n} slides, about ${m} min, with what weighs most for that decision.`,
-    card: { up: 'Move up', down: 'Move down', del: 'Remove', edit: 'Edit sentence', done: 'Done', reset: 'Back to the original sentence', add: 'Add', thesis: 'Thesis', fixed: 'opens the story', kept: 'The highlighted number and the calculation stay those of the spreadsheet.', ov: 'Overview' },
+    card: { ttl: 'Slide title', up: 'Move up', down: 'Move down', del: 'Remove', edit: 'Edit sentence', done: 'Done', reset: 'Back to the original sentence', add: 'Add', thesis: 'Thesis', fixed: 'opens the story', kept: 'The highlighted number and the calculation stay those of the spreadsheet.', ov: 'Overview' },
     viz: { bars: 'Bar chart', hi: 'Chart highlight', num: 'Number and calculation' }, removed: 'Left out of the outline', skipT: 'Skip',
     askPh: 'E.g.: Approve the process review in the journeys with the lowest resolution rate', detail: 'Detail diagnosis, priorities and action plan', detailHint: 'Opens the detailed questions, keeping this outline.',
     guide3: 'Guide me in 3 questions', guide3Hint: 'Thesis, outline cards and the ask.', detailBtn: 'Detailed mode (7 questions)', next: 'Continue', back: 'Back', finish: 'Finish story',
@@ -130,15 +130,16 @@ function scDefaultScript(c, center) {
 }
 function scInit(from) {
   const c = bCtx(), sb = S.piece.sb || {}, center = sb.script && sb.script[0] ? sb.script[0] : (sb.center && c.by(sb.center) ? sb.center : (S.find && c.by(S.find.center) ? S.find.center : c.cand.center));
-  return { step: 0, from: from || 'find', center, script: sb.script && sb.script.length ? sb.script.filter(id => c.by(id)) : scDefaultScript(c, center), edits: { ...(sb.edits || {}) }, thesis: sb.thesis || '', ask: sb.ask || '', edit: null };
+  return { step: 0, from: from || 'find', center, script: sb.script && sb.script.length ? sb.script.filter(id => c.by(id)) : scDefaultScript(c, center), edits: { ...(sb.edits || {}) }, titles: { ...(sb.titles || {}) }, title: S.piece.title || '', thesis: sb.thesis || '', ask: sb.ask || '', edit: null };
 }
-function scAnswers(a) { return { script: a.script.slice(), edits: { ...a.edits }, thesis: a.thesis.trim(), center: a.script[0] || null, ev: a.script.slice(1), msg: a.thesis.trim(), diag: { fact: null, text: '' }, impl: [], prio: null, plan: [], ask: a.ask.trim(), ...(S.piece.sb && !S.piece.sb.script ? { diag: S.piece.sb.diag || { fact: null, text: '' }, impl: S.piece.sb.impl || [], prio: S.piece.sb.prio || null, plan: S.piece.sb.plan || [] } : {}) }; }
+function scAnswers(a) { return { script: a.script.slice(), edits: { ...a.edits }, titles: Object.fromEntries(Object.entries(a.titles || {}).filter(([k, v]) => a.script.includes(k) && String(v).trim())), thesis: a.thesis.trim(), center: a.script[0] || null, ev: a.script.slice(1), msg: a.thesis.trim(), diag: { fact: null, text: '' }, impl: [], prio: null, plan: [], ask: a.ask.trim(), ...(S.piece.sb && !S.piece.sb.script ? { diag: S.piece.sb.diag || { fact: null, text: '' }, impl: S.piece.sb.impl || [], prio: S.piece.sb.prio || null, plan: S.piece.sb.plan || [] } : {}) }; }
 function scStory(a) { try { const c = bCtx(); return storyFromAnswers({ ...c.P, sb: scAnswers(a) }, c.meta, c.steps) || []; } catch (e) { return []; } }
 function scCard(f, a, i, B) {
   const edited = a.edits[f.id] != null, head = edited ? a.edits[f.id] : f.head, first = i === 0, last = i === a.script.length - 1, editing = a.edit === f.id;
   const badge = f.viz ? B.viz.bars : f.state ? B.viz.hi : B.viz.num;
   return `<div class="sc-card${first ? ' thesis' : ''}" data-id="${esc(f.id)}"><div class="sc-n">${String(i + 1).padStart(2, '0')}</div><div class="sc-b">
     <div class="sc-k">${esc(first ? B.card.thesis : f.kick.label)}${first ? ` <small>· ${esc(B.card.fixed)}</small>` : ''}<span class="sc-vz">${esc(badge)}</span></div>
+    <input class="field sc-ttl" id="sc-ttl-${i}" maxlength="60" value="${esc((a.titles || {})[f.id] || '')}" placeholder="${esc(T('title_ph'))}" aria-label="${esc(B.card.ttl)}">
     ${editing ? `<textarea class="field sb sc-ta" id="sc-edit-${i}" maxlength="320" aria-label="${esc(B.card.edit)}">${esc(head)}</textarea><p class="note">${esc(B.card.kept)}</p>` : `<div class="sc-h">${esc(head)}</div>`}
     <div class="sc-m">${f.big ? `<span class="sc-big"><b>${esc(f.big.text)}</b> <small>${esc(f.big.label)}</small></span>` : ''}</div></div>
     <div class="sc-ctl">${first ? '' : `<button type="button" class="btn ghost sm" data-a="sc-up" data-v="${i}" aria-label="${esc(B.card.up)}"${i < 2 ? ' disabled' : ''}>↑</button><button type="button" class="btn ghost sm" data-a="sc-down" data-v="${i}" aria-label="${esc(B.card.down)}"${last ? ' disabled' : ''}>↓</button>`}
@@ -147,8 +148,9 @@ function scCard(f, a, i, B) {
 function scBody(step) {
   const B = BST(), a = S.sc, c = bCtx(), P = c.P, center = c.by(a.script[0]), sug = storySuggest(P, center);
   if (step === 0) { const alts = c.cand.ranked.slice(0, 6);
-    return `<div class="sb-center"><span class="lbl">[ ${esc(B.centerLbl)} ]</span><p>${center ? esc(center.head) : ''}</p></div>
-       <textarea class="field sb" id="sc-thesis" maxlength="220" placeholder="${esc(((areaText(P.br && P.br.area, LANG) || {}).ex || {}).thesis || B.thesisPh)}" aria-label="${esc(B.q[0].join(' '))}">${esc(a.thesis)}</textarea>${sbChips(sug.msg.filter(x => x !== P.title).slice(0, 2), 'scmsg')}
+    return `<label class="sc-title"><span class="lbl">[ ${esc(B.titleLbl)} ]</span><input class="field sb" id="sc-title" maxlength="120" value="${esc(a.title || '')}" placeholder="${esc(T('title_ph'))}"><span class="note">${esc(B.titleHint)}</span></label>${sbChips(P.autoTitle ? [P.autoTitle] : [], 'sctitle')}
+       <div class="sb-center"><span class="lbl">[ ${esc(B.centerLbl)} ]</span><p>${center ? esc(center.head) : ''}</p></div>
+       <textarea class="field sb" id="sc-thesis" maxlength="220" placeholder="${esc(((areaText(P.br && P.br.area, LANG) || {}).ex || {}).thesis || B.thesisPh)}" aria-label="${esc(B.q[0].join(' '))}">${esc(a.thesis)}</textarea>${sbChips(sug.msg.filter(x => x !== titleOf(P)).slice(0, 2), 'scmsg')}
       <details class="sc-alt"><summary>${esc(B.change)}</summary><div class="fd-grid sb-list">${alts.map(f => bFactCard(f, { a: 'sc-center', sel: a.script[0] === f.id })).join('')}</div></details>`; }
   if (step === 1) { const out = c.cand.ranked.filter(f => !a.script.includes(f.id)), t = T('o'), br = P.br || {}, sl = scStory(a), n = sl.length, m = Math.max(1, Math.round(n * 0.75));
     const eff = br.audience && br.decision && br.time ? `<p class="sc-eff">${esc(B.effect(((t.area || {})[br.area] ? (t.area[br.area][0] + ' · ') : '') + (t.audience[br.audience] || [''])[0], (t.decision[br.decision] || [''])[0].toLowerCase(), (t.time[br.time] || [''])[0], n, m))}</p>` : '';
@@ -165,7 +167,7 @@ function scriptScreen() {
     <div class="row sb-nav"><button class="btn ghost" data-a="sc-back">← ${esc(B.back)}</button><button class="btn" data-a="${last ? 'sc-finish' : 'sc-next'}">${esc(last ? B.finish : B.next)} →</button></div></div>`;
 }
 function scFinish() {
-  const P = S.piece, ans = scAnswers(S.sc); P.sb = ans; if (ans.thesis) P.title = ans.thesis;
+  const P = S.piece, ans = scAnswers(S.sc); P.sb = ans; P.title = String(S.sc.title || '').trim();
   S.dirty = true; S.sc = null; S.find = null; S._bctx = null; go('editor');
   const n = (() => { try { return (storyFromAnswers(P, makeMeta(P), buildSteps(P, makeMeta(P))) || []).length; } catch (e) { return 0; } })();
   toast(BT().done(n, Math.max(1, Math.round(n * 0.75))));
@@ -185,19 +187,19 @@ function scClick(a, v, t) {
   else if (a === 'sc-edit') { A.edit = v; render(); } else if (a === 'sc-editdone') { A.edit = null; render(); }
   else if (a === 'sc-reset') { delete A.edits[v]; render(); }
   else if (a === 'sc-detail') { S.piece.sb = scAnswers(A); S.sb = sbInit(A.from); S.sc = null; go('story'); }
-  else if (a === 'sb-sug') { const k = t.dataset.k, sug = storySuggest(c.P, c.by(A.script[0])), txt = k === 'scmsg' ? sug.msg.filter(x => x !== c.P.title).slice(0, 2)[+v] : sug.ask; if (k === 'scmsg') A.thesis = txt; else A.ask = txt; render(); }
+  else if (a === 'sb-sug') { const k = t.dataset.k, sug = storySuggest(c.P, c.by(A.script[0])); if (k === 'sctitle') A.title = c.P.autoTitle || ''; else { const txt = k === 'scmsg' ? sug.msg.filter(x => x !== titleOf(c.P)).slice(0, 2)[+v] : sug.ask; if (k === 'scmsg') A.thesis = txt; else A.ask = txt; } render(); }
   else return false;
   return true;
 }
 function scInput(e) {
   const t = e.target; if (!S.sc || !t.id || t.id.indexOf('sc-') !== 0) return; const a = S.sc;
-  if (t.id === 'sc-thesis') a.thesis = t.value; else if (t.id === 'sc-ask') a.ask = t.value;
+  if (t.id === 'sc-thesis') a.thesis = t.value; else if (t.id === 'sc-ask') a.ask = t.value; else if (t.id === 'sc-title') a.title = t.value;
+  else if (/^sc-ttl-\d+$/.test(t.id)) { const f = a.script[+t.id.slice(7)]; if (f) a.titles[f] = t.value; }
   else { const m = /^sc-edit-(\d+)$/.exec(t.id); if (m && a.script[+m[1]]) a.edits[a.script[+m[1]]] = t.value; }
 }
 
 function sbFinish() {
   const P = S.piece, ans = sbAnswers(S.sb); P.sb = ans;
-  if (ans.msg) { P.title = ans.msg; }
   S.dirty = true; S.sb = null; S.find = null; S._bctx = null; go('editor');
   const n = (() => { try { return (storyFromAnswers(P, makeMeta(P), buildSteps(P, makeMeta(P))) || []).length; } catch (e) { return 0; } })();
   toast(BT().done(n, Math.max(1, Math.round(n * 0.75))));
@@ -205,7 +207,7 @@ function sbFinish() {
 function fdQuick() {
   const P = S.piece, c = bCtx(), center = (S.find && c.by(S.find.center)) ? S.find.center : c.cand.center, cap = { quick: 1, normal: 2, full: 3 }[(P.br && P.br.time) || 'full'];
   const script = scDefaultScript(c, center);
-  P.sb = { msg: '', center, ev: script.slice(1), script, edits: {}, thesis: '', diag: { fact: null, text: '' }, impl: [], prio: null, plan: [], ask: '' };
+  P.sb = { msg: '', center, ev: script.slice(1), script, edits: {}, titles: {}, thesis: '', diag: { fact: null, text: '' }, impl: [], prio: null, plan: [], ask: '' };
   S.dirty = true; S.find = null; go('editor');
 }
 function sbStep(d) {

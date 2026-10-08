@@ -373,3 +373,15 @@ Object.assign(I18N.en, {
   tut_kpi_2_t: 'Card and list', tut_kpi_2_p: 'Hover an indicator to see how it was calculated. The list gathers all indicators.',
   tut_kpi_4_t: 'Present and export', tut_kpi_4_p: 'Use Present to walk through the story full screen. Under Export you can download interactive HTML, image or video.',
 });
+
+/* título do tema: quem escreve é a pessoa */
+Object.assign(I18N.pt, {
+  title_ph: 'Digite o título aqui', title_lbl: 'Título da apresentação',
+  title_need_h: 'Qual é o título da apresentação?', title_need_p: 'O título é o tema e aparece no primeiro slide. Escreva o seu para continuar.',
+  title_need_ok: 'Continuar', title_need_use: 'Usar o título sugerido',
+});
+Object.assign(I18N.en, {
+  title_ph: 'Type the title here', title_lbl: 'Presentation title',
+  title_need_h: 'What is the presentation title?', title_need_p: 'The title is the theme and shows on the first slide. Write yours to continue.',
+  title_need_ok: 'Continue', title_need_use: 'Use the suggested title',
+});

@@ -324,7 +324,7 @@ function storySuggest(P, center) {
     : { invest: o => `Approve the investment in ${o}`, cut: o => `Approve the review of ${o}`, prioritize: o => `Approve the order of priorities for ${o}`, alert: o => `Decide who fixes ${o} and by when`, celebrate: o => `Recognize the result and replicate what worked in ${o}` };
   const aMsg = at && center && at.thesis && at.thesis[center.act] ? at.thesis[center.act] + h : '';
   const uniq = arr => arr.filter((x, i, a) => x && a.indexOf(x) === i);
-  return { msg: uniq([aMsg, h ? msg + h : '', h, P.title || '']), act: uniq([...(at ? at.act : []), ...act]).slice(0, 4), ask: at && tpl[dec] ? tpl[dec](at.obj) : ask, impl: uniq([...(at ? at.impl : []), ...impl]).slice(0, 4) };
+  return { msg: uniq([aMsg, h ? msg + h : '', h, titleOf(P)]), act: uniq([...(at ? at.act : []), ...act]).slice(0, 4), ask: at && tpl[dec] ? tpl[dec](at.obj) : ask, impl: uniq([...(at ? at.impl : []), ...impl]).slice(0, 4) };
 }
 
 // o roteiro final: panorama, centro, evidências, diagnóstico, implicações, prioridades, plano e decisão (só o que a pessoa respondeu)
@@ -333,14 +333,14 @@ function storyFromAnswers(P, meta, steps) {
   const L = STORY_TXT[LANG] || STORY_TXT.pt, facts = buildStory(P, meta, steps, { insights: allInsights(P), extras: true }), by = id => facts.find(x => x.id === id), out = [];
   const add = s => { s.kick = { n: String(out.length + 1).padStart(2, '0'), label: s.kickLabel || L.kick[s.act] || L.kick2[s.act] || L.kick.other }; s.caption = s.head; out.push(s); };
   const { stateOf, manyState } = storyStates(P, meta, steps), seen = new Set();
-  const edits = sb.edits || {};
-  const pushFact = id => { const x = by(id); if (x && !seen.has(id)) { seen.add(id); const e = edits[id] != null && String(edits[id]).trim() ? String(edits[id]).trim() : null; add({ ...x, head: e || x.head, hl: e ? (e.includes(x.hl || '\u0000') ? x.hl : '') : x.hl }); } };
+  const edits = sb.edits || {}, titles = sb.titles || {}, tk = id => (titles[id] != null && String(titles[id]).trim() ? String(titles[id]).trim() : undefined); // título do slide escrito pela pessoa troca o rótulo
+  const pushFact = id => { const x = by(id); if (x && !seen.has(id)) { seen.add(id); const e = edits[id] != null && String(edits[id]).trim() ? String(edits[id]).trim() : null; add({ ...x, kickLabel: tk(id) || x.kickLabel, head: e || x.head, hl: e ? (e.includes(x.hl || '\u0000') ? x.hl : '') : x.hl }); } };
   const seq = sb.script && sb.script.length ? sb.script : [sb.center, ...(sb.ev || [])].filter(Boolean);
   pushFact('st-ov');
   if (sb.script && sb.script.length) { // roteiro em cartões: o primeiro cartão é a tese (o ponto central, com a frase da pessoa se houver) e leva os números das evidências
     const c0 = by(seq[0]);
     if (c0) { const rest = seq.slice(1).map(by).filter(x => x && x.big).slice(0, 3), txt = String(sb.thesis || '').trim() || (edits[c0.id] != null && String(edits[c0.id]).trim()) || '';
-      seen.add(c0.id); add({ ...c0, id: 'sb-thesis', type: 'diag', act: 'thesis', kickLabel: L.kick2.thesis, head: txt || c0.head, hl: txt && !txt.includes(c0.hl || '\u0000') ? '' : c0.hl, chips: rest.map(x => ({ text: x.big.text, label: x.short ? (x.short.length > 34 ? x.short.slice(0, 33).trimEnd() + '…' : x.short) : (L.read[x.act] || L.read.other) })) }); }
+      seen.add(c0.id); add({ ...c0, id: 'sb-thesis', type: 'diag', act: 'thesis', kickLabel: tk(c0.id) || L.kick2.thesis, head: txt || c0.head, hl: txt && !txt.includes(c0.hl || '\u0000') ? '' : c0.hl, chips: rest.map(x => ({ text: x.big.text, label: x.short ? (x.short.length > 34 ? x.short.slice(0, 33).trimEnd() + '…' : x.short) : (L.read[x.act] || L.read.other) })) }); }
     seq.slice(1).forEach(pushFact);
   } else { seq.forEach(pushFact); }
   const ev = seq.map(by).filter(Boolean);

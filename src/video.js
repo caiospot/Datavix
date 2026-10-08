@@ -172,7 +172,7 @@ function videoRender(P, fmt, plan, th, prep) {
   };
   const hookScene = (sc, lt, alpha) => {
     ctx.save(); ctx.globalAlpha = alpha; const maxW = W - 2 * M, e = vEase(lt / 600), sq = fmt === 'square';
-    const f = vFit(ctx, P.title, maxW, tfam, tw, sq ? [62, 52, 44] : [84, 70, 58, 48], sq ? 2 : 3);
+    const f = vFit(ctx, titleOf(P), maxW, tfam, tw, sq ? [62, 52, 44] : [84, 70, 58, 48], sq ? 2 : 3);
     ctx.globalAlpha = alpha * e; vDrawLines(ctx, f.lines, M, F.headY + (1 - e) * 40, f.size * 1.05, `${tw} ${f.size}px ${tfam}`, th.fg);
     if (plan.hero) {
       const k = vEase((lt - 350) / 1900), fin = kpiFmt(plan.hero), q = numParts(fin), txt = k >= 1 || !q ? fin : numFrame(q, k);
@@ -276,7 +276,7 @@ async function openVideoDialog() {
       result = await recordVideo(P, fmt, st, { onFrame: (cv, t, total) => { live.drawImage(cv, 0, 0); bar.style.width = Math.min(100, (t / total) * 100) + '%'; stat.textContent = `${T('vid_rec')} ${Math.min(Math.round(t / 1000), Math.round(total / 1000))}/${Math.round(total / 1000)} s`; } });
     } catch (e) { console.error(e); b.innerHTML = `<p class="note vd-warn">${esc(T('vid_fail', (e && e.message) || e))}</p><div class="mdl-a" style="padding:12px 0 18px"><button type="button" class="btn ghost" data-vd="close">${esc(T('nps_close'))}</button><button type="button" class="btn" data-vd="back">${esc(T('vid_again'))}</button></div>`; return; }
     if (!result) return; // cancelado
-    url = URL.createObjectURL(result.blob); const name = `${slug(P.title)}-${fmt === 'square' ? '1x1' : '9x16'}.${result.ext}`, mb = (result.blob.size / 1048576).toFixed(1);
+    url = URL.createObjectURL(result.blob); const name = `${slug(titleOf(P))}-${fmt === 'square' ? '1x1' : '9x16'}.${result.ext}`, mb = (result.blob.size / 1048576).toFixed(1);
     const canShare = navigator.canShare && navigator.share && (() => { try { return navigator.canShare({ files: [new File([result.blob], name, { type: result.blob.type })] }); } catch (e) { return false; } })();
     b.innerHTML = `<div class="vd-stage ${fmt}"><video class="vd-video" src="${url}" controls autoplay loop muted playsinline></video></div><p class="note" style="margin:8px 0 0">${esc(`${result.ext.toUpperCase()} · ${mb} MB · ${result.seconds} s`)}${result.ext === 'webm' ? ' · ' + esc(T('vid_webm_note')) : ''}</p>
       <div class="mdl-a" style="padding:12px 0 18px"><button type="button" class="btn ghost" data-vd="back">${esc(T('vid_again'))}</button>${canShare ? `<button type="button" class="btn ghost" data-vd="share">${esc(T('vid_share'))}</button>` : ''}<button type="button" class="btn" data-vd="dl">⤓ ${esc(T('vid_dl'))}</button></div>`;
@@ -295,7 +295,7 @@ async function openVideoDialog() {
         else if (a.dataset.vd === 'abort') { st.cancel = true; choose(m); }
         else if (a.dataset.vd === 'back') { if (url) { URL.revokeObjectURL(url); url = null; } result = null; choose(m); }
         else if (a.dataset.vd === 'dl' && result) download(result.blob, m._vd.name);
-        else if (a.dataset.vd === 'share' && result) { try { await navigator.share({ files: [new File([result.blob], m._vd.name, { type: result.blob.type })], title: P.title }); } catch (x) { /* cancelado */ } }
+        else if (a.dataset.vd === 'share' && result) { try { await navigator.share({ files: [new File([result.blob], m._vd.name, { type: result.blob.type })], title: titleOf(P) }); } catch (x) { /* cancelado */ } }
       });
     },
   });

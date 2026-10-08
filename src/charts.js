@@ -96,7 +96,7 @@ const csPad = (b, p) => ({ x: b.x - p, y: b.y - p, w: b.w + 2 * p, h: b.h + 2 * 
  * o: { id, sideHtml, tutPrefix, tutKey }.  h: ver o final do arquivo. Devolve o controle do gráfico (el._org). */
 function csMount(P, el, o, makeEngine, h) {
   const piece = el.closest('.piece'), c1x = piece && piece.querySelector('#pc1x');
-  el.innerHTML = `<div class="org"><div class="orgstage"><canvas class="orgcv" id="orgcv" role="img" aria-label="${esc(P.title)}"></canvas>
+  el.innerHTML = `<div class="org"><div class="orgstage"><canvas class="orgcv" id="orgcv" role="img" aria-label="${esc(titleOf(P))}"></canvas>
     <div class="orgtools"><button type="button" id="orgpres">▶ ${T('present')}</button><button type="button" id="orgtut">? ${T('tut_help')}</button></div></div></div>`;
   const side0 = document.createElement('aside'); side0.className = 'orgside'; side0.style.fontFamily = fontsOf(P).body;
   side0.innerHTML = o.sideHtml + '<div class="orgctip" id="orgctip" hidden></div>';

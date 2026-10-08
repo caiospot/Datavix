@@ -3,7 +3,7 @@
   const P = JSON.parse(document.getElementById('dv-data').textContent);
   LANG = P.lang;
   P.opts = { ...DEFAULT_OPTS, ...(P.opts || {}) }; P.fontPair = P.fontPair || 'modern';
-  document.title = P.title;
+  document.title = titleOf(P);
   document.getElementById('app').innerHTML = pieceHtml(P, {});
   applyPieceCss(P);
   document.body.style.background = bgBase(P.bg);

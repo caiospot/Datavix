@@ -6,7 +6,7 @@ function modal(o) {
     const prev = document.activeElement, m = document.createElement('div');
     m.className = 'mdl'; m.innerHTML = `<div class="mdl-box${o.wide ? ' wide' : ''}" role="dialog" aria-modal="true" aria-labelledby="mdt">
       <div class="mdl-h"><h3 id="mdt">${o.title}</h3>${o.closable === false ? '' : `<button type="button" class="mdl-x" data-m="close" aria-label="${T('org_card_close')}">×</button>`}</div>
-      <div class="mdl-b">${o.body || ''}${o.input ? `<label class="mdl-in"><span class="lbl">${o.input.label}</span><input class="field" id="mdl-input" type="text" maxlength="80" value="${esc(o.input.value || '')}"></label>` : ''}</div>
+      <div class="mdl-b">${o.body || ''}${o.input ? `<label class="mdl-in"><span class="lbl">${o.input.label}</span><input class="field" id="mdl-input" type="text" maxlength="${o.input.max || 80}" value="${esc(o.input.value || '')}"${o.input.placeholder ? ` placeholder="${esc(o.input.placeholder)}"` : ''}></label>` : ''}</div>
       ${o.actions && o.actions.length ? `<div class="mdl-a">${o.actions.map((a, i) => `<button type="button" class="btn${a.kind === 'primary' ? '' : a.kind === 'text' ? ' text' : ' ghost'}" data-m="${i}">${a.label}</button>`).join('')}</div>` : ''}</div>`;
     document.body.appendChild(m); document.body.classList.add('mdl-open');
     const box = m.querySelector('.mdl-box'), input = m.querySelector('#mdl-input');

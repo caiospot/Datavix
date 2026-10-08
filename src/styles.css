@@ -627,6 +627,8 @@ details.rd-grp > summary .rd-gh { position: relative; padding: 10px 12px; border
 .sc-n { font: 500 13px var(--mono, ui-monospace, monospace); color: var(--muted); padding-top: 3px; }
 .sc-k { font: 500 11px var(--mono, ui-monospace, monospace); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
 .sc-k small { font-size: 11px; letter-spacing: 0; text-transform: none; }
+.sc-ttl { width: 100%; margin: 8px 0 0; padding: 7px 10px; font-size: 14px; }
+.sc-title { display: grid; gap: 6px; margin-bottom: 16px; }
 .sc-vz { margin-left: auto; padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px; font-size: 10px; letter-spacing: .04em; }
 .sc-h { margin: 6px 0 8px; font-size: 15px; line-height: 1.45; overflow-wrap: anywhere; }
 .sc-big b { font: 600 20px var(--mono, ui-monospace, monospace); color: var(--sel); } .sc-big small { color: var(--muted); font-size: 12px; }

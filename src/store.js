@@ -18,7 +18,7 @@ const tx = (mode, fn) => idb().then(db => new Promise((res, rej) => {
 
 const newId = () => (crypto.randomUUID ? crypto.randomUUID() : 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8));
 async function saveProject(P) {
-  const rec = { id: P.id, updated: Date.now(), name: P.saveName || P.title, title: P.title, type: P.type, fileName: P.fileName, rows: P.built.stats.rowsTotal, data: pieceData(P) };
+  const rec = { id: P.id, updated: Date.now(), name: P.saveName || titleOf(P), title: titleOf(P), type: P.type, fileName: P.fileName, rows: P.built.stats.rowsTotal, data: pieceData(P) };
   await tx('readwrite', st => st.put(rec));
   const all = await listProjects();
   if (all && all.length > STORE.max) for (const old of all.slice(STORE.max)) await tx('readwrite', st => st.delete(old.id));

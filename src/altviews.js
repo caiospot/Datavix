@@ -42,7 +42,7 @@ function calSvg(P, W) {
   const body = lay.shapes.map(sh => sh.k === 'rect'
     ? `<rect class="calcell" x="${sh.x}" y="${sh.y}" width="${sh.w}" height="${sh.h}" rx="${sh.rx}" fill="${sh.fill}" style="animation-delay:${sh.wk * 16}ms"${sh.rec ? ` data-d="${sh.rec[0]}|${sh.rec[1]}|${sh.rec[2]}"` : ''}/>`
     : `<text x="${sh.x}" y="${sh.y}" font-size="${sh.size}" fill="${sh.fill}" font-weight="${sh.w || 400}" font-family="${f}" dominant-baseline="hanging">${esc(sh.t)}</text>`).join('');
-  return `<svg class="calsvg" viewBox="0 0 ${lay.width} ${lay.height}" width="${lay.width}" height="${lay.height}" role="img" aria-label="${esc(P.title)}">${body}</svg>`;
+  return `<svg class="calsvg" viewBox="0 0 ${lay.width} ${lay.height}" width="${lay.width}" height="${lay.height}" role="img" aria-label="${esc(titleOf(P))}">${body}</svg>`;
 }
 function renderCalendar(P, el) {
   el.innerHTML = calSvg(P, el.clientWidth || 800);

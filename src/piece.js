@@ -52,7 +52,7 @@ const FONT_CATS = ['sober', 'editorial', 'tech', 'bold'];
 const fontsOf = P => FONT_PAIRS[P.fontPair] || FONT_PAIRS.modern;
 const DEFAULT_OPTS = { legend: true, grid: true, labels: false, annotations: true, notes: true };
 // tudo que a peça precisa para ser reaberta (HTML exportado, projetos recentes)
-const pieceData = P => ({ sb: P.sb || null, cases: P.cases || null, built: P.built, insights: P.insights, choice: P.choice, type: P.type, palId: P.palId, colors: P.colors, bg: P.bg, title: P.title, subtitle: P.subtitle || null, foot: P.foot || null, fontPair: P.fontPair, opts: P.opts, sort: P.sort, big: P.big, place: P.place, fileName: P.fileName, isSample: P.isSample, lang: P.lang || LANG, br: P.br || null, hadIns: !!P.hadIns });
+const pieceData = P => ({ sb: P.sb || null, cases: P.cases || null, built: P.built, insights: P.insights, choice: P.choice, type: P.type, palId: P.palId, colors: P.colors, bg: P.bg, title: P.title, autoTitle: P.autoTitle || '', subtitle: P.subtitle || null, foot: P.foot || null, fontPair: P.fontPair, opts: P.opts, sort: P.sort, big: P.big, place: P.place, fileName: P.fileName, isSample: P.isSample, lang: P.lang || LANG, br: P.br || null, hadIns: !!P.hadIns });
 const chartOpt = (P, extra) => ({ labels: !!P.opts.labels, legend: P.opts.legend !== false, ...extra });
 const mixHex = (a, b, t) => { const A = hexToRgb(a), B = hexToRgb(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
 const bgBase = bg => (bg.mode === 'light' ? '#f7f8f4' : bg.mode === 'dark' ? '#0b0d0a' : bg.mode === 'solid' ? bg.color : bg.base);
@@ -61,6 +61,8 @@ const bgCss = (bg, accent) => (bg.mode === 'gradient' ? `linear-gradient(135deg,
 /* ---------------- textos da peça ---------------- */
 function periodLabel(P) { const b = P.built; return b.period || `${fmtInt(b.stats.rowsTotal, LANG)} ${T('rows_lbl')}`; }
 function sourceText(P) { return `${T('src')}: ${P.fileName}${P.isSample ? ' · ' + (LANG === 'pt' ? 'dados de exemplo' : 'sample data') : ''} · ${periodLabel(P)}`; }
+// título para saída (arquivo, aba, aria): o que a pessoa digitou ou, se ainda não digitou, o sugerido
+const titleOf = P => String(P.title || '').trim() || String(P.autoTitle || '').trim();
 const subtitleOf = P => (P.subtitle != null ? P.subtitle : sourceText(P));
 const footOf = P => (P.foot != null ? P.foot : noteFor(P));
 function noteFor(P) {
@@ -84,7 +86,7 @@ function pieceHtml(P, o = {}) {
   const pt = LANG === 'pt';
   return `<div class="piece cols ${P.big ? 'big' : ''}" id="piece" data-lay="wide">
     <div class="plogo" aria-label="Datavix"><i></i>DATAVIX</div>
-    <aside class="c1" id="pc1"><div class="phead"><h1 id="ptitle" ${ed} aria-label="${pt ? 'Título' : 'Title'}">${esc(P.title)}</h1><div class="psub" id="psub" ${ed}>${esc(subtitleOf(P))}</div></div>
+    <aside class="c1" id="pc1"><div class="phead"><h1 id="ptitle" ${ed} ${o.editable ? `data-ph="${esc(T('title_ph'))}"` : ''} aria-label="${pt ? 'Título' : 'Title'}">${esc(o.editable ? P.title : titleOf(P))}</h1><div class="psub" id="psub" ${ed}>${esc(subtitleOf(P))}</div></div>
       <div class="insights" id="pins">${insightsHtml(P, o.editable)}</div>
       <div class="ctrls" id="pctrls"></div><div class="c1x" id="pc1x"></div></aside>
     <section class="c2" id="pc2" aria-label="${pt ? 'Detalhes' : 'Details'}" aria-live="polite"><div class="pcard" id="pcard"></div><div class="plist" id="plist"></div></section>

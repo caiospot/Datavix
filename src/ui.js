@@ -493,7 +493,8 @@ function makePiece() {
   const insights = csD && reg.insights ? reg.insights(csD, S.br, LANG, T) : computeInsights(built, S.br, LANG, T);
   const tone = TONE_DEFAULT[S.br.tone] || TONE_DEFAULT.tech; // a primeira vista do gráfico é sempre escura (combina com a marca); o claro é uma escolha no painel
   S.dirty = true;
-  const P = { built, cases: S.read && S.read.shape === 'cases' ? casesAnalyze(S.ds) : null, choice, insights, type: choice.primary, palId: tone.pal, colors: PALETTES[tone.pal].slice(), bg: { ...tone.bg }, id: newId(), hadIns: insights.length > 0, title: S.br.message.trim() || (S.read && S.read.shape === 'cases' ? autoTitle(built, choice.primary).replace(/^(Rows|Linhas)\b/, LANG === 'en' ? 'Cases' : 'Casos') : autoTitle(built, choice.primary)), subtitle: null, foot: null, fontPair: tone.pair, opts: { ...DEFAULT_OPTS }, br: { ...S.br }, big: S.br.place === 'projector', place: S.br.place, fileName: S.fileName, isSample: S.isSample, lang: LANG, sort: 'value', host: null, hist: [], hi: -1 };
+  const autoT = S.read && S.read.shape === 'cases' ? autoTitle(built, choice.primary).replace(/^(Rows|Linhas)\b/, LANG === 'en' ? 'Cases' : 'Casos') : autoTitle(built, choice.primary); // sugestão: o título é escrito pela pessoa (no build de teste já vem preenchido)
+  const P = { built, cases: S.read && S.read.shape === 'cases' ? casesAnalyze(S.ds) : null, choice, insights, type: choice.primary, palId: tone.pal, colors: PALETTES[tone.pal].slice(), bg: { ...tone.bg }, id: newId(), hadIns: insights.length > 0, title: S.br.message.trim() || (window.__DV_NOFIND && !/[?&]asktitle\b/.test(location.search) ? autoT : ''), autoTitle: autoT, subtitle: null, foot: null, fontPair: tone.pair, opts: { ...DEFAULT_OPTS }, br: { ...S.br }, big: S.br.place === 'projector', place: S.br.place, fileName: S.fileName, isSample: S.isSample, lang: LANG, sort: 'value', host: null, hist: [], hi: -1 };
   P.hist.push(snap(P)); P.hi = 0;
   return P;
 }
@@ -513,18 +514,18 @@ function markDirty() { S.dirty = true; refreshSaveChip(); }
 function refreshSaveChip() { const c = $('#savechip'); if (c) { c.textContent = S.dirty ? '● ' + T('unsaved') : '✓ ' + T('saved'); c.classList.toggle('dirty', !!S.dirty); } }
 async function saveNow(name) {
   const P = S.piece; if (!P) return;
-  P.saveName = (name || '').trim() || P.saveName || P.title || P.fileName;
+  P.saveName = (name || '').trim() || P.saveName || titleOf(P) || P.fileName;
   await saveProject(P); S.recents = (await listProjects()) || []; S.dirty = false; refreshSaveChip(); toast(T('saved_toast'));
 }
 async function askName(P) {
-  const r = await modal({ title: T('mdl_savename_t'), input: { label: T('mdl_name'), value: P.saveName || P.title || P.fileName || '' }, actions: [{ label: T('mdl_save'), v: 'save', kind: 'primary' }, { label: T('mdl_cancel'), v: null, kind: 'text' }] });
+  const r = await modal({ title: T('mdl_savename_t'), input: { label: T('mdl_name'), value: P.saveName || titleOf(P) || P.fileName || '' }, actions: [{ label: T('mdl_save'), v: 'save', kind: 'primary' }, { label: T('mdl_cancel'), v: null, kind: 'text' }] });
   return r && r.v === 'save' ? r.text : null;
 }
 async function saveFlow() { const P = S.piece; if (!P) return false; const n = P.saveName || (await askName(P)); if (n === null) return false; await saveNow(n); return true; }
 // devolve true para seguir. kind 'exit' (Sair): Salvar / Não salvar. Os demais: Salvar / Não salvar / Cancelar.
 async function guard(kind) {
   if (!(S.step === 'editor' && S.piece && S.dirty)) return true;
-  const P = S.piece, name = P.saveName || P.title || P.fileName || '';
+  const P = S.piece, name = P.saveName || titleOf(P) || P.fileName || '';
   const acts = [{ label: T('mdl_save'), v: 'save', kind: 'primary' }, { label: T('mdl_nosave'), v: 'discard', kind: 'ghost' }];
   if (kind !== 'exit') acts.push({ label: T('mdl_cancel'), v: null, kind: 'text' });
   const r = await modal({ title: T('mdl_save_t'), body: `<p class="note" style="margin:0 0 14px">${T('mdl_save_p', esc(name))}</p>`, input: { label: T('mdl_name'), value: name }, actions: acts });
@@ -667,7 +668,7 @@ document.addEventListener('click', e => {
     case 'pwa-install': pwaInstall(); break;
     case 'pal': if (P) { P.palId = v; P.colors = PALETTES[v].slice(); pushHist(); refreshAll(false); } break;
     case 'bg': if (P) { const cur = bgBase(P.bg); P.bg = v === 'light' || v === 'dark' ? { ...P.bg, mode: v } : { ...P.bg, mode: v, [v === 'solid' ? 'color' : 'base']: cur }; pushHist(); refreshAll(false); } break;
-    case 'present': if (P && P.host) { P.pres = startPresentation({ root: $('#piece'), ix: P.host.ix, P, onEnd: n => { npsTrack('pres'); if (n >= 2) npsMoment('pres'); } }); } break;
+    case 'present': if (P && P.host) ensureTitle().then(ok => { if (ok && S.piece === P && P.host) P.pres = startPresentation({ root: $('#piece'), ix: P.host.ix, P, onEnd: n => { npsTrack('pres'); if (n >= 2) npsMoment('pres'); } }); }); break;
     case 'feedback': npsManual(); break;
     case 'menu': setMenu(!S.menu); break;
     case 'menu-close': setMenu(false); break;
@@ -675,8 +676,8 @@ document.addEventListener('click', e => {
     case 'sheet-close': setSheet(false); break;
     case 'pwa-ios': openIosInstall(); break;
     case 'privacy': openPrivacy(); break;
-    case 'video': openVideoDialog(); break;
-    case 'ex': if (P) doExport(v); break;
+    case 'video': ensureTitle().then(ok => { if (ok) openVideoDialog(); }); break;
+    case 'ex': if (P) ensureTitle().then(ok => { if (ok) doExport(v); }); break;
     case 'undo': restore(-1); break;
     case 'redo': restore(1); break;
     case 'home': guard('home').then(ok => { if (!ok) return; closeProject(); go('entry'); }); break;
@@ -714,6 +715,17 @@ function nextOb() {
   if (q.text && !S.br.message.trim()) { const er = $('#msg-err'); if (er) er.textContent = T('msg_required'); return; }
   if (!q.text && !S.br[q.key]) return;
   if (S.ob < OB.length - 1) { S.ob++; render(); } else go('upload');
+}
+// o título é o tema da apresentação e quem escreve é a pessoa: antes de apresentar, exportar ou gerar o vídeo, pede o título se ainda estiver vazio
+async function ensureTitle() {
+  const P = S.piece; if (!P) return false;
+  if (String(P.title || '').trim()) return true;
+  const sug = String(P.autoTitle || '').trim(), val = () => ((document.querySelector('#mdl-input') || {}).value || '').trim();
+  const r = await modal({ title: T('title_need_h'), body: `<p class="note" style="margin:0 0 14px">${T('title_need_p')}</p>`, input: { label: T('title_lbl'), value: '', placeholder: T('title_ph') },
+    actions: [{ label: T('title_need_ok'), v: 'ok', kind: 'primary', check: () => !!val() }, ...(sug ? [{ label: T('title_need_use'), v: 'use', kind: 'ghost' }] : []), { label: T('mdl_cancel'), v: null, kind: 'text' }] });
+  if (!r || (r.v !== 'ok' && r.v !== 'use')) return false;
+  const txt = r.v === 'use' ? sug : String(r.text || '').trim(); if (!txt) return false;
+  P.title = txt; const h = $('#ptitle'); if (h) h.textContent = txt; pushHist(); return true;
 }
 function rebuildPieceForLang() {
   if (!S.piece || !S.ds) return;

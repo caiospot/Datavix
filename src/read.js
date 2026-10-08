@@ -16,9 +16,10 @@ const RDX = {
     mt: { score: 'nota (uso a média)', attr: 'taxa ou atributo (uso a média)', duration: 'duração (uso a média)', count: 'quantidade (somo)', amount: 'valor (somo)' },
     vals: n => `${n} valores distintos`, rowsOf: (a, b) => `${a} de ${b} linhas preenchidas`,
     mergeH: 'Rótulos parecidos', mergeP: 'Estes rótulos parecem ser a mesma coisa escrita de formas diferentes. Unificar muda só o agrupamento, nunca os números da planilha.', mergeSame: 'mesmo texto com pequenas diferenças', mergeFlag: 'mesma resposta, escritas diferentes (você decide)', rows: n => `${n} linhas`,
-    wh: { flags: n => `${n} colunas de sim/não`, texts: n => `${n} colunas de texto livre`, amounts: () => 'há valores para somar', numbers: () => 'há números para agregar', few: () => 'poucos números e categorias', nomeas: () => 'não há números para somar: conto as linhas' }, open: 'ver colunas',
+    wh: { flags: n => `${n} colunas de sim/não`, texts: n => `${n} colunas de texto livre`, amounts: () => 'há valores para somar', numbers: () => 'há números para agregar', few: () => 'poucos números e categorias', nomeas: () => 'não há números para somar: conto as linhas', grid: n => `cada combinação de período e grupo aparece uma vez (grade ${n}% completa)` }, open: 'ver colunas',
     next: 'Continuar', back: 'Voltar', noMerge: 'Não encontrei rótulos parecidos.', hidden: 'fora dos gráficos', use: 'Usar esta coluna', skipped: n => `${n} coluna(s) de fora`,
     fv: { pos: 'conta como SIM', neg: 'conta como NÃO', na: 'fora da conta' }, fvH: 'Como contei cada resposta',
+    fx: { h: 'O que arrumei na estrutura', p: 'Arrumações só de formato, sem mudar nenhum valor. Desmarque o que não fizer sentido.', title: (n, t) => `Ignorei ${n} linha(s) de título acima do cabeçalho: “${t}”`, totals: (n, l) => `Deixei de fora ${n} linha(s) de total, subtotal ou rodapé (${l})`, unpivot: (k, a, z, r) => `Desdobrei ${k} colunas de período (${a} a ${z}) em linhas: ficaram as colunas “Período” e “Valor” (${r} linhas)`, drop: d => `Retirei a coluna de total já somado (${d}) para não contar duas vezes`, empty: n => `Retirei ${n} coluna(s) vazia(s)`, skNum: c => `Não desdobrei as colunas de período porque há outras colunas numéricas (${c}); veja se uma delas deve ser a medida`, skId: 'Não desdobrei as colunas de período porque não há coluna de rótulo' },
     sum: (nc, nu) => `${nc} colunas lidas, ${nu} em uso nos gráficos.`
   },
   en: {
@@ -35,9 +36,10 @@ const RDX = {
     mt: { score: 'score (I use the mean)', attr: 'rate or attribute (I use the mean)', duration: 'duration (I use the mean)', count: 'quantity (I sum)', amount: 'amount (I sum)' },
     vals: n => `${n} distinct values`, rowsOf: (a, b) => `${a} of ${b} rows filled`,
     mergeH: 'Similar labels', mergeP: 'These labels look like the same thing written in different ways. Merging only changes grouping, never the numbers in your sheet.', mergeSame: 'same text with small differences', mergeFlag: 'same answer, different wording (you decide)', rows: n => `${n} rows`,
-    wh: { flags: n => `${n} yes/no columns`, texts: n => `${n} free-text columns`, amounts: () => 'there are amounts to sum', numbers: () => 'there are numbers to aggregate', few: () => 'few numbers and categories', nomeas: () => 'there are no numbers to sum: I count rows' }, open: 'show columns',
+    wh: { flags: n => `${n} yes/no columns`, texts: n => `${n} free-text columns`, amounts: () => 'there are amounts to sum', numbers: () => 'there are numbers to aggregate', few: () => 'few numbers and categories', nomeas: () => 'there are no numbers to sum: I count rows', grid: n => `each period and group combination appears once (${n}% complete grid)` }, open: 'show columns',
     next: 'Continue', back: 'Back', noMerge: 'I found no similar labels.', hidden: 'kept out of charts', use: 'Use this column', skipped: n => `${n} column(s) left out`,
     fv: { pos: 'counts as YES', neg: 'counts as NO', na: 'left out' }, fvH: 'How I counted each answer',
+    fx: { h: 'What I fixed in the structure', p: 'Format-only fixes, without changing any value. Untick what does not make sense.', title: (n, t) => `Skipped ${n} title row(s) above the header: “${t}”`, totals: (n, l) => `Left out ${n} total, subtotal or footer row(s) (${l})`, unpivot: (k, a, z, r) => `Unpivoted ${k} period columns (${a} to ${z}) into rows: the columns “Período” and “Valor” hold them (${r} rows)`, drop: d => `Removed the already-summed total column (${d}) to avoid counting twice`, empty: n => `Removed ${n} empty column(s)`, skNum: c => `Did not unpivot the period columns because there are other numeric columns (${c}); check whether one of them should be the measure`, skId: 'Did not unpivot the period columns because there is no label column' },
     sum: (nc, nu) => `${nc} columns read, ${nu} used in charts.`
   }
 };
@@ -97,6 +99,16 @@ function rdRow(c, i) {
   const fv = c.role === 'flag' && c.use !== false && c.dict && c.flagMap && c.dict.length <= 8 ? rdFlagVals(c, i) : '';
   return `<div class="rd-row ${off ? 'off' : ''}"><div class="rd-main"><b>${esc(c.name)}</b>${extra}</div><div class="rd-smp">${esc(rdSample(c))}${c.role === 'pii' ? ` <i>(${esc(t.hidden)})</i>` : ''}</div>${sel}${fv}</div>`;
 }
+// arrumações de estrutura feitas na leitura do arquivo (título, totais, desdobrar períodos): cada uma pode ser desfeita
+function rdFixes() {
+  const f = (S.ds && S.ds.fixes) || {}, o = (S.ds && S.ds.fixOpts) || {}, t = RX().fx, items = [];
+  if (f.title) items.push(['title', o.title !== false, t.title(f.title.n, f.title.texts.join(' · '))]);
+  if (f.totals) items.push(['totals', o.totals !== false, t.totals(fmtInt(f.totals.n, LANG), f.totals.labels.join(', '))]);
+  if (f.unpivot && !f.unpivot.skipped) { items.push(['unpivot', o.unpivot !== false, t.unpivot(f.unpivot.k, f.unpivot.first, f.unpivot.last, fmtInt(f.unpivot.rows || 0, LANG)) + (f.unpivot.dropped.length ? '. ' + t.drop(f.unpivot.dropped.join(', ')) : '')]); }
+  const notes = [f.emptyCols ? t.empty(f.emptyCols) : '', f.unpivot && f.unpivot.skipped === 'numeric' ? t.skNum(f.unpivot.cols.join(', ')) : '', f.unpivot && f.unpivot.skipped === 'noid' ? t.skId : ''].filter(Boolean);
+  if (!items.length && !notes.length) return '';
+  return `<div class="rd-fix"><div class="lbl">[ ${esc(t.h)} ]</div><p class="note" style="margin:6px 0 10px">${esc(t.p)}</p>${items.map(([k, on, txt]) => `<label class="rd-mi"><input type="checkbox" data-c="rd-fix" data-k="${k}" ${on ? 'checked' : ''}><span>${esc(txt)}</span></label>`).join('')}${notes.map(n => `<p class="note rd-fn">${esc(n)}</p>`).join('')}</div>`;
+}
 function readScreen() {
   const t = RX(), ds = S.ds, cols = ds.columns, rd = S.read; if (!rd) return '';
   const used = cols.filter(c => colUsable(c) && c.role !== 'id').length;
@@ -112,6 +124,7 @@ function readScreen() {
   const merge = sug.length ? `<div class="rd-merge"><div class="lbl">[ ${esc(t.mergeH)} ]</div><p class="note" style="margin:6px 0 12px">${esc(t.mergeP)}</p>${sug.map((m, k) => `<label class="rd-mi"><input type="checkbox" data-c="rd-merge" data-k="${k}" ${m.on ? 'checked' : ''}><span><b>${esc(cols[m.col].name.replace(/[:\s]+$/, ""))}</b>: ${m.from.map(f => `“${esc(f)}”`).join(', ')} → “${esc(m.keep)}” <i>${esc(t.rows(fmtInt(m.rows, LANG)))} · ${esc(m.kind === 'same' ? t.mergeSame : t.mergeFlag)}</i></span></label>`).join('')}</div>` : '';
   return `<div class="wrap-narrow" style="max-width:860px">
     <div class="lbl">[ ${T('step')} // ${String(OB.length + 3).padStart(2, '0')} ]</div><h2 style="margin-top:12px">${title2(t.h)}</h2><p class="sub">${esc(t.p)}</p>
+    ${rdFixes()}
     <div class="rd-shapes"><div class="lbl">[ ${esc(t.shapeH)} ]</div><div class="rd-shl" role="group">${sh}</div>${why}</div>
     <div class="rd-cols"><div class="lbl" style="margin-bottom:10px">[ ${esc(t.secH)} ] <span class="note">${esc(t.sum(cols.length, used))}</span></div>${groups}</div>
     ${merge}
@@ -133,6 +146,7 @@ function readClick(e) {
 function readInput(e) {
   const t = e.target, c = t.dataset && t.dataset.c; if (!S.read || !c || c.indexOf('rd-') !== 0) return;
   if (c === 'rd-role') { const col = S.ds.columns[+t.dataset.i]; rdSetRole(col, t.value); S.read.over[col.name] = t.value; S.read.sug = rdSuggest(S.ds); render(); }
+  else if (c === 'rd-fix') { const o = { ...((S.ds && S.ds.fixOpts) || {}) }; o[t.dataset.k] = t.checked; S.loading = { stage: 'read', pct: 0.5, t0: Date.now(), size: 0, got: true }; getWorker().postMessage({ type: 'restructure', opts: o }); }
   else if (c === 'rd-flagval') { const col = S.ds.columns[+t.dataset.i]; col.flagMap[col.dict[+t.dataset.k]] = t.value; render(); }
   else if (c === 'rd-merge') { S.read.sug[+t.dataset.k].on = t.checked; }
 }

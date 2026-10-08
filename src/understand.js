@@ -92,6 +92,15 @@ function uProfileColumn(c, nRows, area) {
   return c;
 }
 
+/* ---- resumo já somado: a data e as categorias formam uma grade completa, cada combinação aparece uma vez ---- */
+function uGrid(live, nRows) {
+  const g = live.filter(c => (c.role === 'date' && c.kind === 'date') || ((c.role === 'category' || c.role === 'geo') && c.dict && c.dict.length >= 2 && c.dict.length <= 40));
+  const dates = g.filter(c => c.kind === 'date').slice(0, 1), cats = g.filter(c => c.kind !== 'date');
+  if (nRows < 6 || !live.some(c => c.role === 'measure') || live.some(c => c.role === 'id' || c.role === 'text' || c.role === 'flag') || dates.length + cats.length < 2 || cats.length > 2) return 0;
+  let prod = 1; const parts = [...dates, ...cats]; parts.forEach(c => { prod *= c.kind === 'date' ? new Set(Array.from(c.data).filter(x => !Number.isNaN(x))).size : c.dict.length; });
+  const seen = new Set(); for (let i = 0; i < nRows; i++) { const k = parts.map(c => (c.kind === 'date' ? c.data[i] : c.codes[i])).join('|'); if (seen.has(k)) return 0; seen.add(k); }
+  return prod > 0 && nRows / prod >= 0.8 ? Math.round(nRows / prod * 100) : 0;
+}
 /* ---- tipo da planilha: o que é cada linha? ---- */
 function uShape(cols, nRows, area) {
   const live = cols.filter(c => !['empty', 'constant'].includes(c.role)), n = Math.max(1, live.length);
@@ -106,6 +115,7 @@ function uShape(cols, nRows, area) {
   if (!live.some(c => c.role === 'measure')) return { shape: 'cases', conf: cases >= 2 ? 'média' : 'baixa', why: [['nomeas', 0]] }; // sem número para somar, só dá para contar linhas
   cases += areaOf(area).cases || 0; // a área inclina a leitura, nunca decide sozinha
   if (cases >= 4) return { shape: 'cases', conf: cases >= 6 ? 'alta' : 'média', why };
+  const sm = uGrid(live, nRows); if (sm) return { shape: 'summary', conf: 'média', why: [['grid', sm]] };
   if (amounts || live.some(c => c.role === 'measure' && c.mtype !== 'score')) return { shape: 'ledger', conf: amounts ? 'alta' : 'média', why: [[amounts ? 'amounts' : 'numbers', 0]] };
   return { shape: 'summary', conf: 'baixa', why: [['few', 0]] };
 }

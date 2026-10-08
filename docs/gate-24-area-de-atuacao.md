@@ -38,3 +38,25 @@ A área passou a conduzir também o **roteiro** e os **textos sugeridos** (`AREA
 - Tudo em português e inglês. As 11 áreas têm textos; "Outra área ou geral" usa os genéricos.
 
 Teste: `test/m/area-script.js` (CX com arco, placeholder, sugestão de tese e pedido; geral sem vocabulário) e verificação da planilha ideal com Finanças, Vendas, Geral e Marketing.
+
+---
+
+# Passo 3 · Arrumação da estrutura da planilha (regras, sem IA, sem mudar valores)
+
+O leitor de arquivos (`src/parser.worker.js`) agora reconhece planilhas "do mundo real" e as arruma **só no formato**, relatando tudo na tela "Como li a sua planilha", onde cada arrumação pode ser **desmarcada** (o arquivo é relido sem ela).
+
+- **Título acima do cabeçalho:** linhas com um ou dois valores no topo ("Relatório de vendas…", "Fonte: ERP") são ignoradas; o cabeçalho é a primeira linha larga e de texto.
+- **Colunas vazias** (sem cabeçalho e sem valores) saem.
+- **Totais, subtotais e rodapé:** linhas "Total", "Total geral", "Subtotal X" (confirmadas pela soma das linhas acima, com 0,5% de tolerância, ou com o rótulo exato "Total") e as últimas linhas com uma só frase (fonte, "Gerado em…") ficam de fora para nada ser contado duas vezes.
+- **Períodos em colunas viram linhas** ("desdobrar"): três ou mais colunas seguidas com cabeçalho de mês (jan/25, 2025-01), trimestre (T1/25, Q1 2025), ano (2022, 2023) ou mês sem ano (Jan, Fev) e valores numéricos viram as colunas **Período** (data ou categoria) e **Valor**. Cuidados: uma coluna "Total" já somada é retirada para não duplicar; se existir outra coluna numérica (ex.: meta), **não desdobra** e avisa; sem coluna de rótulo, também não.
+- **Cabeçalho com anos ou meses:** a primeira linha com "2022 2023 2024" ou "jan/25 fev/25…" agora é reconhecida como cabeçalho.
+- **Resumo já somado:** quando a data e as categorias formam uma grade completa e cada combinação aparece uma vez, a leitura sugere "Resumo já somado" (com o motivo).
+
+Os números continuam os da planilha: as somas após a arrumação foram conferidas com as da planilha original (mês, ano, subtotais e total).
+
+## Testes
+Planilha de teste `dados-teste/datavix-planilha-bagunca.xlsx` (gerada por `gerar-planilha-bagunca.py`, 6 abas) e `test/fix-check.js` (16 verificações: linhas, totais, somas exatas, desfazer, não desdobrar com meta, planilhas limpas sem nenhuma arrumação). Regressão dos demais testes igual ao gate 23.
+
+## Limites
+- Só desdobra um bloco de períodos por planilha; blocos duplos (receita e custo por mês) ficam como estão.
+- Totais sem a palavra "total" e sem soma verificável não são reconhecidos.

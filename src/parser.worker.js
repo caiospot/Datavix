@@ -216,16 +216,115 @@ function cleanHeader(h, n) {
   return out;
 }
 
-function setRows(matrix, meta) {
-  matrix = matrix.filter(r => r && r.some(v => !isNull(v)));
-  if (!matrix.length) throw new Error('empty');
-  const ncols = matrix.reduce((m, r) => Math.max(m, r.length), 0);
-  const first = matrix[0];
-  const headerLike = first.filter(v => typeof v === 'string' && v.trim() && !cleanNumStr(v) && !dateParts(v)).length >= Math.max(1, Math.ceil(first.filter(v => !isNull(v)).length * 0.6));
-  const header = headerLike ? cleanHeader(first, ncols) : cleanHeader([], ncols);
-  const rows = headerLike ? matrix.slice(1) : matrix;
-  RAW = { header, rows, ncols, ...meta };
+/* ---------------- arrumação da estrutura (regras, sem IA; nunca altera um valor) ----------------
+ * 1) linhas de título acima do cabeçalho; 2) colunas totalmente vazias; 3) linhas de total, subtotal e rodapé;
+ * 4) colunas de período (meses, anos, trimestres) desdobradas em linhas (Período e Valor).
+ * Cada arrumação é relatada à pessoa e pode ser desfeita (opts). */
+const FIX_ON = { title: true, totals: true, unpivot: true };
+let ORIG = null, ORIG_META = null;
+const median = a => { if (!a.length) return 0; const s = a.slice().sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+const fillOf = r => r.filter(v => !isNull(v)).length;
+const strShare = r => { const c = r.filter(v => !isNull(v)); return c.length ? c.filter(v => typeof v === 'string' && !cleanNumStr(v) && !dateParts(v)).length / c.length : 0; };
+// cabeçalho: texto que não é número nem data completa (nomes de mês como "jan/25" valem como rótulo) ou uma sequência de anos como 2022, 2023, 2024
+function isHeaderRow(first, next) {
+  const nn = first.filter(v => !isNull(v)), words = nn.filter(v => typeof v === 'string' && v.trim() && !cleanNumStr(v) && (!dateParts(v) || /[a-zA-ZÀ-ÿ]/.test(v)));
+  if (words.length >= Math.max(1, Math.ceil(nn.length * 0.6))) return true;
+  const yrs = nn.filter(v => typeof v === 'number' && Number.isInteger(v) && v >= 1990 && v <= 2100);
+  return yrs.length >= 3 && words.length >= 1 && yrs.length + words.length === nn.length && !(next && next.filter(v => typeof v === 'number' && Number.isInteger(v) && v >= 1990 && v <= 2100).length >= 3);
 }
+const TOTAL_EXACT = /^\s*(total( geral)?|subtotal|totais|soma|grand total|total général|sum)\s*:?\s*$/i, TOTAL_LEAD = /^\s*(sub ?total|total)\b/i;
+const numOf = v => (typeof v === 'number' ? v : typeof v === 'string' ? (() => { const c = cleanNumStr(v); return c ? parseNum(v, decimalVote(c.t) >= 0) : NaN; })() : NaN);
+
+// período no cabeçalho: devolve uma data local (mês, trimestre ou ano) ou um rótulo de mês sem ano
+function periodHeader(h) {
+  if (h === null || h === undefined) return null;
+  if (h instanceof Date) return { v: h };
+  if (typeof h === 'number' && Number.isInteger(h) && h >= 1990 && h <= 2100) return { v: new Date(h, 0, 1) };
+  const s = String(h).trim(); let m;
+  if (/^(19|20)\d\d$/.test(s)) return { v: new Date(+s, 0, 1) };
+  if ((m = /^(?:q|t)([1-4])[\s\/\-.]*((?:19|20)?\d\d)$/i.exec(s))) return { v: new Date(fixYear(+m[2]), (+m[1] - 1) * 3, 1) };
+  if ((m = /^((?:19|20)\d\d)[\s\/\-.]*(?:q|t)([1-4])$/i.exec(s))) return { v: new Date(+m[1], (+m[2] - 1) * 3, 1) };
+  const dp = dateParts(s); if (dp && dp.k === 'ymd') return { v: new Date(dp.y, dp.m - 1, dp.d) };
+  if (dp && dp.k === 'dmy' && dp.b >= 1 && dp.b <= 12 && dp.a >= 1 && dp.a <= 31) return { v: new Date(dp.y, dp.b - 1, dp.a) };
+  if (/^[a-zç]{3,9}\.?$/i.test(s) && MONTHS[norm(s).slice(0, 3)]) return { label: s };
+  return null;
+}
+
+function restructure(matrix, opts) {
+  opts = { ...FIX_ON, ...(opts || {}) };
+  const fixes = {};
+  let rows = matrix.filter(r => r && r.some(v => !isNull(v)));
+  if (!rows.length) throw new Error('empty');
+  // 1) linhas de título acima do cabeçalho
+  let hdr = 0;
+  { const n = Math.min(rows.length, 40), fills = rows.slice(0, n).map(fillOf), W = median(fills.slice(Math.min(4, n - 1)).length ? fills.slice(Math.min(4, n - 1)) : fills);
+    for (let i = 0; i < Math.min(12, n); i++) {
+      if (fills[i] >= Math.max(2, 0.6 * W) && strShare(rows[i]) >= 0.6 && (i + 1 >= rows.length || fills[i + 1] >= 0.5 * fills[i])) { if (i > 0 && fills.slice(0, i).every(f => f <= 0.5 * fills[i])) hdr = i; break; }
+    } }
+  if (hdr > 0) { fixes.title = { n: hdr, texts: rows.slice(0, hdr).map(r => String(r.find(v => !isNull(v)))).map(t => t.slice(0, 80)) }; if (opts.title) rows = rows.slice(hdr); }
+  const ncols0 = rows.reduce((m, r) => Math.max(m, r.length), 0);
+  const first = rows[0];
+  const headerLike = isHeaderRow(first, rows[1]);
+  let header = headerLike ? first.slice() : [], body = headerLike ? rows.slice(1) : rows;
+  // 2) colunas sem cabeçalho e sem nenhum valor
+  { const keep = []; for (let c = 0; c < ncols0; c++) { if (!isNull(header[c]) || body.some(r => !isNull(r[c]))) keep.push(c); }
+    if (keep.length < ncols0) { fixes.emptyCols = ncols0 - keep.length; header = header.length ? keep.map(c => header[c]) : header; body = body.map(r => keep.map(c => r[c])); } }
+  const ncols = Math.max(header.length, body.reduce((m, r) => Math.max(m, r.length), 0));
+  // 3) linhas de total, subtotal e rodapé
+  if (headerLike && body.length >= 4) {
+    const numCols = []; for (let c = 0; c < ncols; c++) { let nn = 0, tot = 0; for (let i = 0; i < Math.min(body.length, 300); i++) { const v = body[i][c]; if (isNull(v)) continue; tot++; if (Number.isFinite(numOf(v))) nn++; } if (tot >= 3 && nn / tot >= 0.8) numCols.push(c); }
+    const drop = new Set(), labels = []; let acc = new Array(ncols).fill(0), accAll = new Array(ncols).fill(0);
+    body.forEach((r, i) => {
+      const lab = r.find(v => typeof v === 'string' && TOTAL_LEAD.test(v)), exact = r.some(v => typeof v === 'string' && TOTAL_EXACT.test(v));
+      if (lab !== undefined && numCols.length) {
+        let ok = 0, tried = 0; numCols.forEach(c => { const v = numOf(r[c]); if (!Number.isFinite(v)) return; tried++; if ([acc[c], accAll[c]].some(a => Math.abs(v - a) <= Math.max(1e-9, Math.abs(a) * 0.005))) ok++; });
+        const verified = tried > 0 && ok / tried >= 0.5;
+        if (verified || exact) { drop.add(i); labels.push(String(lab).slice(0, 40)); acc = new Array(ncols).fill(0); return; }
+      }
+      numCols.forEach(c => { const v = numOf(r[c]); if (Number.isFinite(v)) { acc[c] += v; accAll[c] += v; } });
+    });
+    // rodapé: últimas linhas com um só valor de texto (fonte, observação)
+    let e = body.length; while (e > 1 && !drop.has(e - 1) && fillOf(body[e - 1]) <= 1 && typeof body[e - 1].find(v => !isNull(v)) === 'string' && ncols >= 3) { drop.add(e - 1); labels.push(String(body[e - 1].find(v => !isNull(v))).slice(0, 40)); e--; }
+    if (drop.size) { fixes.totals = { n: drop.size, labels: labels.slice(0, 4) }; if (opts.totals) body = body.filter((_, i) => !drop.has(i)); }
+  }
+  // 4) colunas de período desdobradas em linhas
+  if (headerLike && body.length >= 2 && header.length >= 4) {
+    let best = null, run = null;
+    for (let c = 0; c <= header.length; c++) {
+      const ph = c < header.length ? periodHeader(header[c]) : null;
+      let isNumCol = false;
+      if (ph) { let nn = 0, tot = 0; for (let i = 0; i < Math.min(body.length, 200); i++) { const v = body[i][c]; if (isNull(v)) continue; tot++; if (Number.isFinite(numOf(v))) nn++; } isNumCol = tot > 0 && nn / tot >= 0.7; }
+      if (ph && isNumCol) { if (!run) run = { a: c, z: c }; else run.z = c; } else { if (run && (!best || run.z - run.a > best.z - best.a)) best = run; run = null; }
+    }
+    if (best && best.z - best.a + 1 >= 3) {
+      const pc = []; for (let c = best.a; c <= best.z; c++) pc.push(c);
+      const others = []; for (let c = 0; c < header.length; c++) if (c < best.a || c > best.z) others.push(c);
+      const isNumeric = c => { let nn = 0, tot = 0; for (let i = 0; i < Math.min(body.length, 200); i++) { const v = body[i][c]; if (isNull(v)) continue; tot++; if (Number.isFinite(numOf(v))) nn++; } return tot >= 2 && nn / tot >= 0.8; };
+      const totalish = c => /^(total|soma|acumulado|acum\.?|m[eé]dia|ytd|sum|average)\b/i.test(String(header[c] || '').trim());
+      const dropC = others.filter(c => isNumeric(c) && totalish(c)), keepC = others.filter(c => !dropC.includes(c)), blocker = keepC.filter(isNumeric);
+      const info = { k: pc.length, first: String(header[best.a]), last: String(header[best.z]), dropped: dropC.map(c => String(header[c])).slice(0, 3) };
+      if (!keepC.length) fixes.unpivot = { skipped: 'noid', ...info };
+      else if (blocker.length) fixes.unpivot = { skipped: 'numeric', ...info, cols: blocker.map(c => String(header[c])).slice(0, 3) };
+      else {
+        fixes.unpivot = { ...info, rows: 0 };
+        if (opts.unpivot) {
+          const out = []; const pv = pc.map(c => periodHeader(header[c]));
+          body.forEach(r => { pc.forEach((c, k) => { const v = r[c]; if (isNull(v)) return; out.push([...keepC.map(cc => r[cc]), pv[k].v || pv[k].label, v]); }); });
+          fixes.unpivot.rows = out.length; header = [...keepC.map(c => header[c]), 'Período', 'Valor']; body = out;
+        }
+      }
+    }
+  }
+  return { header: headerLike ? header : [], rows: headerLike ? body : body, headerLike, fixes, ncols: Math.max(header.length, body.reduce((m, r) => Math.max(m, r.length), 0)) };
+}
+
+function setRows(matrix, meta, opts) {
+  ORIG = matrix; ORIG_META = meta; FIXES_OPTS = { ...FIX_ON, ...(opts || {}) };
+  const R = restructure(matrix, FIXES_OPTS);
+  const header = R.headerLike ? cleanHeader(R.header, R.ncols) : cleanHeader([], R.ncols);
+  RAW = { header, rows: R.rows, ncols: R.ncols, fixes: R.fixes, fixOpts: FIXES_OPTS, ...meta };
+}
+let FIXES_OPTS = { ...FIX_ON };
 
 function sigRows(rows) {
   const seen = new Set();
@@ -263,7 +362,7 @@ function analyze() {
   }));
   const transfer = [];
   for (const col of cols) { if (col.data) transfer.push(col.data.buffer); if (col.codes) transfer.push(col.codes.buffer); }
-  post({ type: 'dataset', fileName: RAW.fileName, sheet: RAW.sheet || null, sheetNames: RAW.sheetNames || null, encoding: RAW.encoding || null, delimiter: RAW.delimiter || null, rowCount: n, columns: cols, preview, dupRows }, transfer);
+  post({ type: 'dataset', fileName: RAW.fileName, sheet: RAW.sheet || null, sheetNames: RAW.sheetNames || null, encoding: RAW.encoding || null, delimiter: RAW.delimiter || null, rowCount: n, columns: cols, preview, dupRows, fixes: RAW.fixes || {}, fixOpts: RAW.fixOpts || null, restructure: !!RAW.restructured }, transfer);
 }
 
 // lê só a aba escolhida e só os valores (sem fórmulas, HTML nem texto formatado): bem mais leve em planilhas grandes
@@ -303,6 +402,8 @@ self.onmessage = e => {
       }
     } else if (m.type === 'sheet') {
       loadSheet(m.name);
+    } else if (m.type === 'restructure') {
+      setRows(ORIG, ORIG_META, m.opts); RAW.restructured = true; analyze();
     } else if (m.type === 'retype') {
       const c = m.col;
       const hint = inferKindForced(c, m.kind);

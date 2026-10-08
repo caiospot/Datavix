@@ -51,6 +51,7 @@ function onWorker(e) {
     S.loading = null; S.sheets = m.names; S.fileName = m.fileName; go('sheet');
   } else if (m.type === 'dataset') {
     if (S.replace) return finishReplace(m);
+    if (m.restructure && S.ds) { S.loading = null; S.ds = m; S.fileName = m.fileName; S._rt = new Set(); rdStart(S.ds, true); rdRetype(); S.mapping = defaultMapping(); render(); return; } // desfazer ou refazer uma arrumação da estrutura: continua na tela de leitura
     S.loading = null; S.ds = m; S.fileName = m.fileName;
     if (!m.rowCount || !m.columns.length) return go('upload', T('up_empty'));
     S._rt = new Set(); rdStart(S.ds); rdRetype();

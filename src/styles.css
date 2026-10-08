@@ -640,3 +640,5 @@ details.rd-grp > summary .rd-gh { position: relative; padding: 10px 12px; border
 /* pergunta de área: 12 opções compactas */
 .opts.opts-area { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; margin: 24px 0 22px; }
 .opts.opts-area .opt { padding: 12px 14px; } .opts.opts-area .opt span { font-size: 12px; line-height: 1.35; }
+.rd-fix { margin-top: 24px; padding: 14px 16px; border: 1px solid var(--line); border-left: 3px solid var(--sel); border-radius: var(--r); background: var(--card); }
+.rd-fn { margin: 6px 0 0; }

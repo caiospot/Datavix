@@ -12,6 +12,12 @@ function drawCsStatic(P, ctx, x, y, w, h, state) {
   if (P.type === 'organism') drawOrganismStatic(P, ctx, x, y, w, h, state);
   else if (CHART_REG[P.type]) CHART_REG[P.type].drawStatic(P, ctx, x, y, w, h, state);
 }
+// motor vivo de um gráfico de canvas (o vídeo conduz o relógio dele quadro a quadro); null se o tipo não tem motor
+function csEngine(P, opt) {
+  const t = P.type, D = t === 'organism' ? P.built.org : csBuilt(P, t); if (!D) return null;
+  const Cls = { organism: OrgEngine, rays: RaysEngine, river: RiverEngine, fan: FanEngine, ridge: RidgeEngine, flow: FlowEngine }[t] || GalEngine;
+  return new Cls(D, orgTheme(P), opt || {});
+}
 // o texto dos gráficos de canvas acompanha P.textK (apresentação usa fonte maior); só a propriedade `font` do contexto é interceptada
 function csScaleFont(ctx, P) {
   const d = Object.getOwnPropertyDescriptor(CanvasRenderingContext2D.prototype, 'font'); if (!d || !d.set) return ctx;

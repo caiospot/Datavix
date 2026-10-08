@@ -1,9 +1,10 @@
 /* Datavix: vídeo para redes sociais (MP4, sem áudio). Tudo no navegador: uma composição em canvas (1080×1920 ou 1080×1080) é gravada em
- * tempo real com MediaRecorder. Gráficos Vizzu animam de verdade numa instância própria fora da tela; os demais (canvas próprio, calendário, KPI)
- * usam o mesmo desenho estático do PNG, com revelação e transições. Os números vêm sempre dos cálculos da peça. */
+ * tempo real com MediaRecorder. Todos os gráficos animam: o Vizzu numa instância própria fora da tela, os gráficos de canvas com o motor da tela conduzido
+ * quadro a quadro (entrada e transições entre passos), calendário e indicadores com entrada própria. Os números vêm sempre dos cálculos da peça. */
 const VID_FMT = {
-  vertical: { w: 1080, h: 1920, logoY: 150, headY: 255, headH: 480, chart: { x: 50, y: 700, w: 980, h: 820 }, progY: 1572, head: [72, 60, 50], sub: 36, calc: 28 },
-  square: { w: 1080, h: 1080, logoY: 66, headY: 128, headH: 250, chart: { x: 50, y: 400, w: 980, h: 590 }, progY: 1030, head: [50, 42, 36], sub: 28, calc: 23 },
+  // vertical: o gráfico ocupa quase toda a largura e a maior parte da altura; topo e pé ficam livres para a interface das redes (logo ~110 px, barra de progresso depois do gráfico)
+  vertical: { w: 1080, h: 1920, logoY: 112, headY: 185, headH: 470, chart: { x: 30, y: 660, w: 1020, h: 990 }, progY: 1700, head: [72, 60, 50], sub: 36, calc: 28, k: 2, tk: 1.15 },
+  square: { w: 1080, h: 1080, logoY: 62, headY: 120, headH: 250, chart: { x: 30, y: 392, w: 1020, h: 612 }, progY: 1038, head: [50, 42, 36], sub: 28, calc: 23, k: 1.8, tk: 1.1 },
 };
 const VID_SITE = (window.__DV && window.__DV.site) || 'caiospot.github.io/Datavix';
 const VID_FPS = 30;
@@ -61,29 +62,61 @@ function videoPlan(P, fmt) {
   return { scenes, hero, meta, firstStep: stepsOnly[0], lastStep: stepsOnly[stepsOnly.length - 1] };
 }
 
-/* ---- imagem de cada cena de gráfico (tipos sem Vizzu) ---- */
-function videoStaticChart(P, scene, box, fam) {
-  const cv = document.createElement('canvas'); cv.width = box.w; cv.height = box.h; const ctx = cv.getContext('2d'), k = 2, w = box.w / k, h = box.h / k;
-  ctx.scale(k, k); // desenha em tamanho "virtual" metade, com tudo dobrado: o texto fica legível numa tela de celular
-  if (isCsType(P.type)) drawCsStatic(P, ctx, 0, 0, w, h, scene.state ? scene.state.cs || null : null);
-  else if (P.type === 'calendar') { const lay = calLayout(P, w, { maxCell: 36 }); if (lay) { const s = Math.min(1, h / lay.height, w / lay.width); drawShapes(ctx, lay, (w - lay.width * s) / 2, (h - lay.height * s) / 2, s, fam); } }
-  else if (P.type === 'kpi') { ctx.setTransform(1, 0, 0, 1, 0, 0); videoKpi(ctx, P, box.w, box.h, fam); }
-  return cv;
+/* ---- camada do gráfico: tudo que desenha dentro do retângulo do gráfico, ao vivo ----
+ * { cnv, go(state, first), frame(ms), destroy() }. `cnv` é o quadro do gráfico (tamanho do retângulo), `go` é chamado no começo de cada cena de passo
+ * (first = primeira vez: entrada animada), `frame` avança o relógio do gráfico a cada quadro da gravação. */
+function videoEngineLayer(P, box, k, tk) {
+  const cv = document.createElement('canvas'); cv.width = box.w; cv.height = box.h; const ctx = cv.getContext('2d');
+  const eng = csEngine(P, { rm: false }); if (!eng) return null;
+  eng.stop(); eng.start = () => {}; // quem avança o motor é a gravação, não o relógio da tela
+  eng.ctx = csScaleFont(ctx, { textK: tk || 1 }); eng.resize(box.w / k, box.h / k, k); // tela virtual grande (gráfico grande) e só o texto ampliado
+  let on = false, enter = false;
+  return {
+    cnv: cv,
+    go(st, first) { const cs = st && st.cs ? st.cs : null; if (P.type !== 'organism' || cs) eng.setState(cs); if (first || !on) { on = true; enter = true; } },
+    frame(ms) { if (!on) return; const dt = Math.min(0.05, Math.max(0, ms / 1000)); (eng.step_ || eng.step).call(eng, enter ? dt * 1.7 : dt); if (enter && eng.grow >= 1) enter = false; eng.render(); },
+    destroy() { eng.stop(); },
+  };
 }
-
-
-// cartões de KPI em grade 2×2 (o desenho do PNG é largo demais para o vídeo vertical)
-function videoKpi(ctx, P, W, H, fam) {
+// calendário: as semanas aparecem em onda, da esquerda para a direita
+function videoCalLayer(P, box, fam) {
+  const cv = document.createElement('canvas'); cv.width = box.w; cv.height = box.h; const ctx = cv.getContext('2d'), k = 2, w = box.w / k, h = box.h / k;
+  const lay = calLayout(P, w, { maxCell: 36 }); let age = -1;
+  const s = lay ? Math.min(1, h / lay.height, w / lay.width) : 1, ox = lay ? (w - lay.width * s) / 2 : 0, oy = lay ? (h - lay.height * s) / 2 : 0;
+  return {
+    cnv: cv, go() { if (age < 0) age = 0; },
+    frame(ms) {
+      if (age < 0 || !lay) return; age += ms; ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height); ctx.scale(k, k); ctx.textBaseline = 'top';
+      for (const sh of lay.shapes) {
+        const e = sh.k === 'rect' ? vEase((age - sh.wk * 26) / 520) : vEase(age / 500); if (e <= 0) continue;
+        ctx.globalAlpha = e; ctx.fillStyle = sh.fill;
+        if (sh.k === 'rect') { const cx = ox + (sh.x + sh.w / 2) * s, cy = oy + (sh.y + sh.h / 2) * s, ww = sh.w * s * (0.55 + 0.45 * e), hh = sh.h * s * (0.55 + 0.45 * e); fillRound(ctx, cx - ww / 2, cy - hh / 2, ww, hh, sh.rx * s); }
+        else { ctx.font = `${sh.w || 400} ${sh.size * s}px ${fam}`; ctx.fillText(sh.t, ox + sh.x * s, oy + sh.y * s); }
+      }
+      ctx.globalAlpha = 1;
+    },
+    destroy() {},
+  };
+}
+// cartões de KPI em grade 2×2 (o desenho do PNG é largo demais para o vídeo vertical); entram em sequência e os números sobem
+function videoKpiLayer(P, box, fam) {
+  const cv = document.createElement('canvas'); cv.width = box.w; cv.height = box.h; const ctx = cv.getContext('2d'); let age = -1;
+  return { cnv: cv, go() { if (age < 0) age = 0; }, frame(ms) { if (age < 0) return; age += ms; ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height); videoKpi(ctx, P, box.w, box.h, fam, age); }, destroy() {} };
+}
+function videoKpi(ctx, P, W, H, fam, age = 1e9) {
   let cards = []; try { cards = kpiCards(P.built, LANG, T).slice(0, 4); } catch (e) { return; }
-  const base = bgBase(P.bg), fg = readableOn(base), muted = mixHex(fg, base, 0.45), acc = P.colors[0], g = 26, cw = (W - g) / 2, ch = Math.min(380, (H - g) / 2), tall = ch > 330;
+  const base = bgBase(P.bg), fg = readableOn(base), muted = mixHex(fg, base, 0.45), acc = P.colors[0], g = 26, cw = (W - g) / 2, ch = Math.min(470, (H - g) / 2), u = ch / 380;
   cards.forEach((c, i) => {
-    const x = (i % 2) * (cw + g), y = Math.floor(i / 2) * (ch + g);
+    const e = vEase((age - i * 170) / 650); if (e <= 0) return;
+    const x = (i % 2) * (cw + g), y = Math.floor(i / 2) * (ch + g) + (1 - e) * 34; ctx.save(); ctx.globalAlpha = e;
     ctx.fillStyle = fg + '0d'; ctx.strokeStyle = fg + '33'; ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, cw, ch, 22) : ctx.rect(x, y, cw, ch); ctx.fill(); ctx.stroke();
-    ctx.textBaseline = 'top'; ctx.fillStyle = muted; ctx.font = `500 ${tall ? 24 : 20}px 'Geist Mono', ui-monospace, monospace`;
-    vLines(ctx, String(c.label).toUpperCase(), cw - 44, ctx.font).slice(0, 2).forEach((l, k) => ctx.fillText(l, x + 22, y + 22 + k * 28));
-    let fs = tall ? 104 : 84, txt = kpiFmt(c); ctx.font = `700 ${fs}px Doto, 'Geist Mono', monospace`; while (ctx.measureText(txt).width > cw - 44 && fs > 40) { fs -= 6; ctx.font = `700 ${fs}px Doto, 'Geist Mono', monospace`; }
+    ctx.textBaseline = 'top'; ctx.fillStyle = muted; ctx.font = `500 ${Math.round(24 * u)}px 'Geist Mono', ui-monospace, monospace`;
+    vLines(ctx, String(c.label).toUpperCase(), cw - 44, ctx.font).slice(0, 2).forEach((l, k) => ctx.fillText(l, x + 22, y + 22 + k * 28 * u));
+    const fin = kpiFmt(c), q = numParts(fin), cnt = vEase((age - i * 170 - 150) / 1300), txt = cnt >= 1 || !q ? fin : numFrame(q, cnt);
+    let fs = Math.round(104 * u); ctx.font = `700 ${fs}px Doto, 'Geist Mono', monospace`; while (ctx.measureText(fin).width > cw - 44 && fs > 40) { fs -= 6; ctx.font = `700 ${fs}px Doto, 'Geist Mono', monospace`; }
     ctx.fillStyle = acc; ctx.textBaseline = 'alphabetic'; ctx.fillText(txt, x + 22, y + ch * 0.62);
-    if (c.sub) { ctx.textBaseline = 'top'; ctx.fillStyle = fg; ctx.globalAlpha = .75; ctx.font = `400 ${tall ? 24 : 20}px ${fam}`; vLines(ctx, c.sub, cw - 44, ctx.font).slice(0, 2).forEach((l, k) => ctx.fillText(l, x + 22, y + ch * 0.68 + k * 28)); ctx.globalAlpha = 1; }
+    if (c.sub) { ctx.textBaseline = 'top'; ctx.fillStyle = fg; ctx.globalAlpha = e * .75; ctx.font = `400 ${Math.round(24 * u)}px ${fam}`; vLines(ctx, c.sub, cw - 44, ctx.font).slice(0, 2).forEach((l, k) => ctx.fillText(l, x + 22, y + ch * 0.68 + k * 28 * u)); }
+    ctx.restore();
   });
 }
 
@@ -94,17 +127,32 @@ async function videoVizzu(P, box, meta) {
   const host = document.createElement('div'); host.style.cssText = `position:fixed;left:0;top:0;z-index:-1;opacity:0;pointer-events:none;width:${box.w / 2}px;height:${box.h / 2}px`; // dentro da viewport (o Vizzu não anima fora dela), mas invisível
   const cnv = document.createElement('canvas'); cnv.style.cssText = 'width:100%;height:100%;display:block'; host.appendChild(cnv); document.body.appendChild(host);
   const filt = st => (P.type === 'race' ? (() => { const last = meta.xLabels[meta.xLabels.length - 1]; return rec => rec[meta.xName] === last; })() : makeFilter(meta, st ? { sel: st.sel ? new Set(st.sel) : null, range: st.range || null } : null));
+  const full = st => ({ data: { ...P.built.vz, filter: filt(st) }, config: vzConfig(P.type, P.built, P.sort, chartOpt(P, { cumul: false })), style: vzStyle(P, { size: 16 }) });
   let chart;
   try {
     const Vizzu = await loadVizzu(); chart = new Vizzu({ element: cnv }); await chart.initializing;
     chart.feature('tooltip', false);
-    await within(chart.animate({ data: { ...P.built.vz, filter: filt(null) }, config: vzConfig(P.type, P.built, P.sort, chartOpt(P, { cumul: false })), style: vzStyle(P, { size: 15 }) }, { duration: 0 }), 5000);
     await within(new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))), 500);
   } catch (e) { try { chart && chart.detach(); } catch (x) { /* ok */ } host.remove(); if (dprDesc) Object.defineProperty(window, 'devicePixelRatio', dprDesc); throw e; }
   return {
-    cnv, chart, go: st => { try { chart.animate({ data: { filter: filt(st) } }, { duration: 0.9, easing: 'cubic-bezier(.4,0,.2,1)' }).catch(() => {}); } catch (e) { /* segue */ } },
+    cnv, chart,
+    // primeira cena: o gráfico nasce (barras crescem, linhas se desenham) em vez de aparecer pronto
+    first: st => { try { chart.animate(full(st), { duration: 1.7, easing: 'cubic-bezier(.25,.8,.25,1)' }).catch(() => {}); } catch (e) { /* segue */ } },
+    go: st => { try { chart.animate({ data: { filter: filt(st) } }, { duration: 0.9, easing: 'cubic-bezier(.4,0,.2,1)' }).catch(() => {}); } catch (e) { /* segue */ } },
     destroy() { try { chart.detach(); } catch (e) { /* ok */ } host.remove(); if (dprDesc) Object.defineProperty(window, 'devicePixelRatio', dprDesc); window.dispatchEvent(new Event('resize')); },
   };
+}
+async function videoVizzuLayer(P, box, meta) {
+  const v = await videoVizzu(P, box, meta); let started = false;
+  return { cnv: v.cnv, go(st, first) { if (!started) { started = true; v.first(st); } else v.go(st); }, frame() {}, destroy: () => v.destroy() };
+}
+async function videoChartLayer(P, box, fmt, meta, fam) {
+  const k = VID_FMT[fmt].k;
+  // nuvem de palavras: o texto maior não cabe nas margens fixas do motor
+  if (isCsType(P.type)) { const l = videoEngineLayer(P, box, k, ['words'].includes(P.type) ? 1 : VID_FMT[fmt].tk); if (l) return l; }
+  if (P.type === 'calendar') return videoCalLayer(P, box, fam);
+  if (P.type === 'kpi') return videoKpiLayer(P, box, fam);
+  return videoVizzuLayer(P, box, meta);
 }
 
 /* ---- quadro da composição ---- */
@@ -118,39 +166,28 @@ function videoRender(P, fmt, plan, th, prep) {
     const g2 = ctx.createRadialGradient(W * 0.2 - dx, H * 0.84 - dy, 0, W * 0.2 - dx, H * 0.84 - dy, W * 0.6); g2.addColorStop(0, th.accent + '1f'); g2.addColorStop(1, th.accent + '00'); ctx.fillStyle = g2; ctx.fillRect(0, 0, W, H);
   };
   const sceneAt = t => { for (let i = 0; i < plan.scenes.length; i++) if (t < plan.scenes[i].t1) return i; return plan.scenes.length - 1; };
-  // camada do gráfico: Vizzu ao vivo ou imagem estática; transparência e revelação por cena
-  const stepImg = sc => (sc.kind === 'step' ? sc.img : sc.kind === 'hook' ? plan.firstStep.img : sc.kind === 'summary' ? plan.lastStep.img : null);
   // barras dos atos de casos, desenhadas no lugar do gráfico
   const drawViz = (v, lt, alpha) => {
-    const c = F.chart, rows = v.rows.slice(0, 7), fs = fmt === 'square' ? 24 : 30, rh = Math.min(fmt === 'square' ? 62 : 96, (c.h - 90) / Math.max(1, rows.length)), kw = c.w * 0.34, vw = 170, bx = c.x + kw + 14, bw = c.w - kw - vw - 28;
+    const c = F.chart, rows = v.rows.slice(0, 7), fs = fmt === 'square' ? 24 : 34, rh = Math.min(fmt === 'square' ? 62 : 124, (c.h - 90) / Math.max(1, rows.length)), kw = c.w * 0.34, vw = 180, bx = c.x + kw + 14, bw = c.w - kw - vw - 28;
     ctx.save(); ctx.textBaseline = 'middle';
     ctx.globalAlpha = alpha; ctx.font = `500 ${fs - 6}px 'Geist Mono', ui-monospace, monospace`; ctx.fillStyle = th.muted; ctx.fillText(String(v.title).toUpperCase().slice(0, 44), c.x, c.y + 14);
     rows.forEach((r, k) => {
       const e = vEase((lt - 250 - k * 120) / 600), y = c.y + 60 + k * rh + rh / 2; ctx.globalAlpha = alpha * Math.min(1, e * 2);
       ctx.font = `500 ${fs}px ${fam}`; ctx.fillStyle = th.fg; const k0 = String(r.ks || r.k); let kt = k0; while (kt.length > 4 && ctx.measureText(kt).width > kw) kt = kt.slice(0, -2); ctx.fillText(kt === k0 ? kt : kt.trimEnd() + '…', c.x, y);
-      ctx.fillStyle = th.muted; ctx.globalAlpha = alpha * Math.min(1, e * 2) * 0.35; ctx.fillRect(bx, y - 13, bw, 26);
-      ctx.globalAlpha = alpha * Math.min(1, e * 2); ctx.fillStyle = r.hi === false ? th.muted : th.accent; ctx.fillRect(bx, y - 13, bw * Math.max(0.015, Math.min(1, r.p / 100)) * e, 26);
+      ctx.fillStyle = th.muted; ctx.globalAlpha = alpha * Math.min(1, e * 2) * 0.35; ctx.fillRect(bx, y - 15, bw, 30);
+      ctx.globalAlpha = alpha * Math.min(1, e * 2); ctx.fillStyle = r.hi === false ? th.muted : th.accent; ctx.fillRect(bx, y - 15, bw * Math.max(0.015, Math.min(1, r.p / 100)) * e, 30);
       if (v.ref) { ctx.fillStyle = th.fg; ctx.fillRect(bx + bw * Math.min(1, v.ref.p / 100) - 1, y - 18, 3, 36); }
       ctx.textAlign = 'right'; ctx.font = `700 ${fs + 2}px ${fam}`; ctx.fillStyle = th.fg; ctx.fillText(r.t, c.x + c.w, y); ctx.textAlign = 'left';
     });
     ctx.restore();
   };
   const drawChart = (t, i) => {
-    const sc = plan.scenes[i], prev = plan.scenes[i - 1], lt = t - sc.t0; let a = 0, reveal = 1;
-    if (sc.kind === 'hook') a = 0;
-    else if (sc.kind === 'step') { const first = prev && prev.kind === 'hook'; a = first ? vEase(lt / 500) : 1; if (first) reveal = vEase(lt / 1100); }
+    const sc = plan.scenes[i], prev = plan.scenes[i - 1], lt = t - sc.t0; let a = 0;
+    if (sc.kind === 'step') a = prev && prev.kind === 'hook' ? vEase(lt / 450) : 1;
     else if (sc.kind === 'summary') a = 0.12;
     if (a <= 0.01) return;
-    ctx.save(); ctx.beginPath(); ctx.rect(F.chart.x, F.chart.y, F.chart.w * reveal, F.chart.h); ctx.clip();
-    if (sc.kind === 'step' && sc.viz) { ctx.restore(); drawViz(sc.viz, lt, a); return; }
-    if (prep.viz) { ctx.globalAlpha = a; ctx.drawImage(prep.viz.cnv, F.chart.x, F.chart.y, F.chart.w, F.chart.h); }
-    else {
-      const fade = vEase(lt / 500);
-      if (sc.kind === 'step' && prev && prev.kind === 'step' && fade < 1) { ctx.globalAlpha = a * (1 - fade); ctx.drawImage(prev.img, F.chart.x, F.chart.y); ctx.globalAlpha = a * fade; }
-      else ctx.globalAlpha = a;
-      const img = stepImg(sc); if (img) ctx.drawImage(img, F.chart.x, F.chart.y);
-    }
-    ctx.restore();
+    if (sc.kind === 'step' && sc.viz) { drawViz(sc.viz, lt, a); return; }
+    ctx.save(); ctx.globalAlpha = a; ctx.drawImage(prep.layer.cnv, F.chart.x, F.chart.y, F.chart.w, F.chart.h); ctx.restore();
   };
   const textBlock = (sc, lt, alpha) => {
     const e = vEase(lt / 550), sq = fmt === 'square', y0 = F.headY + (1 - e) * 36; ctx.save(); ctx.globalAlpha = alpha * e;
@@ -212,17 +249,19 @@ function videoRender(P, fmt, plan, th, prep) {
 }
 
 /* ---- gravação ---- */
-// st: { cancel } ; onFrame(canvas, t, total) ; devolve { blob, mime, ext }
-async function recordVideo(P, fmt, st, hooks = {}) {
-  const mime = videoMime(); if (!mime) throw new Error(T('vid_unsupported'));
+// prepara tudo que a gravação (ou um teste de quadros) precisa: plano, tema, camada do gráfico e o desenho de cada instante
+async function videoPrepare(P, fmt) {
   const F = VID_FMT[fmt], plan = videoPlan(P, fmt), ft = fontsOf(P);
   await fontEnsure(ft.fams); await Promise.all([`${ft.tw} 40px ${ft.title}`, `400 30px ${ft.body}`, `500 30px 'Geist Mono'`, `700 40px 'Doto'`].map(f => document.fonts.load(f).catch(() => 0)));
   const base = bgBase(P.bg), fg = readableOn(base), th = { base, fg, muted: mixHex(fg, base, 0.4), accent: P.colors[0].length === 7 ? P.colors[0] : '#d4ff00', fam: ft.body, tfam: ft.title, tw: ft.tw };
-  const cv = document.createElement('canvas'); cv.width = F.w; cv.height = F.h; const ctx = cv.getContext('2d'), prep = { cv, ctx, viz: null };
-  const nonViz = isCsType(P.type) || P.type === 'calendar' || P.type === 'kpi';
-  if (nonViz) plan.scenes.forEach(s => { if (s.kind === 'step') s.img = videoStaticChart(P, s, F.chart, ft.body); });
-  else prep.viz = await videoVizzu(P, F.chart, plan.meta);
-  const draw = videoRender(P, fmt, plan, th, prep);
+  const cv = document.createElement('canvas'); cv.width = F.w; cv.height = F.h; const ctx = cv.getContext('2d'), prep = { cv, ctx, layer: null };
+  prep.layer = await videoChartLayer(P, F.chart, fmt, plan.meta, ft.body);
+  return { F, plan, th, prep, cv, draw: videoRender(P, fmt, plan, th, prep), destroy: () => { if (prep.layer) prep.layer.destroy(); } };
+}
+// st: { cancel } ; onFrame(canvas, t, total) ; devolve { blob, mime, ext }
+async function recordVideo(P, fmt, st, hooks = {}) {
+  const mime = videoMime(); if (!mime) throw new Error(T('vid_unsupported'));
+  const V = await videoPrepare(P, fmt), { plan, prep, cv, draw } = V;
   if (hooks.onFrame) hooks.onFrame(cv, 0, plan.scenes.total);
   draw(0);
   const stream = cv.captureStream(VID_FPS), rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 8e6 }), chunks = [];
@@ -230,12 +269,13 @@ async function recordVideo(P, fmt, st, hooks = {}) {
   const stopped = new Promise(r => { rec.onstop = r; });
   let wl = null; try { if (navigator.wakeLock) wl = await navigator.wakeLock.request('screen'); } catch (e) { /* sem bloqueio de tela */ }
   try {
-    rec.start(250); const t0 = performance.now(); let vi = -1;
+    rec.start(250); const t0 = performance.now(); let vi = -1, last = 0, started = false;
     await new Promise(res => {
       const tick = () => {
         if (st.cancel) return res();
         const t = performance.now() - t0, i = plan.scenes.findIndex(s => t < s.t1);
-        if (i !== vi && i >= 0) { vi = i; const s = plan.scenes[i]; if (prep.viz && s.kind === 'step') prep.viz.go(s.state); }
+        if (i !== vi && i >= 0) { vi = i; const s = plan.scenes[i]; if (s.kind === 'step') { prep.layer.go(s.state, !started); started = true; } }
+        prep.layer.frame(t - last); last = t;
         draw(Math.min(t, plan.scenes.total - 1));
         if (hooks.onFrame) hooks.onFrame(cv, t, plan.scenes.total);
         if (t >= plan.scenes.total) return res();
@@ -245,7 +285,7 @@ async function recordVideo(P, fmt, st, hooks = {}) {
     });
     await new Promise(r => setTimeout(r, 250));
     if (rec.state !== 'inactive') rec.stop(); await stopped;
-  } finally { stream.getTracks().forEach(x => x.stop()); if (prep.viz) prep.viz.destroy(); if (wl) wl.release().catch(() => {}); }
+  } finally { stream.getTracks().forEach(x => x.stop()); V.destroy(); if (wl) wl.release().catch(() => {}); }
   if (st.cancel) return null;
   const mp4 = /mp4/.test(mime); let blob = new Blob(chunks, { type: mp4 ? 'video/mp4' : 'video/webm' });
   if (mp4) { try { const u8 = mp4Remux(await blob.arrayBuffer()); if (u8) blob = new Blob([u8], { type: 'video/mp4' }); } catch (e) { console.error(e); /* sem conversão: segue com o arquivo original */ } }

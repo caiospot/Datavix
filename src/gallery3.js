@@ -115,7 +115,7 @@ Object.assign(GalEngine.prototype, {
     for (const n of N.slice().sort((a, b) => (a === hv) - (b === hv))) {
       if (n.al < 0.02 || !n.placed) continue; const p = this.prog(n), g = n.g, al = n.al * n.dm * p, col = this.col(n.it.c), on = n === hv, fs = Math.max(6, g.r * (0.6 + 0.4 * p)); ctx.font = `700 ${fs}px ${th.font}`;
       if (on) { ctx.fillStyle = rgba(col, 0.2); galFillRound(ctx, g.x - n.mw / 2 - 4, g.y - n.mh / 2, n.mw + 8, n.mh, 6); }
-      ctx.fillStyle = rgba(this.light ? mixHex(col, fg, 0.18) : col, (on ? 1 : 0.92) * al); ctx.fillText(n.it.label, g.x, g.y);
+      ctx.fillStyle = rgba(this.light ? mixHex(col, fg, 0.4) : col, (on ? 1 : 0.92) * al); ctx.fillText(n.it.label, g.x, g.y);
     }
   },
   pickBoxWords(mx, my) {

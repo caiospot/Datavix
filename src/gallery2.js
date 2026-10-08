@@ -178,7 +178,7 @@ Object.assign(GalEngine.prototype, {
       path(); ctx.lineTo(pts[pts.length - 1].g.x, P.yv(0)); ctx.lineTo(pts[0].g.x, P.yv(0)); ctx.closePath(); const gr = ctx.createLinearGradient(0, P.y0, 0, P.y1); gr.addColorStop(0, rgba(col, 0.32 * al)); gr.addColorStop(1, rgba(col, 0)); ctx.fillStyle = gr; ctx.fill();
       path(); ctx.strokeStyle = rgba(col, al); ctx.lineWidth = 2.2; ctx.lineJoin = 'round'; ctx.stroke(); ctx.restore();
       for (const n of pts) { const on = n === hv; if (!on && pts.length > 24 && n !== pts[pts.length - 1]) continue; ctx.fillStyle = rgba(on ? fg : col, al); ctx.beginPath(); ctx.arc(n.g.x, n.g.y, on ? 4.5 : 2.6, 0, ORG_TAU); ctx.fill(); }
-      const last = hv && hv.it.g === P.gi ? hv : pts[pts.length - 1]; ctx.textAlign = last.g.x > P.x1 - 40 ? 'right' : 'left'; ctx.font = `700 ${f}px ${th.font}`; ctx.fillStyle = rgba(fg, 0.92 * al * rev); ctx.fillText(fmtNum(last.it.v, D.unit, LANG), last.g.x + (ctx.textAlign === 'right' ? -7 : 7), last.g.y - 9);
+      const last = hv && hv.it.g === P.gi ? hv : pts[pts.length - 1]; ctx.textAlign = last.g.x > P.x1 - 40 ? 'right' : 'left'; ctx.font = `700 ${f}px ${th.font}`; const lx2 = last.g.x + (ctx.textAlign === 'right' ? -7 : 7), ly2 = last.g.y - 9, ls = fmtNum(last.it.v, D.unit, LANG); ctx.lineWidth = 4; ctx.strokeStyle = rgba(base, 0.9 * al * rev); ctx.strokeText(ls, lx2, ly2); ctx.fillStyle = rgba(fg, 0.92 * al * rev); ctx.fillText(ls, lx2, ly2);
     }
   },
   drawPolar(ctx, hv, fr) {
@@ -189,7 +189,7 @@ Object.assign(GalEngine.prototype, {
     const rings = mode === 'radar' ? [25, 50, 75, 100].map(p => ({ r: R * p / 100, t: p + '%' })) : csNiceTicks(D.yMax, 4).map(t => ({ r: R * t / D.yMax, t: fmtNum(t, D.unit, LANG) }));
     for (const rg of rings) { ctx.beginPath(); if (mode === 'radar') { for (let i = 0; i < nA; i++) { const a = ang(i), x = cx + Math.cos(a) * rg.r * fr, y = cy + Math.sin(a) * rg.r * fr; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.closePath(); } else ctx.arc(cx, cy, rg.r * fr, 0, ORG_TAU); ctx.stroke(); }
     ctx.setLineDash([]); ctx.strokeStyle = rgba(fg, 0.18 * fr); for (let i = 0; i < nA; i++) { const a = ang(i); ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(a) * R * fr, cy + Math.sin(a) * R * fr); ctx.stroke(); }
-    ctx.textBaseline = 'middle'; ctx.font = `500 ${f - 2}px ${th.font}`; ctx.textAlign = 'center'; for (const rg of rings) { const y = cy - rg.r * fr; ctx.lineWidth = 4; ctx.strokeStyle = rgba(base, 0.85 * fr); ctx.strokeText(rg.t, cx + 2, y); ctx.fillStyle = rgba(fg, 0.5 * fr); ctx.fillText(rg.t, cx + 2, y); }
+    ctx.textBaseline = 'middle'; ctx.font = `500 ${f - 2}px ${th.font}`; ctx.textAlign = 'left'; for (const rg of rings) { const y = cy - rg.r * fr; ctx.lineWidth = 4; ctx.strokeStyle = rgba(base, 0.85 * fr); ctx.strokeText(rg.t, cx + 6, y - 6); ctx.fillStyle = rgba(fg, 0.55 * fr); ctx.fillText(rg.t, cx + 6, y - 6); }
     ctx.font = `600 ${f}px ${th.font}`; for (let i = 0; i < nA; i++) { const a = ang(i), c = Math.cos(a), s = Math.sin(a); ctx.textAlign = Math.abs(c) < 0.2 ? 'center' : c > 0 ? 'left' : 'right'; ctx.fillStyle = rgba(fg, 0.85 * fr); ctx.fillText(galTrunc(D.xs[i], this.w < 520 ? 13 : 22), cx + c * (R + 12), cy + s * (R + 14)); }
     // séries: polígono fechado, preenchimento leve, vértices; o raio cresce do centro
     const bySeries = D.series.map((s, gi) => N.filter(n => n.it.g === gi && n.al > 0.02).sort((a, b) => a.it.x - b.it.x)).filter(a => a.length);

@@ -11,7 +11,7 @@ const LP = {
     steps: [
       ['Responda 4 perguntas', 'Qual é a sua área, para quem é, que decisão você quer provocar e quanto tempo tem. Depois da planilha, o Datavix mostra o que encontrou e escolhe o gráfico.', 'opções de público na primeira pergunta do Datavix'],
       ['Suba a planilha', 'Excel ou CSV com dezenas de milhares de linhas. Reconhecemos colunas, datas, números em formato brasileiro e a qualidade dos dados.', 'área para arrastar ou escolher a planilha'],
-      ['Veja a animação', 'O gráfico entra com animação orquestrada. Insights só aparecem com cálculo que os sustente, e o “ver cálculo” mostra a conta.', 'árvore radial animada com os detalhes da linha selecionada'],
+      ['Veja a animação', 'O gráfico entra com animação orquestrada. Insights só aparecem com cálculo que os sustente, e o “ver cálculo” mostra a conta.', 'detalhe da árvore radial animada: períodos, ramos e cada registro como uma bolha'],
       ['Edite e exporte', 'Troque gráfico, paleta, fundo e fontes. Exporte HTML interativo que abre offline, PNG ou um ZIP com um PNG por etapa.', 'painel de exportação: apresentar, HTML, PNG e ZIP'],
     ],
     ch_k: 'Gráficos', ch_h: ['Um gráfico para cada', 'história'], ch_p: 'A sugestão segue o formato dos seus dados. Você escolhe entre a principal e as alternativas.',
@@ -59,7 +59,7 @@ const LP = {
     steps: [
       ['Answer 4 questions', 'Which area you work in, who it is for, which decision you want to trigger and how much time you have. After the spreadsheet, Datavix shows what it found and picks the chart.', 'audience options on the first Datavix question'],
       ['Upload the spreadsheet', 'Excel or CSV with tens of thousands of rows. We detect columns, dates, number formats and data quality.', 'area to drag or pick the spreadsheet'],
-      ['Watch it animate', 'The chart enters with orchestrated animation. Insights only appear when a calculation supports them, and “see calculation” shows the math.', 'animated radial tree with the details of the selected row'],
+      ['Watch it animate', 'The chart enters with orchestrated animation. Insights only appear when a calculation supports them, and “see calculation” shows the math.', 'detail of the animated radial tree: periods, branches and each record as a bubble'],
       ['Edit and export', 'Change chart, palette, background and fonts. Export interactive HTML that opens offline, a PNG, or a ZIP with one PNG per step.', 'export panel: present, HTML, PNG and ZIP'],
     ],
     ch_k: 'Charts', ch_h: ['A chart for every', 'story'], ch_p: 'The suggestion follows the shape of your data. You choose between the main one and the alternatives.',

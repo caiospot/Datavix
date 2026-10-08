@@ -137,7 +137,9 @@ async function videoVizzu(P, box, meta) {
   return {
     cnv, chart,
     // primeira cena: o gráfico nasce (barras crescem, linhas se desenham) em vez de aparecer pronto
-    first: st => { try { chart.animate(full(st), { duration: 1.7, easing: 'cubic-bezier(.25,.8,.25,1)' }).catch(() => {}); } catch (e) { /* segue */ } },
+    first: st => {
+      try { chart.animate(full(st), { duration: 1.7, easing: 'cubic-bezier(.25,.8,.25,1)' }).catch(() => {}); } catch (e) { /* segue */ }
+    },
     go: st => { try { chart.animate({ data: { filter: filt(st) } }, { duration: 0.9, easing: 'cubic-bezier(.4,0,.2,1)' }).catch(() => {}); } catch (e) { /* segue */ } },
     destroy() { try { chart.detach(); } catch (e) { /* ok */ } host.remove(); if (dprDesc) Object.defineProperty(window, 'devicePixelRatio', dprDesc); window.dispatchEvent(new Event('resize')); },
   };

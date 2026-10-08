@@ -324,6 +324,10 @@ async function createChartHost(o) {
   const cv = document.createElement('canvas'), alt = document.createElement('div'), big = document.createElement('div');
   alt.className = 'altview'; alt.style.display = 'none'; big.className = 'racebig'; big.setAttribute('aria-hidden', 'true');
   box.append(cv, alt, big);
+  // "Apresentar" e "? Como usar": os gráficos de canvas trazem os dois dentro do palco; os demais (Vizzu, calendário, indicadores) ganham a mesma barra acima do gráfico
+  const tools = document.createElement('div'); tools.className = 'orgtools row';
+  tools.innerHTML = `<button type="button" id="orgpres">▶ ${T('present')}</button><button type="button" id="orgtut">? ${T('tut_help')}</button>`;
+  if (box.parentElement) { box.parentElement.querySelectorAll(':scope > .orgtools').forEach(n => n.remove()); box.parentElement.insertBefore(tools, box); }
   const chart = new Vizzu({ element: cv });
   await chart.initializing;
   chart.feature('tooltip', false); // o cartão da coluna 2 substitui o balão
@@ -358,6 +362,23 @@ async function createChartHost(o) {
     chart.on('click', e => { if (DOM_TYPES.has(P.type)) return; const t = e.target; if (t && t.tagName === 'plot-marker') { card.pin(vzModel(P, t)); if (list) list.sel(rowOf(t), true); } else card.unpin(); });
     cv.addEventListener('pointerleave', () => { if (!DOM_TYPES.has(P.type)) { card.out(); if (list && !card.isPinned()) list.hot(null, false); } });
   }
+  const vzTour = createTour({
+    el: box, piece: root, key: 'dv-vz-tutorial', demo: () => {},
+    get prefix() { return P.type === 'calendar' ? 'tut_cal_' : P.type === 'kpi' ? 'tut_kpi_' : 'tut_vz_'; },
+    steps: () => {
+      const vis = e => { const b = e && e.getBoundingClientRect(); return b && b.width > 4 && b.height > 4 ? b : null; }, ctl = root.querySelector('#pctrls');
+      const out = [{ k: 1, t: csPad(csBox(box.getBoundingClientRect()), 6) }];
+      if (vis(root.querySelector('#pc2'))) out.push({ k: 2, t: { x: 0, y: 0, w: 0, h: 0 } }); // o createTour mede a coluna 2 na hora
+      if (P.type !== 'kpi' && P.type !== 'calendar' && ctl && ctl.children.length && vis(ctl)) out.push({ k: 3, t: csPad(csBox(ctl.getBoundingClientRect()), 8) });
+      out.push({ k: 4, t: csPad(csBox(tools.getBoundingClientRect()), 8) });
+      return out;
+    },
+  });
+  const onTools = e => {
+    if (e.target.closest('#orgpres')) { const bt = root.querySelector('#pctrls [data-present]') || document.querySelector('[data-a=present]'); if (bt) bt.click(); }
+    else if (e.target.closest('#orgtut')) vzTour.start(true);
+  };
+  tools.addEventListener('click', onTools);
   host.cfg = () => vzConfig(host.baseType(), P.built, P.sort, chartOpt(P, { cumul: host.ix && host.ix.cumul }));
   // para tipos sem Vizzu, o canvas escondido guarda uma configuração neutra para a volta
   host.baseType = () => (DOM_TYPES.has(P.type) ? (P.choice.all.find(t => !DOM_TYPES.has(t)) || 'bars') : P.type);
@@ -372,6 +393,7 @@ async function createChartHost(o) {
       list.onHover = id => card.over(rowModel(id)); list.onLeave = () => card.out(); list.onPick = id => { card.pin(rowModel(id)); list.sel(id, false); };
       host.listRefresh();
     }
+    tools.style.display = isCsType(P.type) ? 'none' : ''; vzTour.close(true);
     cv.style.visibility = dom ? 'hidden' : ''; alt.style.display = dom ? '' : 'none';
     if (dom) renderAlt(P, alt); else { if (alt._org) { alt._org.destroy(); alt._org = null; } alt.innerHTML = ''; }
     big.style.display = P.type === 'race' ? '' : 'none';
@@ -394,6 +416,6 @@ async function createChartHost(o) {
     try { await chart.animate({ style: vzStyle(P) }, { duration: dur(d === undefined ? 1.1 : d), easing: 'cubic-bezier(.4,0,.2,1)' }); } catch (e) { console.error(e); }
   };
   host.resort = async () => { try { await chart.animate({ config: host.cfg() }, { duration: dur(0.9) }); } catch (e) { console.error(e); } };
-  host.destroy = () => { if (rob) rob.disconnect(); if (list) list.destroy(); if (alt._org) alt._org.destroy(); if (card) card.destroy(); try { chart.detach(); } catch (e) { /* já destruído */ } };
+  host.destroy = () => { vzTour.destroy(); tools.remove(); if (rob) rob.disconnect(); if (list) list.destroy(); if (alt._org) alt._org.destroy(); if (card) card.destroy(); try { chart.detach(); } catch (e) { /* já destruído */ } };
   return host;
 }

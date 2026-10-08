@@ -347,3 +347,29 @@ Object.assign(I18N.en, {
   gal4_note_b: (how, val, geo, n) => `One bubble per “${geo}” state (${n}): ${how} of “${val}”.`, gal4_unknown: n => `${n} row(s) with an unrecognized state were left out.`, gal4_note_i: (val, k, n) => `${k} levels of “${val}”, estimated from ${n} points (latitude and longitude from the spreadsheet).`,
   gal4_sum: n => `${n} items`, why_bubmap: 'Needs a column of states (abbreviation or name) with 3+ states', why_isomap: 'Needs latitude and longitude columns and a numeric value',
 });
+
+/* Como usar: gráficos de barras, linhas, mapas de calor etc. (Vizzu), calendário e indicadores */
+Object.assign(I18N.pt, {
+  tut_vz_1_t: 'Cada marca é um dado', tut_vz_1_p: 'Passe o mouse sobre as barras, linhas ou bolhas para ver o valor exato no cartão. Clique para fixar um item e clique de novo para soltar.',
+  tut_vz_2_t: 'Cartão e lista', tut_vz_2_p: 'O cartão mostra o detalhe do que está sob o mouse. A lista traz todos os pontos do gráfico, com busca e ordem.',
+  tut_vz_3_t: 'Filtros e ordem', tut_vz_3_p: 'Escolha o que entra no gráfico e a ordem das marcas. A cada mudança o gráfico se anima para o novo desenho.',
+  tut_vz_4_t: 'Apresente e exporte', tut_vz_4_p: 'Use Apresentar para percorrer a história em tela cheia. Em Exportar você baixa HTML interativo, imagem ou vídeo.',
+  tut_cal_1_t: 'Cada quadrado é um dia', tut_cal_1_p: 'A cor mostra o valor do dia: quanto mais forte, maior. Passe o mouse para ver o número exato.',
+  tut_cal_2_t: 'Cartão e lista', tut_cal_2_p: 'O cartão mostra o dia sob o mouse e a lista reúne os dias com busca e ordem.',
+  tut_cal_4_t: 'Apresente e exporte', tut_cal_4_p: 'Use Apresentar para percorrer a história em tela cheia. Em Exportar você baixa HTML interativo, imagem ou vídeo.',
+  tut_kpi_1_t: 'Cada cartão é um indicador', tut_kpi_1_p: 'Os números são calculados direto da planilha. A seta mostra a variação contra o período anterior, quando há.',
+  tut_kpi_2_t: 'Cartão e lista', tut_kpi_2_p: 'Passe o mouse num indicador para ver como ele foi calculado. A lista reúne todos os indicadores.',
+  tut_kpi_4_t: 'Apresente e exporte', tut_kpi_4_p: 'Use Apresentar para percorrer a história em tela cheia. Em Exportar você baixa HTML interativo, imagem ou vídeo.',
+});
+Object.assign(I18N.en, {
+  tut_vz_1_t: 'Each mark is a data point', tut_vz_1_p: 'Hover over bars, lines or bubbles to see the exact value in the card. Click to pin an item and click again to release it.',
+  tut_vz_2_t: 'Card and list', tut_vz_2_p: 'The card shows the detail of what is under the mouse. The list holds every point of the chart, with search and sorting.',
+  tut_vz_3_t: 'Filters and order', tut_vz_3_p: 'Choose what goes into the chart and the order of the marks. With each change the chart animates to the new drawing.',
+  tut_vz_4_t: 'Present and export', tut_vz_4_p: 'Use Present to walk through the story full screen. Under Export you can download interactive HTML, image or video.',
+  tut_cal_1_t: 'Each square is a day', tut_cal_1_p: 'Color shows the value of the day: the stronger, the higher. Hover to see the exact number.',
+  tut_cal_2_t: 'Card and list', tut_cal_2_p: 'The card shows the day under the mouse and the list gathers the days with search and sorting.',
+  tut_cal_4_t: 'Present and export', tut_cal_4_p: 'Use Present to walk through the story full screen. Under Export you can download interactive HTML, image or video.',
+  tut_kpi_1_t: 'Each card is an indicator', tut_kpi_1_p: 'Numbers are calculated straight from the spreadsheet. The arrow shows the change against the previous period, when there is one.',
+  tut_kpi_2_t: 'Card and list', tut_kpi_2_p: 'Hover an indicator to see how it was calculated. The list gathers all indicators.',
+  tut_kpi_4_t: 'Present and export', tut_kpi_4_p: 'Use Present to walk through the story full screen. Under Export you can download interactive HTML, image or video.',
+});

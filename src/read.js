@@ -18,6 +18,7 @@ const RDX = {
     mergeH: 'Rótulos parecidos', mergeP: 'Estes rótulos parecem ser a mesma coisa escrita de formas diferentes. Unificar muda só o agrupamento, nunca os números da planilha.', mergeSame: 'mesmo texto com pequenas diferenças', mergeFlag: 'mesma resposta, escritas diferentes (você decide)', rows: n => `${n} linhas`,
     wh: { flags: n => `${n} colunas de sim/não`, texts: n => `${n} colunas de texto livre`, amounts: () => 'há valores para somar', numbers: () => 'há números para agregar', few: () => 'poucos números e categorias' }, open: 'ver colunas',
     next: 'Continuar', back: 'Voltar', noMerge: 'Não encontrei rótulos parecidos.', hidden: 'fora dos gráficos', use: 'Usar esta coluna', skipped: n => `${n} coluna(s) de fora`,
+    fv: { pos: 'conta como SIM', neg: 'conta como NÃO', na: 'fora da conta' }, fvH: 'Como contei cada resposta',
     sum: (nc, nu) => `${nc} colunas lidas, ${nu} em uso nos gráficos.`
   },
   en: {
@@ -36,6 +37,7 @@ const RDX = {
     mergeH: 'Similar labels', mergeP: 'These labels look like the same thing written in different ways. Merging only changes grouping, never the numbers in your sheet.', mergeSame: 'same text with small differences', mergeFlag: 'same answer, different wording (you decide)', rows: n => `${n} rows`,
     wh: { flags: n => `${n} yes/no columns`, texts: n => `${n} free-text columns`, amounts: () => 'there are amounts to sum', numbers: () => 'there are numbers to aggregate', few: () => 'few numbers and categories' }, open: 'show columns',
     next: 'Continue', back: 'Back', noMerge: 'I found no similar labels.', hidden: 'kept out of charts', use: 'Use this column', skipped: n => `${n} column(s) left out`,
+    fv: { pos: 'counts as YES', neg: 'counts as NO', na: 'left out' }, fvH: 'How I counted each answer',
     sum: (nc, nu) => `${nc} columns read, ${nu} used in charts.`
   }
 };
@@ -80,12 +82,19 @@ function rdSample(c) {
   else if (c.kind === 'date') return `${bucketLabel(c.min, 'day', LANG)} – ${bucketLabel(c.max, 'day', LANG)}`;
   return vals.map(v => { const s = String(v).slice(0, 38) + (String(v).length > 38 ? '…' : ''); return mask ? rdMask(s) : s; }).join(' · ');
 }
+// sim/não: como cada resposta entra na taxa (a pessoa corrige o que o app leu errado)
+function rdFlagVals(c, i) {
+  const t = RX(), cnt = new Array(c.dict.length).fill(0); for (let k = 0; k < c.codes.length; k++) if (c.codes[k] >= 0) cnt[c.codes[k]]++;
+  const cls = v => (c.flagMap[v] === 'pos' || c.flagMap[v] === 'neg' ? c.flagMap[v] : 'na');
+  return `<div class="rd-fv"><span class="note">${esc(t.fvH)}</span>${c.dict.map((v, k) => `<label class="rd-fi"><span>${esc(String(v).slice(0, 44))} <i>${fmtInt(cnt[k], LANG)}</i></span><select class="rd-sel" data-c="rd-flagval" data-i="${i}" data-k="${k}" aria-label="${esc(String(v))}">${['pos', 'neg', 'na'].map(o => `<option value="${o}" ${cls(v) === o ? 'selected' : ''}>${esc(t.fv[o])}</option>`).join('')}</select></label>`).join('')}</div>`;
+}
 function rdRow(c, i) {
   const t = RX(), cur = c.use === false ? 'ignore' : c.role === 'constant' || c.role === 'empty' ? null : c.role === 'geo' ? 'category' : c.role;
   const opts = rdRoleOptions(c), off = c.use === false || c.role === 'pii';
   const extra = c.role === 'measure' && c.mtype ? `<span class="rd-mt">${esc(t.mt[c.mtype])}</span>` : c.dict ? `<span class="rd-mt">${esc(t.vals(fmtInt(c.dict.length, LANG)))}</span>` : '';
   const sel = cur === null ? `<span class="rd-tag">${esc(t.roles[c.role])}</span>` : `<select class="rd-sel" data-c="rd-role" data-i="${i}" aria-label="${esc(t.roles[cur] || '')}: ${esc(c.name)}">${opts.map(o => `<option value="${o}" ${cur === o ? 'selected' : ''}>${esc(t.roles[o])}</option>`).join('')}</select>`;
-  return `<div class="rd-row ${off ? 'off' : ''}"><div class="rd-main"><b>${esc(c.name)}</b>${extra}</div><div class="rd-smp">${esc(rdSample(c))}${c.role === 'pii' ? ` <i>(${esc(t.hidden)})</i>` : ''}</div>${sel}</div>`;
+  const fv = c.role === 'flag' && c.use !== false && c.dict && c.flagMap && c.dict.length <= 8 ? rdFlagVals(c, i) : '';
+  return `<div class="rd-row ${off ? 'off' : ''}"><div class="rd-main"><b>${esc(c.name)}</b>${extra}</div><div class="rd-smp">${esc(rdSample(c))}${c.role === 'pii' ? ` <i>(${esc(t.hidden)})</i>` : ''}</div>${sel}${fv}</div>`;
 }
 function readScreen() {
   const t = RX(), ds = S.ds, cols = ds.columns, rd = S.read; if (!rd) return '';
@@ -111,7 +120,7 @@ function readScreen() {
 function rdApply() {
   const rd = S.read, by = {};
   (rd.sug || []).filter(m => m.on).forEach(m => { (by[m.col] = by[m.col] || []).push(m); });
-  Object.keys(by).forEach(ci => { const c = S.ds.columns[ci]; uApplyMerges(c, by[ci]); if (c.role === 'flag') { c.flagMap = {}; c.dict.forEach(v => { c.flagMap[v] = uFlagClass(v) || 'other'; }); } });
+  Object.keys(by).forEach(ci => { const c = S.ds.columns[ci]; uApplyMerges(c, by[ci]); if (c.role === 'flag') { const old = c.flagMap || {}; c.flagMap = {}; c.dict.forEach(v => { c.flagMap[v] = old[v] || uFlagClass(v) || 'other'; }); } });
   rd.sug = []; rd.merged = Object.keys(by).length;
 }
 function readContinue() { rdApply(); S.ds.columns.shape = S.read.shape; S.mapping = defaultMapping(); go('mapping'); }
@@ -123,6 +132,7 @@ function readClick(e) {
 function readInput(e) {
   const t = e.target, c = t.dataset && t.dataset.c; if (!S.read || !c || c.indexOf('rd-') !== 0) return;
   if (c === 'rd-role') { const col = S.ds.columns[+t.dataset.i]; rdSetRole(col, t.value); S.read.over[col.name] = t.value; S.read.sug = rdSuggest(S.ds); render(); }
+  else if (c === 'rd-flagval') { const col = S.ds.columns[+t.dataset.i]; col.flagMap[col.dict[+t.dataset.k]] = t.value; render(); }
   else if (c === 'rd-merge') { S.read.sug[+t.dataset.k].on = t.checked; }
 }
 document.addEventListener('click', readClick, true);

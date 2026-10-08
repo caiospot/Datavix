@@ -3,7 +3,22 @@
  * nenhuma frase afirma algo que não tenha o cálculo ao lado. */
 const STORY_TXT = {
   pt: {
-    kick: { overview: 'O panorama', leader: 'O líder', balance: 'O equilíbrio', conc: 'A concentração', contrast: 'O contraste', relation: 'A relação', peak: 'O pico', low: 'O vale', jump_up: 'A virada', drop: 'A queda', trend_up: 'A tendência', trend_down: 'A tendência', dominant: 'O domínio', outlier: 'O ponto fora da curva', flow_conv: 'A conversão', flow_drop: 'O gargalo', flow_path: 'O caminho', ridge_cmp: 'A comparação', other: 'O destaque' },
+    kick: { c_rate: 'A taxa', c_impact: 'O impacto', c_where: 'Onde varia', c_cause: 'As causas', c_terms: 'O que se repete', overview: 'O panorama', leader: 'O líder', balance: 'O equilíbrio', conc: 'A concentração', contrast: 'O contraste', relation: 'A relação', peak: 'O pico', low: 'O vale', jump_up: 'A virada', drop: 'A queda', trend_up: 'A tendência', trend_down: 'A tendência', dominant: 'O domínio', outlier: 'O ponto fora da curva', flow_conv: 'A conversão', flow_drop: 'O gargalo', flow_path: 'O caminho', ridge_cmp: 'A comparação', other: 'O destaque' },
+    ovCount: (r, a, b) => `${r} registros entre ${a} e ${b}.`, ovCountG: (r, n, x) => `${r} registros em ${n} grupos de “${x}”.`,
+    cs: {
+      yes: 'SIM', no: 'NÃO', when: 'Quando', valid: 'Respostas válidas', outside: 'Fora da conta', rate: 'Taxa de SIM', gap: 'Diferença', all: 'Todos os grupos', rows: 'Linhas', filled: 'Linhas preenchidas', share: 'Participação',
+      rateH: (c, p, a, v) => `“${c}”: SIM em ${p} das respostas válidas (${a} de ${v}).`,
+      impactH: (o, f, p1, a1, v1, p0, a0, v0) => `Quando “${o}” é SIM, “${f}” é SIM em ${p1} dos casos (${a1} de ${v1}); quando é NÃO, em ${p0} (${a0} de ${v0}).`,
+      whereH: (g, o, lo, plo, alo, vlo, hi, phi, ahi, vhi) => `Por “${g}”, o SIM em “${o}” vai de ${plo} em ${lo} (${alo} de ${vlo}) a ${phi} em ${hi} (${ahi} de ${vhi}).`,
+      causeH: (c, top, k, f) => `Em “${c}”, a resposta mais frequente é ${top}: ${k} de ${f}.`,
+      termsH: (c, w, k, f) => `Nos textos de “${c}”, “${w}” aparece em ${k} de ${f} casos.`,
+      lbl: { rate: 'DAS RESPOSTAS VÁLIDAS', gap: 'DE DIFERENÇA', spread: 'DE AMPLITUDE', top: 'DAS RESPOSTAS', terms: 'DOS CASOS' }, pp: 'p.p.',
+      rateT: 'Taxa entre respostas válidas', rateF: 'SIM ÷ (SIM + NÃO). Respostas em branco, “não se aplica” e outras não entram na conta.',
+      impactT: 'Impacto de um resultado sobre outro', impactF: 'Taxa de SIM em cada coluna, calculada dentro de cada resposta do resultado; a diferença vem em pontos percentuais. Só entram grupos com 8 ou mais respostas válidas.',
+      whereT: 'Taxa por grupo', whereF: 'SIM ÷ (SIM + NÃO) dentro de cada grupo (8 ou mais respostas válidas); mostra o menor e o maior.',
+      causeT: 'Respostas mais frequentes', causeF: 'Linhas com cada resposta ÷ linhas preenchidas (em branco e “sem informação” ficam de fora).',
+      termsT: 'Termos mais citados', termsF: 'Linhas cujo texto contém a palavra ÷ linhas preenchidas (4 letras ou mais, sem conectivos; variações da mesma palavra contam à parte).'
+    },
     ovSum: (r, t, n, x) => `${r} registros somam ${t}, repartidos em ${n} grupos de “${x}”.`,
     ovTime: (r, t, a, b) => `${r} registros somam ${t} entre ${a} e ${b}.`,
     ovMean: (r, n, x) => `${r} registros analisados em ${n} grupos de “${x}”.`,
@@ -19,7 +34,7 @@ const STORY_TXT = {
     shift: (g, pp, up) => `${g} ${up ? 'ganhou' : 'perdeu'} ${pp} de participação entre o início e o fim.`,
     lbl: { total: 'do total', top: k => `nos ${k} maiores`, ratio: 'líder ÷ menor', corr: 'correlação (r)', value: 'valor', records: 'registros', pp: 'p.p.', ofChange: 'da variação', ofShare: 'de participação' },
     kick2: { contrib: 'O motor da mudança', shift: 'A virada de participação', diag: 'O diagnóstico', impl: 'O que isso significa', prio: 'As prioridades', plan: 'O plano de ação', ask: 'A decisão' },
-    read: { overview: 'Panorama', leader: 'Liderança forte', balance: 'Equilíbrio', conc: 'Dependência de poucos', contrast: 'Distância entre extremos', relation: 'Relação entre medidas', peak: 'Um pico marcante', low: 'Um vale', jump_up: 'Uma virada para cima', drop: 'Uma queda', trend_up: 'Crescimento', trend_down: 'Retração', dominant: 'Domínio de um grupo', outlier: 'Ponto fora da curva', flow_conv: 'Conversão do funil', flow_drop: 'Gargalo', flow_path: 'Caminho dominante', ridge_cmp: 'Diferença entre lados', contrib: 'Motor da mudança', shift: 'Mudança de participação', other: 'Destaque' },
+    read: { c_rate: 'Taxa de resposta', c_impact: 'Impacto no resultado', c_where: 'Variação entre grupos', c_cause: 'Causas principais', c_terms: 'Termos mais citados', overview: 'Panorama', leader: 'Liderança forte', balance: 'Equilíbrio', conc: 'Dependência de poucos', contrast: 'Distância entre extremos', relation: 'Relação entre medidas', peak: 'Um pico marcante', low: 'Um vale', jump_up: 'Uma virada para cima', drop: 'Uma queda', trend_up: 'Crescimento', trend_down: 'Retração', dominant: 'Domínio de um grupo', outlier: 'Ponto fora da curva', flow_conv: 'Conversão do funil', flow_drop: 'Gargalo', flow_path: 'Caminho dominante', ridge_cmp: 'Diferença entre lados', contrib: 'Motor da mudança', shift: 'Mudança de participação', other: 'Destaque' },
     crit: { top: 'Onde concentrar (maiores valores)', low: 'O que rever (menores valores)', growth: 'Onde cresce mais', drop: 'Onde cai mais' },
     critS: { top: 'onde concentrar', low: 'o que rever', growth: 'onde cresce mais', drop: 'onde cai mais' },
     critF: { top: 'Grupos ordenados do maior para o menor valor.', low: 'Grupos ordenados do menor para o maior valor.', growth: 'Variação entre a janela inicial e a final, por grupo.', drop: 'Maiores quedas entre a janela inicial e a final, por grupo.' },
@@ -34,7 +49,22 @@ const STORY_TXT = {
     },
   },
   en: {
-    kick: { overview: 'The big picture', leader: 'The leader', balance: 'The balance', conc: 'The concentration', contrast: 'The contrast', relation: 'The relationship', peak: 'The peak', low: 'The low', jump_up: 'The turn', drop: 'The drop', trend_up: 'The trend', trend_down: 'The trend', dominant: 'The dominance', outlier: 'The outlier', flow_conv: 'The conversion', flow_drop: 'The bottleneck', flow_path: 'The path', ridge_cmp: 'The comparison', other: 'The highlight' },
+    kick: { c_rate: 'The rate', c_impact: 'The impact', c_where: 'Where it varies', c_cause: 'The causes', c_terms: 'What repeats', overview: 'The big picture', leader: 'The leader', balance: 'The balance', conc: 'The concentration', contrast: 'The contrast', relation: 'The relationship', peak: 'The peak', low: 'The low', jump_up: 'The turn', drop: 'The drop', trend_up: 'The trend', trend_down: 'The trend', dominant: 'The dominance', outlier: 'The outlier', flow_conv: 'The conversion', flow_drop: 'The bottleneck', flow_path: 'The path', ridge_cmp: 'The comparison', other: 'The highlight' },
+    ovCount: (r, a, b) => `${r} records between ${a} and ${b}.`, ovCountG: (r, n, x) => `${r} records across ${n} “${x}” groups.`,
+    cs: {
+      yes: 'YES', no: 'NO', when: 'When', valid: 'Valid answers', outside: 'Left out', rate: 'YES rate', gap: 'Difference', all: 'All groups', rows: 'Rows', filled: 'Filled rows', share: 'Share',
+      rateH: (c, p, a, v) => `“${c}”: YES in ${p} of valid answers (${a} of ${v}).`,
+      impactH: (o, f, p1, a1, v1, p0, a0, v0) => `When “${o}” is YES, “${f}” is YES in ${p1} of cases (${a1} of ${v1}); when it is NO, in ${p0} (${a0} of ${v0}).`,
+      whereH: (g, o, lo, plo, alo, vlo, hi, phi, ahi, vhi) => `By “${g}”, YES on “${o}” goes from ${plo} in ${lo} (${alo} of ${vlo}) to ${phi} in ${hi} (${ahi} of ${vhi}).`,
+      causeH: (c, top, k, f) => `In “${c}”, the most frequent answer is ${top}: ${k} of ${f}.`,
+      termsH: (c, w, k, f) => `In the texts of “${c}”, “${w}” shows up in ${k} of ${f} cases.`,
+      lbl: { rate: 'OF VALID ANSWERS', gap: 'DIFFERENCE', spread: 'SPREAD', top: 'OF ANSWERS', terms: 'OF CASES' }, pp: 'p.p.',
+      rateT: 'Rate among valid answers', rateF: 'YES ÷ (YES + NO). Blank, “not applicable” and other answers are left out.',
+      impactT: 'Impact of one result on another', impactF: 'YES rate in each column, computed inside each answer of the result; the difference is in percentage points. Only groups with 8 or more valid answers count.',
+      whereT: 'Rate by group', whereF: 'YES ÷ (YES + NO) inside each group (8 or more valid answers); shows the lowest and the highest.',
+      causeT: 'Most frequent answers', causeF: 'Rows with each answer ÷ filled rows (blank and “no information” are left out).',
+      termsT: 'Most cited terms', termsF: 'Rows whose text contains the word ÷ filled rows (4+ letters, no connectives; variants of the same word count separately).'
+    },
     ovSum: (r, t, n, x) => `${r} records add up to ${t}, split into ${n} “${x}” groups.`,
     ovTime: (r, t, a, b) => `${r} records add up to ${t} between ${a} and ${b}.`,
     ovMean: (r, n, x) => `${r} records analyzed across ${n} “${x}” groups.`,
@@ -50,7 +80,7 @@ const STORY_TXT = {
     shift: (g, pp, up) => `${g} ${up ? 'gained' : 'lost'} ${pp} of share between the start and the end.`,
     lbl: { total: 'of the total', top: k => `in the top ${k}`, ratio: 'leader ÷ smallest', corr: 'correlation (r)', value: 'value', records: 'records', pp: 'p.p.', ofChange: 'of the change', ofShare: 'of share' },
     kick2: { contrib: 'The driver of change', shift: 'The share shift', diag: 'The diagnosis', impl: 'What it means', prio: 'The priorities', plan: 'The action plan', ask: 'The decision' },
-    read: { overview: 'Big picture', leader: 'Strong leader', balance: 'Balance', conc: 'Dependence on a few', contrast: 'Gap between extremes', relation: 'Relationship between measures', peak: 'A striking peak', low: 'A low', jump_up: 'A turn upward', drop: 'A drop', trend_up: 'Growth', trend_down: 'Decline', dominant: 'One group dominates', outlier: 'Outlier', flow_conv: 'Funnel conversion', flow_drop: 'Bottleneck', flow_path: 'Dominant path', ridge_cmp: 'Difference between sides', contrib: 'Driver of change', shift: 'Share shift', other: 'Highlight' },
+    read: { c_rate: 'Answer rate', c_impact: 'Impact on the result', c_where: 'Variation across groups', c_cause: 'Main causes', c_terms: 'Most cited terms', overview: 'Big picture', leader: 'Strong leader', balance: 'Balance', conc: 'Dependence on a few', contrast: 'Gap between extremes', relation: 'Relationship between measures', peak: 'A striking peak', low: 'A low', jump_up: 'A turn upward', drop: 'A drop', trend_up: 'Growth', trend_down: 'Decline', dominant: 'One group dominates', outlier: 'Outlier', flow_conv: 'Funnel conversion', flow_drop: 'Bottleneck', flow_path: 'Dominant path', ridge_cmp: 'Difference between sides', contrib: 'Driver of change', shift: 'Share shift', other: 'Highlight' },
     crit: { top: 'Where to concentrate (highest values)', low: 'What to review (lowest values)', growth: 'Where it grows most', drop: 'Where it falls most' },
     critS: { top: 'where to concentrate', low: 'what to review', growth: 'where it grows most', drop: 'where it falls most' },
     critF: { top: 'Groups sorted from the highest to the lowest value.', low: 'Groups sorted from the lowest to the highest value.', growth: 'Change between the first and the last window, per group.', drop: 'Largest falls between the first and the last window, per group.' },
@@ -111,6 +141,37 @@ function storyStates(P, meta, steps) {
   return { stateOf, manyState };
 }
 
+// casos e pesquisas (P.cases, calculado com a planilha): cada fato vira um ato com número, cálculo e, nas listas, ranking
+function casesFacts(P) {
+  const C = P.cases; if (!C || !C.facts || !C.facts.length) return [];
+  const X = (STORY_TXT[LANG] || STORY_TXT.pt).cs, I = v => fmtInt(v, LANG), pc = v => csPct(v, LANG), r = (a, b) => (a + b ? a / (a + b) * 100 : 0), dec = LANG === 'pt' ? ',' : '.';
+  const ppt = d => (d >= 0 ? '+' : '−') + Math.abs(d).toFixed(Math.abs(d) < 10 ? 1 : 0).replace('.', dec) + ' ' + X.pp;
+  const out = [], nm = t => { t = String(t).trim().replace(/[:\s]+$/, ''); return t && t === t.toUpperCase() && /[A-ZÀ-Ý]/.test(t) ? t.charAt(0) + t.slice(1).toLowerCase() : t; }; // nomes de coluna em CAIXA ALTA viram frase
+  C.facts.forEach((f0, i) => {
+    let s = null; const f = { ...f0 }; ['name', 'o', 'f', 'g'].forEach(k => { if (f[k]) f[k] = nm(f[k]); });
+    if (f.k === 'rate') {
+      const v = f.pos + f.neg, p = pc(r(f.pos, f.neg));
+      s = { id: 'c-rate-' + i, act: 'c_rate', head: X.rateH(f.name, p, I(f.pos), I(v)), hl: p, big: { text: p, label: X.lbl.rate }, bars: [{ k: X.yes, p: r(f.pos, f.neg), t: p }, { k: X.no, p: r(f.neg, f.pos), t: pc(r(f.neg, f.pos)) }],
+        calc: { title: X.rateT, formula: X.rateF, rows: [{ k: X.yes, v: I(f.pos), n: f.n }, { k: X.no, v: I(f.neg) }, { k: X.valid, v: I(v) }, { k: X.outside, v: I(f.other + f.blank) }, { k: X.rate, v: p }] } };
+    } else if (f.k === 'impact') {
+      const p1 = pc(r(f.a1, f.v1 - f.a1)), p0 = pc(r(f.a0, f.v0 - f.a0)), d = ppt(f.d);
+      s = { id: 'c-imp-' + i, act: 'c_impact', head: X.impactH(f.o, f.f, p1, I(f.a1), I(f.v1), p0, I(f.a0), I(f.v0)), hl: '', big: { text: d, label: X.lbl.gap }, bars: [{ k: `${X.when} ${X.yes}`, p: r(f.a1, f.v1 - f.a1), t: p1 }, { k: `${X.when} ${X.no}`, p: r(f.a0, f.v0 - f.a0), t: p0 }],
+        calc: { title: X.impactT, formula: X.impactF, rows: [{ k: `${f.o} = ${X.yes} · ${f.f} = ${X.yes}`, v: `${p1} (${I(f.a1)}/${I(f.v1)})` }, { k: `${f.o} = ${X.no} · ${f.f} = ${X.yes}`, v: `${p0} (${I(f.a0)}/${I(f.v0)})` }, { k: X.gap, v: d }] } };
+    } else if (f.k === 'where') {
+      const plo = pc(f.lo.a / f.lo.v * 100), phi = pc(f.hi.a / f.hi.v * 100), pall = pc(f.all.a / f.all.v * 100), d = ppt(f.spread).replace('+', '');
+      s = { id: 'c-where-' + i, act: 'c_where', head: X.whereH(f.g, f.o, f.lo.l, plo, I(f.lo.a), I(f.lo.v), f.hi.l, phi, I(f.hi.a), I(f.hi.v)), hl: '', big: { text: d, label: X.lbl.spread }, bars: [{ k: f.lo.l, p: f.lo.a / f.lo.v * 100, t: plo }, { k: f.hi.l, p: f.hi.a / f.hi.v * 100, t: phi }, { k: X.all, p: f.all.a / f.all.v * 100, t: pall }],
+        calc: { title: X.whereT, formula: X.whereF, rows: [{ k: f.lo.l, v: `${plo} (${I(f.lo.a)}/${I(f.lo.v)})` }, { k: f.hi.l, v: `${phi} (${I(f.hi.a)}/${I(f.hi.v)})` }, { k: X.all, v: `${pall} (${I(f.all.a)}/${I(f.all.v)})` }, { k: X.gap, v: d }] } };
+    } else if (f.k === 'cause' || f.k === 'terms') {
+      const top = f.top[0], p = pc(top.n / f.filled * 100), cause = f.k === 'cause';
+      s = { id: (cause ? 'c-cause-' : 'c-terms-') + i, type: 'prio', act: cause ? 'c_cause' : 'c_terms', head: cause ? X.causeH(f.name, top.l, I(top.n), I(f.filled)) : X.termsH(f.name, top.l, I(top.n), I(f.filled)), hl: '', big: { text: p, label: cause ? X.lbl.top : X.lbl.terms },
+        rank: f.top.map((x, j) => ({ n: j + 1, k: x.l, v: I(x.n), s: pc(x.n / f.filled * 100) })),
+        calc: { title: cause ? X.causeT : X.termsT, formula: cause ? X.causeF : X.termsF, rows: [...f.top.map(x => ({ k: x.l, v: `${I(x.n)} (${pc(x.n / f.filled * 100)})` })), { k: X.filled, v: I(f.filled), n: f.n }] } };
+    }
+    if (s) { s.state = null; if (!s.head.includes(s.hl)) s.hl = ''; out.push(s); }
+  });
+  return out;
+}
+
 function buildStory(P, meta, steps, opt = {}) {
   const L = STORY_TXT[LANG] || STORY_TXT.pt, b = P.built, tot = (b.totX || []).filter(t => t.value !== null), n = tot.length, f = v => fmtNum(v, b.unit, LANG);
   const isSum = b.aggKind !== 'mean', pctS = x => csPct(x, LANG), rows = (b.stats && (b.stats.rowsUsed || b.stats.rowsTotal)) || 0, rowsTxt = fmtInt(rows, LANG);
@@ -126,9 +187,10 @@ function buildStory(P, meta, steps, opt = {}) {
   } else if (n || sg) {
     const gl = sg ? sg.list : (!b.xIsTime ? tot : []), gn = gl.length, gname = sg && sg.name ? sg.name : b.names.x;
     const sum = (b.xIsTime || !sg ? tot : gl).reduce((a, t) => a + t.value, 0), mean = sum / Math.max(1, (b.xIsTime ? n : gn)), totTxt = hero ? kpiFmt(hero) : f(sum);
-    const head = !isSum ? L.ovMean(rowsTxt, fmtInt(gn || n, LANG), gname) : b.xIsTime && n ? L.ovTime(rowsTxt, totTxt, tot[0].label, tot[n - 1].label) : L.ovSum(rowsTxt, totTxt, fmtInt(gn || n, LANG), gname);
-    add({ id: 'st-ov', act: 'overview', head, hl: isSum ? totTxt : '', big: hero ? { text: kpiFmt(hero), label: hero.label } : null, state: null,
+    const head = b.aggKind === 'count' ? (b.xIsTime && n ? L.ovCount(rowsTxt, tot[0].label, tot[n - 1].label) : L.ovCountG(rowsTxt, fmtInt(gn || n, LANG), gname)) : !isSum ? L.ovMean(rowsTxt, fmtInt(gn || n, LANG), gname) : b.xIsTime && n ? L.ovTime(rowsTxt, totTxt, tot[0].label, tot[n - 1].label) : L.ovSum(rowsTxt, totTxt, fmtInt(gn || n, LANG), gname);
+    add({ id: 'st-ov', act: 'overview', head, hl: isSum && b.aggKind !== 'count' ? totTxt : '', big: hero ? { text: kpiFmt(hero), label: hero.label } : null, state: null,
       calc: { title: L.calc.ovT, formula: L.calc.ovF, rows: [{ k: L.calc.total, v: isSum ? f(sum) : totTxt, n: rows }, { k: L.calc.groups, v: fmtInt(gn || n, LANG) }, { k: L.calc.mean, v: f(mean) }] } });
+    casesFacts(P).forEach(add); // casos e pesquisas: taxas, impacto, onde varia, causas e termos logo depois do panorama
     // 2) o líder, 3) a concentração e 4) o contraste: sobre os grupos do gráfico escolhido
     if (gn >= 3) {
       const gsum = gl.reduce((a, t) => a + t.value, 0), srt = gl.slice().sort((x, y) => y.value - x.value), top = srt[0], low = srt[gn - 1], n2 = gn;
@@ -138,7 +200,7 @@ function buildStory(P, meta, steps, opt = {}) {
           calc: { title: L.calc.leadT, formula: L.calc.leadF, rows: [{ k: top.label, v: f(top.value), n: top.rows }, { k: L.calc.total, v: f(gsum) }, { k: L.calc.share, v: pctS(share) }] } });
         if (n2 >= 6) {
           const k = 3, kt = srt.slice(0, k), ks = kt.reduce((a, t) => a + t.value, 0), p = ks / gsum * 100, rest = n2 - k, q = 100 - p;
-          add({ id: 'st-conc', act: 'conc', head: L.conc(k, pctS(p), rest, pctS(q)), hl: pctS(p), big: { text: pctS(p), label: L.lbl.top(k) }, state: manyState(kt.map(t => t.label)),
+          add({ id: 'st-conc', lowPri: !!P.cases, act: 'conc', head: L.conc(k, pctS(p), rest, pctS(q)), hl: pctS(p), big: { text: pctS(p), label: L.lbl.top(k) }, state: manyState(kt.map(t => t.label)),
             calc: { title: L.calc.concT, formula: L.calc.concF, rows: [...kt.map(t => ({ k: t.label, v: f(t.value), n: t.rows })), { k: L.calc.topSum, v: f(ks) }, { k: L.calc.rest, v: pctS(q) }] } });
         }
       } else if (!isSum) {
@@ -147,7 +209,7 @@ function buildStory(P, meta, steps, opt = {}) {
       }
       if (low.value > 0 && top.value / low.value >= 3) {
         const x = top.value / low.value, xt = (x >= 10 ? Math.round(x) : Math.round(x * 10) / 10).toString().replace('.', LANG === 'pt' ? ',' : '.');
-        add({ id: 'st-contrast', act: 'contrast', head: L.contrast(top.label, xt, low.label), hl: xt + '×', big: { text: xt + '×', label: L.lbl.ratio }, state: stateOf(low.label),
+        add({ id: 'st-contrast', lowPri: !!P.cases, act: 'contrast', head: L.contrast(top.label, xt, low.label), hl: xt + '×', big: { text: xt + '×', label: L.lbl.ratio }, state: stateOf(low.label),
           calc: { title: L.calc.conT, formula: L.calc.conF, rows: [{ k: top.label, v: f(top.value), n: top.rows }, { k: low.label, v: f(low.value), n: low.rows }, { k: L.calc.ratio, v: xt + '×' }] } });
       }
     }
@@ -201,8 +263,10 @@ function storyCut(story, cap, decision) {
 /* ---------------- construtor de história: respostas viram slides ---------------- */
 // prioridade de um fato para a decisão escolhida (menor = mais importante)
 function storyPri(s, decision) {
-  const ord = (typeof INSIGHT_ORDER !== 'undefined' && INSIGHT_ORDER[decision]) || [], gen = { leader: 1.5, balance: 1.5, relation: 1.5, conc: 2.5, contrast: 3.5, contrib: 1.2, shift: 2.2 };
+  const ord = (typeof INSIGHT_ORDER !== 'undefined' && INSIGHT_ORDER[decision]) || [], gen = { leader: 1.5, balance: 1.5, relation: 1.5, conc: 2.5, contrast: 3.5, contrib: 1.2, shift: 2.2, c_impact: 0.6, c_cause: 1.0, c_rate: 1.4, c_where: 1.6, c_terms: 2.8 };
   if (s.id === 'st-ov') return -1;
+  if (s.lowPri) return 6;
+  if (/^c-rate-[1-9]/.test(s.id)) return 3.2; // o resultado principal vale mais que as demais taxas
   if (s.insight) { const k = ord.indexOf(s.act); return k >= 0 ? k : 2; }
   return gen[s.act] ?? 5;
 }

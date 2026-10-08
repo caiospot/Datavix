@@ -150,7 +150,7 @@ function videoRender(P, fmt, plan, th, prep) {
     } else if (sc.calc) {
       y += sq ? 8 : 18; const c = sc.calc, cf = `400 ${F.calc}px ${fam}`; ctx.globalAlpha = alpha * vEase((lt - 350) / 500);
       y = vDrawLines(ctx, vLines(ctx, c.formula, maxW, cf).slice(0, sq ? 1 : 2), M, y, F.calc * 1.35, cf, th.muted);
-      (c.rows || []).slice(0, 2).forEach(r => { y += 4; ctx.font = `600 ${F.calc}px ${fam}`; ctx.fillStyle = th.fg; ctx.fillText(`${r.k}`, M, y); const vw = ctx.measureText(`${r.v}`).width; ctx.fillText(`${r.v}`, W - M - vw, y); ctx.fillStyle = th.muted; ctx.fillRect(M, y + F.calc * 1.3, W - 2 * M, 1); y += F.calc * 1.55; });
+      (c.rows || []).slice(0, 2).forEach(r => { y += 4; ctx.font = `600 ${F.calc}px ${fam}`; ctx.fillStyle = th.fg; const vw = ctx.measureText(`${r.v}`).width; let kt = `${r.k}`; while (kt.length > 6 && ctx.measureText(kt).width > W - 2 * M - vw - 24) kt = kt.slice(0, -2); ctx.fillText(kt === `${r.k}` ? kt : kt.trimEnd() + '…', M, y); ctx.fillText(`${r.v}`, W - M - vw, y); ctx.fillStyle = th.muted; ctx.fillRect(M, y + F.calc * 1.3, W - 2 * M, 1); y += F.calc * 1.55; });
     }
     ctx.restore();
   };

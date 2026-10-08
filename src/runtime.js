@@ -226,7 +226,7 @@ function startPresentation(o) {
   const calcHtml = c => c ? `<details class="pcalc"${innerWidth > 900 ? ' open' : ''}><summary class="pk">[ ${esc(T('see_calc'))} ]</summary><div class="pf">${esc(c.title)}</div><div class="pm">${esc(c.formula)}</div>${c.rows.map(r => `<div class="pr"><span>${esc(r.k)}</span><b>${esc(r.v)}${r.n ? ` · ${fmtInt(r.n, LANG)} ${esc(T('calc_rows'))}` : ''}</b></div>`).join('')}</details>` : '';
   const hlHead = s => { const h = String(s.head || s.caption), k = s.hl ? h.indexOf(s.hl) : -1; return k < 0 ? esc(h) : esc(h.slice(0, k)) + '<mark>' + esc(s.hl) + '</mark>' + esc(h.slice(k + s.hl.length)); };
   const rail = s => {
-    root.classList.toggle('pnoctx', !!(s.type || (s.calc && s.calc.rows && s.calc.rows.length > 3)));
+    root.classList.toggle('pnoctx', !!(s.type || (s.calc && s.calc.rows && (s.calc.rows.length > 3 || s.calc.rows.some(r => String(r.k).length > 38))) || String(s.head || '').length > 110));
     if (s.kick) { // slide de história: ato, frase com o número em destaque, o número que a prova e o cálculo
       const SL = STORY_TXT[LANG] || STORY_TXT.pt, no = s.type === 'impl' || s.type === 'plan';
       let extra = '';
@@ -234,7 +234,7 @@ function startPresentation(o) {
       else if (s.type === 'prio') extra = `<ol class="ps-rank">${s.rank.map(r => `<li><i>${r.n}</i><span class="k">${esc(r.k)}</span><b>${esc(r.v)}</b>${r.s ? `<em>${esc(r.s)}</em>` : ''}</li>`).join('')}</ol>`;
       else if (s.type === 'plan') extra = `<div class="ps-plan">${s.rows.map(r => `<div class="pl-row"><div class="pl-a">${esc(r.a)}</div><div class="pl-m">${[r.o && `${SL.plan.who}: ${r.o}`, r.d && `${SL.plan.when}: ${r.d}`, r.m && `${SL.plan.track}: ${r.m}`].filter(Boolean).map(esc).join(' · ')}</div></div>`).join('')}</div>`;
       else if (s.type === 'diag' && s.chips && s.chips.length) extra = `<div class="ps-chips">${s.chips.map(c => `<span><b>${esc(c.text)}</b> ${esc(c.label)}</span>`).join('')}</div>`;
-      pbody.innerHTML = `<div class="pstory${s.type ? ' t-' + s.type : ''}"><div class="ps-kick"><i>${esc(s.kick.n)}</i>${esc(s.kick.label)}</div>${no ? '' : `<h2 class="ps-head${String(s.head).length > 90 ? ' long' : ''}${s.type === 'ask' ? ' ask' : ''}">${hlHead(s)}</h2>`}${extra}${s.big ? `<div class="ps-big"><span class="ps-num" data-num>${esc(s.big.text)}</span><span class="ps-lab">${esc(s.big.label)}</span></div>` : ''}</div>${calcHtml(s.calc)}`;
+      pbody.innerHTML = `<div class="pstory${s.type ? ' t-' + s.type : ''}"><div class="ps-kick"><i>${esc(s.kick.n)}</i>${esc(s.kick.label)}</div>${no ? '' : `<h2 class="ps-head${String(s.head).length > 90 ? ' long' : ''}${s.type === 'ask' ? ' ask' : ''}">${hlHead(s)}</h2>`}${extra}${s.big ? `<div class="ps-big"><span class="ps-num" data-num>${esc(s.big.text)}</span><span class="ps-lab">${esc(s.big.label)}</span></div>` : ''}${s.bars ? `<div class="ps-bars">${s.bars.map(b => `<div class="ps-bar"><span class="bk">${esc(b.k)}</span><span class="bt"><i style="--w:${Math.max(2, Math.min(100, b.p))}%"></i></span><b>${esc(b.t)}</b></div>`).join('')}</div>` : ''}</div>${calcHtml(s.calc)}`;
       if (s.big) { const at = i; presCountUp(pbody.querySelector('[data-num]'), s.big.text, 1400, () => active && i === at); }
       return;
     }

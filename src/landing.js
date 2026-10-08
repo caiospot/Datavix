@@ -103,6 +103,9 @@ const LPT = () => LP[LANG] || LP.pt;
 const lpTitle = (a, b, c) => `${esc(a)} <b>${esc(b)}</b>${c ? ' ' + esc(c) : ''}`;
 // captura de tela real do produto (seção Como funciona); o fundo escuro do quadro faz a moldura sumir em torno de imagens de proporção diferente
 const lpShot = (src, label) => `<figure class="shot"><img src="${src}" alt="${esc(label)}" loading="lazy" decoding="async" draggable="false"></figure>`;
+// o mesmo desenho do menu de gráficos da ferramenta, em tamanho grande, ilustra cada gráfico da seção Gráficos
+const LP_CH_ICON = ['organism', 'rays', 'river', 'fan', 'ridge', 'flow'];
+const lpChart = (id, label) => `<figure class="ch-art" role="img" aria-label="${esc(label)}">${chartIcon(id)}</figure>`;
 const lpPh = (label, ratio = '16/10', k) => `<figure class="ph" style="aspect-ratio:${ratio}"><div class="ph-in"><span class="lbl">[ ${LPT().ph}${k ? ' ' + k : ''} ]</span><em>${esc(label)}</em></div></figure>`;
 
 function landingHtml() {
@@ -126,8 +129,8 @@ function landingHtml() {
   <section class="lp-sec" id="como"><div class="lbl">[ ${esc(L.how_k)} ]</div><h2>${lpTitle(L.how_h[0], L.how_h[1])}</h2>
     <div class="lp-steps">${L.steps.map((s, i) => `<article class="lp-step" data-rv><div class="lp-n num">${String(i + 1).padStart(2, '0')}</div>${lpShot(LP_IMGS[i], s[2])}<h3>${esc(s[0])}</h3><p>${esc(s[1])}</p></article>`).join('')}</div></section>
   <section class="lp-sec" id="graficos"><div class="lbl">[ ${esc(L.ch_k)} ]</div><h2>${lpTitle(L.ch_h[0], L.ch_h[1])}</h2><p class="sub">${esc(L.ch_p)}</p>
-    <div class="lp-charts">${L.charts.map((c, i) => `<article class="lp-ch" data-rv>${lpPh(c[0], '4/3', i + 1)}<div class="lp-ch-b"><div class="lp-ch-h"><h3>${esc(c[0])}</h3><span class="tag${c[2] ? ' on' : ''}">${c[2] ? L.avail : L.soon}</span></div><p>${esc(c[1])}</p></div></article>`).join('')}</div>
-    <p class="lp-also"><span>${esc(T('lp_also'))}</span>${['bars', 'hbars', 'stacked100', 'treemap', 'race', 'line', 'area', 'calendar', 'scatter', 'bubble', 'kpi'].map(t => `<b>${esc(T('chart')[t])}</b>`).join('')}</p></section>
+    <div class="lp-charts">${L.charts.map((c, i) => `<article class="lp-ch" data-rv>${lpChart(LP_CH_ICON[i], c[0])}<div class="lp-ch-b"><div class="lp-ch-h"><h3>${esc(c[0])}</h3><span class="tag${c[2] ? ' on' : ''}">${c[2] ? L.avail : L.soon}</span></div><p>${esc(c[1])}</p></div></article>`).join('')}</div>
+    <p class="lp-also"><span>${esc(T('lp_also'))}</span>${['bars', 'hbars', 'stacked100', 'treemap', 'race', 'line', 'area', 'calendar', 'scatter', 'bubble', 'kpi'].map(t => `<b>${chartIcon(t)}${esc(T('chart')[t])}</b>`).join('')}</p></section>
   <section class="lp-sec" id="diferenciais"><div class="lbl">[ ${esc(L.df_k)} ]</div><h2>${lpTitle(L.df_h[0], L.df_h[1], L.df_h2)}</h2>
     <div class="lp-diffs">${L.diffs.map((d, i) => `<article class="lp-df" data-rv><div class="lbl">${String(i + 1).padStart(2, '0')}</div><h3>${esc(d[0])}</h3><p>${esc(d[1])}</p></article>`).join('')}</div></section>
   <section class="lp-sec"><div class="lbl">[ ${esc(L.au_k)} ]</div>

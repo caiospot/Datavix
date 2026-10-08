@@ -645,3 +645,11 @@ details.rd-grp > summary .rd-gh { position: relative; padding: 10px 12px; border
 .shot { position: relative; margin: 0; border: 1px solid var(--line); border-radius: var(--r); background: #0b0d0a; overflow: hidden; aspect-ratio: 4 / 3; }
 .shot img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; }
 .lp-step:hover .shot { border-color: var(--muted); }
+/* seção Gráficos: o desenho do menu da ferramenta, grande, no lugar do placeholder */
+.ch-art { margin: 0; aspect-ratio: 4 / 3; display: grid; place-items: center; border-radius: calc(var(--r) - 2px); border: 1px solid var(--line); color: var(--lime); background: radial-gradient(70% 70% at 50% 45%, color-mix(in srgb, var(--lime) 9%, var(--bg2)), var(--bg2)); overflow: hidden; }
+[data-ui='light'] .ch-art { color: #0b0d0a; background: radial-gradient(70% 70% at 50% 45%, color-mix(in srgb, var(--lime) 28%, var(--bg2)), var(--bg2)); }
+.ch-art .cico { width: 72%; height: auto; max-height: 78%; stroke-width: 1.35; transition: transform .45s cubic-bezier(.2, .8, .2, 1); }
+.lp-ch:hover .ch-art .cico { transform: scale(1.06); }
+.lp-also b { display: inline-flex; align-items: center; gap: 8px; }
+.lp-also b .cico { width: 26px; height: auto; color: var(--lime); stroke-width: 1.9; }
+[data-ui='light'] .lp-also b .cico { color: var(--fg); }

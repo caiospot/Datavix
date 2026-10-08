@@ -9,10 +9,10 @@ const LP = {
     chips: ['XLSX · XLS · CSV', 'Exporta HTML offline', 'PT / EN'], hero_cap: 'Árvore radial com dados fictícios. Passe o mouse.',
     how_k: 'Como funciona', how_h: ['Quatro passos, zero', 'designer'],
     steps: [
-      ['Responda 4 perguntas', 'Qual é a sua área, para quem é, que decisão você quer provocar e quanto tempo tem. Depois da planilha, o Datavix mostra o que encontrou e escolhe o gráfico.', 'tela das 3 perguntas'],
-      ['Suba a planilha', 'Excel ou CSV com dezenas de milhares de linhas. Reconhecemos colunas, datas, números em formato brasileiro e a qualidade dos dados.', 'tela de upload e prévia dos dados'],
-      ['Veja a animação', 'O gráfico entra com animação orquestrada. Insights só aparecem com cálculo que os sustente, e o “ver cálculo” mostra a conta.', 'gráfico animado em tela cheia'],
-      ['Edite e exporte', 'Troque gráfico, paleta, fundo e fontes. Exporte HTML interativo que abre offline, PNG ou um ZIP com um PNG por etapa.', 'editor com painel lateral'],
+      ['Responda 4 perguntas', 'Qual é a sua área, para quem é, que decisão você quer provocar e quanto tempo tem. Depois da planilha, o Datavix mostra o que encontrou e escolhe o gráfico.', 'tela da primeira pergunta do Datavix'],
+      ['Suba a planilha', 'Excel ou CSV com dezenas de milhares de linhas. Reconhecemos colunas, datas, números em formato brasileiro e a qualidade dos dados.', 'tela para subir a planilha'],
+      ['Veja a animação', 'O gráfico entra com animação orquestrada. Insights só aparecem com cálculo que os sustente, e o “ver cálculo” mostra a conta.', 'editor com o gráfico animado, a lista e o painel de estilo'],
+      ['Edite e exporte', 'Troque gráfico, paleta, fundo e fontes. Exporte HTML interativo que abre offline, PNG ou um ZIP com um PNG por etapa.', 'painel de exportação: apresentar, HTML, PNG e ZIP'],
     ],
     ch_k: 'Gráficos', ch_h: ['Um gráfico para cada', 'história'], ch_p: 'A sugestão segue o formato dos seus dados. Você escolhe entre a principal e as alternativas.',
     avail: 'Disponível', soon: 'Em breve', ch_more: 'Também: barras, linhas, áreas, treemap, bolhas, dispersão, calendário e indicadores.',
@@ -57,10 +57,10 @@ const LP = {
     chips: ['XLSX · XLS · CSV', 'Exports offline HTML', 'PT / EN'], hero_cap: 'Radial tree with sample data. Hover it.',
     how_k: 'How it works', how_h: ['Four steps, zero', 'designers'],
     steps: [
-      ['Answer 4 questions', 'Which area you work in, who it is for, which decision you want to trigger and how much time you have. After the spreadsheet, Datavix shows what it found and picks the chart.', 'the 3 questions screen'],
-      ['Upload the spreadsheet', 'Excel or CSV with tens of thousands of rows. We detect columns, dates, number formats and data quality.', 'upload and data preview screen'],
-      ['Watch it animate', 'The chart enters with orchestrated animation. Insights only appear when a calculation supports them, and “see calculation” shows the math.', 'full-screen animated chart'],
-      ['Edit and export', 'Change chart, palette, background and fonts. Export interactive HTML that opens offline, a PNG, or a ZIP with one PNG per step.', 'editor with side panel'],
+      ['Answer 4 questions', 'Which area you work in, who it is for, which decision you want to trigger and how much time you have. After the spreadsheet, Datavix shows what it found and picks the chart.', 'the first Datavix question screen'],
+      ['Upload the spreadsheet', 'Excel or CSV with tens of thousands of rows. We detect columns, dates, number formats and data quality.', 'screen to upload the spreadsheet'],
+      ['Watch it animate', 'The chart enters with orchestrated animation. Insights only appear when a calculation supports them, and “see calculation” shows the math.', 'editor with the animated chart, the list and the style panel'],
+      ['Edit and export', 'Change chart, palette, background and fonts. Export interactive HTML that opens offline, a PNG, or a ZIP with one PNG per step.', 'export panel: present, HTML, PNG and ZIP'],
     ],
     ch_k: 'Charts', ch_h: ['A chart for every', 'story'], ch_p: 'The suggestion follows the shape of your data. You choose between the main one and the alternatives.',
     avail: 'Available', soon: 'Coming soon', ch_more: 'Also: bars, lines, areas, treemap, bubbles, scatter, calendar and KPI cards.',
@@ -101,6 +101,8 @@ const LP = {
 const LPT = () => LP[LANG] || LP.pt;
 
 const lpTitle = (a, b, c) => `${esc(a)} <b>${esc(b)}</b>${c ? ' ' + esc(c) : ''}`;
+// captura de tela real do produto (seção Como funciona); o fundo escuro do quadro faz a moldura sumir em torno de imagens de proporção diferente
+const lpShot = (src, label) => `<figure class="shot"><img src="${src}" alt="${esc(label)}" loading="lazy" decoding="async" draggable="false"></figure>`;
 const lpPh = (label, ratio = '16/10', k) => `<figure class="ph" style="aspect-ratio:${ratio}"><div class="ph-in"><span class="lbl">[ ${LPT().ph}${k ? ' ' + k : ''} ]</span><em>${esc(label)}</em></div></figure>`;
 
 function landingHtml() {
@@ -122,7 +124,7 @@ function landingHtml() {
   </div></section>
   ${(S.recents || []).length ? `<section class="lp-sec lp-saved" id="salvos"><div class="lbl">[ ${esc(L.saved_k)} ]</div><h2>${lpTitle(L.saved_h[0], L.saved_h[1])}</h2><div class="pj-grid">${projCards(6)}</div><div class="row pj-more">${S.recents.length > 6 ? `<button class="btn ghost sm" data-a="projects">${L.all} (${S.recents.length})</button>` : ''}<span class="note">${esc(L.saved_note)}</span></div></section>` : ''}
   <section class="lp-sec" id="como"><div class="lbl">[ ${esc(L.how_k)} ]</div><h2>${lpTitle(L.how_h[0], L.how_h[1])}</h2>
-    <div class="lp-steps">${L.steps.map((s, i) => `<article class="lp-step" data-rv><div class="lp-n num">${String(i + 1).padStart(2, '0')}</div>${lpPh(s[2], '16/10', i + 1)}<h3>${esc(s[0])}</h3><p>${esc(s[1])}</p></article>`).join('')}</div></section>
+    <div class="lp-steps">${L.steps.map((s, i) => `<article class="lp-step" data-rv><div class="lp-n num">${String(i + 1).padStart(2, '0')}</div>${lpShot(LP_IMGS[i], s[2])}<h3>${esc(s[0])}</h3><p>${esc(s[1])}</p></article>`).join('')}</div></section>
   <section class="lp-sec" id="graficos"><div class="lbl">[ ${esc(L.ch_k)} ]</div><h2>${lpTitle(L.ch_h[0], L.ch_h[1])}</h2><p class="sub">${esc(L.ch_p)}</p>
     <div class="lp-charts">${L.charts.map((c, i) => `<article class="lp-ch" data-rv>${lpPh(c[0], '4/3', i + 1)}<div class="lp-ch-b"><div class="lp-ch-h"><h3>${esc(c[0])}</h3><span class="tag${c[2] ? ' on' : ''}">${c[2] ? L.avail : L.soon}</span></div><p>${esc(c[1])}</p></div></article>`).join('')}</div>
     <p class="lp-also"><span>${esc(T('lp_also'))}</span>${['bars', 'hbars', 'stacked100', 'treemap', 'race', 'line', 'area', 'calendar', 'scatter', 'bubble', 'kpi'].map(t => `<b>${esc(T('chart')[t])}</b>`).join('')}</p></section>

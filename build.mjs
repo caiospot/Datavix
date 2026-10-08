@@ -8,7 +8,9 @@ const shared = [r('src/i18n.js'), r('src/i18n-charts.js'), r('src/areas.js'), r(
 // biblioteca de fontes do editor (vendor/fonts/lib, ver scripts/fetch-fonts.mjs): vira um objeto { família: [{ w, b: base64 }] }; só entra no app
 const fontIndex = JSON.parse(r('vendor/fonts/lib/index.json'));
 const fontLib = 'const FONT_LIB = ' + JSON.stringify(Object.fromEntries(Object.entries(fontIndex).map(([fam, faces]) => [fam, faces.map(f => ({ w: f.weight, b: b64f('vendor/fonts/lib/' + f.file) }))]))) + ';\n';
-const js = [shared, r('src/store.js'), r('src/modal.js'), r('src/landing.js'), r('src/export.js'), r('src/mp4.js'), r('src/video.js'), r('src/understand.js'), r('src/read.js'), r('src/cases.js'), r('src/builder.js'), r('src/pwa.js'), r('src/nps.js'), r('src/privacy.js'), fontLib + r('src/fontlib.js'), r('src/icons.js'), r('src/ui.js')].join('\n');
+// imagens da landing (seção "Como funciona"): entram no arquivo único como data URI
+const lpImgs = 'const LP_IMGS = ' + JSON.stringify([['passo-1.png', 'png'], ['passo-2.png', 'png'], ['passo-3.webp', 'webp'], ['passo-4.png', 'png']].map(([f, t]) => `data:image/${t};base64,` + b64f('src/assets/landing/' + f))) + ';';
+const js = [shared, r('src/store.js'), r('src/modal.js'), lpImgs + r('src/landing.js'), r('src/export.js'), r('src/mp4.js'), r('src/video.js'), r('src/understand.js'), r('src/read.js'), r('src/cases.js'), r('src/builder.js'), r('src/pwa.js'), r('src/nps.js'), r('src/privacy.js'), fontLib + r('src/fontlib.js'), r('src/icons.js'), r('src/ui.js')].join('\n');
 const fonts = r('vendor/fonts/fonts-embedded.css');
 // tela de carregamento: SVG de uma árvore radial mínima, gerada aqui com números fixos (sem aleatório em tempo de execução)
 function splashHtml() {

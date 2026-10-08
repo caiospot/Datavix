@@ -233,7 +233,7 @@ function wireDrop(z) {
 
 /* ---- aba ---- */
 function sheetPick() {
-  return `<div class="wrap-narrow"><h2>${title2(T('sheet_h'))}</h2><p class="sub">${T('sheet_p')}</p>
+  return `<div class="wrap-narrow"><h2>${title2(T('shp_h'))}</h2><p class="sub">${T('sheet_p')}</p>
     <div class="opts">${S.sheets.map(n => `<button class="opt" data-a="sheet" data-v="${esc(n)}"><strong>${esc(n)}</strong></button>`).join('')}</div>
     <button class="btn ghost" data-a="back-to" data-v="upload">← ${T('back')}</button></div>`;
 }

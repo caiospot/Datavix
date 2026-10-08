@@ -22,3 +22,19 @@ Leitura da planilha, escolha da medida e do gráfico inicial, análise de casos,
 
 ## Próximos passos
 2) roteiro e textos padrão por área (tese, pedido final e termos); 3) despivotar planilhas largas, cabeçalho deslocado e detecção de "resumo já somado".
+
+---
+
+# Passo 2 · Roteiro e textos padrão por área
+
+A área passou a conduzir também o **roteiro** e os **textos sugeridos** (`AREA_TXT` em `src/areas.js`). Tudo continua sendo sugestão marcada como tal: o fato e o número vêm dos dados; o julgamento é da pessoa.
+
+- **Ordem do roteiro (arco da área):** ao montar o roteiro (rápido ou nas 3 perguntas), as evidências entram na ordem em que a área costuma contar. CX: taxa → impacto → onde varia → causas. Finanças: tendência → quem explica a variação → quem ganhou participação → queda → fora da curva. Marketing: conversão do funil → gargalo → líder. Em "Outra área ou geral" vale a ordem de antes.
+- **Escolha do ponto central:** os pesos da área (passo 1) decidem o fato sugerido. Na planilha ideal, Finanças abre com "E-commerce explica 44% da alta do período", enquanto sem área abre com o pico.
+- **Sugestões de tese:** prefixo por tipo de fato e por área ("Resolver bem muda o resultado do cliente: …", "Quem explica a variação: …", "A conversão do funil: …").
+- **Pedido final:** modelo da decisão escolhida com o objeto da área ("Definir quem corrige os pontos da jornada com pior resolução e até quando", "Aprovar a revisão da previsão com base nos desvios").
+- **Ações e implicações sugeridas** por área, à frente das genéricas (no modo rápido, nas 3 perguntas e no modo detalhado).
+- **Exemplos nos campos** de tese e de pedido, na linguagem da área.
+- Tudo em português e inglês. As 11 áreas têm textos; "Outra área ou geral" usa os genéricos.
+
+Teste: `test/m/area-script.js` (CX com arco, placeholder, sugestão de tese e pedido; geral sem vocabulário) e verificação da planilha ideal com Finanças, Vendas, Geral e Marketing.

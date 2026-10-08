@@ -123,8 +123,10 @@ const BST = () => BS[LANG] || BS.pt;
 // roteiro padrão: o ponto central abre a história; depois entram as evidências mais pesadas para a decisão, na ordem em que a história se conta
 function scDefaultScript(c, center) {
   const P = c.P, cap = { quick: 2, normal: 4, full: 7 }[(P.br && P.br.time) || 'full'], order = c.cand.facts.filter(f => f.id !== 'st-ov').map(f => f.id);
-  const pick = c.cand.ranked.filter(f => f.id !== center).slice(0, cap).map(f => f.id);
-  return [center, ...order.filter(id => pick.includes(id))];
+  const pick = c.cand.ranked.filter(f => f.id !== center).slice(0, cap).map(f => f.id), at = areaText(P.br && P.br.area, LANG), arc = at && at.arc ? at.arc : null;
+  let rest = order.filter(id => pick.includes(id));
+  if (arc) { const ix = id => { const k = arc.indexOf((c.by(id) || {}).act); return k < 0 ? 99 : k; }; rest = rest.map((id, i) => [id, i]).sort((a, b) => ix(a[0]) - ix(b[0]) || a[1] - b[1]).map(x => x[0]); } // a ordem em que a área costuma contar
+  return [center, ...rest];
 }
 function scInit(from) {
   const c = bCtx(), sb = S.piece.sb || {}, center = sb.script && sb.script[0] ? sb.script[0] : (sb.center && c.by(sb.center) ? sb.center : (S.find && c.by(S.find.center) ? S.find.center : c.cand.center));
@@ -146,13 +148,13 @@ function scBody(step) {
   const B = BST(), a = S.sc, c = bCtx(), P = c.P, center = c.by(a.script[0]), sug = storySuggest(P, center);
   if (step === 0) { const alts = c.cand.ranked.slice(0, 6);
     return `<div class="sb-center"><span class="lbl">[ ${esc(B.centerLbl)} ]</span><p>${center ? esc(center.head) : ''}</p></div>
-      <textarea class="field sb" id="sc-thesis" maxlength="220" placeholder="${esc(B.thesisPh)}" aria-label="${esc(B.q[0].join(' '))}">${esc(a.thesis)}</textarea>${sbChips(sug.msg.filter(x => x !== P.title).slice(0, 2), 'scmsg')}
+       <textarea class="field sb" id="sc-thesis" maxlength="220" placeholder="${esc(((areaText(P.br && P.br.area, LANG) || {}).ex || {}).thesis || B.thesisPh)}" aria-label="${esc(B.q[0].join(' '))}">${esc(a.thesis)}</textarea>${sbChips(sug.msg.filter(x => x !== P.title).slice(0, 2), 'scmsg')}
       <details class="sc-alt"><summary>${esc(B.change)}</summary><div class="fd-grid sb-list">${alts.map(f => bFactCard(f, { a: 'sc-center', sel: a.script[0] === f.id })).join('')}</div></details>`; }
   if (step === 1) { const out = c.cand.ranked.filter(f => !a.script.includes(f.id)), t = T('o'), br = P.br || {}, sl = scStory(a), n = sl.length, m = Math.max(1, Math.round(n * 0.75));
     const eff = br.audience && br.decision && br.time ? `<p class="sc-eff">${esc(B.effect(((t.area || {})[br.area] ? (t.area[br.area][0] + ' · ') : '') + (t.audience[br.audience] || [''])[0], (t.decision[br.decision] || [''])[0].toLowerCase(), (t.time[br.time] || [''])[0], n, m))}</p>` : '';
     return `${eff}<div class="sc-list">${a.script.map((id, i) => { const f = c.by(id); return f ? scCard(f, a, i, B) : ''; }).join('')}</div>
       ${out.length ? `<div class="sc-out"><span class="lbl">[ ${esc(B.removed)} ]</span><div class="sc-chips">${out.map(f => `<button type="button" class="sb-chip" data-a="sc-add" data-v="${esc(f.id)}">+ ${esc(f.kick.label)}${f.big ? ` · ${esc(f.big.text)}` : ''}</button>`).join('')}</div></div>` : ''}`; }
-  return `<textarea class="field sb" id="sc-ask" maxlength="200" placeholder="${esc(B.askPh)}" aria-label="${esc(B.q[2].join(' '))}">${esc(a.ask)}</textarea>${sbChips(sug.ask ? [sug.ask] : [], 'scask')}
+  return `<textarea class="field sb" id="sc-ask" maxlength="200" placeholder="${esc(((areaText(P.br && P.br.area, LANG) || {}).ex || {}).ask || B.askPh)}" aria-label="${esc(B.q[2].join(' '))}">${esc(a.ask)}</textarea>${sbChips(sug.ask ? [sug.ask] : [], 'scask')}
     <div class="sc-detail"><button type="button" class="btn ghost sm" data-a="sc-detail">${esc(B.detail)}</button><p class="note">${esc(B.detailHint)}</p></div>`;
 }
 function scriptScreen() {

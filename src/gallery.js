@@ -3,6 +3,7 @@
  * Os números vêm sempre da planilha (soma ou contagem; as bolhas aceitam média). Valores negativos ficam de fora das fatias e são avisados. */
 const GAL_SLICES = 7, GAL_SLICES_MULTI = 6, GAL_PANELS = 12, GAL_BUBBLES = 80, GAL_GROW_S = 1.5;
 const GAL_ID_HINT = /id|c[oó]digo|code|cod\b|n[uú]mero|num\b/i;
+const GAL_XY = new Set(['cols', 'lines', 'radial', 'radar']); // colunas, linhas, linha radial e radar: motor em gallery2.js
 
 /* ---------------- dados ---------------- */
 const galIsAvg = c => c && (c.unit === '%' || RAYS_AVG_HINT.test(c.name));
@@ -90,6 +91,7 @@ const galFit = (mode, built, briefing) => {
 };
 
 /* ---------------- motor ---------------- */
+const galKey = it => (it.nv !== undefined ? it.nv : it.v); // radar compara pelo índice normalizado
 const galTrunc = (s, k = 22) => (s.length > k ? s.slice(0, k - 1).trimEnd() + '…' : s);
 // espaço da peça em círculos tangentes: a ordem vai do maior para o menor (caminho simples, mais que suficiente para 80 bolhas)
 function galPack(rs) {
@@ -115,7 +117,7 @@ class GalEngine {
   constructor(D, th, opt = {}) {
     this.D = D; this.th = th; this.rm = !!opt.rm; this.st = { hidden: new Set(), spot: null };
     this.hoverId = null; this.hovLg = -1; this.w = 800; this.h = 600; this.dpr = 1; this.grow = 0; this.moving = true; this.dirty = true;
-    const rnd = orgRand(13); this.N = D.items.map((it, i) => ({ i, it, vis: false, g: { cx: 0, cy: 0, r0: 0, r1: 0, a0: -Math.PI / 2, a1: -Math.PI / 2, x: 0, y: 0, r: 0 }, t: null, al: 0, tal: 0, dm: 1, rt: 0.8 + rnd() * 0.5, gd: i / Math.max(1, D.items.length), lab: null }));
+    const rnd = orgRand(13); this.N = D.items.map((it, i) => ({ i, it, vis: false, g: { cx: 0, cy: 0, r0: 0, r1: 0, a0: -Math.PI / 2, a1: -Math.PI / 2, x: 0, y: 0, r: 0, w: 0, h: 0 }, t: null, al: 0, tal: 0, dm: 1, rt: 0.8 + rnd() * 0.5, gd: i / Math.max(1, D.items.length), lab: null }));
     this.titles = []; this.center = null; this.layout(); this.snapPos();
   }
   setState(p) { const q = p || {}; this.st.hidden = new Set(q.hidden || []); this.spot = q.spot !== undefined ? q.spot : null; this.layout(); this.kick(); }
@@ -130,6 +132,7 @@ class GalEngine {
     const { D, N } = this, W = this.w, H = this.h, mode = D.mode, hid = this.st.hidden; this.titles = []; this.center = null; this.R = 0;
     const vis = n => !hid.has(n.it.lg);
     N.forEach(n => { n.vis = vis(n); });
+    if (GAL_XY.has(mode)) { this.layoutXY(); this.kick(); return; }
     if (mode === 'pie' || mode === 'donut') {
       const R = Math.max(50, Math.min(W * 0.5 - 120, H * 0.5 - 38)), cx = W / 2, cy = H / 2, r0 = mode === 'donut' ? R * 0.58 : 0, tot = N.filter(n => n.vis).reduce((s, n) => s + n.it.v, 0) || 1; let a = -Math.PI / 2;
       this.R = R; this.cx = cx; this.cy = cy;
@@ -159,7 +162,8 @@ class GalEngine {
     const hv = this.hoverId !== null ? this.N[this.hoverId] : null, kd = snap || this.rm ? 1 : 1 - Math.exp(-dt * 11), sp = this.spot !== null && this.spot !== undefined ? this.N[this.spot] : null; let mv = false;
     for (const n of this.N) {
       let t = 1;
-      if (hv) t = n === hv ? 1 : (n.it.lg === hv.it.lg && this.D.mode !== 'packed' ? 0.7 : 0.28);
+      if (hv && GAL_XY.has(this.D.mode)) t = this.D.mode === 'cols' ? (n === hv ? 1 : n.it.lg === hv.it.lg ? 0.85 : 0.35) : (n.it.g === hv.it.g ? 1 : 0.2);
+      else if (hv) t = n === hv ? 1 : (n.it.lg === hv.it.lg && this.D.mode !== 'packed' ? 0.7 : 0.28);
       else if (this.hovLg >= 0) t = n.it.lg === this.hovLg ? 1 : 0.2;
       else if (sp) t = n === sp ? 1 : 0.25;
       const d = t - n.dm; if (Math.abs(d) > 0.004) { n.dm += d * kd; mv = true; } else n.dm = t;
@@ -182,7 +186,7 @@ class GalEngine {
     this.grow = this.rm ? 1 : Math.min(1, this.grow + dt / GAL_GROW_S); let mv = this.grow < 1; const e1 = 1 - Math.exp(-dt * 6);
     for (const n of this.N) {
       const k = this.rm ? 1 : Math.min(1, e1 * n.rt), g = n.g, t = n.t;
-      for (const key of ['cx', 'cy', 'r0', 'r1', 'a0', 'a1', 'x', 'y', 'r']) { const d = t[key] - g[key], eps = key[0] === 'a' ? 2e-4 : 0.05; if (Math.abs(d) > eps) { g[key] += d * k; mv = true; } else g[key] = t[key]; }
+      for (const key of ['cx', 'cy', 'r0', 'r1', 'a0', 'a1', 'x', 'y', 'r', 'w', 'h']) { const d = t[key] - g[key], eps = key[0] === 'a' ? 2e-4 : 0.05; if (Math.abs(d) > eps) { g[key] += d * k; mv = true; } else g[key] = t[key]; }
       const d = n.tal - n.al; if (Math.abs(d) > 0.004) { n.al += d * k; mv = true; } else n.al = n.tal;
     }
     if (this.updateDim(dt, false)) mv = true; this.moving = mv;
@@ -192,6 +196,7 @@ class GalEngine {
   prog(n) { return orgEase(orgClamp((this.grow - n.gd * 0.45) / 0.55)); }
   render() { if (this.ctx) { const c = this.ctx; c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); this.draw(c); } }
   draw(ctx, opt) {
+    if (GAL_XY.has(this.D.mode)) return this.drawXY(ctx, opt);
     const { th, N, D } = this, fg = th.fg, base = th.base; if (!opt || opt.clear !== false) ctx.clearRect(0, 0, this.w, this.h);
     const [br, bg2, bb] = hexToRgb(base); this.light = br + bg2 + bb > 450; const fr = orgStage(this.grow, 0, 0.25), hv = this.hoverId !== null ? N[this.hoverId] : null;
     if (br + bg2 + bb < 330) { if (!this.stars) { const sr = orgRand(31); this.stars = Array.from({ length: 60 }, () => [sr(), sr(), 0.5 + sr() * 1.1, 0.12 + sr() * 0.35]); } ctx.fillStyle = rgba(fg, 1); for (const s of this.stars) { ctx.globalAlpha = s[3] * fr; ctx.beginPath(); ctx.arc(s[0] * this.w, s[1] * this.h, s[2], 0, ORG_TAU); ctx.fill(); } ctx.globalAlpha = 1; }
@@ -246,6 +251,7 @@ class GalEngine {
   }
   /* ---------- seleção com o mouse ---------- */
   pick(mx, my) {
+    if (GAL_XY.has(this.D.mode)) return this.pickXY(mx, my);
     let best = null;
     for (const n of this.N) {
       if (n.al < 0.4) continue; const g = n.g;
@@ -256,7 +262,7 @@ class GalEngine {
     return best;
   }
   stats() {
-    const vis = this.N.filter(n => n.vis), ids = vis.map(n => n.i).sort((a, b) => this.N[b].it.v - this.N[a].it.v), rank = new Map(ids.map((id, k) => [id, k + 1])), total = vis.reduce((s, n) => s + n.it.v, 0);
+    const vis = this.N.filter(n => n.vis), ids = vis.map(n => n.i).sort((a, b) => galKey(this.N[b].it) - galKey(this.N[a].it)), rank = new Map(ids.map((id, k) => [id, k + 1])), total = vis.reduce((s, n) => s + n.it.v, 0);
     return { ids, rank, total, n: vis.length, mean: vis.length ? total / vis.length : 0, median: csMedian(vis.map(n => n.it.v)) };
   }
 }

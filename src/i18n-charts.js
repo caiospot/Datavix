@@ -277,3 +277,31 @@ Object.assign(I18N.en, {
   tut_gal_1_t: 'Each part is an item', tut_gal_1_p: 'Area shows the value and color shows the category or group. The largest come first.', tut_gal_2_t: 'Hover and click', tut_gal_2_p: 'The middle column has the full list and the details card. Hover a part or a row; click to pin.',
   why_pie: 'Needs a category with 2 to 8 items and a value that adds up', why_donut: 'Needs a category with 2 to 8 items and a value that adds up', why_pies: 'Needs two categories (parts and panels) and a value that adds up', why_donuts: 'Needs two categories (parts and panels) and a value that adds up', why_packed: 'Needs 10+ items and a value',
 });
+
+/* ---- galeria 2: várias colunas, várias linhas, linha radial, radar ---- */
+Object.assign(I18N.pt.chart, { cols: 'Várias colunas', lines: 'Várias linhas', radial: 'Linha radial', radar: 'Radar' });
+Object.assign(I18N.en.chart, { cols: 'Multiple columns', lines: 'Multiple lines', radial: 'Radial line', radar: 'Radar' });
+Object.assign(I18N.pt, {
+  cols_h: 'Várias colunas', cols_help: 'Um painel de colunas para cada grupo, todos na mesma escala, para comparar os grupos lado a lado.', lines_h: 'Várias linhas', lines_help: 'Um painel de linha para cada grupo, na mesma escala, mostrando a evolução de cada um.',
+  radial_h: 'Linha radial', radial_help: 'O ciclo em volta do centro: com datas, cada linha é um ano e os raios são os meses; com categorias, cada raio é uma categoria.', radar_h: 'Radar', radar_help: 'Vários indicadores de cada grupo no mesmo desenho; cada eixo vai de zero ao maior valor entre os grupos.',
+  gal2_x: 'Eixo (período ou categoria)', gal2_xt: 'Período (eixo)', gal2_xr: 'Ciclo (data ou categoria)', gal2_pan: 'Painel (um por grupo)', gal2_ser: 'Linhas (uma por grupo)', gal2_poly: 'Grupo (polígono)',
+  gal2_axis1: 'Indicador 1 (eixo)', gal2_axis2: 'Indicador 2 (eixo)', gal2_axis3: 'Indicador 3 (eixo)', gal2_axis4: 'Indicador 4 (eixo)', gal2_axis5: 'Indicador 5 (eixo)', gal2_axis6: 'Indicador 6 (eixo)',
+  gal2_rank: 'Maiores valores', gal2_rank_r: 'Maiores índices', gal2_index: 'Índice', gal2_of_max: 'do maior grupo', gal2_how: 'Cálculo', gal2_vsprev: 'Contra o período anterior', gal2_axes: 'indicadores',
+  gal2_base_cols: 'Todos os painéis usam a mesma escala.', gal2_base_lines: 'Todos os painéis usam a mesma escala.', gal2_base_radial: 'A distância do centro é o valor.', gal2_base_radar: 'Cada eixo vai de zero ao maior valor entre os grupos: 100% é o maior grupo naquele indicador.',
+  gal2_note_cols: (how, val, x, grp, n) => `${grp ? `Um painel por “${grp}” (${n})` : 'Um painel'}: ${how} de “${val}” por “${x}”.`, gal2_note_lines: (how, val, x, grp, n) => `${grp ? `Um painel por “${grp}” (${n})` : 'Um painel'}: ${how} de “${val}” ao longo de “${x}”.`,
+  gal2_note_radial: (how, val, x, grp, n) => `${how} de “${val}” em volta do ciclo de “${x}”${grp ? `; uma linha por “${grp}” (${n})` : ''}.`, gal2_note_radar: (n, grp, a) => `${n} grupos de “${grp}” em ${a} indicadores. Cada eixo vai de zero ao maior valor entre os grupos (soma ou média, conforme o indicador).`,
+  gal2_top: (k, tot) => `Os ${k} maiores de ${tot}.`, gal2_sum: (n, s) => `${n} pontos · ${s} ${s === 1 ? 'série' : 'séries'}`,
+  why_cols: 'Precisa de um período ou categoria e, de preferência, um grupo', why_lines: 'Precisa de uma data com 6+ períodos', why_radial: 'Precisa de uma data com mais de um ano ou de uma categoria com 5+ itens', why_radar: 'Precisa de um grupo com 2 a 8 itens e 3 ou mais colunas numéricas',
+});
+Object.assign(I18N.en, {
+  cols_h: 'Multiple columns', cols_help: 'One column panel per group, all on the same scale, to compare groups side by side.', lines_h: 'Multiple lines', lines_help: 'One line panel per group, on the same scale, showing how each one evolves.',
+  radial_h: 'Radial line', radial_help: 'The cycle around the center: with dates, each line is a year and the spokes are months; with categories, each spoke is a category.', radar_h: 'Radar', radar_help: 'Several indicators for each group in one drawing; each axis goes from zero to the highest value among the groups.',
+  gal2_x: 'Axis (period or category)', gal2_xt: 'Period (axis)', gal2_xr: 'Cycle (date or category)', gal2_pan: 'Panel (one per group)', gal2_ser: 'Lines (one per group)', gal2_poly: 'Group (polygon)',
+  gal2_axis1: 'Indicator 1 (axis)', gal2_axis2: 'Indicator 2 (axis)', gal2_axis3: 'Indicator 3 (axis)', gal2_axis4: 'Indicator 4 (axis)', gal2_axis5: 'Indicator 5 (axis)', gal2_axis6: 'Indicator 6 (axis)',
+  gal2_rank: 'Highest values', gal2_rank_r: 'Highest indexes', gal2_index: 'Index', gal2_of_max: 'of the top group', gal2_how: 'Calculation', gal2_vsprev: 'Against the previous period', gal2_axes: 'indicators',
+  gal2_base_cols: 'All panels use the same scale.', gal2_base_lines: 'All panels use the same scale.', gal2_base_radial: 'Distance from the center is the value.', gal2_base_radar: 'Each axis goes from zero to the highest value among the groups: 100% is the top group on that indicator.',
+  gal2_note_cols: (how, val, x, grp, n) => `${grp ? `One panel per “${grp}” (${n})` : 'One panel'}: ${how} of “${val}” by “${x}”.`, gal2_note_lines: (how, val, x, grp, n) => `${grp ? `One panel per “${grp}” (${n})` : 'One panel'}: ${how} of “${val}” over “${x}”.`,
+  gal2_note_radial: (how, val, x, grp, n) => `${how} of “${val}” around the “${x}” cycle${grp ? `; one line per “${grp}” (${n})` : ''}.`, gal2_note_radar: (n, grp, a) => `${n} “${grp}” groups across ${a} indicators. Each axis goes from zero to the highest value among the groups (sum or mean, depending on the indicator).`,
+  gal2_top: (k, tot) => `The ${k} largest of ${tot}.`, gal2_sum: (n, s) => `${n} points · ${s} ${s === 1 ? 'series' : 'series'}`,
+  why_cols: 'Needs a period or category and, ideally, a group', why_lines: 'Needs a date with 6+ periods', why_radial: 'Needs a date spanning more than a year or a category with 5+ items', why_radar: 'Needs a group with 2 to 8 items and 3 or more numeric columns',
+});

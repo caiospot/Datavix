@@ -21,3 +21,15 @@ Já existiam: Dispersão (scatter) e Bolhas (bubble).
 
 ## Testes
 `test/gal-run.js` (cada gráfico: desenho, mouse, cartão, fixar) e `test/gal-pres.js` (PNG, passos, apresentação), na aba Vendas da planilha ideal. Os demais testes seguem iguais; só as listas de gráficos disponíveis ganharam os novos.
+
+---
+
+# Gate 27 · Galeria (2): comparação e tendência
+
+Quatro gráficos novos no mesmo motor (`src/gallery2.js` estende o `GalEngine`):
+- **Várias colunas**: um painel de colunas por grupo (até 12), **todos na mesma escala**; o eixo é um período (agrupado no que couber em 12 colunas) ou uma categoria. Valor da maior coluna e da coluna sob o mouse à vista.
+- **Várias linhas**: um painel de linha por grupo, mesma escala, área suave sob a linha, traço que aparece da esquerda para a direita e valor final em cada painel.
+- **Linha radial**: o ciclo em volta do centro. Com data, os raios são os meses do ano e cada linha é um ano (os 6 mais recentes); com categoria (5 a 16), cada raio é uma categoria e as linhas são os grupos (até 6). A distância do centro é o valor.
+- **Radar**: um polígono por grupo (2 a 6) em até 6 indicadores; cada eixo vai de zero ao maior valor entre os grupos (100% = o maior), com soma ou média conforme a natureza do indicador (taxas, notas e durações usam média). Mapeamento com até 6 colunas numéricas à escolha.
+
+Iguais aos do gate 26: mapeamento no bloco do gráfico, mouse com cartão e lista, legenda que isola grupos, apresentação, PNG, HTML e vídeo, nomes e ícones em português e inglês. Os testes `gal-run.js` e `gal-pres.js` cobrem os quatro.

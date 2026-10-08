@@ -53,6 +53,7 @@ function rdSuggest(ds) {
   return out;
 }
 function rdStart(ds, keep) {
+  ds.columns.area = (S.br && S.br.area) || null; // a área escolhida ajusta o vocabulário da leitura
   const prev = keep && S.read ? S.read : null, ov = {};
   if (prev && prev.over) Object.assign(ov, prev.over);
   const r = understandSheet(ds);

@@ -7,6 +7,7 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
 // só o que a planilha não revela: para quem, que decisão e quanto tempo. Mensagem, tipo de história, tom e local deixam de ser perguntados antes de ver os dados
 const OB = [
+  { key: 'area', q: 'q_area', opts: ['cx', 'marketing', 'growth', 'sales', 'finance', 'legal', 'health', 'ops', 'hr', 'education', 'public', 'general'], noOther: true },
   { key: 'audience', q: 'q_audience', opts: ['board', 'clevel', 'director', 'team', 'client'] },
   { key: 'decision', q: 'q_decision', opts: ['invest', 'cut', 'prioritize', 'alert', 'celebrate'] },
   { key: 'time', q: 'q_time', opts: ['quick', 'normal', 'full'], noOther: true },
@@ -14,7 +15,7 @@ const OB = [
 
 const S = {
   lang: 'pt', ui: 'dark', step: 'entry', user: null, ob: 0,
-  br: { audience: null, decision: null, time: null, message: '', story: null, tone: null, place: null },
+  br: { area: null, audience: null, decision: null, time: null, message: '', story: null, tone: null, place: null },
   ds: null, mapping: null, nullPolicy: 'ignore', loading: null, error: null, sheets: null, fileName: null, isSample: false,
   menu: false, sheet: false, ptab: 'chart', fpOpen: false, piece: null, panelOpen: lsGet('dv-panel') !== '0',
 };
@@ -201,7 +202,7 @@ function onboarding() {
       <div class="err" id="msg-err" role="alert"></div>`;
   } else {
     const ot = (S.br.other || {})[q.key], isOther = !!(ot && ot.on);
-    body = `<div class="opts" role="group">${(q.noOther ? q.opts : [...q.opts, 'other']).map(o => { const [l, d] = I18N[LANG].o[q.key][o]; return `<button class="opt${o === 'other' ? ' other' : ''}" data-a="pick" data-v="${o}" aria-pressed="${o === 'other' ? isOther : !isOther && val === o}"><strong>${esc(l)}</strong><span>${esc(d)}</span></button>`; }).join('')}</div>
+    body = `<div class="opts${q.key === 'area' ? ' opts-area' : ''}" role="group">${(q.noOther ? q.opts : [...q.opts, 'other']).map(o => { const [l, d] = I18N[LANG].o[q.key][o]; return `<button class="opt${o === 'other' ? ' other' : ''}" data-a="pick" data-v="${o}" aria-pressed="${o === 'other' ? isOther : !isOther && val === o}"><strong>${esc(l)}</strong><span>${esc(d)}</span></button>`; }).join('')}</div>
       ${isOther ? `<label class="ob-other"><span class="lbl">${T('ob_other_l')}</span><input class="field" id="ob-other" type="text" maxlength="80" value="${esc(ot.text || '')}" placeholder="${esc(T('ob_other_ph')[q.key])}"></label><p class="note" style="margin:6px 0 0">${T('ob_other_note')}</p>` : ''}
       <div class="row"><button class="btn ghost" data-a="ob-back">← ${T('back')}</button>${val ? `<button class="btn" data-a="ob-next">${T('next')} →</button>` : ''}</div>`;
   }
@@ -522,7 +523,7 @@ async function guard(kind) {
   if (r.v === 'save') await saveNow(r.text);
   return true;
 }
-function closeProject() { teardownChart(); S.piece = null; S.ds = null; S.mapping = null; S.dirty = false; S.br = { audience: null, decision: null, time: null, message: '', story: null, tone: null, place: null, other: {} }; }
+function closeProject() { teardownChart(); S.piece = null; S.ds = null; S.mapping = null; S.dirty = false; S.br = { area: null, audience: null, decision: null, time: null, message: '', story: null, tone: null, place: null, other: {} }; }
 window.addEventListener('beforeunload', e => { if (S.step === 'editor' && S.piece && S.dirty) { e.preventDefault(); e.returnValue = ''; } });
 function refreshBar() { refreshSaveChip(); $$('[data-a=undo]').forEach(b => (b.disabled = !canUndo())); $$('[data-a=redo]').forEach(b => (b.disabled = !canRedo())); }
 

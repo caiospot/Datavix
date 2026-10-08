@@ -227,3 +227,21 @@ Object.assign(I18N.en, {
 });
 I18N.pt.o.time = { quick: ['2 minutos', 'Só o essencial: 3 slides'], normal: ['5 minutos', 'O principal, com as evidências: até 5 slides'], full: ['10 minutos ou mais', 'A história completa, sem cortes'] };
 I18N.en.o.time = { quick: ['2 minutes', 'Just the essentials: 3 slides'], normal: ['5 minutes', 'The main point with the evidence: up to 5 slides'], full: ['10 minutes or more', 'The full story, uncut'] };
+
+/* ---- pergunta de área de atuação ---- */
+I18N.pt.q_area = ['EM QUE ÁREA VOCÊ VAI', 'apresentar?'];
+I18N.en.q_area = ['WHICH AREA WILL YOU', 'present on?'];
+I18N.pt.o.area = {
+  cx: ['Experiência do cliente (CX)', 'NPS, jornadas, resolução e recontato'], marketing: ['Marketing', 'Campanhas, canais, leads e conversão'], growth: ['Growth e produto', 'Aquisição, ativação, retenção e uso'],
+  sales: ['Vendas e comercial', 'Receita, funil, carteira e metas'], finance: ['Finanças', 'Realizado × meta, custos, margem e caixa'], legal: ['Jurídico', 'Processos, prazos, riscos e provisões'],
+  health: ['Saúde', 'Atendimentos, filas, internações e desfechos'], ops: ['Operações e logística', 'Volume, prazo, custo e gargalos'], hr: ['Pessoas e RH', 'Headcount, turnover, clima e contratação'],
+  education: ['Educação', 'Matrículas, frequência, notas e evasão'], public: ['Setor público', 'Serviços, execução do orçamento e demandas'], general: ['Outra área ou geral', 'Sem ajuste: o Datavix decide só pelos dados'],
+};
+I18N.en.o.area = {
+  cx: ['Customer experience (CX)', 'NPS, journeys, resolution and recontact'], marketing: ['Marketing', 'Campaigns, channels, leads and conversion'], growth: ['Growth and product', 'Acquisition, activation, retention and usage'],
+  sales: ['Sales', 'Revenue, funnel, accounts and targets'], finance: ['Finance', 'Actual × target, costs, margin and cash'], legal: ['Legal', 'Cases, deadlines, risks and provisions'],
+  health: ['Healthcare', 'Visits, queues, admissions and outcomes'], ops: ['Operations and logistics', 'Volume, lead time, cost and bottlenecks'], hr: ['People and HR', 'Headcount, turnover, climate and hiring'],
+  education: ['Education', 'Enrollment, attendance, grades and dropout'], public: ['Public sector', 'Services, budget execution and demands'], general: ['Other or general', 'No tuning: Datavix decides from the data alone'],
+};
+I18N.pt.entry_p = 'Responda 4 perguntas, suba a planilha e conte uma história com os seus números, em uma apresentação animada.';
+I18N.en.entry_p = 'Answer 4 questions, upload your spreadsheet and tell a story with your numbers, as an animated presentation.';

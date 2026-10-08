@@ -85,12 +85,15 @@ function distinctOf(c) { return c.dict ? c.dict.length : c.distinct || 0; }
 function bestMeasure(cols, exclude = []) {
   if (cols.shape === 'cases') return -1; // casos: o número é a contagem de linhas, nunca uma soma escolhida pelo app
   const nums = cols.map((c, i) => [c, i]).filter(([c, i]) => isMeasure(c) && !exclude.includes(i));
-  return (nums.find(([c]) => MONEY_HINT.test(c.name)) || nums.find(([c]) => !COUNTISH.test(c.name)) || nums[0] || [null, -1])[1];
+  const am = cols.area && AREAS[cols.area] && AREAS[cols.area].money; // a área escolhida diz que medida abre a história
+  return ((am && nums.find(([c]) => am.test(c.name))) || nums.find(([c]) => MONEY_HINT.test(c.name)) || nums.find(([c]) => !COUNTISH.test(c.name)) || nums[0] || [null, -1])[1];
 }
 function smallestDim(cols, lo, hi, exclude = []) {
   const ds = cols.map((c, i) => [c, i]).filter(([c, i]) => isGroupDim(c) && !exclude.includes(i) && distinctOf(c) >= lo && distinctOf(c) <= hi);
-  ds.sort((a, b) => distinctOf(a[0]) - distinctOf(b[0]));
-  return ds.length ? ds[0][1] : -1;
+  const nf = ds.filter(([c]) => c.role !== 'flag'); // um sim/não só divide em duas cores: só entra quando não há outra categoria
+  const pool = nf.length ? nf : ds;
+  pool.sort((a, b) => distinctOf(a[0]) - distinctOf(b[0]));
+  return pool.length ? pool[0][1] : -1;
 }
 
 // o tipo de análise sai dos dados: com data e medida é evolução no tempo; senão, comparação (a pessoa muda no mapeamento)

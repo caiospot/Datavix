@@ -8,6 +8,7 @@
   out.afterStart = S.step + ' modal=' + !!document.querySelector('.mdl') + ' user=' + JSON.stringify(S.user);
   const opts = () => [...document.querySelectorAll('.opt')].map(b => b.querySelector('strong').textContent);
   out.steps = document.querySelector('.prog .num').textContent;
+  out.areaQ = opts().length + ' áreas'; document.querySelector('.opt[data-v=cx]').click(); await sleep(700); out.areaPicked = S.br.area + ' -> passo ' + document.querySelector('.prog .num').textContent;
   out.q1 = opts().join(' | ');
   // 1 público: "Outro" com texto reconhecível
   document.querySelector('.opt.other').click(); await sleep(200);

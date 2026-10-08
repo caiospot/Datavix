@@ -258,25 +258,26 @@ function buildStory(P, meta, steps, opt = {}) {
 }
 
 // tempo curto: fica o panorama e os atos que mais pesam para a decisão escolhida (os insights na ordem da decisão; o líder e a concentração logo depois)
-function storyCut(story, cap, decision) {
+function storyCut(story, cap, decision, area) {
   if (!story || story.length <= cap) return story;
-  const keep = new Set(story.map((s, i) => [storyPri(s, decision), i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).slice(0, cap).map(x => x[1]));
+  const keep = new Set(story.map((s, i) => [storyPri(s, decision, area), i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).slice(0, cap).map(x => x[1]));
   return story.filter((s, i) => keep.has(i)).map((s, i) => ({ ...s, kick: { ...s.kick, n: String(i + 1).padStart(2, '0') } }));
 }
 
 /* ---------------- construtor de história: respostas viram slides ---------------- */
 // prioridade de um fato para a decisão escolhida (menor = mais importante)
-function storyPri(s, decision) {
+function storyPri(s, decision, area) {
   const ord = (typeof INSIGHT_ORDER !== 'undefined' && INSIGHT_ORDER[decision]) || [], gen = { leader: 1.5, balance: 1.5, relation: 1.5, conc: 2.5, contrast: 3.5, contrib: 1.2, shift: 2.2, c_impact: 0.6, c_cause: 1.0, c_rate: 1.4, c_where: 1.6, c_terms: 2.8 };
   if (s.id === 'st-ov') return -1;
+  const bo = ((AREAS[area] || {}).boost || {})[s.act] || 0; // a área pesa mais certos fatos (nunca esconde nenhum)
   if (s.lowPri) return 6;
   if (/^c-rate-[1-9]/.test(s.id)) return 3.2; // o resultado principal vale mais que as demais taxas
-  if (s.insight) { const k = ord.indexOf(s.act); return k >= 0 ? k : 2; }
-  return gen[s.act] ?? 5;
+  if (s.insight) { const k = ord.indexOf(s.act); return (k >= 0 ? k : 2) + bo; }
+  return (gen[s.act] ?? 5) + bo;
 }
 // fatos candidatos, o mais indicado para a decisão e a evidência sugerida
 function storyCandidates(P, meta, steps) {
-  const facts = buildStory(P, meta, steps, { insights: allInsights(P), extras: true }), dec = P.br && P.br.decision, ranked = facts.filter(x => x.id !== 'st-ov').sort((a, b) => storyPri(a, dec) - storyPri(b, dec));
+  const facts = buildStory(P, meta, steps, { insights: allInsights(P), extras: true }), dec = P.br && P.br.decision, ranked = facts.filter(x => x.id !== 'st-ov').sort((a, b) => storyPri(a, dec, P.br && P.br.area) - storyPri(b, dec, P.br && P.br.area));
   const cap = { quick: 1, normal: 2, full: 3 }[(P.br && P.br.time) || 'full'];
   return { facts, ranked, center: ranked[0] ? ranked[0].id : null, ev: ranked.slice(1, 1 + cap).map(x => x.id) };
 }

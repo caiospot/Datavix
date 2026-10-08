@@ -6,6 +6,8 @@ const CS_CAUSE = /causa|motivo|reason|cause|raz[aã]o|\bdor\b|pain|problema|issu
 const CS_TEXT = /voz|coment|comment|feedback|relato|d[oó]r|descri|detalh|diagn|causa|a[cç][aã]o|observa/i;
 const CS_STOP = new Set(('para com uma uns umas como mais mas pela pelo pelas pelos sobre entre quando onde porque que foi foram esta este isso essa esse ainda tambem apos cada seus suas dele dela eles elas muito sido sendo tinha tinham dos das nos nas num numa ser estar fazer feito fez havia nao sim seu sua pois tem tendo ter nessa nesse nesta neste esses essas depois antes sem ate aos estou estamos estao tenho temos tive fiz fica ficou ficam quer quero disse falou porem entao assim vai vou fosse sendo tambem pode podem deve devem foi eram era esta estao estava estavam desde aqui ali alem outro outra outros outras mesmo mesma ja so quanto qual quais ' +
   'with that this have from were been they their there which would about will your what when more also than then into only some such other after before were while them these those over under because between during being does done make made very just like each both without within').split(' '));
+// o vocabulário da área (se houver) soma-se ao genérico
+const csRe = (base, area, field) => { const a = AREAS[area], r = a && a[field]; return r ? new RegExp(base.source + '|' + r.source, 'i') : base; };
 const csKey = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
 function csFlagInfo(ds) {
@@ -22,9 +24,9 @@ function csFlagInfo(ds) {
 const csRate = (a, b) => (a + b ? a / (a + b) * 100 : null);
 
 function casesAnalyze(ds) {
-  const n = ds.rowCount, cols = ds.columns, flags = csFlagInfo(ds).filter(f => f.valid >= 10), terms = casesTerms(ds);
+  const n = ds.rowCount, cols = ds.columns, flags = csFlagInfo(ds).filter(f => f.valid >= 10), terms = casesTerms(ds), outRe = csRe(CS_OUT, cols.area, 'outcome'), causeRe = csRe(CS_CAUSE, cols.area, 'cause');
   if (!flags.length) return terms.length ? { n, outcome: null, facts: terms } : null;
-  const out = flags.slice().sort((a, b) => (CS_OUT.test(b.name) - CS_OUT.test(a.name)) || b.valid - a.valid)[0];
+  const out = flags.slice().sort((a, b) => (outRe.test(b.name) - outRe.test(a.name)) || b.valid - a.valid)[0];
   const rateOf = f => ({ k: 'rate', name: f.name, pos: f.pos, neg: f.neg, other: f.other, blank: f.blank, n });
   const rates = [out, ...flags.filter(f => f !== out).sort((a, b) => b.valid - a.valid).slice(0, 3)].map(rateOf);
   // impacto: a taxa de cada outro sim/não dentro de cada resposta do resultado
@@ -51,7 +53,7 @@ function casesAnalyze(ds) {
   // respostas mais frequentes das colunas de causa ou motivo
   const cause = [];
   cols.forEach(c => {
-    if (!c.codes || !c.dict || c.use === false || c.role !== 'category' || !CS_CAUSE.test(c.name) || c.dict.length < 2 || c.dict.length > 80) return;
+    if (!c.codes || !c.dict || c.use === false || c.role !== 'category' || !causeRe.test(c.name) || c.dict.length < 2 || c.dict.length > 80) return;
     const cnt = new Array(c.dict.length).fill(0); let filled = 0;
     for (let i = 0; i < n; i++) { const k = c.codes[i]; if (k >= 0 && !isPlaceholderLabel(c.dict[k])) { cnt[k]++; filled++; } }
     if (filled < 8) return;
@@ -64,9 +66,9 @@ function casesAnalyze(ds) {
 
 // termos que mais se repetem nos textos livres: em quantas linhas cada palavra aparece
 function casesTerms(ds) {
-  const n = ds.rowCount, res = [];
+  const n = ds.rowCount, res = [], textRe = csRe(CS_TEXT, ds.columns.area, 'text');
   ds.columns.forEach(c => {
-    if (c.role !== 'text' || c.use === false || !CS_TEXT.test(c.name) || !(c.texts || c.dict)) return;
+    if (c.role !== 'text' || c.use === false || !textRe.test(c.name) || !(c.texts || c.dict)) return;
     const get = i => (c.texts ? c.texts[i] : c.codes[i] >= 0 ? c.dict[c.codes[i]] : null);
     let filled = 0; const cnt = new Map(), shown = new Map();
     for (let i = 0; i < n; i++) {

@@ -34,7 +34,7 @@ function uFlagClass(v) {
   return null;
 }
 
-function uProfileColumn(c, nRows) {
+function uProfileColumn(c, nRows, area) {
   const nonNull = (c.n || nRows) - (c.nulls || 0), name = String(c.name || ''), r = { role: 'category', why: '' };
   c.hide = false; c.mtype = null; c.flagMap = null; c.retype = null; c.retypeUnits = false;
   if (nonNull <= 0) { c.role = 'empty'; c.hide = true; c.why = 'vazia'; return c; }
@@ -51,6 +51,7 @@ function uProfileColumn(c, nRows) {
     else if (cpf >= 0.6) { c.role = 'pii'; c.why = 'documento'; }
     else if (phone >= 0.6 && U_NAME_PHONE.test(name)) { c.role = 'pii'; c.why = 'telefone'; }
     else if (U_NAME_PRIVATE.test(name) && (U_NAME_PRIVATE.exec(name)[2] || '').length && avgLen > 0) { c.role = 'pii'; c.why = 'dado de contato'; }
+    else if (areaHit(area, 'pii', name) && person >= 0.7 && distinct >= 3 && (U_NAME_CUSTOMER.test(name) ? ratio >= 0.6 : ratio >= 0.1) && !U_NAME_NOTPERSON.test(name)) { c.role = 'pii'; c.why = 'nome de pessoa'; }
     else if (person >= 0.7 && distinct >= 3 && !U_NAME_NOTPERSON.test(name) && ((U_NAME_PERSON.test(name) && (!U_NAME_CUSTOMER.test(name) || ratio >= 0.6)) || (U_NAME_CUSTOMER.test(name) && ratio >= 0.85))) { c.role = 'pii'; c.why = 'nome de pessoa'; }
     if (c.role === 'pii') { c.hide = true; return c; }
   }
@@ -59,11 +60,12 @@ function uProfileColumn(c, nRows) {
     const arr = c.data, N = arr.length; let ints = 0, n2 = 0, digits = 0; const seen = new Set(); let sorted = true, prev = -Infinity;
     for (let i = 0; i < N && n2 < 20000; i++) { const x = arr[i]; if (Number.isNaN(x)) continue; n2++; if (Number.isInteger(x)) ints++; seen.add(x); digits = Math.max(digits, String(Math.abs(Math.trunc(x))).length); if (x < prev) sorted = false; prev = x; }
     const uq = seen.size / Math.max(1, n2), isInt = ints === n2;
-    if (isInt && uq >= 0.95 && n2 >= 8 && !U_MEASURE_NAME.test(name) && (U_NAME_ID.test(name) || digits >= 9 || (sorted && c.min <= 1) || /^(id|#)$/i.test(name.trim()))) { c.role = 'id'; c.why = 'identificador'; return c; }
+    if (isInt && uq >= 0.95 && n2 >= 8 && !U_MEASURE_NAME.test(name) && (U_NAME_ID.test(name) || areaHit(area, 'id', name) || digits >= 9 || (sorted && c.min <= 1) || /^(id|#)$/i.test(name.trim()))) { c.role = 'id'; c.why = 'identificador'; return c; }
     if (isInt && digits >= 10 && uq >= 0.9 && U_NAME_PHONE.test(name)) { c.role = 'pii'; c.hide = true; c.why = 'telefone'; return c; }
     c.role = 'measure'; const uniq = seen.size;
-    const smallInt = (isInt && c.min >= 0 && c.max <= 10 && uniq <= 11) || (isInt && c.min >= 1 && c.max <= 5);
-    if (U_NAME_SCORE.test(name) && c.max <= 100 && c.min >= -100) c.mtype = 'score';
+    const smallInt = (isInt && c.min >= 0 && c.max <= 10 && uniq <= 11) || (isInt && c.min >= 1 && c.max <= 5), at = areaMeasureType(area, name);
+    if (at) c.mtype = at; // o nome casa com o vocabulário da área
+    else if (U_NAME_SCORE.test(name) && c.max <= 100 && c.min >= -100) c.mtype = 'score';
     else if (c.unit === '%' || U_NAME_ATTR.test(name)) c.mtype = 'attr';
     else if (U_NAME_DURATION.test(name)) c.mtype = 'duration';
     else if (U_NAME_COUNT.test(name) || U_MEASURE_NAME.test(name)) c.mtype = U_NAME_COUNT.test(name) && !U_MEASURE_NAME.test(name) ? 'count' : 'amount';
@@ -72,7 +74,7 @@ function uProfileColumn(c, nRows) {
     return c;
   }
   const codeLike = uShare(vals, v => { const s = v.trim(); return s.length <= 28 && !/\s/.test(s) && /\d/.test(s); });
-  if (nonNull >= 8 && distinct / nonNull >= 0.9 && (U_NAME_ID.test(name) || codeLike >= 0.8)) { c.role = 'id'; c.why = 'identificador'; return c; }
+  if (nonNull >= 8 && distinct / nonNull >= 0.9 && (U_NAME_ID.test(name) || areaHit(area, 'id', name) || codeLike >= 0.8)) { c.role = 'id'; c.why = 'identificador'; return c; }
   // textos curtos e quase únicos (nome da unidade, código do pedido) identificam a linha; só frases viram texto livre
   const words = vals.length ? vals.reduce((a, [v, n]) => a + String(v).trim().split(/\s+/).length * n, 0) / Math.max(1, vals.reduce((a, [, n]) => a + n, 0)) : 0;
   const numTxt = uShare(vals, v => /^-?[\d.,\s]+$/.test(v) && /\d/.test(v)), numUnit = uShare(vals, v => /^-?[\d.,]+\s*(dias?|d|meses|m[eê]s|semanas?|horas?|h|min(utos?)?|anos?|days?|months?|weeks?|hours?|years?)\.?\s*$/i.test(v.trim()));
@@ -91,7 +93,7 @@ function uProfileColumn(c, nRows) {
 }
 
 /* ---- tipo da planilha: o que é cada linha? ---- */
-function uShape(cols, nRows) {
+function uShape(cols, nRows, area) {
   const live = cols.filter(c => !['empty', 'constant'].includes(c.role)), n = Math.max(1, live.length);
   const flags = live.filter(c => c.role === 'flag').length, texts = live.filter(c => c.role === 'text').length, dates = live.filter(c => c.role === 'date').length;
   const amounts = live.filter(c => c.role === 'measure' && c.mtype === 'amount' && U_MEASURE_NAME.test(c.name) && (c.nulls || 0) / Math.max(1, c.n || nRows) < 0.4).length;
@@ -102,6 +104,7 @@ function uShape(cols, nRows) {
   if (flags >= 2 && texts >= 2) cases += 1;
   if (amounts && flags < 4 && textShare < 0.25) cases -= 2;
   if (!live.some(c => c.role === 'measure')) return { shape: 'cases', conf: cases >= 2 ? 'média' : 'baixa', why: [['nomeas', 0]] }; // sem número para somar, só dá para contar linhas
+  cases += areaOf(area).cases || 0; // a área inclina a leitura, nunca decide sozinha
   if (cases >= 4) return { shape: 'cases', conf: cases >= 6 ? 'alta' : 'média', why };
   if (amounts || live.some(c => c.role === 'measure' && c.mtype !== 'score')) return { shape: 'ledger', conf: amounts ? 'alta' : 'média', why: [[amounts ? 'amounts' : 'numbers', 0]] };
   return { shape: 'summary', conf: 'baixa', why: [['few', 0]] };
@@ -131,8 +134,9 @@ function uApplyMerges(c, merges) {
 
 // entrada: perfila todas as colunas do dataset e decide o tipo da planilha
 function understandSheet(ds) {
-  ds.columns.forEach(c => uProfileColumn(c, ds.rowCount));
-  const sh = uShape(ds.columns, ds.rowCount);
+  const area = ds.columns.area || null;
+  ds.columns.forEach(c => uProfileColumn(c, ds.rowCount, area));
+  const sh = uShape(ds.columns, ds.rowCount, area);
   return { shape: sh.shape, conf: sh.conf, why: sh.why, auto: sh.shape };
 }
 

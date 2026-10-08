@@ -202,7 +202,7 @@ function startPresentation(o) {
   if (o.root._pres && o.root._pres.alive()) return o.root._pres; // já está apresentando: nunca empilha uma segunda
   const { root, ix, P } = o, doc = root.ownerDocument, base = buildSteps(P, ix.meta);
   let story = []; try { story = o.steps ? [] : (P.sb ? storyFromAnswers(P, ix.meta, base) : buildStory(P, ix.meta, base)); } catch (e) { console.error(e); }
-  const cap = P.sb ? 0 : ({ quick: 3, normal: 5 })[P.br && P.br.time]; if (cap) story = storyCut(story, cap, P.br && P.br.decision); // o tempo escolhido define quantos atos entram
+  const cap = P.sb ? 0 : ({ quick: 3, normal: 5 })[P.br && P.br.time]; if (cap) story = storyCut(story, cap, P.br && P.br.decision, P.br && P.br.area); // o tempo escolhido define quantos atos entram
   const useStory = story.length >= 3, steps = o.steps || (useStory ? story : base), N = steps.length;
   const cnt = root.querySelector('#pcount'), c1 = root.querySelector('.c1'), nav = root.querySelector('#pnav'), hostRef = o.host || P.host, prevK = P.textK;
   const restyle = () => { try { if (hostRef && hostRef.restyle) hostRef.restyle(0); } catch (e) { /* segue */ } };

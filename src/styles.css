@@ -636,3 +636,7 @@ details.rd-grp > summary .rd-gh { position: relative; padding: 10px 12px; border
 .sc-alt { margin-top: 18px; } .sc-alt summary { cursor: pointer; color: var(--muted); font-size: 14px; margin-bottom: 10px; }
 .sc-detail { margin-top: 26px; padding-top: 18px; border-top: 1px dashed var(--line); } .sc-detail .note { margin: 8px 0 0; }
 @media (max-width: 720px) { .sc-card { grid-template-columns: 28px minmax(0, 1fr); gap: 4px 10px; } .sc-ctl { flex-wrap: wrap; } .sc-vz { margin-left: 0; } }
+
+/* pergunta de área: 12 opções compactas */
+.opts.opts-area { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; margin: 24px 0 22px; }
+.opts.opts-area .opt { padding: 12px 14px; } .opts.opts-area .opt span { font-size: 12px; line-height: 1.35; }

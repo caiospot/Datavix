@@ -579,13 +579,13 @@ function computeInsights(built, briefing, lang, T) {
   const iMax = vals.indexOf(Math.max(...vals));
   if (tot[iMax].value > 0 && mean > 0) {
     const d = (tot[iMax].value / mean - 1) * 100;
-    out.peak = { text: T('ins_peak', tot[iMax].label, f(tot[iMax].value), fmtPct(d, lang)), calc: { title: T('calc_peak'), formula: T('f_peak'), rows: [{ k: tot[iMax].label, v: f(tot[iMax].value), n: tot[iMax].rows }, { k: T('mean'), v: f(mean) }], base: base(isTime ? built.names.x : '') } };
+    out.peak = { text: T('ins_peak', tot[iMax].label, f(tot[iMax].value), fmtPct(d, lang)), calc: { title: T('calc_peak'), formula: T('f_peak'), rows: [{ k: tot[iMax].label, v: f(tot[iMax].value), n: tot[iMax].rows }, { k: T('mean'), v: f(mean) }], base: base(isTime ? built.names.x : '') }, ev: nvEv('peak', { top: tot[iMax].value, sum, n: vals.length }, [{ k: 'dev', value: d, text: fmtPct(d, lang) }, { k: 'top', value: tot[iMax].value, text: f(tot[iMax].value) }], { n: vals.length, refs: [tot[iMax].label] }) };
   }
   // vale
   const iMin = vals.indexOf(Math.min(...vals));
   if (iMin !== iMax && mean > 0) {
     const d = (tot[iMin].value / mean - 1) * 100;
-    out.low = { text: T('ins_low', tot[iMin].label, f(tot[iMin].value), fmtPct(d, lang)), calc: { title: T('calc_low'), formula: T('f_peak'), rows: [{ k: tot[iMin].label, v: f(tot[iMin].value), n: tot[iMin].rows }, { k: T('mean'), v: f(mean) }], base: base() } };
+    out.low = { text: T('ins_low', tot[iMin].label, f(tot[iMin].value), fmtPct(d, lang)), calc: { title: T('calc_low'), formula: T('f_peak'), rows: [{ k: tot[iMin].label, v: f(tot[iMin].value), n: tot[iMin].rows }, { k: T('mean'), v: f(mean) }], base: base() }, ev: nvEv('low', { top: tot[iMin].value, sum, n: vals.length }, [{ k: 'dev', value: d, text: fmtPct(d, lang) }, { k: 'top', value: tot[iMin].value, text: f(tot[iMin].value) }], { n: vals.length, refs: [tot[iMin].label] }) };
   }
   // variações período a período (só faz sentido no tempo)
   if (isTime) {
@@ -597,7 +597,7 @@ function computeInsights(built, briefing, lang, T) {
       if (!best || ch > best.ch) best = { ch, i };
       if (!worst || ch < worst.ch) worst = { ch, i };
     }
-    const mk = (b, key, ttl) => ({ text: T(key, tot[b.i].label, fmtPct(b.ch, lang), tot[b.i - 1].label), calc: { title: T(ttl), formula: T('f_var'), rows: [{ k: tot[b.i - 1].label, v: f(tot[b.i - 1].value), n: tot[b.i - 1].rows }, { k: tot[b.i].label, v: f(tot[b.i].value), n: tot[b.i].rows }, { k: T('variation'), v: fmtPct(b.ch, lang) }], base: base(built.names.x) } });
+    const mk = (b, key, ttl) => ({ text: T(key, tot[b.i].label, fmtPct(b.ch, lang), tot[b.i - 1].label), calc: { title: T(ttl), formula: T('f_var'), rows: [{ k: tot[b.i - 1].label, v: f(tot[b.i - 1].value), n: tot[b.i - 1].rows }, { k: tot[b.i].label, v: f(tot[b.i].value), n: tot[b.i].rows }, { k: T('variation'), v: fmtPct(b.ch, lang) }], base: base(built.names.x) }, ev: nvEv('jump', { prev: tot[b.i - 1].value, cur: tot[b.i].value }, [{ k: 'ch', value: b.ch, text: fmtPct(b.ch, lang) }], { n: 2, refs: [tot[b.i - 1].label, tot[b.i].label] }) });
     if (best && best.ch > 5) out.jump_up = mk(best, 'ins_jump', 'calc_jump');
     if (worst && worst.ch < -5) out.drop = mk(worst, 'ins_drop', 'calc_drop');
     // tendência: janela inicial x janela final (até 12 períodos), para não confundir sazonalidade com crescimento
@@ -608,8 +608,9 @@ function computeInsights(built, briefing, lang, T) {
       const ch = (st / sh - 1) * 100;
       const l1 = `${head[0].label} → ${head[w - 1].label}`, l2 = `${tail[0].label} → ${tail[w - 1].label}`;
       const calc = { formula: T('f_trend', w), rows: [{ k: l1, v: f(sh), n: head.reduce((a, t) => a + t.rows, 0) }, { k: l2, v: f(st), n: tail.reduce((a, t) => a + t.rows, 0) }, { k: T('variation'), v: fmtPct(ch, lang) }], base: base(built.names.x) };
-      if (ch >= 5) out.trend_up = { text: T('ins_trend_up', fmtPct(ch, lang), l1, l2), calc: { title: T('calc_trend'), ...calc } };
-      if (ch <= -5) out.trend_down = { text: T('ins_trend_down', fmtPct(ch, lang), l1, l2), calc: { title: T('calc_trend'), ...calc } };
+      const evT = () => nvEv('trend', { head: sh, tail: st, w }, [{ k: 'ch', value: ch, text: fmtPct(ch, lang) }], { n: tot.length, refs: [l1, l2] });
+      if (ch >= 5) out.trend_up = { text: T('ins_trend_up', fmtPct(ch, lang), l1, l2), calc: { title: T('calc_trend'), ...calc }, ev: evT() };
+      if (ch <= -5) out.trend_down = { text: T('ins_trend_down', fmtPct(ch, lang), l1, l2), calc: { title: T('calc_trend'), ...calc }, ev: evT() };
     }
   }
   // participação dominante: por série (cores) ou por categoria do eixo
@@ -619,7 +620,7 @@ function computeInsights(built, briefing, lang, T) {
     const top = shareSrc.reduce((a, b) => ((b.value || 0) > (a.value || 0) ? b : a));
     const topReal = isPlaceholderLabel(top.label) ? null : top;
     const share = ts > 0 ? top.value / ts * 100 : 0;
-    if (share >= 40 && top.label && topReal) out.dominant = { text: T('ins_dominant', top.label, fmtPct(share, lang).replace('+', '')), calc: { title: T('calc_dominant'), formula: T('f_share'), rows: [{ k: top.label, v: f(top.value), n: top.rows }, { k: T('total'), v: f(ts) }, { k: T('share'), v: fmtPct(share, lang).replace('+', '') }], base: base() } };
+    if (share >= 40 && top.label && topReal) out.dominant = { text: T('ins_dominant', top.label, fmtPct(share, lang).replace('+', '')), calc: { title: T('calc_dominant'), formula: T('f_share'), rows: [{ k: top.label, v: f(top.value), n: top.rows }, { k: T('total'), v: f(ts) }, { k: T('share'), v: fmtPct(share, lang).replace('+', '') }], base: base() }, ev: nvEv('dominant', { top: top.value, total: ts }, [{ k: 'share', value: share, text: fmtPct(share, lang).replace('+', '') }], { n: shareSrc.length, refs: [top.label] }) };
   }
   // outlier (IQR 1,5x)
   if (vals.length >= 8) {
@@ -628,7 +629,7 @@ function computeInsights(built, briefing, lang, T) {
     if (iqr > 0) {
       const hi = q3 + 1.5 * iqr, lo = q1 - 1.5 * iqr;
       const idx = vals.map((v, i) => [v, i]).filter(([v]) => v > hi || v < lo).sort((a, b) => Math.abs(b[0] - mean) - Math.abs(a[0] - mean))[0];
-      if (idx) out.outlier = { text: T('ins_outlier', tot[idx[1]].label, f(idx[0])), calc: { title: T('calc_outlier'), formula: T('f_iqr'), rows: [{ k: tot[idx[1]].label, v: f(idx[0]), n: tot[idx[1]].rows }, { k: 'Q1 / Q3', v: `${f(q1)} / ${f(q3)}` }, { k: T('limits'), v: `${f(lo)} – ${f(hi)}` }], base: base() } };
+      if (idx) out.outlier = { text: T('ins_outlier', tot[idx[1]].label, f(idx[0])), calc: { title: T('calc_outlier'), formula: T('f_iqr'), rows: [{ k: tot[idx[1]].label, v: f(idx[0]), n: tot[idx[1]].rows }, { k: 'Q1 / Q3', v: `${f(q1)} / ${f(q3)}` }, { k: T('limits'), v: `${f(lo)} – ${f(hi)}` }], base: base() }, ev: nvEv('outlier', { value: idx[0], q1, q3 }, [], { n: vals.length, method: 'iqr', refs: [tot[idx[1]].label] }) };
     }
   }
   // faixas de histograma: só participação e pico fazem sentido (outlier sobre contagem de faixas confunde)
@@ -637,7 +638,7 @@ function computeInsights(built, briefing, lang, T) {
   const limit = briefing.limit || INSIGHT_LIMIT[briefing.audience] || 2;
   // briefing.all (construtor de história): todos os candidatos, os da decisão primeiro
   const keys = briefing.all ? [...order.filter(k => out[k]), ...Object.keys(out).filter(k => !order.includes(k))] : order.filter(k => out[k]);
-  return keys.slice(0, limit).map((k, i) => ({ id: k, ...out[k] }));
+  return nvGuard(keys.slice(0, limit).map((k, i) => ({ id: k, ...out[k] })), lang).items; // o que não passa na validação sai, sem reescrever
 }
 
 /* ---------- contraste (WCAG) ---------- */

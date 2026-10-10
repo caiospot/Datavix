@@ -203,11 +203,13 @@ function buildStory(P, meta, steps, opt = {}) {
       if (isSum && gsum > 0) {
         const share = top.value / gsum * 100, balanced = share <= 125 / n2;
         add({ id: 'st-lead', act: balanced ? 'balance' : 'leader', head: balanced ? L.balance(top.label, pctS(share)) : L.leader(top.label, f(top.value), pctS(share)), hl: pctS(share), big: { text: pctS(share), label: L.lbl.total }, state: stateOf(top.label),
-          calc: { title: L.calc.leadT, formula: L.calc.leadF, rows: [{ k: top.label, v: f(top.value), n: top.rows }, { k: L.calc.total, v: f(gsum) }, { k: L.calc.share, v: pctS(share) }] } });
+          calc: { title: L.calc.leadT, formula: L.calc.leadF, rows: [{ k: top.label, v: f(top.value), n: top.rows }, { k: L.calc.total, v: f(gsum) }, { k: L.calc.share, v: pctS(share) }] },
+          ev: nvEv('lead', { top: top.value, total: gsum }, [{ k: 'share', value: share, text: pctS(share) }, ...(balanced ? [] : [{ k: 'top', value: top.value, text: f(top.value) }])], { n: n2, refs: [top.label] }) });
         if (n2 >= 6) {
           const k = 3, kt = srt.slice(0, k), ks = kt.reduce((a, t) => a + t.value, 0), p = ks / gsum * 100, rest = n2 - k, q = 100 - p;
           add({ id: 'st-conc', lowPri: !!P.cases, act: 'conc', head: L.conc(k, pctS(p), rest, pctS(q)), hl: pctS(p), big: { text: pctS(p), label: L.lbl.top(k) }, state: manyState(kt.map(t => t.label)),
-            calc: { title: L.calc.concT, formula: L.calc.concF, rows: [...kt.map(t => ({ k: t.label, v: f(t.value), n: t.rows })), { k: L.calc.topSum, v: f(ks) }, { k: L.calc.rest, v: pctS(q) }] } });
+            calc: { title: L.calc.concT, formula: L.calc.concF, rows: [...kt.map(t => ({ k: t.label, v: f(t.value), n: t.rows })), { k: L.calc.topSum, v: f(ks) }, { k: L.calc.rest, v: pctS(q) }] },
+            ev: nvEv('conc', { parts: kt.map(t => t.value), total: gsum }, [{ k: 'p', value: p, text: pctS(p) }], { n: n2, refs: kt.map(t => t.label) }) });
         }
       } else if (!isSum) {
         add({ id: 'st-lead', act: 'leader', head: L.leaderMean(top.label, f(top.value)), hl: f(top.value), big: { text: f(top.value), label: L.lbl.value }, state: stateOf(top.label),
@@ -216,7 +218,8 @@ function buildStory(P, meta, steps, opt = {}) {
       if (low.value > 0 && top.value / low.value >= 3) {
         const x = top.value / low.value, xt = (x >= 10 ? Math.round(x) : Math.round(x * 10) / 10).toString().replace('.', LANG === 'pt' ? ',' : '.');
         add({ id: 'st-contrast', lowPri: !!P.cases, act: 'contrast', head: L.contrast(top.label, xt, low.label), hl: xt + '×', big: { text: xt + '×', label: L.lbl.ratio }, state: stateOf(low.label),
-          calc: { title: L.calc.conT, formula: L.calc.conF, rows: [{ k: top.label, v: f(top.value), n: top.rows }, { k: low.label, v: f(low.value), n: low.rows }, { k: L.calc.ratio, v: xt + '×' }] } });
+          calc: { title: L.calc.conT, formula: L.calc.conF, rows: [{ k: top.label, v: f(top.value), n: top.rows }, { k: low.label, v: f(low.value), n: low.rows }, { k: L.calc.ratio, v: xt + '×' }] },
+            ev: nvEv('contrast', { top: top.value, low: low.value }, [{ k: 'x', value: x, text: xt }], { n: n2, refs: [top.label, low.label] }) });
       }
     }
   }
@@ -224,7 +227,8 @@ function buildStory(P, meta, steps, opt = {}) {
   if (b.kind === 'relation' && b.pts) {
     const r = pearson(b.pts); if (r !== null) {
       const a = Math.abs(r), key = (a >= 0.7 ? 's' : a >= 0.4 ? 'm' : 'w') + (r >= 0 ? 'p' : 'n'), rt = r.toFixed(2).replace('.', LANG === 'pt' ? ',' : '.');
-      add({ id: 'st-corr', act: 'relation', head: L.corr(b.names.x, b.names.y, rt, L.corrD[key]), hl: rt, big: { text: rt, label: L.lbl.corr }, state: null, calc: { title: L.calc.corT, formula: L.calc.corF, rows: [{ k: L.calc.points, v: fmtInt(b.pts.length, LANG) }, { k: 'r', v: rt }] } });
+      add({ id: 'st-corr', act: 'relation', head: L.corr(b.names.x, b.names.y, rt, L.corrD[key]), hl: rt, big: { text: rt, label: L.lbl.corr }, state: null, calc: { title: L.calc.corT, formula: L.calc.corF, rows: [{ k: L.calc.points, v: fmtInt(b.pts.length, LANG) }, { k: 'r', v: rt }] },
+        ev: nvEv('corr', { r }, [{ k: 'r', value: r, text: rt }], { n: b.pts.length, method: 'pearson' }) });
     }
   }
   // análises extras (só no construtor): quem explica a mudança do período e quem ganhou ou perdeu participação
@@ -238,11 +242,13 @@ function buildStory(P, meta, steps, opt = {}) {
         const up = dT > 0, d = mx.rows.map((_, i) => tl[i] - hd[i]); let gi = -1;
         d.forEach((v, i) => { if ((up ? v > 0 : v < 0) && (gi < 0 || Math.abs(v) > Math.abs(d[gi]))) gi = i; });
         if (gi >= 0) { const p = d[gi] / dT * 100; if (p >= 25) add({ id: 'x-contrib', act: 'contrib', head: L.contrib(mx.groups[gi], pctS(p), up), hl: pctS(p), big: { text: pctS(p), label: L.lbl.ofChange }, state: stateOf(mx.groups[gi]),
-          calc: { title: L.calc.contribT, formula: L.calc.contribF, rows: [{ k: `${mx.groups[gi]} · ${l1}`, v: f(hd[gi]) }, { k: `${mx.groups[gi]} · ${l2}`, v: f(tl[gi]) }, { k: `${L.calc.total} · ${l1} → ${l2}`, v: `${f(H)} → ${f(Tt)}` }, { k: L.calc.share, v: pctS(p) }] } }); }
+          calc: { title: L.calc.contribT, formula: L.calc.contribF, rows: [{ k: `${mx.groups[gi]} · ${l1}`, v: f(hd[gi]) }, { k: `${mx.groups[gi]} · ${l2}`, v: f(tl[gi]) }, { k: `${L.calc.total} · ${l1} → ${l2}`, v: `${f(H)} → ${f(Tt)}` }, { k: L.calc.share, v: pctS(p) }] },
+          ev: nvEv('contrib', { diff: d[gi], dTotal: dT, h: hd[gi], t: tl[gi] }, [{ k: 'p', value: p, text: pctS(p) }], { n: np, refs: [mx.groups[gi], l1, l2] }) }); }
         const sh = mx.rows.map((_, i) => tl[i] / Tt * 100 - hd[i] / H * 100); let si = 0; sh.forEach((v, i) => { if (Math.abs(v) > Math.abs(sh[si])) si = i; });
         if (Math.abs(sh[si]) >= 2) { const ppt = Math.abs(sh[si]).toFixed(1).replace('.', dec) + ' ' + L.lbl.pp, upS = sh[si] > 0;
           add({ id: 'x-shift', act: 'shift', head: L.shift(mx.groups[si], ppt, upS), hl: ppt, big: { text: (upS ? '+' : '−') + ppt, label: L.lbl.ofShare }, state: stateOf(mx.groups[si]),
-            calc: { title: L.calc.shiftT, formula: L.calc.shiftF, rows: [{ k: `${mx.groups[si]} · ${L.calc.share0} (${l1})`, v: pctS(hd[si] / H * 100) }, { k: `${mx.groups[si]} · ${L.calc.share1} (${l2})`, v: pctS(tl[si] / Tt * 100) }, { k: L.calc.change, v: (upS ? '+' : '−') + ppt }] } }); }
+            calc: { title: L.calc.shiftT, formula: L.calc.shiftF, rows: [{ k: `${mx.groups[si]} · ${L.calc.share0} (${l1})`, v: pctS(hd[si] / H * 100) }, { k: `${mx.groups[si]} · ${L.calc.share1} (${l2})`, v: pctS(tl[si] / Tt * 100) }, { k: L.calc.change, v: (upS ? '+' : '−') + ppt }] },
+            ev: nvEv('shift', { s0: hd[si], t0: H, s1: tl[si], t1: Tt }, [{ k: 'd', value: sh[si], text: Math.abs(sh[si]).toFixed(1).replace('.', dec) }], { n: np, refs: [mx.groups[si], l1, l2] }) }); }
       }
     }
   }
@@ -254,9 +260,9 @@ function buildStory(P, meta, steps, opt = {}) {
     if (seen.has(key)) return; seen.add(key); // o mesmo item com o mesmo número já foi contado
     if (/^(peak|low|outlier|dominant)$/.test(ins.id) && rowsC[0] && lead.includes(rowsC[0].k + '|' + rowsC[0].v)) return; // o líder já ganhou o seu ato
     const bare = big ? big.text.replace(/^[\-−+]/, '') : '', hl = big ? (ins.text.includes(big.text) ? big.text : ins.text.includes(bare) ? bare : '') : ''; // o destaque tem que existir na frase
-    add({ id: 'i' + k, act: ins.id, head: ins.text, hl, big, state: stateOf(subj), calc: ins.calc || null, insight: true });
+    add({ id: 'i' + k, act: ins.id, head: ins.text, hl, big, state: stateOf(subj), calc: ins.calc || null, ev: ins.ev || null, edited: !!ins.edited, insight: true });
   });
-  return out;
+  const g = nvGuard(out, LANG); g.items.report = g.report; return g.items; // validação narrativa: afirmação com erro bloqueante sai do roteiro
 }
 
 // tempo curto: fica o panorama e os atos que mais pesam para a decisão escolhida (os insights na ordem da decisão; o líder e a concentração logo depois)

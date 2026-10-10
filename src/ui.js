@@ -36,6 +36,7 @@ function getWorker() {
 // troca de tela com profundidade: a tela antiga recua e desfoca, a nova avança (View Transitions; sem suporte ou com movimento reduzido, troca direta)
 function go(step, err) {
   const from = S.step; S.step = step; S.error = err || null;
+  if (step !== 'entry' && !S.user) S.user = { guest: true }; // quem está dentro da ferramenta tem sessão (abrir um projeto salvo pela página inicial também)
   const run = () => { render(); window.scrollTo(0, 0); };
   if (from !== step && !RM && document.startViewTransition) { try { const vt = document.startViewTransition(run); [vt.ready, vt.finished, vt.updateCallbackDone].forEach(p => p && p.catch(() => {})); return; } catch (e) { /* cai para a troca direta */ } }
   run();
@@ -138,7 +139,7 @@ function header() {
       </div>
       <div class="dr-opts"><div class="dr-opt"><span class="lbl">${T('m_lang')}</span>${seg}</div>
         <div class="dr-opt"><span class="lbl">${T('m_theme')}</span><button class="btn ghost sm" data-a="ui" aria-label="Tema / Theme">${dark ? '☀ ' + T('m_light') : '☾ ' + T('m_dark')}</button></div></div>
-      <div class="dr-foot">${npsOn() ? `<button class="dr-link" data-a="feedback">${T('nps_fb')}</button>` : ''}<button class="dr-link" data-a="privacy">${esc(privT().link)}</button>${S.user ? `<button class="dr-link" data-a="logout">${T('logout')}</button>` : ''}</div>
+      <div class="dr-foot">${npsOn() ? `<button class="dr-link" data-a="feedback">${T('nps_fb')}</button>` : ''}<button class="dr-link" data-a="privacy">${esc(privT().link)}</button>${S.step !== 'entry' ? `<button class="dr-link" data-a="logout">${T('logout')}</button>` : ''}</div>
     </div></div>`;
   return `<header class="top${S.step === 'entry' ? ' lp at-top' : ''}">
     <button class="brand" data-a="home" title="${T('home')}" aria-label="Datavix, ${T('home')}"><i></i>DATAVIX</button>
@@ -147,7 +148,7 @@ function header() {
       <button class="btn ghost sm hide-s" id="pwa-btn" data-a="pwa-install" ${pwaCanInstall() ? '' : 'hidden'}>⤓ ${T('pwa_install')}</button>${ctl}${mine ? `<button class="btn ghost sm" data-a="projects">${LPT().mine} · ${mine}</button>` : ''}${S.piece || S.user ? `<button class="btn ghost sm" data-a="new">${T('restart')}</button>` : ''}
       ${seg}
       <button class="ico" data-a="ui" title="Tema / Theme" aria-label="Tema / Theme">${dark ? '☀' : '☾'}</button>
-      ${S.user ? `<button class="btn ghost sm" data-a="logout">${T('logout')}</button>` : S.step === 'entry' ? `<button class="btn sm" data-a="start">${LPT().start}</button>` : ''}
+      ${S.step !== 'entry' ? `<button class="btn ghost sm" data-a="logout">${T('logout')}</button>` : S.step === 'entry' ? `<button class="btn sm" data-a="start">${LPT().start}</button>` : ''}
     </div>
     <div class="top-m">${prim}<button class="ico burger" data-a="menu" aria-label="${T('menu_open')}" aria-expanded="${!!S.menu}" aria-controls="drawer"><i></i><i></i><i></i></button></div></header>${drawer}`;
 }
@@ -550,9 +551,10 @@ async function askName(P) {
   return r && r.v === 'save' ? r.text : null;
 }
 async function saveFlow() { const P = S.piece; if (!P) return false; const n = P.saveName || (await askName(P)); if (n === null) return false; await saveNow(n); return true; }
-// devolve true para seguir. kind 'exit' (Sair): Salvar / Não salvar. Os demais: Salvar / Não salvar / Cancelar.
+// devolve true para seguir. kind 'exit' (Sair): Salvar / Não salvar, e sempre pergunta no editor, mesmo sem alterações pendentes.
+// Os demais: Salvar / Não salvar / Cancelar, só com alterações pendentes.
 async function guard(kind) {
-  if (!(S.step === 'editor' && S.piece && S.dirty)) return true;
+  if (!(S.step === 'editor' && S.piece && (S.dirty || kind === 'exit'))) return true;
   const P = S.piece, name = P.saveName || titleOf(P) || P.fileName || '';
   const acts = [{ label: T('mdl_save'), v: 'save', kind: 'primary' }, { label: T('mdl_nosave'), v: 'discard', kind: 'ghost' }];
   if (kind !== 'exit') acts.push({ label: T('mdl_cancel'), v: null, kind: 'text' });

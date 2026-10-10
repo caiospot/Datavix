@@ -32,3 +32,12 @@ Se você alterar o `Code.gs` depois, use **Implantar → Gerenciar implantaçõe
 - Como o envio usa `no-cors`, o app **não consegue confirmar** a entrega: guarda a resposta numa fila local (IndexedDB) e reenvia quando houver rede. Bloqueadores de anúncio/privacidade podem impedir o envio.
 - Cota gratuita do Apps Script: dezenas de milhares de execuções por dia; muito acima do necessário para NPS.
 - **LGPD:** o código anônimo é pseudônimo (identifica o navegador, não a pessoa). E-mail só com consentimento explícito. Para atender um pedido de exclusão, a pessoa informa o código (aparece em "O que é enviado?") e você apaga as linhas com aquele `id`. A política de privacidade (modal "Privacidade" no rodapé) já descreve a coleta: veja `docs/politica-de-privacidade.md` (prazo de guarda de 24 meses, contato e responsável a confirmar).
+
+
+## Cadastro (e-mail para começar)
+A página inicial pede o e-mail para começar (obrigatório, hero e chamada final). Ele segue pela mesma fila e pelo mesmo Apps Script da pesquisa, com `ev: "signup"`, e cai na aba **Cadastros**:
+- **A** `E-mails cadastrados` (o e-mail, em minúsculas), **B** `recebido_em`, **C** `idioma`. O script cria B1 e C1 se estiverem vazios.
+- Não repete o mesmo e-mail (sem diferenciar maiúsculas); no máximo 5 cadastros por código anônimo a cada 6 h; recusa formato inválido, token errado e e-mail acima de 254 caracteres; texto que começa com `= + - @` é neutralizado.
+- **Para valer:** cole o novo `nps/apps-script/Code.gs` no projeto e use **Implantar → Gerenciar implantações → editar → Nova versão** (o URL continua o mesmo). O build publicado precisa de `DATAVIX_NPS_URL`/`DATAVIX_NPS_TOKEN` (já são secrets do workflow). Sem eles o e-mail é exigido, mas não é enviado.
+- O app lembra o e-mail neste navegador (localStorage `dv-signup`) para preencher o campo e não reenviar o mesmo e-mail. Exclusão a pedido: apague a linha na aba.
+- Teste do script: `node test/apps-script-signup.mjs`.

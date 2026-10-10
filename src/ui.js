@@ -664,15 +664,17 @@ function openIosInstall() {
 })();
 
 /* ---------------- eventos ---------------- */
-// hero da página inicial: e-mail opcional + "Começar de graça". O e-mail só é validado e fica em memória nesta sessão; nada é enviado
+// cadastro da página inicial (hero e chamada final): o e-mail é obrigatório para começar e vai para a planilha de cadastros
 document.addEventListener('submit', e => {
-  const f = e.target.closest && e.target.closest('#lpmail'); if (!f) return; e.preventDefault();
-  const v = (f.elements.email.value || '').trim(), ok = !v || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v), h = $('#lpem-h');
-  f.classList.toggle('bad', !ok); if (h) { h.classList.toggle('bad', !ok); h.textContent = ok ? '' : LPT().em_bad; }
-  f.elements.email.setAttribute('aria-invalid', ok ? 'false' : 'true');
-  if (!ok) { f.elements.email.focus(); return; }
-  S.user = { guest: true, ...(v ? { email: v } : {}) }; S.ob = 0; go('ob');
+  const f = e.target.closest && e.target.closest('.lp-mail'); if (!f) return; e.preventDefault();
+  const inp = f.elements.email, v = (inp.value || '').trim(), box = f.closest('.lp-mailbox'), h = box && box.querySelector('.lp-em-h'), L = LPT();
+  const msg = !v ? L.em_req : !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) || v.length > 254 ? L.em_bad : '';
+  f.classList.toggle('bad', !!msg); if (h) { h.classList.toggle('bad', !!msg); h.textContent = msg; }
+  inp.setAttribute('aria-invalid', msg ? 'true' : 'false');
+  if (msg) { inp.focus(); return; }
+  npsSignup(v); S.user = { guest: true, email: v }; S.ob = 0; go('ob');
 });
+document.addEventListener('input', e => { const f = e.target.closest && e.target.closest('.lp-mail'); if (!f) return; f.classList.remove('bad'); const h = f.parentNode.querySelector('.lp-em-h'); if (h) { h.textContent = ''; h.classList.remove('bad'); } });
 document.addEventListener('click', e => {
   if (S.fpOpen && !e.target.closest('#fp')) setFp(false);
   const t = e.target.closest('[data-a]'); if (!t) return;

@@ -8,7 +8,7 @@ Object.assign(I18N.pt, {
   nps_t_q: 'O gráfico sugerido serviu?', nps_t_yes: 'Sim', nps_t_no: 'Não', nps_t_why: 'O que aconteceu?', nps_t_r: ['Não era o gráfico que eu queria', 'Faltaram dados ou colunas', 'Ficou confuso', 'Ficou lento', 'Outro'],
   nps_p_q: 'A apresentação ficou como você queria?', nps_fb: 'Enviar feedback', nps_fb_h: 'Feedback',
   nps_d_t: 'O que a pesquisa envia', nps_d_yes: 'Enviado', nps_d_no: 'Nunca enviado', nps_d_y: ['A nota e o comentário que você escrever', 'Seu e-mail, só se marcar que aceita contato', 'Idioma, tema, tipo de gráfico e se o app está instalado', 'Faixas aproximadas (linhas e colunas da planilha, tamanho da tela), sistema e navegador', 'Um código anônimo gerado neste navegador, para não contar a mesma pessoa duas vezes'], nps_d_n: ['A planilha, os valores ou os nomes das colunas', 'O título, os insights ou o nome do arquivo', 'Qualquer coisa do projeto salvo'], nps_d_id: 'Seu código anônimo',
-  nps_faq_q: 'O Datavix envia algum dado?', nps_faq_a: 'Só se você responder à pesquisa de satisfação (NPS): a nota, o comentário e dados técnicos como idioma e tipo de gráfico. Nunca a planilha, os nomes de colunas ou os valores. Você pode ignorar a pesquisa.',
+  nps_faq_q: 'O Datavix envia algum dado?', nps_faq_a: 'Só o e-mail do cadastro para começar e, se você quiser, a sua resposta à pesquisa de satisfação (NPS): a nota, o comentário e dados técnicos como idioma e tipo de gráfico. Nunca a planilha, os nomes de colunas ou os valores. Você pode ignorar a pesquisa.',
 });
 Object.assign(I18N.en, {
   nps_q: 'How likely are you to recommend Datavix to a colleague?', nps_lo: 'Not likely', nps_hi: 'Very likely', nps_c_hi: 'What did you like most?', nps_c_lo: 'What was missing or got in the way?', nps_c_ph: 'If you like, write a sentence or two.',
@@ -17,7 +17,7 @@ Object.assign(I18N.en, {
   nps_t_q: 'Did the suggested chart work for you?', nps_t_yes: 'Yes', nps_t_no: 'No', nps_t_why: 'What happened?', nps_t_r: ['It was not the chart I wanted', 'Data or columns were missing', 'It was confusing', 'It was slow', 'Other'],
   nps_p_q: 'Did the presentation turn out the way you wanted?', nps_fb: 'Send feedback', nps_fb_h: 'Feedback',
   nps_d_t: 'What the survey sends', nps_d_yes: 'Sent', nps_d_no: 'Never sent', nps_d_y: ['The score and the comment you write', 'Your email, only if you agree to be contacted', 'Language, theme, chart type and whether the app is installed', 'Approximate ranges (spreadsheet rows and columns, screen size), system and browser', 'An anonymous code generated in this browser, so the same person is not counted twice'], nps_d_n: ['The spreadsheet, the values or the column names', 'The title, the insights or the file name', 'Anything from a saved project'], nps_d_id: 'Your anonymous code',
-  nps_faq_q: 'Does Datavix send any data?', nps_faq_a: 'Only if you answer the satisfaction survey (NPS): the score, the comment and technical data such as language and chart type. Never the spreadsheet, column names or values. You can ignore the survey.',
+  nps_faq_q: 'Does Datavix send any data?', nps_faq_a: 'Only the email from the sign-up to get started and, if you choose, your answer to the satisfaction survey (NPS): the score, the comment and technical data such as language and chart type. Never the spreadsheet, column names or values. You can ignore the survey.',
 });
 
 const NPS_KEY = 'dv-nps', NPS_DAY = 86400000;
@@ -55,6 +55,16 @@ function npsPayload(ev, moment, extra) {
   return { v: 1, rid: npsRid(), id: st.id, ts: new Date().toISOString(), ev, moment, lang: LANG, theme: S.ui, app: (window.__DV && window.__DV.build) || 'dev', mode: pwaStandalone() ? 'app' : 'browser',
     chart: P ? P.type : '', suggested: P ? P.choice.primary : '', switched: !!npsSession.switched, rows: ds ? npsBand(ds.rowCount, [100, 1000, 10000], ['<100', '100-1k', '1k-10k', '10k+']) : '', cols: ds ? npsBand(ds.columns.length, [5, 11, 21], ['<5', '5-10', '11-20', '20+']) : '',
     os, browser: br, screen: w < 760 ? 'mobile' : w < 1180 ? 'tablet' : 'desktop', usage: st.usage.gen + '/' + st.usage.exp + '/' + st.usage.pres, ...extra };
+}
+// cadastro (e-mail obrigatório para começar): vai para a aba "Cadastros" pela mesma fila e pelo mesmo Apps Script da pesquisa. Cada e-mail é enviado uma vez por navegador
+const NPS_SIGNUP_KEY = 'dv-signup';
+function npsSignup(email) {
+  const em = String(email || '').trim(); if (!em) return;
+  let prev = {}; try { prev = JSON.parse(localStorage.getItem(NPS_SIGNUP_KEY)) || {}; } catch (e) { prev = {}; }
+  const same = String(prev.email || '').toLowerCase() === em.toLowerCase();
+  try { localStorage.setItem(NPS_SIGNUP_KEY, JSON.stringify({ email: em, ts: Date.now() })); } catch (e) { /* sem armazenamento: não lembra o e-mail */ }
+  if (!npsOn() || same) return;
+  npsQueueAdd({ v: 1, rid: npsRid(), id: npsState().id, ts: new Date().toISOString(), ev: 'signup', email: em, lang: LANG, app: (window.__DV && window.__DV.build) || 'dev' }).then(() => npsFlush());
 }
 async function npsSubmit(ev, moment, extra) { const p = npsPayload(ev, moment, extra); await npsQueueAdd(p); npsFlush(); return p; }
 

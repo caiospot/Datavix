@@ -5,7 +5,7 @@ const PRIV_ISSUES = 'https://github.com/caiospot/Datavix/issues';
 const PRIV = {
   pt: {
     title: 'Política de Privacidade',
-    upd: 'Atualizada em 8 de outubro de 2026',
+    upd: 'Atualizada em 10 de outubro de 2026',
     close: 'Fechar',
     link: 'Privacidade',
     sec: [
@@ -13,7 +13,7 @@ const PRIV = {
         ['ul', [
           'A sua planilha é lida e processada no seu navegador. Ela não é enviada para nenhum servidor.',
           'Não usamos anúncios. A análise de uso do site (Microsoft Clarity) só liga se você aceitar e nunca registra o conteúdo da sua planilha.',
-          'Só saem do seu navegador, e só se você quiser: a sua resposta à pesquisa de satisfação e, se você aceitar, dados anônimos de uso do site.',
+          'Só saem do seu navegador: o e-mail que você informa para começar a usar o app, a sua resposta à pesquisa de satisfação (opcional) e, se você aceitar, dados anônimos de uso do site.',
         ]],
       ]],
       ['Quem é o responsável', [
@@ -27,6 +27,17 @@ const PRIV = {
           'Uso offline: ao instalar o app (PWA), o navegador guarda uma cópia dos arquivos do Datavix para ele abrir sem internet.',
           'Arquivos exportados (HTML, PNG, ZIP e vídeo MP4) são salvos no seu computador. O HTML exportado contém os dados do gráfico, funciona sem internet e não carrega rastreadores. O vídeo é gerado no seu navegador e mostra os números e textos da peça. Pense bem antes de compartilhar ou postar.',
         ]],
+      ]],
+      ['Cadastro (e-mail para começar)', [
+        ['p', 'Para começar a usar o Datavix de graça, pedimos o seu e-mail na página inicial. Ele é obrigatório para começar.'],
+        ['h', 'O que é enviado'],
+        ['ul', [
+          'O e-mail que você digitou, o idioma, a data do envio e um código anônimo gerado neste navegador.',
+          'Nada da sua planilha, dos seus projetos ou do que você faz no app.',
+        ]],
+        ['h', 'Para quê, onde fica e por quanto tempo'],
+        ['p', 'Usamos o e-mail para liberar o uso gratuito e para entrar em contato sobre o Datavix (novidades e melhorias do produto). Ele é gravado numa planilha do Google do responsável, por meio de um Google Apps Script. O Google trata esses dados na própria infraestrutura, que pode estar fora do Brasil (transferência internacional, art. 33 da LGPD). Guardamos o e-mail até você pedir a exclusão ou por até 24 meses sem uso.'],
+        ['p', 'Base legal: a execução do serviço que você pediu e o seu consentimento (art. 7, I e V da LGPD). Neste navegador guardamos o e-mail digitado (localStorage) só para preencher o campo na próxima visita; limpar os dados do site apaga isso. Para pedir exclusão do e-mail na planilha, entre em contato.'],
       ]],
       ['Pesquisa de satisfação (NPS e 👍/👎)', [
         ['p', 'Em alguns momentos o Datavix pergunta se você recomendaria o app ou se o gráfico sugerido serviu. É opcional e você pode fechar sem responder. Também dá para enviar feedback a qualquer hora pelo link "Enviar feedback".'],
@@ -72,7 +83,7 @@ const PRIV = {
       ]],
       ['Seus direitos', [
         ['p', 'Pela LGPD (art. 18) você pode pedir: confirmação de que tratamos seus dados, acesso, correção, anonimização, bloqueio ou eliminação, portabilidade, informação sobre com quem compartilhamos e a revogação do consentimento.'],
-        ['p', 'Para exercer esses direitos sobre as respostas da pesquisa, entre em contato e informe o seu código anônimo (ele aparece em "O que é enviado?", na própria pesquisa) ou o e-mail que você deixou. Sem um dos dois não conseguimos localizar as suas respostas. Respondemos em até 15 dias.'],
+        ['p', 'Para exercer esses direitos sobre as respostas da pesquisa, entre em contato e informe o seu código anônimo (ele aparece em "O que é enviado?", na própria pesquisa) ou o e-mail que você deixou (no cadastro ou na pesquisa). Sem um dos dois não conseguimos localizar as suas respostas. Respondemos em até 15 dias.'],
         ['p', 'Os dados guardados no seu navegador estão sob o seu controle: você os apaga a qualquer momento. Se não ficar satisfeito, você também pode reclamar à Autoridade Nacional de Proteção de Dados (ANPD).'],
       ]],
       ['Crianças e adolescentes', [
@@ -92,7 +103,7 @@ const PRIV = {
   },
   en: {
     title: 'Privacy Policy',
-    upd: 'Updated on October 8, 2026',
+    upd: 'Updated on October 10, 2026',
     close: 'Close',
     link: 'Privacy',
     sec: [
@@ -100,7 +111,7 @@ const PRIV = {
         ['ul', [
           'Your spreadsheet is read and processed in your browser. It is not sent to any server.',
           'We use no ads. Site usage analytics (Microsoft Clarity) only turns on if you accept and never records your spreadsheet content.',
-          'Only these leave your browser, and only if you want: your answer to the satisfaction survey and, if you accept, anonymous site usage data.',
+          'Only these leave your browser: the email you give to start using the app, your answer to the satisfaction survey (optional) and, if you accept, anonymous site usage data.',
         ]],
       ]],
       ['Who is responsible', [
@@ -114,6 +125,17 @@ const PRIV = {
           'Offline use: when you install the app (PWA), the browser keeps a copy of the Datavix files so it can open without internet.',
           'Exported files (HTML, PNG, ZIP and MP4 video) are saved to your computer. The exported HTML contains the chart data, works offline and loads no trackers. The video is generated in your browser and shows the numbers and texts of the piece. Think before sharing or posting.',
         ]],
+      ]],
+      ['Sign-up (email to get started)', [
+        ['p', 'To start using Datavix for free, we ask for your email on the home page. It is required to get started.'],
+        ['h', 'What is sent'],
+        ['ul', [
+          'The email you typed, the language, the date it was sent and an anonymous code generated in this browser.',
+          'Nothing from your spreadsheet, your projects or what you do in the app.',
+        ]],
+        ['h', 'Why, where it goes and for how long'],
+        ['p', 'We use the email to enable free use and to get in touch about Datavix (product news and improvements). It is written to a Google spreadsheet owned by the maintainer, through a Google Apps Script. Google processes this data on its own infrastructure, which may be outside Brazil (international transfer, art. 33 of the LGPD). We keep the email until you ask for deletion or for up to 24 months without use.'],
+        ['p', 'Legal basis: performing the service you asked for and your consent (art. 7, I and V of the LGPD). In this browser we keep the email you typed (localStorage) only to fill the field on your next visit; clearing the site data removes it. To ask for deletion of the email from the spreadsheet, get in touch.'],
       ]],
       ['Satisfaction survey (NPS and 👍/👎)', [
         ['p', 'At some moments Datavix asks whether you would recommend the app or whether the suggested chart worked. It is optional and you can close it without answering. You can also send feedback any time with the "Send feedback" link.'],

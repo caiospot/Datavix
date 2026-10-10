@@ -4,7 +4,7 @@ const LP = {
   pt: {
     nav: [['como', 'Como funciona'], ['graficos', 'Gráficos'], ['diferenciais', 'Diferenciais'], ['faq', 'FAQ']],
     start: 'Começar agora', newp: 'Novo projeto', how_cta: 'Ver como funciona',
-    em_ph: 'Qual é o seu e-mail?', em_btn: 'Começar de graça', em_bad: 'Esse e-mail parece incompleto. Confira ou deixe em branco.',
+    em_ph: 'Qual é o seu e-mail?', em_btn: 'Começar de graça', em_bad: 'Esse e-mail parece incompleto. Confira e tente de novo.', em_req: 'Digite o seu e-mail para começar.',
     hero_k: 'Tudo vira dado.', hero_h: ['Da planilha ao', 'storytelling'],
     hero_p: 'O Datavix transforma a sua planilha em dataviz executivo animado e interativo. Tudo acontece no seu navegador: a planilha não sai do seu computador.',
     chips: ['XLSX · XLS · CSV', 'Exporta HTML offline', 'PT / EN'], hero_cap: 'Árvore radial com dados fictícios. Passe o mouse.',
@@ -53,7 +53,7 @@ const LP = {
   en: {
     nav: [['como', 'How it works'], ['graficos', 'Charts'], ['diferenciais', 'Why Datavix'], ['faq', 'FAQ']],
     start: 'Get started', newp: 'New project', how_cta: 'See how it works',
-    em_ph: 'What\'s your email?', em_btn: 'Start for free', em_bad: 'That email looks incomplete. Check it or leave it blank.',
+    em_ph: 'What\'s your email?', em_btn: 'Start for free', em_bad: 'That email looks incomplete. Check it and try again.', em_req: 'Enter your email to get started.',
     hero_k: 'Everything becomes data.', hero_h: ['From spreadsheet to', 'storytelling'],
     hero_p: 'Datavix turns your spreadsheet into animated, interactive executive dataviz. Everything happens in your browser: the spreadsheet never leaves your computer.',
     chips: ['XLSX · XLS · CSV', 'Exports offline HTML', 'PT / EN'], hero_cap: 'Radial tree with sample data. Hover it.',
@@ -113,8 +113,10 @@ const lpPh = (label, ratio = '16/10', k) => `<figure class="ph" style="aspect-ra
 function landingHtml() {
   const L = LPT(), mine = S.user;
   const cta = mine ? `<button class="btn" data-a="start">${L.newp} →</button>` : `<button class="btn" data-a="start">${L.start} →</button>`;
-  // hero: campo de e-mail + "Começar de graça" (opcional; o e-mail não sai do navegador). Quem já tem sessão vê "Novo projeto"
-  const heroCta = mine ? cta : `<div class="lp-mailbox"><form class="lp-mail" id="lpmail" novalidate><label class="sr" for="lpem">${esc(L.em_ph)}</label><input class="lp-em" id="lpem" name="email" type="email" inputmode="email" autocomplete="email" placeholder="${esc(L.em_ph)}" aria-describedby="lpem-h"><button class="btn" type="submit">${esc(L.em_btn)}</button></form><p class="lp-em-h" id="lpem-h" role="alert"></p></div>`;
+  // cadastro: o e-mail é obrigatório para começar (hero e chamada final). Quem já tem sessão vê "Novo projeto". O e-mail lembrado neste navegador já vem preenchido
+  let known = ''; try { known = (JSON.parse(localStorage.getItem('dv-signup')) || {}).email || ''; } catch (e) { known = ''; }
+  const mailForm = k => `<div class="lp-mailbox"><form class="lp-mail" novalidate><label class="sr" for="lpem-${k}">${esc(L.em_ph)}</label><input class="lp-em" id="lpem-${k}" name="email" type="email" inputmode="email" autocomplete="email" required value="${esc(known)}" placeholder="${esc(L.em_ph)}" aria-describedby="lpem-h-${k}"><button class="btn" type="submit">${esc(L.em_btn)}</button></form><p class="lp-em-h" id="lpem-h-${k}" role="alert"></p></div>`;
+  const heroCta = mine ? cta : mailForm('a');
   return `<div class="lp">
   <section class="lp-hero" id="top"><div class="lp-stick">
     <div class="lp-glow" aria-hidden="true"></div>
@@ -141,7 +143,7 @@ function landingHtml() {
     <div class="lp-aud">${L.aud.map(a => `<article data-rv><h3>${esc(a[0])}</h3><p>${esc(a[1])}</p></article>`).join('')}</div></section>
   <section class="lp-sec lp-faq" id="faq"><div class="lbl">[ ${esc(L.faq_k)} ]</div>
     <div>${L.faq.concat(npsOn() ? [[T('nps_faq_q'), T('nps_faq_a')]] : []).map(f => `<details><summary>${esc(f[0])}</summary><p>${esc(f[1])}</p></details>`).join('')}</div></section>
-  <section class="lp-final"><h2>${lpTitle(L.cta_h[0], L.cta_h[1])}</h2><div class="row" style="justify-content:center;margin-top:26px">${cta}</div></section>
+  <section class="lp-final"><h2>${lpTitle(L.cta_h[0], L.cta_h[1])}</h2><div class="lp-final-cta">${mine ? cta : mailForm('b')}</div></section>
   <footer class="lp-foot"><span class="brand-s"><i></i>DATAVIX</span><span class="note"><a class="lp-site" href="https://${DV_SITE}" target="_blank" rel="noopener">${DV_SITE}</a> · ${esc(L.hero_k)} · ${esc(L.foot)} · <button type="button" class="lp-fb" data-a="privacy">${esc(privT().link)}</button>${npsOn() ? ` · <button type="button" class="lp-fb" data-a="feedback">${esc(T('nps_fb'))}</button>` : ''}${anFooter()}</span></footer></div>`;
 }
 

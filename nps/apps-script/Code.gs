@@ -1,11 +1,14 @@
 /**
  * Datavix NPS: recebe as respostas do app e grava numa planilha do Google.
+ * Também recebe os cadastros (ev 'signup': e-mail de quem começa a usar o app) e grava na aba Cadastros.
  * Instalação: veja nps/LEIA-ME.md. Resumo: cole este arquivo num projeto do Apps Script ligado à planilha,
  * rode setup() uma vez, defina a propriedade TOKEN e publique como "Aplicativo da Web".
  */
 const ABA = 'NPS';
+const ABA_CADASTROS = 'Cadastros'; // aba dos e-mails de quem começa a usar o app: coluna A "E-mails cadastrados", B recebido_em, C idioma
 const COLUNAS = ['recebido_em', 'ts', 'ev', 'moment', 'score', 'comment', 'contact', 'email', 'topic', 'why', 'id', 'rid', 'lang', 'theme', 'app', 'mode', 'chart', 'suggested', 'switched', 'rows', 'cols', 'os', 'browser', 'screen', 'usage'];
 const LIMITE_POR_CODIGO = 30; // respostas por código anônimo a cada 6 horas (anti-abuso)
+const LIMITE_CADASTROS = 5; // cadastros por código anônimo a cada 6 horas
 
 function doGet() { return saida_({ ok: true, service: 'datavix-nps' }); }
 
@@ -16,6 +19,7 @@ function doPost(e) {
     const p = JSON.parse(raw);
     const token = PropertiesService.getScriptProperties().getProperty('TOKEN');
     if (token && p.token !== token) return saida_({ ok: false, error: 'token' });
+    if (p.ev === 'signup') return cadastro_(p);
     if (p.v !== 1 || !p.rid || !p.id || !/^(nps|thumb)$/.test(p.ev)) return saida_({ ok: false, error: 'formato' });
     const nota = Number(p.score);
     if (!(nota >= 0 && nota <= 10)) return saida_({ ok: false, error: 'nota' });
@@ -32,6 +36,28 @@ function doPost(e) {
     } finally { lock.releaseLock(); }
     return saida_({ ok: true });
   } catch (err) { return saida_({ ok: false, error: 'erro' }); }
+}
+
+// cadastro: grava o e-mail na aba "Cadastros" (sem repetir o mesmo e-mail, sem diferenciar maiúsculas)
+function cadastro_(p) {
+  const email = String(p.email || '').trim().toLowerCase();
+  if (p.v !== 1 || !p.rid || !p.id || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return saida_({ ok: false, error: 'formato' });
+  const cache = CacheService.getScriptCache(), chave = 's_' + String(p.id).slice(0, 64), usados = Number(cache.get(chave) || 0);
+  if (usados >= LIMITE_CADASTROS) return saida_({ ok: false, error: 'limite' });
+  cache.put(chave, String(usados + 1), 21600);
+  const lock = LockService.getScriptLock(); lock.waitLock(15000);
+  try {
+    const aba = abaCadastros_(), ultima = aba.getLastRow();
+    if (ultima > 1 && aba.getRange(2, 1, ultima - 1, 1).createTextFinder(email).matchEntireCell(true).matchCase(false).findNext()) return saida_({ ok: true, repetido: true });
+    aba.appendRow([limpar_(email), new Date(), limpar_(p.lang)]);
+  } finally { lock.releaseLock(); }
+  return saida_({ ok: true });
+}
+function abaCadastros_() {
+  const ss = SpreadsheetApp.getActive(); let aba = ss.getSheetByName(ABA_CADASTROS);
+  if (!aba) { aba = ss.insertSheet(ABA_CADASTROS); aba.appendRow(['E-mails cadastrados', 'recebido_em', 'idioma']); aba.setFrozenRows(1); }
+  else { if (!aba.getRange('B1').getValue()) aba.getRange('B1').setValue('recebido_em'); if (!aba.getRange('C1').getValue()) aba.getRange('C1').setValue('idioma'); }
+  return aba;
 }
 
 // texto vindo do navegador nunca vira fórmula na planilha (= + - @) e tem tamanho limitado
@@ -51,7 +77,7 @@ function abaNps_() {
 
 /** Rode uma vez: cria a aba NPS (cabeçalho) e a aba Resumo (NPS, distribuição e "o gráfico serviu?"). */
 function setup() {
-  abaNps_();
+  abaNps_(); abaCadastros_();
   const ss = SpreadsheetApp.getActive(); let r = ss.getSheetByName('Resumo'); if (!r) r = ss.insertSheet('Resumo'); r.clear();
   const c = n => 'NPS!' + String.fromCharCode(64 + COLUNAS.indexOf(n) + 1) + ':' + String.fromCharCode(64 + COLUNAS.indexOf(n) + 1);
   const ev = c('ev'), nota = c('score');

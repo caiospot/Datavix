@@ -317,6 +317,7 @@ body.mdl-open { overflow: hidden; }
 .lp-mail .btn { flex: none; white-space: nowrap; padding: 11px 20px; }
 .lp-em-h { margin: 10px 0 0; font: 400 12px var(--mono); letter-spacing: .04em; color: var(--muted); text-align: center; }
 .lp-em-h.bad { color: var(--danger); }
+.lp-em-h:empty { display: none; }
 .lp-cta-mail { flex-direction: column; align-items: center; gap: 18px; width: min(460px, 100%); }
 .lp-mailbox { width: 100%; }
 @media (max-width: 480px) { .lp-mail { padding-left: 16px; } .lp-mail .btn { padding: 10px 14px; font-size: 14px; } }

@@ -128,7 +128,7 @@ function header() {
   const ctl = inEditor ? `<button class="ico" data-a="panel" title="${T('panel_toggle')}" aria-label="${T('panel_toggle')}" aria-pressed="${S.panelOpen}">◨</button><button class="ico" data-a="undo" title="${T('undo')}" aria-label="${T('undo')}" ${canUndo() ? '' : 'disabled'}>↶</button><button class="ico" data-a="redo" title="${T('redo')}" aria-label="${T('redo')}" ${canRedo() ? '' : 'disabled'}>↷</button><span class="savechip" id="savechip" role="status"></span><button class="btn sm" data-a="save">${T('mdl_save')}</button>` : '';
   const seg = `<div class="seg" role="group" aria-label="Idioma / Language"><button data-a="lang" data-v="pt" aria-pressed="${S.lang === 'pt'}">PT</button><button data-a="lang" data-v="en" aria-pressed="${S.lang === 'en'}">EN</button></div>`;
   // celular e tablet vertical: só a ação principal e o menu "burger"; o resto vai para a gaveta
-  const prim = S.step === 'entry' ? `<button class="btn sm" data-a="start">${LPT().start}</button>` : inEditor ? `<button class="btn sm" data-a="save">${T('mdl_save')}</button>` : '';
+  const prim = inEditor ? `<button class="btn sm" data-a="save">${T('mdl_save')}</button>` : '';
   const row = (a, label) => `<button class="dr-row" data-a="${a}"><span>${label}</span><i aria-hidden="true">→</i></button>`;
   const drawer = `<div class="drawer${S.menu ? ' open' : ''}" id="drawer" aria-hidden="${!S.menu}"><div class="dr-ov" data-a="menu-close"></div>
     <div class="dr-box" role="dialog" aria-modal="true" aria-label="${T('menu_h')}">
@@ -148,7 +148,7 @@ function header() {
       <button class="btn ghost sm hide-s" id="pwa-btn" data-a="pwa-install" ${pwaCanInstall() ? '' : 'hidden'}>⤓ ${T('pwa_install')}</button>${ctl}${mine ? `<button class="btn ghost sm" data-a="projects">${LPT().mine} · ${mine}</button>` : ''}${S.piece || S.user ? `<button class="btn ghost sm" data-a="new">${T('restart')}</button>` : ''}
       ${seg}
       <button class="ico" data-a="ui" title="Tema / Theme" aria-label="Tema / Theme">${dark ? '☀' : '☾'}</button>
-      ${S.step !== 'entry' ? `<button class="btn ghost sm" data-a="logout">${T('logout')}</button>` : S.step === 'entry' ? `<button class="btn sm" data-a="start">${LPT().start}</button>` : ''}
+      ${S.step !== 'entry' ? `<button class="btn ghost sm" data-a="logout">${T('logout')}</button>` : ''}
     </div>
     <div class="top-m">${prim}<button class="ico burger" data-a="menu" aria-label="${T('menu_open')}" aria-expanded="${!!S.menu}" aria-controls="drawer"><i></i><i></i><i></i></button></div></header>${drawer}`;
 }
@@ -668,7 +668,7 @@ function openIosInstall() {
 document.addEventListener('submit', e => {
   const f = e.target.closest && e.target.closest('#lpmail'); if (!f) return; e.preventDefault();
   const v = (f.elements.email.value || '').trim(), ok = !v || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v), h = $('#lpem-h');
-  f.classList.toggle('bad', !ok); if (h) { h.classList.toggle('bad', !ok); h.textContent = ok ? LPT().em_hint : LPT().em_bad; }
+  f.classList.toggle('bad', !ok); if (h) { h.classList.toggle('bad', !ok); h.textContent = ok ? '' : LPT().em_bad; }
   f.elements.email.setAttribute('aria-invalid', ok ? 'false' : 'true');
   if (!ok) { f.elements.email.focus(); return; }
   S.user = { guest: true, ...(v ? { email: v } : {}) }; S.ob = 0; go('ob');

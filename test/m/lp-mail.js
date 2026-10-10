@@ -3,7 +3,7 @@
   const D = window.__datavix, S = D.S, sleep = ms => new Promise(r => setTimeout(r, ms)), out = {}, errs = [];
   window.addEventListener('error', e => errs.push(e.message)); const q = s => document.querySelector(s);
   S.user = null; D.go('entry'); await sleep(500);
-  out.form = !!q('#lpmail'); out.antigo = !!q('.lp-cta > [data-a=start]');
+  out.form = !!q('#lpmail'); out.semTexto = !q('#lpem-h').textContent && getComputedStyle(q('#lpem-h')).display === 'none'; out.semGet = !document.querySelector('.top-r [data-a=start], .top-m [data-a=start]'); out.semLink = !q('.lp-cta a.ghost'); out.antigo = !!q('.lp-cta > [data-a=start]');
   const r = q('#lpmail').getBoundingClientRect(); out.largura = Math.round(r.width); out.altura = Math.round(r.height);
   const sub = () => q('#lpmail').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
   q('#lpem').value = 'abc@'; sub(); await sleep(150); out.invalido = S.step + ' | ' + q('#lpem-h').textContent + ' | bad=' + q('#lpmail').classList.contains('bad');

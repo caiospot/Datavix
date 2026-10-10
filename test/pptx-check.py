@@ -7,7 +7,7 @@ for f in sorted(glob.glob('test/out/pptx-*.pptx')):
     name = f.split('pptx-')[1][:-5]
     try:
         p = Presentation(f)
-        charts = texts = tables = 0; wb = 0
+        charts = texts = tables = 0; wb = 0; groups = 0
         for s in p.slides:
             for sh in s.shapes:
                 if sh.has_chart:
@@ -20,10 +20,11 @@ for f in sorted(glob.glob('test/out/pptx-*.pptx')):
                         for se in pl.series:
                             vals = list(se.values) if hasattr(se, 'values') else []
                             assert len(vals) > 0 or name in ('kpi',), 'série vazia'
+                elif sh.shape_type == 6 and len(sh.shapes) > 20: groups += 1  # desenho vetorial agrupado (árvore radial)
                 elif sh.has_text_frame and sh.text_frame.text.strip(): texts += 1
                 elif getattr(sh, 'has_table', False) and sh.has_table: tables += 1
-        ok = len(p.slides) >= 4 and texts >= 8 and (charts == wb) and (charts >= 1 or name == 'kpi')
-        print(('OK   ' if ok else 'FALHA'), name.ljust(11), 'slides', len(p.slides), 'gráficos', charts, 'planilhas', wb, 'textos', texts, 'tabelas', tables)
+        ok = len(p.slides) >= 4 and texts >= 8 and (charts == wb) and (charts >= 1 or groups >= 1 or name == 'kpi')
+        print(('OK   ' if ok else 'FALHA'), name.ljust(11), 'slides', len(p.slides), 'gráficos', charts, 'planilhas', wb, 'textos', texts, 'tabelas', tables, 'desenhos', groups)
         if not ok: bad.append(name)
     except Exception as e:
         print('FALHA', name, repr(e)); bad.append(name)

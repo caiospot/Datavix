@@ -2,7 +2,8 @@
  * O arquivo é um pacote OOXML montado à mão (zip sem compressão, como as demais exportações): os textos são caixas de texto reais e os gráficos
  * são gráficos nativos do PowerPoint (barras, linhas, áreas, pizza, rosca, dispersão, bolhas, radar), cada um com a planilha embutida, então
  * "Editar dados" abre os números e as formas, cores e eixos se editam no PowerPoint. Gráficos sem equivalente nativo saem como o gráfico
- * nativo mais próximo dos mesmos dados (com uma nota no slide). Os números vêm dos mesmos cálculos da peça. */
+ * nativo mais próximo dos mesmos dados (com uma nota no slide). A árvore radial sai como desenho vetorial: formas do PowerPoint agrupadas
+ * (elipses, ligações curvas, textos), no mesmo layout do gráfico vivo. Os números vêm dos mesmos cálculos da peça. */
 const PX = { W: 12192000, H: 6858000, E: 9525 }; // 1280×720 px de projeto (1 px = 9525 EMU)
 const pxe = v => Math.round(v * PX.E);
 const pxEsc = s => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f￾￿]/g, '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -104,11 +105,31 @@ class PxSlide {
   }
   text(x, y, w, h, paras, o = {}) {
     const id = this.id();
-    this.sh.push(`<p:sp><p:nvSpPr><p:cNvPr id="${id}" name="${pxEsc(o.name || 'Texto ' + id)}"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="${pxe(x)}" y="${pxe(y)}"/><a:ext cx="${pxe(w)}" cy="${pxe(h)}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom>${o.fill ? `<a:solidFill><a:srgbClr val="${pxHex(o.fill)}">${o.fillAlpha ? `<a:alpha val="${o.fillAlpha * 1000}"/>` : ''}</a:srgbClr></a:solidFill>` : '<a:noFill/>'}${o.line ? `<a:ln w="9525"><a:solidFill><a:srgbClr val="${pxHex(o.line)}"/></a:solidFill></a:ln>` : '<a:ln><a:noFill/></a:ln>'}</p:spPr><p:txBody><a:bodyPr wrap="square" lIns="${pxe(o.pad || 0)}" tIns="${pxe(o.pad || 0)}" rIns="${pxe(o.pad || 0)}" bIns="${pxe(o.pad || 0)}" rtlCol="0" anchor="${o.anchor || 't'}"><a:normAutofit/></a:bodyPr><a:lstStyle/>${Array.isArray(paras) ? paras.join('') : paras}</p:txBody></p:sp>`);
+    this.sh.push(`<p:sp><p:nvSpPr><p:cNvPr id="${id}" name="${pxEsc(o.name || 'Texto ' + id)}"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm${o.rot ? ` rot="${Math.round(((o.rot % 360) + 360) % 360 * 60000)}"` : ''}><a:off x="${pxe(x)}" y="${pxe(y)}"/><a:ext cx="${pxe(w)}" cy="${pxe(h)}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom>${o.fill ? `<a:solidFill><a:srgbClr val="${pxHex(o.fill)}">${o.fillAlpha ? `<a:alpha val="${o.fillAlpha * 1000}"/>` : ''}</a:srgbClr></a:solidFill>` : '<a:noFill/>'}${o.line ? `<a:ln w="9525"><a:solidFill><a:srgbClr val="${pxHex(o.line)}"/></a:solidFill></a:ln>` : '<a:ln><a:noFill/></a:ln>'}</p:spPr><p:txBody><a:bodyPr wrap="${o.nowrap ? 'none' : 'square'}" lIns="${pxe(o.pad || 0)}" tIns="${pxe(o.pad || 0)}" rIns="${pxe(o.pad || 0)}" bIns="${pxe(o.pad || 0)}" rtlCol="0" anchor="${o.anchor || 't'}"><a:normAutofit/></a:bodyPr><a:lstStyle/>${Array.isArray(paras) ? paras.join('') : paras}</p:txBody></p:sp>`);
   }
   rect(x, y, w, h, fill, o = {}) {
     const id = this.id();
     this.sh.push(`<p:sp><p:nvSpPr><p:cNvPr id="${id}" name="${pxEsc(o.name || 'Forma ' + id)}"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="${pxe(x)}" y="${pxe(y)}"/><a:ext cx="${pxe(w)}" cy="${pxe(h)}"/></a:xfrm><a:prstGeom prst="${o.geom || 'rect'}"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="${pxHex(fill)}">${o.alpha ? `<a:alpha val="${o.alpha * 1000}"/>` : ''}</a:srgbClr></a:solidFill><a:ln><a:noFill/></a:ln></p:spPr><p:txBody><a:bodyPr rtlCol="0" anchor="ctr"/><a:lstStyle/><a:p><a:endParaRPr lang="${LANG === 'pt' ? 'pt-BR' : 'en-US'}"/></a:p></p:txBody></p:sp>`);
+  }
+  // forma vetorial (elipse, retângulo…) com preenchimento e contorno opcionais; descr vira o texto alternativo
+  shape(x, y, w, h, o = {}) {
+    const id = this.id(), clr = (c, a) => `<a:solidFill><a:srgbClr val="${pxHex(c)}">${a != null && a < 1 ? `<a:alpha val="${Math.round(a * 100000)}"/>` : ''}</a:srgbClr></a:solidFill>`;
+    this.sh.push(`<p:sp><p:nvSpPr><p:cNvPr id="${id}" name="${pxEsc(o.name || 'Forma ' + id)}"${o.descr ? ` descr="${pxEsc(o.descr)}"` : ''}/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="${pxe(x)}" y="${pxe(y)}"/><a:ext cx="${pxe(w)}" cy="${pxe(h)}"/></a:xfrm><a:prstGeom prst="${o.geom || 'ellipse'}"><a:avLst/></a:prstGeom>${o.fill ? clr(o.fill, o.fillAlpha) : '<a:noFill/>'}${o.line ? `<a:ln w="${pxe(o.lineW || 1)}">${clr(o.line, o.lineAlpha)}</a:ln>` : '<a:ln><a:noFill/></a:ln>'}</p:spPr><p:txBody><a:bodyPr rtlCol="0" anchor="ctr"/><a:lstStyle/><a:p><a:endParaRPr lang="${LANG === 'pt' ? 'pt-BR' : 'en-US'}"/></a:p></p:txBody></p:sp>`);
+  }
+  // linhas curvas (forma livre): segs = [[x0,y0, c1x,c1y, c2x,c2y, x1,y1]…] em px do slide; uma só forma para o conjunto
+  free(segs, o = {}) {
+    if (!segs.length) return;
+    let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    for (const q of segs) for (let i = 0; i < 8; i += 2) { x0 = Math.min(x0, q[i]); x1 = Math.max(x1, q[i]); y0 = Math.min(y0, q[i + 1]); y1 = Math.max(y1, q[i + 1]); }
+    const w = Math.max(1, x1 - x0), h = Math.max(1, y1 - y0), id = this.id(), pt = (X, Y) => `<a:pt x="${pxe(X - x0)}" y="${pxe(Y - y0)}"/>`;
+    const path = segs.map(q => `<a:moveTo>${pt(q[0], q[1])}</a:moveTo><a:cubicBezTo>${pt(q[2], q[3])}${pt(q[4], q[5])}${pt(q[6], q[7])}</a:cubicBezTo>`).join('');
+    this.sh.push(`<p:sp><p:nvSpPr><p:cNvPr id="${id}" name="${pxEsc(o.name || 'Ligações ' + id)}"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="${pxe(x0)}" y="${pxe(y0)}"/><a:ext cx="${pxe(w)}" cy="${pxe(h)}"/></a:xfrm><a:custGeom><a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/><a:rect l="0" t="0" r="r" b="b"/><a:pathLst><a:path w="${pxe(w)}" h="${pxe(h)}" fill="none">${path}</a:path></a:pathLst></a:custGeom><a:noFill/><a:ln w="${pxe(o.w || 1)}" cap="rnd"><a:solidFill><a:srgbClr val="${pxHex(o.line)}">${o.alpha != null && o.alpha < 1 ? `<a:alpha val="${Math.round(o.alpha * 100000)}"/>` : ''}</a:srgbClr></a:solidFill><a:round/></a:ln></p:spPr></p:sp>`);
+  }
+  // agrupa tudo o que fn desenhar numa única forma agrupada (mover e redimensionar o desenho de uma vez; cada peça continua editável)
+  group(name, x, y, w, h, fn) {
+    const at = this.sh.length, id = this.id(); fn();
+    const inner = this.sh.splice(at).join(''), off = `<a:off x="${pxe(x)}" y="${pxe(y)}"/>`, ext = `<a:ext cx="${pxe(w)}" cy="${pxe(h)}"/>`;
+    this.sh.push(`<p:grpSp><p:nvGrpSpPr><p:cNvPr id="${id}" name="${pxEsc(name)}"/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm>${off}${ext}<a:chOff x="${pxe(x)}" y="${pxe(y)}"/><a:chExt cx="${pxe(w)}" cy="${pxe(h)}"/></a:xfrm></p:grpSpPr>${inner}</p:grpSp>`);
   }
   table(x, y, w, rows, o) { // rows: [[k, v]]
     const id = this.id(), rh = o.rowH || 28, w1 = Math.round(w * 0.62), w2 = w - w1, cell = (t, al, b) => `<a:tc><a:txBody><a:bodyPr/><a:lstStyle/>${this.para(t, { sz: o.sz || 12, col: o.col, font: o.font, algn: al, b })}</a:txBody><a:tcPr marL="${pxe(4)}" marR="${pxe(4)}" marT="${pxe(3)}" marB="${pxe(3)}" anchor="ctr"><a:lnL w="0"><a:noFill/></a:lnL><a:lnR w="0"><a:noFill/></a:lnR><a:lnT w="0"><a:noFill/></a:lnT><a:lnB w="6350"><a:solidFill><a:srgbClr val="${pxHex(o.line)}"/></a:solidFill></a:lnB><a:noFill/></a:tcPr></a:tc>`;
@@ -128,6 +149,59 @@ class PxSlide {
 const pxNum = v => (typeof v === 'number' && isFinite(v) ? Math.round(v * 1e6) / 1e6 : null);
 // destaque do passo: com seleção no estado, o que não foi escolhido fica esmaecido
 function pxMute(labels, sel, th, c) { return sel && sel.length ? labels.map(l => (sel.includes(l) ? { c, a: 100 } : { c, a: 28 })) : null; }
+/* ---------- desenhos vetoriais (formas editáveis do PowerPoint) ---------- */
+// Árvore radial: o mesmo layout do gráfico vivo (OrgEngine) lido em posição final e redesenhado como formas: ligações curvas,
+// uma elipse por bolha, nós, ramos com rótulo. Tudo se edita no PowerPoint (cor, tamanho, texto); não há "Editar dados" nas formas.
+const PX_ORG_MAX = 1500;
+function pxVecOrganism(P, state) {
+  const D = P.built.org, th = P.__pxth, ot = orgTheme(P), keep = {}; if (state) for (const k of ['colors', 'range', 'focus']) if (state[k] !== undefined) keep[k] = state[k];
+  const total = D.leaves.length;
+  const draw = (s, X, Y, W, H) => {
+    const eng = new OrgEngine(D, ot, { rm: true }); eng.resize(W, H, 1); if (Object.keys(keep).length) eng.setState(keep); eng.snap(); eng.stop();
+    const fg = ot.fg, P_ = (a, r) => { const q = eng.pos(a, r, 1); return [X + q[0], Y + q[1]]; };
+    const curve = (a1, r1, a2, r2, A, B) => { const rm = (r1 + r2) / 2, c1 = P_(a1, rm), c2 = P_(a2, rm); A = A || P_(a1, r1); B = B || P_(a2, r2); return [A[0], A[1], c1[0], c1[1], c2[0], c2[1], B[0], B[1]]; };
+    const dens = orgClamp(Math.sqrt(260 / Math.max(1, eng.nVis || eng.leafN.length)), 0.22, 1), root = [X + eng.cx, Y + eng.cy];
+    s.group('Árvore radial', X, Y, W, H, () => {
+      const leaves = eng.leafN.filter(L => L.al >= 0.02 && L.rad >= 0.3).sort((a, b) => b.rad - a.rad).slice(0, PX_ORG_MAX), shown = new Set(leaves);
+      // 1) ligações: raiz → ramo, ramo → nó, nó → bolhas (uma forma por nó)
+      const hubSegs = eng.hubN.filter(h => h.al >= 0.02).map(h => curve(0, 0, h.a, h.r, root, null));
+      s.free(hubSegs, { line: fg, alpha: 0.5, w: 1.3, name: 'Ligações raiz-ramos' });
+      for (const hn of eng.hubN) {
+        if (hn.al < 0.02) continue;
+        const es = hn.ents.filter(en => en.al >= 0.02);
+        s.free(es.map(en => curve(hn.a, hn.r, en.a, en.r)), { line: fg, alpha: 0.32, w: 1.1, name: 'Ligações ' + hn.label });
+      }
+      for (const en of eng.entN) {
+        if (en.al < 0.02) continue;
+        const ls = en.leaves.map(i => eng.leafN[i]).filter(L => shown.has(L));
+        s.free(ls.map(L => curve(en.a, en.r, L.a, L.r)), { line: fg, alpha: 0.2 * dens, w: 0.8, name: 'Ligações ' + D.ents[en.e].label });
+      }
+      // 2) bolhas, as maiores primeiro (as pequenas ficam por cima)
+      for (const L of leaves) {
+        const [x, y] = P_(L.a, L.r), col = orgCatColor(ot, L.c), r = L.rad, hn = D.hubs[L.h], en = D.ents[L.e], cat = L.c >= 0 && D.cols[L.c] ? D.cols[L.c].label : '';
+        s.shape(x - r, y - r, 2 * r, 2 * r, { fill: col, fillAlpha: 0.3, line: col, lineAlpha: 0.7, lineW: 1, name: 'Bolha ' + en.label, descr: [hn.label, en.label, cat, fmtNum(L.v, D.unit, LANG)].filter(Boolean).join(' · ') });
+        if (r >= 4) { const d = Math.max(1.3, r * 0.14); s.shape(x - d, y - d, 2 * d, 2 * d, { fill: col, name: 'Centro' }); }
+      }
+      // 3) nós, raiz e ramos com rótulo
+      for (const en of eng.entN) if (en.al >= 0.05) { const [x, y] = P_(en.a, en.r); s.shape(x - 2.4, y - 2.4, 4.8, 4.8, { fill: fg, fillAlpha: 0.9, name: 'Nó ' + D.ents[en.e].label }); }
+      s.shape(root[0] - eng.r0, root[1] - eng.r0, 2 * eng.r0, 2 * eng.r0, { line: fg, lineAlpha: 0.45, lineW: 1.2, name: 'Raiz' });
+      const visH = eng.hubN.filter(x => x.vis).length || 1, every = Math.max(1, Math.ceil(34 / ((ORG_TAU * eng.R * 0.3) / visH))), fs = Math.max(9, Math.min(14, eng.R * 0.034 * 0.9));
+      for (const hn of eng.hubN) {
+        if (hn.al < 0.05) continue;
+        const [x, y] = P_(hn.a, hn.r); s.shape(x - 3.6, y - 3.6, 7.2, 7.2, { fill: fg, name: 'Ramo ' + hn.label });
+        if (hn.i % every !== 0) continue;
+        const flip = Math.cos(hn.a) < 0, lr = Math.max(eng.r0 * 1.8, hn.r - 20), [lx, ly] = P_(hn.a, lr), bw = 150, bh = fs * 2;
+        s.text(lx - bw / 2, ly - bh / 2, bw, bh, s.para(hn.label, { sz: fs, b: true, col: fg, font: th.fontBody, algn: 'ctr' }), { name: 'Rótulo ' + hn.label, rot: (flip ? hn.a + Math.PI : hn.a) * 180 / Math.PI, anchor: 'ctr', nowrap: true });
+      }
+    });
+    // legenda das cores (categorias) no canto, fora do círculo
+    const cats = D.cols.slice(0, 10); cats.forEach((c, i) => { const yy = Y + 4 + i * 18; s.shape(X + 4, yy + 4, 9, 9, { fill: orgCatColor(ot, i), name: 'Cor ' + c.label }); s.text(X + 18, yy, 170, 18, s.para(c.label, { sz: 9, col: th.muted, font: th.fontBody }), { name: 'Legenda ' + c.label, anchor: 'ctr' }); });
+    eng.stop();
+  };
+  const N = (LANG === 'en' ? { t: 'Branches', e: 'Nodes', c: 'Color', s: 'Size', cut: 'showing the largest' } : { t: 'Ramos', e: 'Nós', c: 'Cor', s: 'Tamanho', cut: 'mostrando as maiores' });
+  const note = `${N.t}: ${D.hubName} · ${N.e}: ${D.entName}${D.colName ? ` · ${N.c}: ${D.colName}` : ''} · ${N.s}: ${D.sizeName}${total > PX_ORG_MAX ? ` · ${N.cut} ${PX_ORG_MAX} / ${total}` : ''}`;
+  return { vec: draw, note };
+}
 function pxSpec(P, state) {
   const b = P.built, t = P.type, cs = (b.cs && b.cs[t]) || null, th = P.__pxth, pal = P.colors, note = pxT().note, sel = state && state.sel && state.sel.length ? state.sel : null;
   const topN = (items, n) => items.slice().sort((x, y) => y.v - x.v).slice(0, n);
@@ -158,7 +232,7 @@ function pxSpec(P, state) {
   }
   if (t === 'kpi') { let cards = []; try { cards = kpiCards(b, LANG, T).slice(0, 6); } catch (e) { cards = []; } return { kpi: cards }; }
   if (t === 'calendar' && b.cal) { const m = new Map(); b.cal.days.forEach(d => { const dt = new Date(d[0]), k = dt.getUTCFullYear() * 100 + dt.getUTCMonth(); m.set(k, (m.get(k) || 0) + d[1]); }); const keys = [...m.keys()].sort((a, c) => a - c), MS = LANG === 'en' ? MONTHS_EN : MONTHS_PT; return { type: 'bar', dir: 'col', grouping: 'clustered', cats: keys.map(k => `${MS[k % 100]}/${String(Math.floor(k / 100)).slice(2)}`), series: [{ name: b.names.y || '', vals: keys.map(k => pxNum(m.get(k))), color: pal[0] }], labels: keys.length <= 14, legend: false, note: pxT().cal }; }
-  if (t === 'organism' && b.org) { const o = barOf(b.org.ents.map(e => ({ label: e.label, v: e.v })), b.org.sizeName || '', 'bar'); o.note = note; return o; }
+  if (t === 'organism' && b.org) return pxVecOrganism(P, state);
   if (t === 'rays' && cs) { const o = barOf(cs.ents.map(e => ({ label: e.label, v: e.v })), cs.valName, 'bar'); o.note = note; return o; }
   if (t === 'fan' && cs) { const o = barOf(cs.cats.map(e => ({ label: e.label, v: e.v })), cs.valName, 'bar'); o.note = note; return o; }
   if (t === 'packed' && cs) { const o = barOf(cs.items.map(e => ({ label: e.label, v: e.v })), cs.valName, 'bar'); o.note = note; return o; }
@@ -220,6 +294,7 @@ function pxDeck(P) {
       k.forEach((c, i) => { const cx = x + (i % cols) * (cw + g), cy = y + Math.floor(i / cols) * (ch + g); s.text(cx, cy, cw, ch, [s.para(String(c.label).toUpperCase(), { sz: 10, col: th.muted, font: th.fontBody, after: 6 }), s.para(kpiFmt(c), { sz: 34, b: true, col: acc, font: th.fontTitle, after: 4 }), s.para(String(c.sub || ''), { sz: 11, col: th.muted, font: th.fontBody })], { name: 'Indicador ' + (i + 1), pad: 14, fill: th.fg, fillAlpha: 6, line: th.grid }); });
       return;
     }
+    if (spec.vec) { spec.vec(s, x, y, w, h); if (spec.note) s.text(x, y + h + 4, w, 36, s.para(spec.note, { sz: 10, col: th.muted, i: true, font: th.fontBody }), { name: 'Nota do gráfico' }); return; }
     if (spec.multi) { const m = spec.multi.slice(0, 6), cols = m.length <= 2 ? m.length : 3, rows = Math.ceil(m.length / cols), cw = w / cols, ch = h / rows; m.forEach((g, i) => { const cx = x + (i % cols) * cw, cy = y + Math.floor(i / cols) * ch; s.text(cx, cy, cw - 8, 22, s.para(g.title, { sz: 12, b: true, col: th.fg, font: th.fontBody, algn: 'ctr' }), { name: 'Título ' + g.title }); s.chart(cx, cy + 22, cw - 8, ch - 30, addChart(g.spec), 'Gráfico ' + g.title); }); return; }
     s.chart(x, y, w, h, addChart(spec), name || 'Gráfico');
     if (spec.note) s.text(x, y + h + 4, w, 36, s.para(spec.note, { sz: 10, col: th.muted, i: true, font: th.fontBody }), { name: 'Nota do gráfico' });

@@ -9,7 +9,7 @@
     btn(act).click(); await sl(500);
     ok(act + ' abre modal', !!layer() && S.layer === name && S.step === 'editor'); out[act + ' título'] = layer() && layer().querySelector('#layer-t').textContent;
     ok(act + ' tem um só Fechar', !!layer() && layer().querySelectorAll('[data-a=layer-close]').length === 1 && /Fechar|Close/.test(layer().querySelector('[data-a=layer-close]').textContent));
-    ok(act + ' sem Voltar', !layer().querySelector('[data-a$="-back"]'));
+    ok(act + ' sem Voltar', !layer().querySelector('[data-a$="-back"], [data-a="back-to"]') && !/←/.test(layer().querySelector('#layer-body').innerText));
     ok(act + ' editor segue por baixo', !!document.querySelector('#piece') && S.piece.host === host0);
     layer().querySelector('.mdl-h [data-a=layer-close]').click(); await sl(300); ok(act + ' Fechar volta ao editor', !layer() && !S.layer && S.step === 'editor' && !document.querySelector('.mdl'));
   }

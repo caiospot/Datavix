@@ -166,7 +166,7 @@ function renderLayer() {
   const screens = { find: findScreen, story: storyScreen, script: scriptScreen }, body = m.querySelector('#layer-body'), keep = body.scrollTop;
   m.querySelector('#layer-t').textContent = layerTitle(); m.setAttribute('aria-label', layerTitle());
   body.innerHTML = screens[S.layer] ? screens[S.layer]() : ''; body.scrollTop = keep;
-  body.querySelectorAll('[data-a$="-back"]').forEach(b => b.remove()); // no modal não há Voltar: quem quer sair usa Fechar
+  body.querySelectorAll('[data-a$="-back"], [data-a="back-to"]').forEach(b => b.remove()); // no modal não há Voltar: quem quer sair usa Fechar
   const f = body.querySelector('textarea, input, .btn:not(.ghost)'); if (f && !m._focused) { m._focused = true; f.focus({ preventScroll: true }); }
 }
 function closeLayer(finished) {

@@ -20,3 +20,9 @@
 - **Gráficos, Diferenciais e Públicos:** cabeçalho à esquerda (fixo ao rolar no desktop) e **lista em linhas** à direita, com bordas finas; fim das grades de 3 colunas. A etiqueta "Disponível" ficou neutra com um ponto lime, para o lime seguir só nas ações.
 - **FAQ, chamada final e rodapé:** iguais. 96px de respiro entre seções. Mobile: uma coluna.
 - Verificado em 1440 e 390 px, nos temas escuro e claro; sem estouro lateral; `lp-frame` e `lp-mail` seguem passando.
+
+## Portão 3 — o quadro troca de gráfico (mesma planilha)
+- Abas no topo do palco: **Árvore radial, Raios radiais, Rio vertical, Cordilheira isométrica**. Clicar troca o gráfico; sem clique, o gráfico muda sozinho a cada ~10 s (para quando a pessoa escolhe uma aba). A legenda abaixo do quadro acompanha ("Rio vertical com dados fictícios. Passe o mouse.").
+- Os 4 gráficos usam os **construtores reais do produto** (`raysBuild`, `riverBuild`, `ridgeBuild`) sobre uma planilha sintética montada dos mesmos registros fictícios (`lpDs`: Ano, UF, Categoria, Receita, Data); nada é desenhado à mão.
+- Os chips de categoria refazem o gráfico atual (na árvore, só ligam/desligam as cores); passar o mouse destaca no gráfico (na árvore também no cartão e na lista).
+- Teste: `test/m/lp-charts.js` (abas, pixels desenhados em cada gráfico, chip, mouse, sem estouro lateral).

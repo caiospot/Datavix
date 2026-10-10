@@ -373,8 +373,15 @@ body.mdl-open { overflow: hidden; }
 .lpf-row span { font: 400 12px var(--mono); color: var(--muted); }
 .lpf-row:hover, .lpf-row.on { background: color-mix(in srgb, var(--fg) 6%, transparent); }
 .lpf-stage { position: relative; min-width: 0; background: var(--bg); }
-.lpf-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.lpf-tools { position: absolute; top: 14px; right: 16px; display: flex; gap: 16px; font: 400 10.5px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); pointer-events: none; }
+.lpf-tools { display: flex; gap: 16px; font: 400 10.5px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); pointer-events: none; }
+.lpf-stage { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.lpf-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 12px 14px 10px; border-bottom: 1px solid var(--line); }
+.lpf-tabs .lpf-tools { position: static; margin-left: auto; padding-left: 12px; }
+.lpf-cvw { position: relative; min-height: 0; }
+.lpf-cvw canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.lpf-tab { border: 1px solid var(--line); border-radius: 999px; background: none; color: var(--muted); font: 400 12px var(--sans); padding: 5px 12px; cursor: pointer; transition: color .15s, border-color .15s, background .15s; }
+.lpf-tab:hover { color: var(--fg); border-color: var(--muted); }
+.lpf-tab[aria-selected='true'] { color: var(--fg); border-color: var(--fg); background: color-mix(in srgb, var(--fg) 8%, transparent); }
 .lp-capline { max-width: 1200px; margin: 14px auto 0; padding: 0 24px; text-align: center; font: 400 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); position: relative; }
 @media (max-width: 1100px) { .lpf-body { grid-template-columns: 262px minmax(0, 1fr); } .lpf-left { display: none; } }
 @media (max-width: 860px) {
@@ -382,7 +389,8 @@ body.mdl-open { overflow: hidden; }
   .lp-frame { margin: 36px 16px 0; }
   .lpf-body { grid-template-columns: 1fr; height: auto; }
   .lpf-mid { border-right: 0; border-bottom: 1px solid var(--line); grid-template-rows: auto; padding: 12px; } .lpf-list { display: none; } .lpf-ov { min-height: 0; }
-  .lpf-stage { height: min(104vw, 460px); }
+  .lpf-stage { height: min(120vw, 520px); }
+  .lpf-tabs .lpf-tools { display: none; }
   .lpf-bar .lpf-pill, .lpf-bar .lpf-warn { display: none; }
   .lp-capline { padding: 0 16px; }
 }

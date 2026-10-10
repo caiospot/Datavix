@@ -4,11 +4,11 @@ const LP = {
   pt: {
     nav: [['como', 'Como funciona'], ['graficos', 'Gráficos'], ['diferenciais', 'Diferenciais'], ['faq', 'FAQ']],
     start: 'Começar agora', newp: 'Novo projeto', how_cta: 'Ver como funciona',
-    fr: { t: 'Vendas por estado', src: 'Fonte: exemplo-vendas.csv · dados fictícios', ins: '{u} lidera com {p} da receita.', lead: 'Maior UF', share: 'Participação', calc: 'ver cálculo', ov: 'Visão geral', det: 'Detalhe', rows: 'Registros', ufs: 'UF', cats: 'Categorias', big: 'Maior', hover: 'Passe o mouse numa bolha para ver os detalhes.', list: 'Lista', per: 'Período', cat: 'Categoria', by: 'Receita por ano', bys: 'Receita por UF', unsaved: 'Não salvo', save: 'Salvar projeto', present: 'Apresentar', howto: 'Como usar', yr: 'Ano', rev: 'Receita', total: 'Total' },
+    fr: { t: 'Vendas por estado', src: 'Fonte: exemplo-vendas.csv · dados fictícios', ins: '{u} lidera com {p} da receita.', lead: 'Maior UF', share: 'Participação', calc: 'ver cálculo', ov: 'Visão geral', det: 'Detalhe', rows: 'Registros', ufs: 'UF', cats: 'Categorias', big: 'Maior', hover: 'Passe o mouse numa bolha para ver os detalhes.', hover2: 'Passe o mouse no gráfico para destacar.', same: 'A mesma planilha, outros gráficos', list: 'Lista', per: 'Período', cat: 'Categoria', by: 'Receita por ano', bys: 'Receita por UF', unsaved: 'Não salvo', save: 'Salvar projeto', present: 'Apresentar', howto: 'Como usar', yr: 'Ano', rev: 'Receita', total: 'Total' },
     em_ph: 'Qual é o seu e-mail?', em_btn: 'Começar de graça', em_bad: 'Esse e-mail parece incompleto. Confira e tente de novo.', em_req: 'Digite o seu e-mail para começar.',
     hero_k: 'Tudo vira dado.', hero_h: ['Da planilha ao', 'storytelling'],
     hero_p: 'O Datavix transforma a sua planilha em dataviz executivo animado e interativo. Tudo acontece no seu navegador: a planilha não sai do seu computador.',
-    chips: ['XLSX · XLS · CSV', 'Exporta HTML offline', 'PT / EN'], hero_cap: 'Árvore radial com dados fictícios. Passe o mouse.',
+    chips: ['XLSX · XLS · CSV', 'Exporta HTML offline', 'PT / EN'], hero_cap: 'Árvore radial com dados fictícios. Passe o mouse.', hero_cap2: '{c} com dados fictícios. Passe o mouse.',
     how_k: 'Como funciona', how_h: ['Quatro passos, zero', 'designer'],
     steps: [
       ['Responda 4 perguntas', 'Qual é a sua área, para quem é, que decisão você quer provocar e quanto tempo tem. Depois da planilha, o Datavix mostra o que encontrou e escolhe o gráfico.', 'opções de público na primeira pergunta do Datavix'],
@@ -54,11 +54,11 @@ const LP = {
   en: {
     nav: [['como', 'How it works'], ['graficos', 'Charts'], ['diferenciais', 'Why Datavix'], ['faq', 'FAQ']],
     start: 'Get started', newp: 'New project', how_cta: 'See how it works',
-    fr: { t: 'Sales by state', src: 'Source: sales-example.csv · sample data', ins: '{u} leads with {p} of revenue.', lead: 'Largest state', share: 'Share', calc: 'see calculation', ov: 'Overview', det: 'Detail', rows: 'Rows', ufs: 'States', cats: 'Categories', big: 'Largest', hover: 'Hover a bubble to see the details.', list: 'List', per: 'Period', cat: 'Category', by: 'Revenue by year', bys: 'Revenue by state', unsaved: 'Not saved', save: 'Save project', present: 'Present', howto: 'How to use', yr: 'Year', rev: 'Revenue', total: 'Total' },
+    fr: { t: 'Sales by state', src: 'Source: sales-example.csv · sample data', ins: '{u} leads with {p} of revenue.', lead: 'Largest state', share: 'Share', calc: 'see calculation', ov: 'Overview', det: 'Detail', rows: 'Rows', ufs: 'States', cats: 'Categories', big: 'Largest', hover: 'Hover a bubble to see the details.', hover2: 'Hover the chart to highlight.', same: 'The same spreadsheet, other charts', list: 'List', per: 'Period', cat: 'Category', by: 'Revenue by year', bys: 'Revenue by state', unsaved: 'Not saved', save: 'Save project', present: 'Present', howto: 'How to use', yr: 'Year', rev: 'Revenue', total: 'Total' },
     em_ph: 'What\'s your email?', em_btn: 'Start for free', em_bad: 'That email looks incomplete. Check it and try again.', em_req: 'Enter your email to get started.',
     hero_k: 'Everything becomes data.', hero_h: ['From spreadsheet to', 'storytelling'],
     hero_p: 'Datavix turns your spreadsheet into animated, interactive executive dataviz. Everything happens in your browser: the spreadsheet never leaves your computer.',
-    chips: ['XLSX · XLS · CSV', 'Exports offline HTML', 'PT / EN'], hero_cap: 'Radial tree with sample data. Hover it.',
+    chips: ['XLSX · XLS · CSV', 'Exports offline HTML', 'PT / EN'], hero_cap: 'Radial tree with sample data. Hover it.', hero_cap2: '{c} with sample data. Hover it.',
     how_k: 'How it works', how_h: ['Four steps, zero', 'designers'],
     steps: [
       ['Answer 4 questions', 'Which area you work in, who it is for, which decision you want to trigger and how much time you have. After the spreadsheet, Datavix shows what it found and picks the chart.', 'audience options on the first Datavix question'],
@@ -131,7 +131,7 @@ function landingHtml() {
         <div class="lp-meta">${L.chips.map(c => `<span>${esc(c)}</span>`).join('<i></i>')}</div></div>
     </div>
     ${lpFrame(L)}
-    <p class="lp-capline">${esc(L.hero_cap)}</p>
+    <p class="lp-capline" id="lp-cap">${esc(L.hero_cap)}</p>
   </section>
   ${(S.recents || []).length ? `<section class="lp-sec lp-saved" id="salvos"><div class="lbl">[ ${esc(L.saved_k)} ]</div><h2>${lpTitle(L.saved_h[0], L.saved_h[1])}</h2><div class="pj-grid">${projCards(6)}</div><div class="row pj-more">${S.recents.length > 6 ? `<button class="btn ghost sm" data-a="projects">${L.all} (${S.recents.length})</button>` : ''}<span class="note">${esc(L.saved_note)}</span></div></section>` : ''}
   <section class="lp-sec" id="como"><div class="lp-sechead"><div class="lbl">[ ${esc(L.how_k)} ]</div><h2>${lpTitle(L.how_h[0], L.how_h[1])}</h2></div>
@@ -159,6 +159,22 @@ function landingData() {
 }
 /* ---- quadro da ferramenta no hero: o mesmo layout do produto, com os números calculados dos mesmos dados fictícios da árvore ---- */
 const LP_PAL = () => PALETTES.cosmos.slice();
+const LP_CHARTS = ['organism', 'rays', 'river', 'ridge'];
+// os mesmos registros fictícios como planilha de verdade (colunas Ano, UF, Categoria, Receita, Data), para que cada gráfico use o construtor real do produto
+function lpDs(cats) {
+  const D = landingData(), rows = D.leaves.filter(l => !cats || cats.has(l[2])), yrs = D.hubs.map(h => +h.label);
+  const cat = (name, dict, f) => ({ name, kind: 'category', unit: null, dict, distinct: dict.length, codes: Int32Array.from(rows, f) });
+  const dates = Float64Array.from(rows, (l, i) => Date.UTC(yrs[l[0]], (l[1] * 5 + l[2] * 3 + i) % 12, 2 + (i % 26)));
+  const columns = [cat(D.hubName, D.hubs.map(h => h.label), l => l[0]), cat(D.entName, D.ents.map(e => e.label), l => l[1]), cat(D.colName, D.cols.map(c => c.label), l => l[2]),
+    { name: D.sizeName, kind: 'number', unit: null, data: Float64Array.from(rows, l => l[3]) }, { name: LANG === 'pt' ? 'Data' : 'Date', kind: 'date', unit: null, data: dates, min: Math.min(...dates), max: Math.max(...dates) }];
+  return { columns, rowCount: rows.length };
+}
+const LP_MAP = { rays: { entity: 1, group: 2, value: 3, agg: 'sum', details: [] }, river: { period: 0, cat: 2, value: 3, agg: 'sum' }, ridge: { time: 4, ent: 1, value: 3, comp: 2, agg: 'sum' } };
+function lpEngine(id, th, cats) {
+  if (id === 'organism') { const D = landingData(); return new OrgEngine(D, th, { rm: RM }); }
+  const B = { rays: raysBuild, river: riverBuild, ridge: ridgeBuild }[id], C = { rays: RaysEngine, river: RiverEngine, ridge: RidgeEngine }[id];
+  const d = B(lpDs(cats), LP_MAP[id], { lang: LANG, nullPolicy: 'ignore' }); return d ? new C(d, th, { rm: RM }) : null;
+}
 function lpStats() {
   const D = landingData(), pal = LP_PAL(), f = x => fmtNum(x, null, LANG);
   const yearTot = D.hubs.map(() => 0), catTot = D.cols.map(() => 0), entTot = D.ents.map(() => 0); let total = 0;
@@ -190,7 +206,7 @@ function lpFrame(L) {
         <div class="lpf-ov" id="lpf-ov" aria-live="polite"></div>
         <div class="lpf-list"><div class="h lpf-lbl">[ ${esc(F.list)} · ${fmtInt(st.n, LANG)} ]</div><div class="lpf-rows">${st.top.map(row).join('')}</div></div>
       </section>
-      <div class="lpf-stage"><canvas id="lpcv" aria-label="${esc(L.hero_cap)}" role="img"></canvas><div class="lpf-tools" aria-hidden="true"><span>▶ ${esc(F.present)}</span><span>? ${esc(F.howto)}</span></div></div>
+      <div class="lpf-stage"><div class="lpf-tabs" role="tablist" aria-label="${esc(F.same)}">${LP_CHARTS.map((id, i) => `<button type="button" role="tab" class="lpf-tab" data-ch="${id}" aria-selected="${i === 0}">${esc(T('chart')[id])}</button>`).join('')}<span class="lpf-tools" aria-hidden="true"><span>▶ ${esc(F.present)}</span><span>? ${esc(F.howto)}</span></span></div><div class="lpf-cvw"><canvas id="lpcv" aria-label="${esc(L.hero_cap)}" role="img"></canvas></div></div>
     </div></div>`;
 }
 let _lp = null;
@@ -211,20 +227,40 @@ function landingMount() {
       ov.innerHTML = `<div class="h"><div><span class="lpf-lbl">${esc(F.det)}</span><b>${esc(D.ents[l[1]].label)} · ${esc(D.hubs[l[0]].label)}</b></div><em>${f(l[3])}</em></div><div class="b"><div><span>${esc(F.cat)}</span><b><i style="background:${pal[l[2] % pal.length]}"></i>${esc(k.label)}</b></div><div><span>${esc(F.ufs)}</span><b>${esc(D.ents[l[1]].label)}</b></div><div><span>${esc(F.yr)}</span><b>${esc(D.hubs[l[0]].label)}</b></div><div><span>${esc(F.rev)}</span><b>${f(l[3])}</b></div></div><div class="f">${esc(F.hover)}</div>`; return;
     }
     const big = (() => { const t = D.ents.map(() => 0); D.leaves.forEach(l => { if (l[0] >= yrs[0] && l[0] <= yrs[1] && cats.has(l[2])) t[l[1]] += l[3]; }); const i = t.reduce((m, v, j) => (v > t[m] ? j : m), 0); return t[i] > 0 ? D.ents[i].label + ' · ' + f(t[i]) : '—'; })();
-    ov.innerHTML = `<div class="h"><div><span class="lpf-lbl">${esc(F.ov)}</span><b>${focus === null ? esc(D.hubs[0].label) + ' – ' + esc(D.hubs[nY - 1].label) : esc(D.hubs[focus].label)}</b></div><em>${f(tot)}</em></div><div class="b"><div><span>${esc(F.rows)}</span><b>${fmtInt(rowsN, LANG)}</b></div><div><span>${esc(F.ufs)}</span><b>${ents.size}</b></div><div><span>${esc(F.cats)}</span><b>${sel.length}</b></div><div><span>${esc(F.big)}</span><b>${esc(big)}</b></div></div><div class="f">${esc(F.hover)}</div>`;
+    ov.innerHTML = `<div class="h"><div><span class="lpf-lbl">${esc(F.ov)}</span><b>${focus === null ? esc(D.hubs[0].label) + ' – ' + esc(D.hubs[nY - 1].label) : esc(D.hubs[focus].label)}</b></div><em>${f(tot)}</em></div><div class="b"><div><span>${esc(F.rows)}</span><b>${fmtInt(rowsN, LANG)}</b></div><div><span>${esc(F.ufs)}</span><b>${ents.size}</b></div><div><span>${esc(F.cats)}</span><b>${sel.length}</b></div><div><span>${esc(F.big)}</span><b>${esc(big)}</b></div></div><div class="f">${esc(chart === 'organism' ? F.hover : F.hover2)}</div>`;
   };
-  const setFocus = h => { focus = h; if (now) now.style.left = (h === null ? 0 : h / (nY - 1) * 100) + '%'; if (dot) { const p = pts[h === null ? 0 : h]; dot.setAttribute('cx', p[0]); dot.setAttribute('cy', p[1].toFixed(1)); } if (eng) eng.setState({ focus: h }); if (hover < 0) showOv(); };
-  const setHover = i => { if (i === hover) return; hover = i; rows.forEach(r => r.classList.toggle('on', +r.dataset.leaf === i)); if (eng) { eng.hov.leaf = i; eng.kick(); } cv.style.cursor = i >= 0 ? 'pointer' : 'default'; idle = i < 0; showOv(); };
+  let chart = 'organism', picked = false; const tabs = $$('.lpf-tab', fr);
+  const setFocus = h => { if (chart !== 'organism') h = null; focus = h; if (now) now.style.left = (h === null ? 0 : h / (nY - 1) * 100) + '%'; if (dot) { const p = pts[h === null ? 0 : h]; dot.setAttribute('cx', p[0]); dot.setAttribute('cy', p[1].toFixed(1)); } if (eng && chart === 'organism') eng.setState({ focus: h }); if (hover < 0) showOv(); };
+  const setHover = i => { if (chart !== 'organism') i = -1; if (i === hover) return; hover = i; rows.forEach(r => r.classList.toggle('on', +r.dataset.leaf === i)); if (eng && chart === 'organism') { eng.hov.leaf = i; eng.kick(); } cv.style.cursor = i >= 0 ? 'pointer' : 'default'; idle = i < 0; showOv(); };
   showOv();
-  // o gráfico nasce (e a árvore cresce) quando o quadro aparece na tela, e pausa quando sai dela
+  // o gráfico nasce (e cresce) quando o quadro aparece na tela e pausa quando sai dela; as abas trocam o gráfico mantendo a mesma planilha
   const fit = () => { if (!eng) return; const w = Math.max(240, cv.clientWidth), h = Math.max(240, cv.clientHeight), dpr = Math.min(2, devicePixelRatio || 1); cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); eng.resize(w, h, dpr); };
   const ro = new ResizeObserver(fit);
-  const boot = () => { eng = new OrgEngine(D, th, { rm: RM }); eng.ctx = cv.getContext('2d'); ro.observe(cv); fit(); if (RM) eng.snap(); _lp.eng = eng; };
-  const timer = RM ? 0 : setInterval(() => { if (!idle || !visible || document.hidden) return; t++; const ph = t % (nY + 2); setFocus(ph < nY ? ph : null); }, 3200); let t = 0;
-  cv.addEventListener('mousemove', e => { if (!eng) return; const r = cv.getBoundingClientRect(), hit = eng.pick(e.clientX - r.left, e.clientY - r.top); idle = !hit; eng.hov.hub = hit && hit.type === 'hub' ? hit.i : -1; if (hit && hit.type === 'leaf') setHover(hit.i); else { setHover(-1); eng.hov.leaf = -1; eng.kick(); cv.style.cursor = hit ? 'pointer' : 'default'; } });
-  cv.addEventListener('mouseleave', () => { idle = true; if (eng) { eng.hov.hub = -1; } setHover(-1); });
+  const filt = () => (cats.size === D.cols.length ? null : cats);
+  const useChart = id => {
+    const ne = lpEngine(id, th, filt()); if (!ne) return false;
+    if (eng) eng.stop(); eng = ne; chart = id; eng.ctx = cv.getContext('2d'); eng.hov = eng.hov || {}; _lp.eng = eng; hover = -1; focus = null; rows.forEach(r => r.classList.remove('on'));
+    tabs.forEach(t => t.setAttribute('aria-selected', String(t.dataset.ch === id))); if (id === 'organism' && filt()) eng.setState({ colors: [...cats] });
+    const cap = $('#lp-cap'); if (cap) cap.textContent = L.hero_cap2.replace('{c}', T('chart')[id]);
+    fit(); if (RM) eng.snap(); setFocus(null); showOv(); return true;
+  };
+  const boot = () => { ro.observe(cv); useChart('organism'); };
+  let t = 0, t2 = 0;
+  const timer = RM ? 0 : setInterval(() => {
+    if (!visible || document.hidden) return;
+    t2++; if (!picked && idle && t2 % 3 === 0) { const nxt = LP_CHARTS[(LP_CHARTS.indexOf(chart) + 1) % LP_CHARTS.length]; if (useChart(nxt)) return; } // a cada ~10 s o gráfico muda, até a pessoa escolher um
+    if (chart !== 'organism' || !idle) return; t++; const ph = t % (nY + 2); setFocus(ph < nY ? ph : null);
+  }, 3400);
+  tabs.forEach(b => b.addEventListener('click', () => { picked = true; if (b.dataset.ch !== chart) useChart(b.dataset.ch); }));
+  cv.addEventListener('mousemove', e => {
+    if (!eng) return; const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    if (chart !== 'organism') { const id = eng.pick(x, y); idle = id === null || id === undefined; if (eng.setHover) eng.setHover(idle ? null : id); cv.style.cursor = idle ? 'default' : 'pointer'; return; }
+    const hit = eng.pick(x, y); idle = !hit; eng.hov.hub = hit && hit.type === 'hub' ? hit.i : -1;
+    if (hit && hit.type === 'leaf') setHover(hit.i); else { setHover(-1); eng.hov.leaf = -1; eng.kick(); cv.style.cursor = hit ? 'pointer' : 'default'; }
+  });
+  cv.addEventListener('mouseleave', () => { idle = true; if (!eng) return; if (chart === 'organism') { eng.hov.hub = -1; setHover(-1); } else if (eng.setHover) eng.setHover(null); });
   rows.forEach(r => { const i = +r.dataset.leaf; r.addEventListener('mouseenter', () => { idle = false; setHover(i); }); r.addEventListener('mouseleave', () => { idle = true; setHover(-1); }); r.addEventListener('focus', () => setHover(i)); r.addEventListener('blur', () => setHover(-1)); });
-  chips.forEach(b => b.addEventListener('click', () => { const i = +b.dataset.cat, on = cats.has(i); if (on && cats.size === 1) return; on ? cats.delete(i) : cats.add(i); b.setAttribute('aria-pressed', String(!on)); if (eng) eng.setState({ colors: cats.size === D.cols.length ? null : [...cats] }); if (hover < 0) showOv(); }));
+  chips.forEach(b => b.addEventListener('click', () => { const i = +b.dataset.cat, on = cats.has(i); if (on && cats.size === 1) return; on ? cats.delete(i) : cats.add(i); b.setAttribute('aria-pressed', String(!on)); if (eng) { if (chart === 'organism') eng.setState({ colors: filt() ? [...cats] : null }); else useChart(chart); } if (hover < 0) showOv(); }));
   _lp = { eng: null, ro, timer, io2: null };
   let io = null;
   if (window.IntersectionObserver) { io = new IntersectionObserver(es => es.forEach(e => { visible = e.isIntersecting; if (visible) { if (!eng) boot(); else eng.kick(); } else if (eng) eng.stop(); }), { threshold: 0.2 }); io.observe(fr); }

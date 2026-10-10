@@ -134,15 +134,15 @@ function landingHtml() {
     <p class="lp-capline">${esc(L.hero_cap)}</p>
   </section>
   ${(S.recents || []).length ? `<section class="lp-sec lp-saved" id="salvos"><div class="lbl">[ ${esc(L.saved_k)} ]</div><h2>${lpTitle(L.saved_h[0], L.saved_h[1])}</h2><div class="pj-grid">${projCards(6)}</div><div class="row pj-more">${S.recents.length > 6 ? `<button class="btn ghost sm" data-a="projects">${L.all} (${S.recents.length})</button>` : ''}<span class="note">${esc(L.saved_note)}</span></div></section>` : ''}
-  <section class="lp-sec" id="como"><div class="lbl">[ ${esc(L.how_k)} ]</div><h2>${lpTitle(L.how_h[0], L.how_h[1])}</h2>
-    <div class="lp-steps">${L.steps.map((s, i) => `<article class="lp-step" data-rv><div class="lp-n num">${String(i + 1).padStart(2, '0')}</div>${lpShot(LP_IMGS[i], s[2])}<h3>${esc(s[0])}</h3><p>${esc(s[1])}</p></article>`).join('')}</div></section>
-  <section class="lp-sec" id="graficos"><div class="lbl">[ ${esc(L.ch_k)} ]</div><h2>${lpTitle(L.ch_h[0], L.ch_h[1])}</h2><p class="sub">${esc(L.ch_p)}</p>
-    <div class="lp-charts">${L.charts.map((c, i) => `<article class="lp-ch" data-rv>${lpChart(LP_CH_ICON[i], c[0])}<div class="lp-ch-b"><div class="lp-ch-h"><h3>${esc(c[0])}</h3><span class="tag${c[2] ? ' on' : ''}">${c[2] ? L.avail : L.soon}</span></div><p>${esc(c[1])}</p></div></article>`).join('')}</div>
+  <section class="lp-sec" id="como"><div class="lp-sechead"><div class="lbl">[ ${esc(L.how_k)} ]</div><h2>${lpTitle(L.how_h[0], L.how_h[1])}</h2></div>
+    <div class="lp-rows">${L.steps.map((s, i) => `<article class="lp-row${i % 2 ? ' rev' : ''}" data-rv><div class="lp-row-t"><div class="lp-n num">${String(i + 1).padStart(2, '0')}</div><h3>${esc(s[0])}</h3><p>${esc(s[1])}</p></div><div class="lp-row-i">${lpShot(LP_IMGS[i], s[2])}</div></article>`).join('')}</div></section>
+  <section class="lp-sec" id="graficos"><div class="lp-split"><div class="lp-split-h"><div class="lbl">[ ${esc(L.ch_k)} ]</div><h2>${lpTitle(L.ch_h[0], L.ch_h[1])}</h2><p class="sub">${esc(L.ch_p)}</p></div>
+    <div class="lp-clist">${L.charts.map((c, i) => `<article class="lp-ch" data-rv>${lpChart(LP_CH_ICON[i], c[0])}<div class="lp-ch-b"><div class="lp-ch-h"><h3>${esc(c[0])}</h3><span class="tag${c[2] ? ' on' : ''}">${c[2] ? L.avail : L.soon}</span></div><p>${esc(c[1])}</p></div></article>`).join('')}</div></div>
     <p class="lp-also"><span>${esc(T('lp_also'))}</span>${['bars', 'hbars', 'stacked100', 'treemap', 'pie', 'donut', 'pies', 'donuts', 'packed', 'cols', 'lines', 'radial', 'radar', 'box', 'words', 'bubmap', 'isomap', 'race', 'line', 'area', 'calendar', 'scatter', 'bubble', 'kpi'].map(t => `<b>${chartIcon(t)}${esc(T('chart')[t])}</b>`).join('')}</p></section>
-  <section class="lp-sec" id="diferenciais"><div class="lbl">[ ${esc(L.df_k)} ]</div><h2>${lpTitle(L.df_h[0], L.df_h[1], L.df_h2)}</h2>
-    <div class="lp-diffs">${L.diffs.map((d, i) => `<article class="lp-df" data-rv><div class="lbl">${String(i + 1).padStart(2, '0')}</div><h3>${esc(d[0])}</h3><p>${esc(d[1])}</p></article>`).join('')}</div></section>
-  <section class="lp-sec"><div class="lbl">[ ${esc(L.au_k)} ]</div>
-    <div class="lp-aud">${L.aud.map(a => `<article data-rv><h3>${esc(a[0])}</h3><p>${esc(a[1])}</p></article>`).join('')}</div></section>
+  <section class="lp-sec" id="diferenciais"><div class="lp-split"><div class="lp-split-h"><div class="lbl">[ ${esc(L.df_k)} ]</div><h2>${lpTitle(L.df_h[0], L.df_h[1], L.df_h2)}</h2></div>
+    <div class="lp-dlist">${L.diffs.map((d, i) => `<article class="lp-df" data-rv><div class="lbl">${String(i + 1).padStart(2, '0')}</div><div><h3>${esc(d[0])}</h3><p>${esc(d[1])}</p></div></article>`).join('')}</div></div></section>
+  <section class="lp-sec"><div class="lp-split"><div class="lp-split-h"><div class="lbl">[ ${esc(L.au_k)} ]</div></div>
+    <div class="lp-aud">${L.aud.map(a => `<article data-rv><h3>${esc(a[0])}</h3><p>${esc(a[1])}</p></article>`).join('')}</div></div></section>
   <section class="lp-sec lp-faq" id="faq"><div class="lbl">[ ${esc(L.faq_k)} ]</div>
     <div>${L.faq.concat(npsOn() ? [[T('nps_faq_q'), T('nps_faq_a')]] : []).map(f => `<details><summary>${esc(f[0])}</summary><p>${esc(f[1])}</p></details>`).join('')}</div></section>
   <section class="lp-final"><h2>${lpTitle(L.cta_h[0], L.cta_h[1])}</h2><div class="lp-final-cta">${mine ? cta : reg ? startBtn : mailForm('b')}</div></section>

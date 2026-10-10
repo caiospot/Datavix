@@ -13,3 +13,10 @@
 **Testes:** `test/m/lp-frame.js` (quadro, canvas desenhado, detalhe ao passar o mouse, chip, foco mudando, sem estouro lateral, cadastro lembrado), `test/m/lp-mail.js` e `test/m/logout-run.js` seguem passando; `test/onboarding.js` agora parte do cadastro lembrado.
 
 **Próximos portões:** 2 recomposição das demais seções (linhas alternadas, sem grade de 3 cartões, sem mudar textos); 3 mesmo quadro trocando de gráfico (Rio, Raios, Cordilheira).
+
+## Portão 2 — demais seções recompostas (sem mudar nenhum texto)
+- **Hero:** título, texto e cadastro voltaram a ficar **centralizados**, como antes; o quadro da ferramenta segue logo abaixo.
+- **Como funciona:** os 4 passos viram **linhas que alternam texto e imagem** (esquerda/direita), separadas por linha fina; a imagem mostra a captura inteira, sem cortes de proporção.
+- **Gráficos, Diferenciais e Públicos:** cabeçalho à esquerda (fixo ao rolar no desktop) e **lista em linhas** à direita, com bordas finas; fim das grades de 3 colunas. A etiqueta "Disponível" ficou neutra com um ponto lime, para o lime seguir só nas ações.
+- **FAQ, chamada final e rodapé:** iguais. 96px de respiro entre seções. Mobile: uma coluna.
+- Verificado em 1440 e 390 px, nos temas escuro e claro; sem estouro lateral; `lp-frame` e `lp-mail` seguem passando.

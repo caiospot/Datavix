@@ -259,6 +259,7 @@ body.mdl-open { overflow: hidden; }
 .lp-faq p { margin-top: 10px; color: var(--muted); max-width: 62ch; }
 .lp-final { text-align: center; padding-top: 110px; padding-bottom: 100px; }
 .lp-final h2 { max-width: 20ch; margin: 0 auto; }
+.lp-site { color: var(--lime); text-decoration: none; border-bottom: 1px solid currentColor; }
 .lp-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 24px; padding-bottom: 36px; border-top: 1px solid var(--line); }
 .brand-s { font: 500 12px var(--mono); letter-spacing: .28em; display: flex; align-items: center; gap: 9px; }
 .brand-s i { width: 8px; height: 8px; background: var(--lime); border-radius: 2px; }

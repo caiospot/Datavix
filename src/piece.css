@@ -68,6 +68,12 @@
 .piece.presenting .caption { display: block; }
 /* logotipo no canto superior direito (só na apresentação) */
 .plogo { display: none; }
+.pcred { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin-top: 6px; font: 500 11px var(--mono, ui-monospace, monospace); letter-spacing: .12em; text-transform: uppercase; opacity: .55; }
+.pcred i { width: .7em; height: .7em; background: #d4ff00; border-radius: 2px; display: inline-block; }
+.pcred a { color: inherit; text-decoration: none; border-bottom: 1px solid currentColor; text-transform: lowercase; letter-spacing: .06em; }
+.pcred a:hover { opacity: .8; }
+.piece.presenting .pcred { display: none; }
+.pi-site { font: 500 clamp(13px, 1.2vw, 18px) var(--mono, ui-monospace, monospace); letter-spacing: .1em; color: var(--accent, #d4ff00); opacity: .9; }
 .piece.presenting .plogo { display: flex; align-items: center; gap: 10px; position: absolute; top: clamp(14px, 3vh, 30px); right: 4vw; z-index: 3; font: 500 clamp(13px, 1.1vw, 16px) var(--mono, 'Geist Mono', ui-monospace, monospace); letter-spacing: .16em; opacity: .9; pointer-events: none; }
 .piece.presenting .plogo i { width: .72em; height: .72em; background: #d4ff00; border-radius: 2px; display: inline-block; }
 @media (max-width: 900px) { .piece.presenting, .piece.presenting[data-lay] { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); grid-template-areas: 'c1' 'c3'; padding: 4vh 5vw 3vh; } .piece.presenting .c2, .piece.presenting .insights { display: none; } .piece.presenting h1 { font-size: clamp(20px, 6vw, 30px); padding-right: 110px; } }

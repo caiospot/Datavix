@@ -2,7 +2,7 @@
 
 **Tudo vira dado.** Transforme planilhas (.xlsx, .xls, .csv) em dataviz executivo, animado e interativo. Tudo roda no navegador: a planilha nunca sai do seu computador.
 
-App: https://caiospot.github.io/Datavix/
+Site: https://datavix.app (endereço oficial; enquanto o domínio não aponta para o app, a publicação continua em https://caiospot.github.io/Datavix/)
 
 ## Desenvolvimento
 

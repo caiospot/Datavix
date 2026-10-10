@@ -89,6 +89,7 @@ async function renderPng(P, o = {}) {
     } finally { try { chart && chart.detach(); } catch (e) { /* ok */ } host.remove(); }
   }
   if (P.opts.notes !== false) wrapText(ctx, footOf(P), pad, footY, W - 2 * pad, 24 * sc, `400 ${16 * sc}px ${fam}`, muted);
+  ctx.save(); ctx.textAlign = 'right'; ctx.textBaseline = 'alphabetic'; ctx.font = `500 ${14 * sc}px 'Geist Mono', ui-monospace, monospace`; ctx.fillStyle = muted; ctx.globalAlpha = 0.85; ctx.fillText(`DATAVIX · ${DV_SITE}`, W - pad, H - pad * 0.28); ctx.restore(); // assinatura discreta, sempre no canto
   return new Promise(r => cv.toBlob(r, 'image/png'));
 }
 

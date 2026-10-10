@@ -61,6 +61,8 @@ const bgCss = (bg, accent) => (bg.mode === 'gradient' ? `linear-gradient(135deg,
 /* ---------------- textos da peça ---------------- */
 function periodLabel(P) { const b = P.built; return b.period || `${fmtInt(b.stats.rowsTotal, LANG)} ${T('rows_lbl')}`; }
 function sourceText(P) { return `${T('src')}: ${P.fileName}${P.isSample ? ' · ' + (LANG === 'pt' ? 'dados de exemplo' : 'sample data') : ''} · ${periodLabel(P)}`; }
+// endereço do site, mostrado no rodapé, no fim da apresentação, nas imagens, no HTML exportado e no fim dos vídeos (DATAVIX_SITE no build troca)
+const DV_SITE = (typeof window !== 'undefined' && window.__DV && window.__DV.site) || 'datavix.app';
 // título para saída (arquivo, aba, aria): o que a pessoa digitou ou, se ainda não digitou, o sugerido
 const titleOf = P => String(P.title || '').trim() || String(P.autoTitle || '').trim();
 const subtitleOf = P => (P.subtitle != null ? P.subtitle : sourceText(P));
@@ -92,6 +94,7 @@ function pieceHtml(P, o = {}) {
     <section class="c2" id="pc2" aria-label="${pt ? 'Detalhes' : 'Details'}" aria-live="polite"><div class="pcard" id="pcard"></div><div class="plist" id="plist"></div></section>
     <div class="c3"><div class="vzbox" id="vz"></div><div class="caption" id="pcap" aria-live="polite"></div>
       <div class="foot" id="pfoot" ${ed}>${esc(footOf(P))}</div></div>
+    ${o.editable ? '' : `<div class="pcred"><i></i>DATAVIX · <a href="https://${DV_SITE}" target="_blank" rel="noopener">${DV_SITE}</a></div>`}
     <div class="pnav" id="pnav"><button data-p="prev" aria-label="${pt ? 'Anterior' : 'Previous'}">←</button><span id="pcount"></span><button data-p="next" aria-label="${pt ? 'Próximo' : 'Next'}">→</button><button data-p="exit" aria-label="${pt ? 'Sair' : 'Exit'}">✕</button></div></div>`;
 }
 // largura da peça decide o arranjo: 3 colunas (≥1180), cartão acima do gráfico (≥760) ou tudo empilhado

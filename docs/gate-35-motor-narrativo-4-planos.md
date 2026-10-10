@@ -26,3 +26,6 @@ Erros bloqueantes: número de slides diferente do pedido, slide sem papel ou tí
 - Em planilhas pobres o plano de 10 slides repete achados em "Evidência complementar" ou termina com mensagens de dados insuficientes; é o custo de exigir o número exato.
 - Os textos de pergunta e de limites são fixos por tipo de achado (PT e EN); não há texto livre.
 - Calibragem de pesos e limites com planilhas reais: gate 5.
+
+## Endereço do site (datavix.app)
+`DV_SITE` (piece.js, bundle compartilhado) vale `datavix.app`, ou o valor de `DATAVIX_SITE` no build. Aparece: no rodapé da página inicial; no fim da apresentação (slide final); no canto inferior direito das imagens PNG; no rodapé do HTML exportado (assinatura "DATAVIX · datavix.app", com link); e na cena final dos vídeos (substitui `caiospot.github.io/Datavix`). O README aponta para o endereço. Se a variável `DATAVIX_SITE` existir no GitHub (Settings → Variables), ela sobrescreve o padrão; hoje ela não está definida.

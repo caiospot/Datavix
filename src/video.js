@@ -6,7 +6,7 @@ const VID_FMT = {
   vertical: { w: 1080, h: 1920, logoY: 112, headY: 185, headH: 470, chart: { x: 30, y: 660, w: 1020, h: 990 }, progY: 1700, head: [72, 60, 50], sub: 36, calc: 28, k: 2, tk: 1.15 },
   square: { w: 1080, h: 1080, logoY: 62, headY: 120, headH: 250, chart: { x: 30, y: 392, w: 1020, h: 612 }, progY: 1038, head: [50, 42, 36], sub: 28, calc: 23, k: 1.8, tk: 1.1 },
 };
-const VID_SITE = (window.__DV && window.__DV.site) || 'caiospot.github.io/Datavix';
+const VID_SITE = DV_SITE; // endereço mostrado na cena final
 const VID_FPS = 30;
 const vEase = k => 1 - Math.pow(1 - Math.max(0, Math.min(1, k)), 3);
 const vClamp = (a, lo, hi) => Math.max(lo, Math.min(hi, a));

@@ -173,3 +173,24 @@ function nvValidatePlan(slides, N, pool) {
   const ids2 = slides.map(s => s.id); if (new Set(ids2).size !== ids2.length) errors.push({ id: 'plan', code: 'duplicate-slide', msg: 'o mesmo achado aparece duas vezes' });
   return { ok: !errors.length, errors, warnings };
 }
+
+
+/* ---- texto da apresentação escrito pela pessoa ---- */
+// quem pulou todas as perguntas não deu contexto: a apresentação mostra os números e os gráficos e deixa os textos em branco para a pessoa escrever
+const nvIsBlank = P => !!(P && P.br && !P.br.area && !P.br.audience && !P.br.decision && !P.br.time && !P.sb);
+function nvBlankSlides(story) {
+  return story.map(s => ({ ...s, head: '', caption: '', hl: '', note: '', ...(s.lines ? { lines: s.lines.map(() => '') } : {}), blank: true }));
+}
+// aplica por cima de qualquer roteiro o que a pessoa digitou (P.sedits[id])
+function nvApplyEdits(P, story) {
+  const E = P && P.sedits; if (!E) return story;
+  story.forEach(s => {
+    const e = E[s.id]; if (!e) return;
+    if (e.kick != null && s.kick) s.kick = { ...s.kick, label: e.kick };
+    if (e.head != null) { s.head = e.head; s.caption = e.head; if (s.hl && !e.head.includes(s.hl)) s.hl = ''; }
+    if (e.lines && s.lines) { s.lines = e.lines.slice(); s.head = s.lines.filter(Boolean).join('. '); s.caption = s.head; }
+    if (e.note != null) s.note = e.note;
+    if (e.caption != null && !s.kick) s.caption = e.caption;
+  });
+  return story;
+}

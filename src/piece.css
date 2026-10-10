@@ -478,3 +478,43 @@
 @keyframes pvin { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @media (max-width: 900px) { .piece.presenting .pviz { position: relative; inset: auto; min-height: 220px; } .vz-r { grid-template-columns: minmax(70px, 34%) 1fr auto; } .vz-r em { display: none; } }
 @media (prefers-reduced-motion: reduce) { .vz-r { animation: none; opacity: 1; } .vz-b i { animation: none; } }
+
+/* cartão em cartões menores: até 4 campos por cartão, em grade */
+.pcard .cgs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 12px; align-content: start; }
+.pcard .cg { display: grid; gap: 9px; align-content: start; min-width: 0; padding: 11px 12px 12px; border: 1px solid var(--o-line); border-radius: 10px; background: color-mix(in srgb, var(--o-fg, #fff) 4%, transparent); }
+.pcard .cg.t { grid-column: 1 / -1; }
+.pcard .cg .ct { padding-top: 2px; }
+/* comparativo de dois pontos (apresentação) */
+.pcard .cmpH { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 14px; align-items: start; }
+.pcard .cmpc { min-width: 0; }
+.pcard .cmpc h4 { margin-top: 5px; }
+.pcard .cmpc .val { margin-top: 7px; font: 700 20px/1 Doto, 'Geist Mono', monospace; overflow-wrap: anywhere; }
+.pcard .cmpc small { display: block; margin-top: 4px; font: 500 9.5px/1.2 'Geist Mono', ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--o-muted); }
+.pcard .cmpd { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background: var(--o-accent, #d4ff00); } .pcard .cmpd.b { background: #ff5c8a; }
+.pcard .cmph { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font: 600 10px/1 'Geist Mono', ui-monospace, monospace; letter-spacing: .1em; } .pcard .cmph span { display: none; }
+.pcard .cmph .a, .pcard .cf.cmp b.a { color: var(--o-accent, #d4ff00); } .pcard .cmph .b, .pcard .cf.cmp b.b { color: #ff5c8a; }
+.pcard .cf.cmp { grid-template-columns: 1fr 1fr; column-gap: 8px; } .pcard .cf.cmp span { grid-column: 1 / -1; }
+.piece.presenting .c2:has(.pcard.cmp) { width: clamp(480px, 50vw, 840px); }
+.piece.presenting .pcard .cgs { padding: .8em; gap: .7em; } .piece.presenting .pcard .cg { padding: .75em .9em .85em; gap: .7em; }
+.piece.presenting .pcard .cmpc .val { font-size: 1.7em; } .piece.presenting .pcard .cmpc small, .piece.presenting .pcard .cmph { font-size: .66em; }
+/* campos de texto editáveis ganham o placeholder */
+.piece [contenteditable][data-ph]:empty::before { content: attr(data-ph); opacity: .38; pointer-events: none; }
+.piece.presenting .ps-note[contenteditable] { min-height: 1.5em; }
+.piece.presenting .ps-head[contenteditable]:empty { min-height: 1.2em; }
+.piece.presenting .ps-list li[contenteditable]:empty { min-height: 1.3em; }
+.piece.presenting .pi-title[contenteditable] { cursor: text; }
+/* gráfico de barras dos atos (casos e pesquisas) em tamanho de apresentação */
+.vz { width: min(100%, 1180px); gap: clamp(16px, 3.2vh, 38px); }
+.vz-t { font-size: clamp(14px, 1.35vw, 22px); }
+.vz-r { grid-template-columns: minmax(150px, 30%) minmax(0, 1fr) auto auto; font-size: clamp(17px, 2vw, 32px); gap: clamp(12px, 1.4vw, 22px); }
+.vz-b { height: clamp(24px, 4.6vh, 52px); border-radius: 10px; } .vz-b i { border-radius: 10px; }
+.vz-r b { min-width: 3.8em; }
+.vz-n { font-size: clamp(13px, 1.1vw, 18px); }
+/* comparativo: dois pontos lado a lado, texto menor e cartões em duas colunas; o cartão nunca passa da altura da tela */
+.piece.presenting .c2 { top: 16vh; }
+.piece.presenting .c2 .pcard.pin { max-height: 74vh; overflow: hidden; }
+.piece.presenting .pcard.cmp .cgs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.piece.presenting .pcard.cmp h4 { font-size: 1.25em; }
+.piece.presenting .pcard .cf.cmp b { font-size: .92em; font-weight: 500; line-height: 1.3; }
+.piece.presenting .pcard.cmp .cmpc .val { font-size: 1.5em; }
+.pcard.cmp .cardhint { text-transform: none; letter-spacing: .02em; }

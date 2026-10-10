@@ -196,14 +196,17 @@ function presCountUp(el, text, ms, isActive) {
 // visual próprio dos atos de casos e pesquisas: barras de taxa ou contagem, com linha de referência opcional
 function vizHtml(v) {
   const mark = v.ref ? `<s style="left:${Math.max(0, Math.min(100, v.ref.p))}%"></s>` : '';
-  return `<div class="vz"><div class="vz-t">${esc(v.title)}</div>${v.rows.map((r, k) => `<div class="vz-r${r.hi ? ' hi' : ''}" style="--d:${k * 70}ms"><span class="vz-k" title="${esc(r.k)}">${esc(r.k)}</span><span class="vz-b"><i style="--w:${Math.max(1.5, Math.min(100, r.p))}%"></i>${mark}</span><b>${esc(r.t)}</b>${r.sub ? `<em>${esc(r.sub)}</em>` : ''}</div>`).join('')}${v.ref ? `<div class="vz-n"><span class="vz-key"></span>${esc(v.ref.label)}</div>` : ''}${v.note ? `<div class="vz-n">${esc(v.note)}</div>` : ''}</div>`;
+  return `<div class="vz"><div class="vz-t">${esc(v.title)}</div>${v.rows.map((r, k) => `<div class="vz-r${r.hi ? ' hi' : ''}" style="--d:${k * 70}ms"><span class="vz-k" title="${esc(r.k)}">${esc(r.ks || r.k)}</span><span class="vz-b"><i style="--w:${Math.max(1.5, Math.min(100, r.p))}%"></i>${mark}</span><b>${esc(r.t)}</b>${r.sub ? `<em>${esc(r.sub)}</em>` : ''}</div>`).join('')}${v.ref ? `<div class="vz-n"><span class="vz-key"></span>${esc(v.ref.label)}</div>` : ''}${v.note ? `<div class="vz-n">${esc(v.note)}</div>` : ''}</div>`;
 }
 function startPresentation(o) {
   if (o.root._pres && o.root._pres.alive()) return o.root._pres; // já está apresentando: nunca empilha uma segunda
   const { root, ix, P } = o, doc = root.ownerDocument, base = buildSteps(P, ix.meta);
   let story = []; try { story = o.steps ? [] : (P.sb ? storyFromAnswers(P, ix.meta, base) : nvPlanFor(P, ix.meta, base).slides); } catch (e) { console.error(e); story = []; } // roteiro próprio da pessoa, ou o plano de 2, 5 ou 10 slides que o tempo escolhido pede
   if (!o.steps && !P.sb && !story.length) { try { story = buildStory(P, ix.meta, base); const cap = ({ quick: 3, normal: 5 })[P.br && P.br.time]; if (cap) story = storyCut(story, cap, P.br && P.br.decision, P.br && P.br.area); } catch (e) { story = []; } } // plano indisponível: história antiga
+  const blank = !o.steps && nvIsBlank(P); // pulou as perguntas: números e gráficos, textos em branco
+  if (story.length && !o.steps) { if (blank) story = nvBlankSlides(story); nvApplyEdits(P, story); }
   const useStory = story.length >= 3 || !!story.isPlan, steps = o.steps || (useStory ? story : base), N = steps.length;
+  if (!useStory && !o.steps) nvApplyEdits(P, base);
   const cnt = root.querySelector('#pcount'), c1 = root.querySelector('.c1'), nav = root.querySelector('#pnav'), hostRef = o.host || P.host, prevK = P.textK;
   const restyle = () => { try { if (hostRef && hostRef.restyle) hostRef.restyle(0); } catch (e) { /* segue */ } };
   P.textK = 1.32; restyle(); // gráficos com fonte maior para ler à distância (hover e clique incluídos)
@@ -216,8 +219,9 @@ function startPresentation(o) {
   const segs = steps.map((s, k) => { const g = prog.appendChild(mk('pseg')); g.dataset.k = k; g.title = s.caption || T('pres_overview'); return g; });
   const intro = mk('pintro', `<div class="pi-in"><div class="pi-eye">${esc(subtitleOf(P))}</div><h2 class="pi-title">${esc(titleOf(P))}</h2>${hero ? `<div class="pi-hero"><span class="pi-num" data-num></span><span class="pi-lab">${esc(hero.label)}</span></div>${hero.sub ? `<div class="pi-sub">${esc(hero.sub)}</div>` : ''}` : ''}<div class="pi-btns"><button type="button" class="pi-go" data-p="next">${esc(T('pres_start'))} →</button><button type="button" class="pi-auto" data-p="auto">▶ ${esc(T('pres_auto'))}</button></div></div>`);
   const sumLine = x => (x.type === 'prio' ? `${x.head}: ${x.rank.map(r => r.k).join(', ')}` : x.type === 'plan' ? x.rows.map(r => r.a).join(' · ') : x.head);
-  const lines = (useStory ? (P.sb ? story.filter(x => x.id !== 'st-ov').slice(-4) : story.isPlan ? story.filter(x => !x.synthetic).slice(0, 4) : story.slice(1).slice(0, 4)).map(sumLine) : (P.insights || []).map(x => x.text)).slice(0, 4);
+  const lines = (useStory ? (P.sb ? story.filter(x => x.id !== 'st-ov').slice(-4) : story.isPlan ? story.filter(x => !x.synthetic).slice(0, 4) : story.slice(1).slice(0, 4)).map(sumLine).filter(t => String(t).trim()) : (P.insights || []).map(x => x.text)).slice(0, 4);
   const outro = mk('pouro', `<div class="pi-in"><div class="pi-eye">[ ${esc(T('pres_outro'))} ]</div><h2 class="pi-title">${esc(titleOf(P))}</h2>${lines.length ? `<ol class="po-list">${lines.map((t, k) => `<li><span>${String(k + 1).padStart(2, '0')}</span>${esc(t)}</li>`).join('')}</ol>` : (ov && ov.left ? `<div class="pfacts po-facts">${ov.left.slice(0, 4).map(([k, v]) => `<div class="pfact"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('')}</div>` : '')}<div class="pi-site">${esc(DV_SITE)}</div><div class="pi-btns"><button type="button" class="pi-go" data-p="restart">↺ ${esc(T('pres_again'))}</button><button type="button" class="pi-auto" data-p="exit">${esc(T('pres_exit'))}</button></div></div>`);
+  { const setTitle = t => { if (!t) return; P.title = t; root.querySelectorAll('.pi-title').forEach(h => { if (h.textContent !== t) h.textContent = t; }); const h1 = root.querySelector('#ptitle'); if (h1) h1.textContent = t; if (o.onEdit) o.onEdit(); }; [intro, outro].forEach(el => { const h = el.querySelector('.pi-title'); if (h) edField(h, T('title_ph'), setTitle); }); } // o título do tema também se escreve na própria apresentação
   const playBtn = doc.createElement('button'), spdBtn = doc.createElement('button');
   playBtn.type = spdBtn.type = 'button'; playBtn.dataset.p = 'play'; spdBtn.dataset.p = 'speed'; playBtn.className = 'pn-play'; spdBtn.className = 'pn-speed';
   if (nav) nav.prepend(playBtn, spdBtn);
@@ -231,6 +235,21 @@ function startPresentation(o) {
   const factsHtml = () => ov && ov.left && ov.left.length ? `<div class="pfacts">${ov.left.slice(0, 4).map(([k, v]) => `<div class="pfact"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('')}</div>` : '';
   const calcHtml = (c, long) => c ? `<details class="pcalc"${innerWidth > 900 && !long ? ' open' : ''}><summary class="pk">[ ${esc(T('see_calc'))} ]</summary><div class="pf">${esc(c.title)}</div><div class="pm">${esc(c.formula)}</div>${c.rows.map(r => `<div class="pr"><span>${esc(r.k)}</span><b>${esc(r.v)}${r.n ? ` · ${fmtInt(r.n, LANG)} ${esc(T('calc_rows'))}` : ''}</b></div>`).join('')}</details>` : '';
   const hlHead = s => { const h = String(s.head || s.caption), k = s.hl ? h.indexOf(s.hl) : -1; return k < 0 ? esc(h) : esc(h.slice(0, k)) + '<mark>' + esc(s.hl) + '</mark>' + esc(h.slice(k + s.hl.length)); };
+  // texto da apresentação editável: clicar escreve; sair do campo guarda (P.sedits), e vale para o vídeo e o HTML exportado
+  const PH = T('pres_ph');
+  function keepEdit(s, patch, edit) { Object.assign(s, patch); P.sedits = P.sedits || {}; P.sedits[s.id] = { ...(P.sedits[s.id] || {}), ...edit }; if (o.onEdit) o.onEdit(); }
+  function edField(el, ph, fn) {
+    if (!el) return; el.setAttribute('contenteditable', 'plaintext-only'); el.spellcheck = false; if (ph) el.dataset.ph = ph;
+    el.addEventListener('focus', () => { if (playing) setPlaying(false); });
+    el.addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); el.blur(); } });
+    el.addEventListener('blur', () => fn(el.textContent.replace(/\s+/g, ' ').trim()));
+  }
+  function wireEdits(s) {
+    edField(pbody.querySelector('.ps-kl'), '', t => keepEdit(s, { kick: { ...s.kick, label: t } }, { kick: t }));
+    edField(pbody.querySelector('.ps-head'), PH, t => keepEdit(s, { head: t, caption: t, hl: s.hl && t.includes(s.hl) ? s.hl : '' }, { head: t }));
+    edField(pbody.querySelector('.ps-note'), PH, t => keepEdit(s, { note: t }, { note: t }));
+    pbody.querySelectorAll('.ps-list li').forEach((li, k) => edField(li, PH, t => { const arr = (s.lines || []).slice(); arr[k] = t; keepEdit(s, { lines: arr, head: arr.filter(Boolean).join('. '), caption: arr.filter(Boolean).join('. ') }, { lines: arr }); }));
+  }
   const rail = s => {
     root.classList.toggle('pviz-on', !!s.viz); pviz.innerHTML = s.viz ? vizHtml(s.viz) : '';
     root.classList.toggle('pnoctx', !!(s.type || (s.calc && s.calc.rows && (s.calc.rows.length > 3 || s.calc.rows.some(r => String(r.k).length > 38))) || String(s.head || '').length > 110));
@@ -241,13 +260,15 @@ function startPresentation(o) {
       else if (s.type === 'prio') extra = `<ol class="ps-rank">${s.rank.map(r => `<li><i>${r.n}</i><span class="k">${esc(r.k)}</span><b>${esc(r.v)}</b>${r.s ? `<em>${esc(r.s)}</em>` : ''}</li>`).join('')}</ol>`;
       else if (s.type === 'plan') extra = `<div class="ps-plan">${s.rows.map(r => `<div class="pl-row"><div class="pl-a">${esc(r.a)}</div><div class="pl-m">${[r.o && `${SL.plan.who}: ${r.o}`, r.d && `${SL.plan.when}: ${r.d}`, r.m && `${SL.plan.track}: ${r.m}`].filter(Boolean).map(esc).join(' · ')}</div></div>`).join('')}</div>`;
       else if (s.type === 'diag' && s.chips && s.chips.length) extra = `<div class="ps-chips">${s.chips.map(c => `<span><b>${esc(c.text)}</b> ${esc(c.label)}</span>`).join('')}</div>`;
-      pbody.innerHTML = `<div class="pstory${s.type ? ' t-' + s.type : ''}"><div class="ps-kick"><i>${esc(s.kick.n)}</i>${esc(s.kick.label)}</div>${no ? '' : `<h2 class="ps-head${String(s.head).length > 90 ? ' long' : ''}${s.type === 'ask' ? ' ask' : ''}">${hlHead(s)}</h2>`}${extra}${s.note ? `<p class="ps-note">${esc(s.note)}</p>` : ''}${s.big ? `<div class="ps-big"><span class="ps-num" data-num>${esc(s.big.text)}</span><span class="ps-lab">${esc(s.big.label)}</span></div>` : ''}${s.bars && !s.viz ? `<div class="ps-bars">${s.bars.map(b => `<div class="ps-bar"><span class="bk">${esc(b.k)}</span><span class="bt"><i style="--w:${Math.max(2, Math.min(100, b.p))}%"></i></span><b>${esc(b.t)}</b></div>`).join('')}</div>` : ''}</div>${calcHtml(s.calc, String(s.head || '').length > 120 && innerHeight < 900)}`;
+      pbody.innerHTML = `<div class="pstory${s.type ? ' t-' + s.type : ''}"><div class="ps-kick"><i>${esc(s.kick.n)}</i><span class="ps-kl">${esc(s.kick.label)}</span></div>${no ? '' : `<h2 class="ps-head${String(s.head).length > 90 ? ' long' : ''}${s.type === 'ask' ? ' ask' : ''}">${hlHead(s)}</h2>`}${extra}${s.note || s.blank ? `<p class="ps-note">${esc(s.note || '')}</p>` : ''}${s.big ? `<div class="ps-big"><span class="ps-num" data-num>${esc(s.big.text)}</span><span class="ps-lab">${esc(s.big.label)}</span></div>` : ''}${s.bars && !s.viz ? `<div class="ps-bars">${s.bars.map(b => `<div class="ps-bar"><span class="bk">${esc(b.k)}</span><span class="bt"><i style="--w:${Math.max(2, Math.min(100, b.p))}%"></i></span><b>${esc(b.t)}</b></div>`).join('')}</div>` : ''}</div>${calcHtml(s.calc, String(s.head || '').length > 120 && innerHeight < 900)}`;
+      wireEdits(s);
       if (s.big) { const at = i; presCountUp(pbody.querySelector('[data-num]'), s.big.text, 1400, () => active && i === at); }
       return;
     }
     if (!s.caption) { pbody.innerHTML = factsHtml(); return; }
     const parts = s.calc ? [s.caption] : s.caption.split(' · '), head = parts[0], sub = parts.slice(1).join(' · ');
     pbody.innerHTML = `<div class="pcap2"><div class="pc-h${head.length > 56 ? ' long' : ''}">${esc(head)}</div>${sub ? `<div class="pc-s">${esc(sub)}</div>` : ''}</div>${calcHtml(s.calc)}`;
+    { const h = pbody.querySelector('.pc-h'); edField(h, '', t => keepEdit(s, { caption: t + (sub ? ' · ' + sub : '') }, { caption: t + (sub ? ' · ' + sub : '') })); }
   };
   // tempo de leitura de cada passo: base + texto + cálculo, dividido pela velocidade
   const holdMs = k => k < 0 ? 5200 : Math.round(Math.min(9500, Math.max(5000, 4200 + ((steps[k].caption || '').length) * 45 + (steps[k].calc ? 3500 : 0))) / speed);
@@ -262,7 +283,7 @@ function startPresentation(o) {
     if (playing) { lock(); if (i >= N) show(-1); else schedule(); } else { clearTimeout(timer); segs.forEach(g => g.classList.remove('run')); }
   }
   async function show(n) {
-    const my = ++token; clearTimeout(timer);
+    const my = ++token; clearTimeout(timer); if (root._card && root._card.clear) root._card.clear(); // o ponto escolhido vale só para o slide em que foi clicado
     i = Math.max(-1, Math.min(N, n));
     root.classList.toggle('pintro-on', i < 0); root.classList.toggle('pouro-on', i >= N);
     segs.forEach((g, k) => { g.classList.toggle('done', k < i); g.classList.toggle('cur', k === i); g.classList.remove('run'); });
@@ -283,10 +304,11 @@ function startPresentation(o) {
     if (o.onEnd) o.onEnd(seen + 1);
   }
   const onKey = e => {
+    if (e.target && e.target.isContentEditable) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); e.target.blur(); } return; } // escrevendo: as teclas são do texto
     if (e.key === ' ') { e.preventDefault(); e.stopPropagation(); if (playing) setPlaying(false); else show(i + 1); }
     else if (['ArrowRight', 'ArrowDown', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); e.stopPropagation(); show(i + 1); }
     else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); e.stopPropagation(); show(i - 1); }
-    else if (e.key === 'Escape') { e.preventDefault(); stop(); }
+    else if (e.key === 'Escape') { e.preventDefault(); if (root._card && root._card.isPinned()) { e.stopPropagation(); root._card.clear(); } else stop(); } // com um ponto escolhido, Esc fecha o cartão primeiro
     else if (e.key === 'Home') show(-1); else if (e.key === 'End') show(N - 1);
     else if (e.key === 'p' || e.key === 'P' || e.key === 'k' || e.key === 'K') { e.preventDefault(); setPlaying(!playing); }
   };
@@ -303,12 +325,12 @@ function startPresentation(o) {
       return;
     }
     const sg = e.target.closest('.pseg'); if (sg) { show(+sg.dataset.k); return; }
-    if (i < 0 && e.target.closest('.pintro')) show(0);
+    if (i < 0 && e.target.closest('.pintro') && !e.target.closest('[contenteditable]')) show(0);
     else if (playing && e.target.closest('.c3')) setPlaying(false); // mexer no gráfico (fixar um item) pausa a reprodução
   };
   // deslizar no celular: esquerda avança, direita volta
   let sx = null, sy = 0, st = 0;
-  const onTS = e => { if (e.touches.length !== 1 || e.target.closest('button, a, input, select, textarea, .pcard, summary, .pseg')) { sx = null; return; } sx = e.touches[0].clientX; sy = e.touches[0].clientY; st = Date.now(); };
+  const onTS = e => { if (e.touches.length !== 1 || e.target.closest('button, a, input, select, textarea, .pcard, summary, .pseg, [contenteditable]')) { sx = null; return; } sx = e.touches[0].clientX; sy = e.touches[0].clientY; st = Date.now(); };
   const onTE = e => { if (sx === null) return; const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy; sx = null; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5 && Date.now() - st < 900) show(dx < 0 ? i + 1 : i - 1); };
   document.addEventListener('keydown', onKey, true); document.addEventListener('fullscreenchange', onFs); document.addEventListener('visibilitychange', onVis); root.addEventListener('click', onClick);
   root.addEventListener('touchstart', onTS, { passive: true }); root.addEventListener('touchend', onTE, { passive: true });

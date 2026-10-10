@@ -425,3 +425,10 @@ Object.assign(I18N.en, {
     ins_dimgap_lo: (d, l, m, g, o, p) => `In ${d}, ${l} has the lowest average ${m} per record: ${g} vs ${o} overall (${p}).`,
     ins_dimgap_hi: (d, l, m, g, o, p) => `In ${d}, ${l} has the highest average ${m} per record: ${g} vs ${o} overall (${p}).`,
 });
+
+Object.assign(I18N.pt, { ob_skip: 'Pular' });
+Object.assign(I18N.en, { ob_skip: 'Skip' });
+
+/* apresentação: textos editáveis, comparativo de dois pontos */
+Object.assign(I18N.pt, { pres_ph: 'Digite aqui seu conteúdo', card_cmp_hint: 'Clique em outro ponto para trocar; clique no mesmo para tirar. Esc fecha.', card_cmp_none: 'Os dois pontos não têm campos em comum para comparar.' });
+Object.assign(I18N.en, { pres_ph: 'Type your content here', card_cmp_hint: 'Click another point to swap; click the same one to remove it. Esc closes.', card_cmp_none: 'The two points have no fields in common to compare.' });

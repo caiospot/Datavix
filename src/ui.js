@@ -209,7 +209,7 @@ function onboarding() {
     const ot = (S.br.other || {})[q.key], isOther = !!(ot && ot.on);
     body = `<div class="opts${q.key === 'area' ? ' opts-area' : ''}" role="group">${(q.noOther ? q.opts : [...q.opts, 'other']).map(o => { const [l, d] = I18N[LANG].o[q.key][o]; return `<button class="opt${o === 'other' ? ' other' : ''}" data-a="pick" data-v="${o}" aria-pressed="${o === 'other' ? isOther : !isOther && val === o}"><strong>${esc(l)}</strong><span>${esc(d)}</span></button>`; }).join('')}</div>
       ${isOther ? `<label class="ob-other"><span class="lbl">${T('ob_other_l')}</span><input class="field" id="ob-other" type="text" maxlength="80" value="${esc(ot.text || '')}" placeholder="${esc(T('ob_other_ph')[q.key])}"></label><p class="note" style="margin:6px 0 0">${T('ob_other_note')}</p>` : ''}
-      <div class="row"><button class="btn ghost" data-a="ob-back">← ${T('back')}</button>${val ? `<button class="btn" data-a="ob-next">${T('next')} →</button>` : ''}</div>`;
+      <div class="row"><button class="btn ghost" data-a="ob-back">← ${T('back')}</button>${val ? `<button class="btn" data-a="ob-next">${T('next')} →</button>` : ''}<button class="btn text" data-a="ob-skip">${T('ob_skip')}</button></div>`;
   }
   return `<div class="wrap-narrow">${head}<h2>${title2(T(q.q))}</h2>${body}</div>`;
 }
@@ -373,7 +373,7 @@ function applyMapping(msg, undo, wantType) {
   const old = S.piece; if (!old) return;
   teardownChart();
   const np = makePiece();
-  Object.assign(np, { sb: old.sb, id: old.id, saveName: old.saveName, palId: old.palId, colors: old.colors, bg: old.bg, fontPair: old.fontPair, opts: old.opts, title: old.title, subtitle: old.subtitle, foot: old.foot, sort: old.sort, big: old.big, place: old.place });
+  Object.assign(np, { sedits: old.sedits, sb: old.sb, id: old.id, saveName: old.saveName, palId: old.palId, colors: old.colors, bg: old.bg, fontPair: old.fontPair, opts: old.opts, title: old.title, subtitle: old.subtitle, foot: old.foot, sort: old.sort, big: old.big, place: old.place });
   np.type = wantType && np.choice.all.includes(wantType) ? wantType : np.choice.all.includes(old.type) ? old.type : np.choice.primary;
   np.hist = old.hist.slice(0, old.hi + 1); np.hi = old.hi; S.piece = np; pushHist(); S.dirty = true;
   const prev = undo || { piece: old, mapping: S._prevMapping, ds: S._prevDs };
@@ -655,6 +655,7 @@ document.addEventListener('click', e => {
       if (v === 'other') { const prev = S.br.other[key]; S.br.other[key] = { on: true, text: prev ? prev.text : '' }; S.br[key] = obResolve(key, S.br.other[key].text); render(); setTimeout(() => { const i = $('#ob-other'); if (i) i.focus(); }, 30); break; }
       S.br.other[key] = null; S.br[key] = v; $$('.opt').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === v)); setTimeout(() => { if (S.step === 'ob') nextOb(); }, RM ? 0 : 220); break; }
     case 'ob-next': nextOb(); break;
+    case 'ob-skip': { const key = OB[S.ob].key; S.br[key] = null; if (S.br.other) S.br.other[key] = null; if (S.ob < OB.length - 1) { S.ob++; render(); } else go('upload'); break; } // pular: segue sem responder, e a história não presume nada sobre esta pergunta
     case 'ob-back': if (S.ob === 0) go('entry'); else { S.ob--; render(); } break;
     case 'pick-file': $('#file') && $('#file').click(); break;
     case 'sample': S.isSample = true; loadBuffer('exemplo-vendas.csv', sampleCsv()); break;
@@ -662,7 +663,7 @@ document.addEventListener('click', e => {
     case 'cancel-load': cancelLoad(); break;
     case 'panel': S.panelOpen = !S.panelOpen; lsSet('dv-panel', S.panelOpen ? '1' : '0'); { const ed = $('#editor'); if (ed) ed.classList.toggle('nopanel', !S.panelOpen); t.setAttribute('aria-pressed', S.panelOpen); } break;
     case 'orgdet': { const og = S.mapping.org, cols = S.ds.columns, skip = new Set([og.hub, og.entity, og.color, og.size].filter(i => i >= 0)); const cur = new Set(Array.isArray(og.details) ? og.details : orgAutoDetails(cols, skip)), i = +v; cur.has(i) ? cur.delete(i) : cur.add(i); og.details = [...cur].sort((a, b) => (orgIsLong(cols[a]) - orgIsLong(cols[b])) || a - b); mapChanged(); break; }
-    case 'back-to': go(v === 'ob' ? 'ob' : v); if (v === 'ob') { S.ob = 5; render(); } break;
+    case 'back-to': go(v === 'ob' ? 'ob' : v); if (v === 'ob') { S.ob = OB.length - 1; render(); } break; // voltar do upload cai na última pergunta
     case 'nulls': S.nullPolicy = v; $$('.radio button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === v)); break;
     case 'swapdate': getWorker().postMessage({ type: 'retype', col: +t.dataset.col, kind: 'date', order: 'MDY' }); break;
     case 'to-read': go('read'); break;
@@ -672,7 +673,7 @@ document.addEventListener('click', e => {
     case 'pwa-install': pwaInstall(); break;
     case 'pal': if (P) { P.palId = v; P.colors = PALETTES[v].slice(); pushHist(); refreshAll(false); } break;
     case 'bg': if (P) { const cur = bgBase(P.bg); P.bg = v === 'light' || v === 'dark' ? { ...P.bg, mode: v } : { ...P.bg, mode: v, [v === 'solid' ? 'color' : 'base']: cur }; pushHist(); refreshAll(false); } break;
-    case 'present': if (P && P.host) ensureTitle().then(ok => { if (ok && S.piece === P && P.host) P.pres = startPresentation({ root: $('#piece'), ix: P.host.ix, P, onEnd: n => { npsTrack('pres'); if (n >= 2) npsMoment('pres'); } }); }); break;
+    case 'present': if (P && P.host) ensureTitle().then(ok => { if (ok && S.piece === P && P.host) P.pres = startPresentation({ root: $('#piece'), ix: P.host.ix, P, onEdit: () => { P.sedits = P.sedits; markDirty(); }, onEnd: n => { npsTrack('pres'); if (n >= 2) npsMoment('pres'); askSaveAfterPresenting(P); } }); }); break;
     case 'feedback': npsManual(); break;
     case 'menu': setMenu(!S.menu); break;
     case 'menu-close': setMenu(false); break;
@@ -730,6 +731,14 @@ async function ensureTitle() {
   if (!r || (r.v !== 'ok' && r.v !== 'use')) return false;
   const txt = r.v === 'use' ? sug : String(r.text || '').trim(); if (!txt) return false;
   P.title = txt; const h = $('#ptitle'); if (h) h.textContent = txt; pushHist(); return true;
+}
+// ao fechar a apresentação: oferece salvar o projeto (com os textos que a pessoa escreveu); no build de teste só com ?asksave
+async function askSaveAfterPresenting(P) {
+  if (window.__DV_NOFIND && !/[?&]asksave\b/.test(location.search)) return;
+  await new Promise(r => setTimeout(r, 250));
+  if (S.step !== 'editor' || S.piece !== P || (P.saveName && !S.dirty)) return;
+  if (!P.saveName) S.dirty = true;
+  await guard('exit');
 }
 function rebuildPieceForLang() {
   if (!S.piece || !S.ds) return;

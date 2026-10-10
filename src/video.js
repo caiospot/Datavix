@@ -43,6 +43,7 @@ function videoPlan(P, fmt) {
   let hero = null, ov = null; try { hero = kpiCards(P.built, LANG, T)[0] || null; ov = genOverview(P); } catch (e) { /* sem indicador */ }
   let story = []; try { story = P.sb ? storyFromAnswers(P, meta, base) : nvPlan(P, meta, base, 5).slides.slice(1); } catch (e) { console.error(e); } // vídeo: o plano de 5 sem o contexto (o gancho já faz esse papel)
   if (!P.sb && !story.length) { try { story = buildStory(P, meta, base); } catch (e) { console.error(e); } }
+  nvApplyEdits(P, story); // textos que a pessoa escreveu na apresentação
   const scenes = [{ kind: 'hook', ms: 2700 }], SLx = STORY_TXT[LANG] || STORY_TXT.pt;
   const listOf = s => (s.type === 'prio' ? s.rank.map(r => `${r.n}. ${r.k}, ${r.v}${r.s ? ' (' + r.s + ')' : ''}`) : s.type === 'impl' ? s.lines : s.type === 'plan' ? s.rows.map(r => [r.a, r.o, r.d].filter(Boolean).join(' · ')) : s.type === 'diag' ? (s.chips || []).map(c => `${c.text} ${c.label}`) : null);
   // roteiro guiado: o vídeo mostra até 5 atos; ficam o panorama, o centro, o diagnóstico, as prioridades e a decisão, e o resto preenche pela ordem

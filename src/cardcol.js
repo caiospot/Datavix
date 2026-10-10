@@ -1,39 +1,56 @@
 /* Datavix: coluna 2, o cartão de detalhes. Compartilhado por todos os gráficos (editor, apresentação e HTML exportado).
  * Modelo: { key, kick, kickColor, title, value, vlabel, left:[[campo, valor]], texts:[[campo, texto longo]], hint }
  * Estados: visão geral (vazio) > hover (prévia, textos cortados) > fixo (clique; texto completo; × ou Esc fecha). */
+// cartões menores: até 4 campos de dados (ou 2 textos longos) por cartão, em grade; o cartão inteiro deixa de ser uma lista comprida
+const CG_DATA = 4, CG_TEXT = 2;
+function cardGroups(m) {
+  const left = m.left || [], texts = m.texts || [], out = [];
+  for (let i = 0; i < left.length; i += CG_DATA) out.push(`<div class="cg"><div class="cardt">${T('org_card_data')}${left.length > CG_DATA ? ` ${Math.floor(i / CG_DATA) + 1}/${Math.ceil(left.length / CG_DATA)}` : ''}</div>${left.slice(i, i + CG_DATA).map(([k, v]) => `<div class="cf"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('')}</div>`);
+  for (let i = 0; i < texts.length; i += CG_TEXT) out.push(`<div class="cg t"><div class="cardt">${T('org_card_text')}${texts.length > CG_TEXT ? ` ${Math.floor(i / CG_TEXT) + 1}/${Math.ceil(texts.length / CG_TEXT)}` : ''}</div>${i === 0 && m.note ? `<div class="cardnote">${esc(m.note)}</div>` : ''}${texts.slice(i, i + CG_TEXT).map(([k, v]) => `<div class="ct"><span>${esc(k)}</span><p>${esc(v)}</p></div>`).join('')}</div>`);
+  return out.length ? `<div class="cgs">${out.join('')}</div>` : '';
+}
 function cardHtml(m, mode) {
-  const left = m.left || [], texts = m.texts || [], one = !texts.length;
   const x = mode === 'pin' ? `<button type="button" class="cardx" data-x="1" aria-label="${T('org_card_close')}">×</button>` : '';
   const foot = mode === 'hov' ? T('org_card_pin') : mode === 'ov' && m.hint ? m.hint : '';
   return `<div class="cardh"><div class="cardt0"><div class="kick">${m.kickColor ? `<i style="--c:${m.kickColor}"></i>` : ''}${esc(m.kick || '')}</div><h4>${esc(m.title || '')}</h4></div>${m.value ? `<div class="cardv"><div class="val">${esc(m.value)}</div><small>${esc(m.vlabel || '')}</small></div>` : ''}${x}</div>
-    <div class="cardb${one ? ' one' : ''}"><div class="cardl"><div class="cardt">${T('org_card_data')}</div>${left.map(([k, v]) => `<div class="cf"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('')}</div>
-    ${one ? '' : `<div class="cardr"><div class="cardt">${T('org_card_text')}</div>${m.note ? `<div class="cardnote">${esc(m.note)}</div>` : ''}${texts.map(([k, v]) => `<div class="ct"><span>${esc(k)}</span><p>${esc(v)}</p></div>`).join('')}</div>`}</div>
+    <div class="cardb">${cardGroups(m)}</div>
     ${foot ? `<div class="cardhint">${esc(foot)}</div>` : ''}`;
+}
+// comparativo de dois pontos (só na apresentação): cabeçalho com A e B e os campos em comum, lado a lado, em cartões de até 4 linhas
+function cardCompareHtml(a, b) {
+  const col = (m, k) => `<div class="cmpc ${k}"><div class="kick"><i class="cmpd ${k}"></i>${k.toUpperCase()}${m.kick ? ' · ' + esc(m.kick) : ''}</div><h4>${esc(m.title || '')}</h4>${m.value ? `<div class="val">${esc(m.value)}</div><small>${esc(m.vlabel || '')}</small>` : ''}</div>`;
+  const bm = new Map((b.left || []).map(([k, v]) => [k, v])), rows = (a.left || []).filter(([k]) => bm.has(k)).map(([k, v]) => [k, v, bm.get(k)]), cards = [];
+  for (let i = 0; i < rows.length; i += CG_DATA) cards.push(`<div class="cg"><div class="cmph"><span></span><b class="a">A</b><b class="b">B</b></div>${rows.slice(i, i + CG_DATA).map(([k, va, vb]) => `<div class="cf cmp"><span>${esc(k)}</span><b class="a">${esc(va)}</b><b class="b">${esc(vb)}</b></div>`).join('')}</div>`);
+  return `<div class="cardh cmpH">${col(a, 'a')}${col(b, 'b')}<button type="button" class="cardx" data-x="1" aria-label="${T('org_card_close')}">×</button></div>
+    <div class="cardb">${cards.length ? `<div class="cgs">${cards.join('')}</div>` : `<div class="cardhint">${esc(T('card_cmp_none'))}</div>`}</div><div class="cardhint">${esc(T('card_cmp_hint'))}</div>`;
 }
 function createCardCol(root, o = {}) {
   if (root._card) { root._card.onUnpin = o.onUnpin || null; return root._card; } // um cartão por peça: o gráfico ativo assume o controle
   const slot = root.querySelector('#pcard'); if (!slot) return null;
-  let pinned = null, hover = null, overview = null, last = '', ver = 0;
+  let pinned = null, hover = null, overview = null, last = '', ver = 0, pins = []; // pins: até 2 pontos escolhidos na apresentação (comparativo)
+  const pres = () => root.classList.contains('presenting');
   const paint = () => {
+    if (pres() && pins.length) { const key = 'pins|' + pins.map(x => x.key).join('~') + '|' + ver; if (key === last) return; last = key; slot.className = 'pcard pin' + (pins.length === 2 ? ' cmp' : ''); slot.innerHTML = pins.length === 2 ? cardCompareHtml(pins[0], pins[1]) : cardHtml(pins[0], 'pin'); if (!RM) { slot.classList.remove('in'); void slot.offsetWidth; slot.classList.add('in'); } slot.scrollTop = 0; return; }
     const m = pinned || hover || overview, mode = pinned ? 'pin' : hover ? 'hov' : 'ov';
     if (!m) { slot.innerHTML = ''; slot.className = 'pcard'; last = ''; return; }
     const key = mode + '|' + m.key + '|' + ver; if (key === last) return; last = key;
-    slot.className = 'pcard ' + mode + ((m.texts || []).length ? '' : ' one'); slot.innerHTML = cardHtml(m, mode);
+    slot.className = 'pcard ' + mode; slot.innerHTML = cardHtml(m, mode);
     if (!RM) { slot.classList.remove('in'); void slot.offsetWidth; slot.classList.add('in'); }
     if (mode === 'pin') slot.scrollTop = 0;
   };
   const api = {
-    over(m) { if (!pinned) { hover = m; paint(); } },
+    over(m) { if (!pinned && !pres()) { hover = m; paint(); } }, // na apresentação o cartão só aparece com o clique
     out() { if (hover) { hover = null; paint(); } },
-    pin(m) { pinned = m; hover = null; paint(); const c2 = root.querySelector('#pc2'); if (c2 && root.dataset.lay === 'narrow' && !(window.innerWidth <= 900) && c2.scrollIntoView) c2.scrollIntoView({ block: 'nearest', behavior: RM ? 'auto' : 'smooth' }); },
-    unpin() { if (!pinned) return; pinned = null; paint(); if (api.onUnpin) api.onUnpin(); },
-    reset() { pinned = null; hover = null; overview = null; api.onUnpin = null; last = ''; paint(); },
+    pin(m) { if (pres()) { const k = pins.findIndex(x => x.key === m.key); if (k >= 0) pins.splice(k, 1); else { pins.push(m); if (pins.length > 2) pins.shift(); } pinned = pins.length ? pins[pins.length - 1] : null; hover = null; last = ''; paint(); return; } pinned = m; hover = null; paint(); const c2 = root.querySelector('#pc2'); if (c2 && root.dataset.lay === 'narrow' && !(window.innerWidth <= 900) && c2.scrollIntoView) c2.scrollIntoView({ block: 'nearest', behavior: RM ? 'auto' : 'smooth' }); },
+    unpin() { if (pres() && pins.length) { pins.pop(); pinned = pins.length ? pins[pins.length - 1] : null; last = ''; paint(); if (!pins.length && api.onUnpin) api.onUnpin(); return; } if (!pinned) return; pinned = null; paint(); if (api.onUnpin) api.onUnpin(); },
+    clear() { const had = pins.length || pinned; pins = []; pinned = null; hover = null; last = ''; paint(); if (had && api.onUnpin) api.onUnpin(); }, // fecha todas as seleções (troca de slide, ×, Esc)
+    reset() { pins = []; pinned = null; hover = null; overview = null; api.onUnpin = null; last = ''; paint(); },
     setOverview(m) { overview = m; ver++; paint(); },
-    isPinned: () => !!pinned, onUnpin: o.onUnpin || null,
+    isPinned: () => !!pinned || pins.length > 0, pinCount: () => pins.length, onUnpin: o.onUnpin || null,
     destroy() { root._card = null; document.removeEventListener('keydown', onKey); slot.removeEventListener('click', onClick); slot.innerHTML = ''; slot.className = 'pcard'; },
   };
-  const onClick = e => { if (e.target.closest('[data-x]')) api.unpin(); };
-  const onKey = e => { if (e.key === 'Escape' && pinned && !document.querySelector('.orgtut')) api.unpin(); };
+  const onClick = e => { if (e.target.closest('[data-x]')) { if (pres()) api.clear(); else api.unpin(); } };
+  const onKey = e => { if (e.key === 'Escape' && (pinned || pins.length) && !document.querySelector('.orgtut')) { if (pres()) api.clear(); else api.unpin(); } };
   slot.addEventListener('click', onClick); document.addEventListener('keydown', onKey);
   root._card = api; return api;
 }

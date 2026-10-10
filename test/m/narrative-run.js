@@ -53,6 +53,35 @@
     ok('u-insights-linhas-validos', nvValidate(ins).ok && nvValidate(ins).checked === ins.length);
     ok('u-poucas-linhas-sem-insight', nvRowInsights({ rowStats: nvRowStats({ rowCount: 10, columns: [] }, { name: 'Y', data: Float64Array.from({ length: 10 }, (_, i) => i) }), kind: 'category' }, 'pt', T).length === 0);
     ok('u-sem-medida', nvRowStats({ rowCount: 5, columns: [] }, null) === null); }
+  // ---- unidade: pontuação, deduplicação, relações e seleção ----
+  const itm = (id, act, kind, values, shown, n, text, o = {}) => ({ id, act, insight: true, head: text, big: { text: shown[0] ? shown[0].text : '', label: 'x' }, calc: { title: 't', formula: 'f', rows: [{ k: 'a', v: '1' }, { k: 'b', v: '2' }] }, ev: nvEv(kind, values, shown, { n, refs: o.refs || ['Alfa'], method: o.method }) });
+  const ctx0 = { decision: 'prioritize', area: null, audience: 'director' };
+  ok('u-pesos-somam-1', Math.abs(Object.values(NV_CFG.w).reduce((a, b) => a + b, 0) - 1) < 1e-9);
+  { const a = itm('i1', 'trend_up', 'trend', { head: 100, tail: 150, w: 6 }, [{ k: 'ch', value: 50, text: '+50%' }], 12, 'Alta de +50% entre as janelas.'), r = nvScore(a, ctx0);
+    ok('u-nota-dimensoes-0-100', r && Object.entries(r.score).every(([k, v]) => v >= 0 && v <= 100 && Number.isInteger(v)) && r.why.relevance && r.why.magnitude.measure === 'var%'); }
+  { const weak = itm('w', 'jump_up', 'jump', { prev: 1, cur: 100 }, [{ k: 'ch', value: 9900, text: '+9.900%' }], 2, 'Salto de +9.900%.'), mid = itm('m', 'dominant', 'dominant', { top: 30, total: 100 }, [{ k: 'share', value: 30, text: '30%' }], 8, 'A tem 30% do total.');
+    const rw = nvScore(weak, ctx0), rm = nvScore(mid, ctx0);
+    ok('u-magnitude-nao-compensa-fragilidade', rw.score.magnitude === 100 && rw.score.confidence < NV_CFG.minConf && rw.score.total <= NV_CFG.capLow && rw.label === 'exploratory' && rm.score.total > rw.score.total); }
+  { const tr = itm('t', 'trend_up', 'trend', { head: 100, tail: 150, w: 6 }, [{ k: 'ch', value: 50, text: '+50%' }], 12, 'Alta de +50%.'); const inv = nvScore(tr, { ...ctx0, decision: 'invest' }), cut = nvScore(tr, { ...ctx0, decision: 'cut' });
+    ok('u-relevancia-segue-a-decisao', inv.score.relevance > cut.score.relevance);
+    const ak = Object.keys(AREAS).find(k => ((AREAS[k].boost || {}).trend_up || 0) <= -0.8); ok('u-relevancia-segue-a-area', !!ak && nvScore(tr, { ...ctx0, area: ak }).score.relevance > nvScore(tr, ctx0).score.relevance);
+    const ld = itm('l', 'outlier', 'lead', { top: 50, total: 100 }, [{ k: 'share', value: 50, text: '50%' }], 6, 'A lidera com 50%.'); ok('u-relevancia-segue-o-publico', nvScore(ld, { ...ctx0, audience: 'board' }).score.relevance > nvScore(ld, ctx0).score.relevance); }
+  ok('u-invalido-nao-pontua', nvScore(itm('x', 'dominant', 'lead', { top: 5, total: 0 }, [], 6, 'x'), ctx0) === null);
+  { const a = itm('lead1', 'leader', 'lead', { top: 60, total: 100 }, [{ k: 'share', value: 60, text: '60%' }], 6, 'Alfa lidera com 60%.'), b = itm('dom1', 'dominant', 'dominant', { top: 60, total: 100 }, [{ k: 'share', value: 60, text: '60%' }], 6, 'Alfa responde por 60% do total.'), c = itm('other', 'dominant', 'dominant', { top: 30, total: 100 }, [{ k: 'share', value: 30, text: '30%' }], 6, 'Beta tem 30%.', { refs: ['Beta'] });
+    nvScoreAll([a, b, c], ctx0); const d = nvDedupe([a, b, c]);
+    ok('u-dedup-funde-parafrase', d.items.length === 2 && d.merged.length === 1 && d.items[0].related && d.items[0].related[0].rel === 'corrobora');
+    ok('u-dedup-guarda-evidencia', d.items[0].ev.extra && d.items[0].ev.extra.length === 1 && d.items[0].ev.extra[0].ev.kind);
+    ok('u-dedup-nao-funde-assuntos-diferentes', d.items.some(x => x.id === 'other'));
+    const up = itm('up', 'trend_up', 'trend', { head: 100, tail: 150, w: 6 }, [{ k: 'ch', value: 50, text: '+50%' }], 12, 'Alta.'), dn = itm('dn', 'trend_down', 'trend', { head: 100, tail: 60, w: 6 }, [{ k: 'ch', value: -40, text: '-40%' }], 12, 'Queda.');
+    ok('u-dedup-direcao-importa', nvDedupe([up, dn]).items.length === 2);
+    const m1 = itm('rev', 'x', 'dominant', { top: 60, total: 100 }, [{ k: 'share', value: 60, text: '60%' }], 6, 'Receita: Alfa 60%.', { refs: ['Alfa'] }), m2 = itm('tkt', 'x', 'lead', { top: 10, total: 25 }, [{ k: 'share', value: 40, text: '40%' }], 6, 'Ticket: Alfa 40%.', { refs: ['Alfa'] });
+    ok('u-dedup-mesma-classe-mesmo-assunto-funde', nvDedupe(nvScoreAll([m1, m2], ctx0)).items.length === 1);
+    const t = itm('trd', 'trend_up', 'trend', { head: 100, tail: 150, w: 6 }, [{ k: 'ch', value: 50, text: '+50%' }], 12, 'Alta.', { refs: ['T1', 'T4'] }), ct = itm('ctb', 'contrib', 'contrib', { diff: 30, dTotal: 50 }, [{ k: 'p', value: 60, text: '60%' }], 12, 'Alfa responde por 60% da alta.', { refs: ['Alfa', 'T1', 'T4'] }), ld2 = itm('ldr', 'leader', 'lead', { top: 60, total: 100 }, [{ k: 'share', value: 60, text: '60%' }], 6, 'Alfa lidera.', { refs: ['Alfa'] });
+    const rel = nvRelations([t, ct, ld2]); ok('u-relacoes', rel.some(r => r.a === 'trd' && r.b === 'ctb' && r.rel === 'segmenta') && rel.some(r => r.a === 'ctb' && r.b === 'ldr' && r.rel === 'complementa')); }
+  { const mkS = (id, v, k) => ({ id, act: k, ev: { kind: k }, score: { total: v } }), items = [{ id: 'st-ov', act: 'overview' }, mkS('a1', 90, 'lead'), mkS('a2', 88, 'lead'), mkS('a3', 86, 'lead'), mkS('b1', 70, 'trend'), mkS('c1', 60, 'conc')];
+    const k1 = nvSelect(items, 4), k2 = nvSelect(items, 4);
+    ok('u-selecao-panorama-e-variedade', k1.has(0) && k1.has(1) && k1.has(4) && !(k1.has(2) && k1.has(3)) && JSON.stringify([...k1]) === JSON.stringify([...k2]));
+    const tie = [mkS('p', 50, 'lead'), mkS('q', 50, 'trend'), mkS('r', 50, 'conc')]; ok('u-selecao-empate-por-indice', [...nvSelect(tie, 2)].join() === '0,1'); }
   // ---- integração: achados reais ----
   const files = (new URLSearchParams(location.search).get('files') || 'vendas.csv,fluxo.csv,financeiro.xlsx,unidades.csv,canais.csv,pedidos.csv,lojas.csv,funil.csv,projetos.csv').split(',');
   const seenNew = new Set(), jobs = files.map(f => ['/dados-teste/' + f, f, null]).concat((new URLSearchParams(location.search).get('sheets') || 'Vendas,Casos CX,Funil,Resumo,Mapa').split(',').filter(x => x && !location.search.includes('nosheets')).map(sh => ['/dados-teste/datavix-planilha-ideal.xlsx', 'ideal:' + sh, sh]));
@@ -71,6 +100,10 @@
       if (av.errors.length) bad.push(tag + ' erros em todos os achados: ' + av.errors.map(e => e.id + ':' + e.code + ' ' + e.msg).join(' | '));
       const iv = nvValidate(P.insights);
       out[tag] = { slides: st.length, checked: r.checked, unchecked: r.unchecked, errors: r.errors.length, ins: P.insights.length, insChecked: iv.checked, insErr: iv.errors.length };
+      { const sc = st.filter(x => x.score), okS = sc.every(x => Object.values(x.score).every(v => v >= 0 && v <= 100)); out[tag].pontuados = sc.length; out[tag].fundidos = (r.merged || []).length; out[tag].relacoes = (r.relations || []).length;
+        if (!okS) bad.push(tag + ' nota fora de 0 a 100'); if (sc.length && sc.some(x => !x.confidenceLabel)) bad.push(tag + ' sem rótulo de confiança');
+        const cut1 = storyCut(st, 3, P.br.decision, P.br.area).map(x => x.id).join(), cut2 = storyCut(st, 3, P.br.decision, P.br.area).map(x => x.id).join(); if (cut1 !== cut2) bad.push(tag + ' corte não determinístico'); out[tag].corte3 = cut1;
+        const ov = st.find(x => x.id === 'st-ov'); out[tag].panoramaComEvidencia = !!(ov && ov.ev); }
       if (r.errors.length) bad.push(tag + ' erros no roteiro: ' + r.errors.map(e => e.id + ':' + e.code + ' ' + e.msg).join(' | '));
       if (iv.errors.length) bad.push(tag + ' erros nos insights: ' + iv.errors.map(e => e.id + ':' + e.code + ' ' + e.msg).join(' | '));
       const base = /^(peak|low|jump_up|drop|trend_up|trend_down|dominant|outlier)$/; const miss = P.insights.filter(i => base.test(i.id) && !i.ev).map(i => i.id); if (miss.length) bad.push(tag + ' insight base sem evidência: ' + miss.join(','));

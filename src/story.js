@@ -199,7 +199,8 @@ function buildStory(P, meta, steps, opt = {}) {
     const gl = sg ? sg.list : (!b.xIsTime ? tot : []), gn = gl.length, gname = sg && sg.name ? sg.name : b.names.x;
     const sum = (b.xIsTime || !sg ? tot : gl).reduce((a, t) => a + t.value, 0), mean = sum / Math.max(1, (b.xIsTime ? n : gn)), totTxt = hero ? kpiFmt(hero) : f(sum);
     const head = b.aggKind === 'count' ? (b.xIsTime && n ? L.ovCount(rowsTxt, tot[0].label, tot[n - 1].label) : L.ovCountG(rowsTxt, fmtInt(gn || n, LANG), gname)) : !isSum ? L.ovMean(rowsTxt, fmtInt(gn || n, LANG), gname) : b.xIsTime && n ? L.ovTime(rowsTxt, totTxt, tot[0].label, tot[n - 1].label) : L.ovSum(rowsTxt, totTxt, fmtInt(gn || n, LANG), gname);
-    add({ id: 'st-ov', act: 'overview', head, hl: isSum && b.aggKind !== 'count' ? totTxt : '', big: hero ? { text: kpiFmt(hero), label: hero.label } : null, state: null,
+    const ovTot = tot.reduce((a, t) => a + t.value, 0), ovEv = b.aggKind === 'sum' && hero && hero.id === 'total' && head.includes(totTxt) ? nvEv('overview', { sum: ovTot }, [{ k: 'total', value: hero.value, text: totTxt }], { n: tot.length, method: 'sum' }) : null; // o total do panorama é o do indicador: precisa bater com a soma dos períodos
+    add({ id: 'st-ov', act: 'overview', head, hl: isSum && b.aggKind !== 'count' ? totTxt : '', big: hero ? { text: kpiFmt(hero), label: hero.label } : null, state: null, ev: ovEv,
       calc: { title: L.calc.ovT, formula: L.calc.ovF, rows: [{ k: L.calc.total, v: isSum ? f(sum) : totTxt, n: rows }, { k: L.calc.groups, v: fmtInt(gn || n, LANG) }, { k: L.calc.mean, v: f(mean) }] } });
     casesFacts(P).forEach(add); // casos e pesquisas: taxas, impacto, onde varia, causas e termos logo depois do panorama
     // 2) o líder, 3) a concentração e 4) o contraste: sobre os grupos do gráfico escolhido
@@ -267,13 +268,18 @@ function buildStory(P, meta, steps, opt = {}) {
     const bare = big ? big.text.replace(/^[\-−+]/, '') : '', hl = big ? (ins.text.includes(big.text) ? big.text : ins.text.includes(bare) ? bare : '') : ''; // o destaque tem que existir na frase
     add({ id: 'i' + k, act: ins.id, head: ins.text, hl, big, state: stateOf(subj), calc: ins.calc || null, ev: ins.ev || null, edited: !!ins.edited, insight: true });
   });
-  const g = nvGuard(out, LANG); g.items.report = g.report; return g.items; // validação narrativa: afirmação com erro bloqueante sai do roteiro
+  // validação narrativa (erro bloqueante sai do roteiro), pontuação, deduplicação (só no roteiro padrão; o construtor mostra todos os candidatos) e relações
+  const g = nvGuard(out, LANG), br = P.br || {}; nvScoreAll(g.items, { decision: br.decision, area: br.area, audience: br.audience, cases: !!P.cases });
+  let items = g.items; g.report.merged = [];
+  if (!opt.extras) { const dd = nvDedupe(items); items = dd.items; g.report.merged = dd.merged; if (dd.merged.length) items.forEach((s, i) => { if (s.kick) s.kick.n = String(i + 1).padStart(2, '0'); }); }
+  g.report.relations = nvRelations(items); items.report = g.report; return items;
 }
 
 // tempo curto: fica o panorama e os atos que mais pesam para a decisão escolhida (os insights na ordem da decisão; o líder e a concentração logo depois)
 function storyCut(story, cap, decision, area) {
   if (!story || story.length <= cap) return story;
-  const keep = new Set(story.map((s, i) => [storyPri(s, decision, area), i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).slice(0, cap).map(x => x[1]));
+  // com nota: maior nota primeiro, com desconto por repetir o mesmo tipo de achado; sem nota (histórias montadas à mão), a prioridade antiga
+  const keep = story.some(s => s.score) ? nvSelect(story, cap) : new Set(story.map((s, i) => [storyPri(s, decision, area), i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).slice(0, cap).map(x => x[1]));
   return story.filter((s, i) => keep.has(i)).map((s, i) => ({ ...s, kick: { ...s.kick, n: String(i + 1).padStart(2, '0') } }));
 }
 

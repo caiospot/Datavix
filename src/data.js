@@ -597,7 +597,7 @@ function computeInsights(built, briefing, lang, T) {
       if (!best || ch > best.ch) best = { ch, i };
       if (!worst || ch < worst.ch) worst = { ch, i };
     }
-    const mk = (b, key, ttl) => ({ text: T(key, tot[b.i].label, fmtPct(b.ch, lang), tot[b.i - 1].label), calc: { title: T(ttl), formula: T('f_var'), rows: [{ k: tot[b.i - 1].label, v: f(tot[b.i - 1].value), n: tot[b.i - 1].rows }, { k: tot[b.i].label, v: f(tot[b.i].value), n: tot[b.i].rows }, { k: T('variation'), v: fmtPct(b.ch, lang) }], base: base(built.names.x) }, ev: nvEv('jump', { prev: tot[b.i - 1].value, cur: tot[b.i].value }, [{ k: 'ch', value: b.ch, text: fmtPct(b.ch, lang) }], { n: 2, refs: [tot[b.i - 1].label, tot[b.i].label] }) });
+    const mk = (b, key, ttl) => ({ text: T(key, tot[b.i].label, fmtPct(b.ch, lang), tot[b.i - 1].label), calc: { title: T(ttl), formula: T('f_var'), rows: [{ k: tot[b.i - 1].label, v: f(tot[b.i - 1].value), n: tot[b.i - 1].rows }, { k: tot[b.i].label, v: f(tot[b.i].value), n: tot[b.i].rows }, { k: T('variation'), v: fmtPct(b.ch, lang) }], base: base(built.names.x) }, ev: nvEv('jump', { prev: tot[b.i - 1].value, cur: tot[b.i].value }, [{ k: 'ch', value: b.ch, text: fmtPct(b.ch, lang) }], { n: tot.length, refs: [tot[b.i - 1].label, tot[b.i].label] }) /* o salto é o maior entre todos os períodos analisados */ });
     if (best && best.ch > 5) out.jump_up = mk(best, 'ins_jump', 'calc_jump');
     if (worst && worst.ch < -5) out.drop = mk(worst, 'ins_drop', 'calc_drop');
     // tendência: janela inicial x janela final (até 12 períodos), para não confundir sazonalidade com crescimento

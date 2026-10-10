@@ -158,3 +158,107 @@ function nvRowInsights(built, lang, T) {
   }
   return out;
 }
+
+
+/* ---- pontuação, deduplicação, relações e seleção ---- */
+// pesos e limites são hipóteses de produto (centralizados para calibrar com dados reais), não medidas científicas de importância
+Object.assign(NV_CFG, {
+  w: { relevance: 0.30, magnitude: 0.25, confidence: 0.30, clarity: 0.15 },
+  minConf: 35, capLow: 45, varPenalty: 0.15,
+  confK: { period: 5, rows: 40 }, // quanto de amostra leva a ~63% de confiança
+  aud: { board: { lead: 8, dominant: 8, conc: 8, trend: 8, jump: 6 }, clevel: { lead: 8, dominant: 8, conc: 8, trend: 8, jump: 6 }, director: {}, team: { contrast: 6, gappp: 6, ratio: 4, dist: 6, outrows: 6 }, client: { lead: 4, trend: 6 } },
+});
+// família do fenômeno: o que "diz a mesma coisa" cai na mesma classe
+const NV_CLASS = { lead: 'top', dominant: 'top', peak: 'top', low: 'bottom', contrast: 'spread', conc: 'conc', jump: 'change', trend: 'trend', outlier: 'atypical', corr: 'assoc', assoc: 'assoc', contrib: 'contrib', shift: 'shift', dist: 'dist', outrows: 'atypical-rows', ratio: 'ratio', dropc: 'drop', gappp: 'gap', overview: 'overview' };
+const NV_ROWKINDS = new Set(['dist', 'outrows', 'assoc', 'corr']);
+const nvClamp = (x, lo = 0, hi = 100) => Math.max(lo, Math.min(hi, x));
+// magnitude: medida própria de cada tipo, sempre de 0 a 100 (não compara correlação com variação percentual como se fossem a mesma unidade)
+function nvMagnitude(ev) {
+  const v = ev.values || {}, k = ev.kind, sh = ev.shown || [], calc = NV_CALC[k] ? NV_CALC[k](v) : {};
+  switch (k) {
+    case 'peak': case 'low': return { m: 'dev%', x: Math.abs(calc.dev), v: nvClamp(Math.abs(calc.dev)) };
+    case 'jump': case 'trend': return { m: 'var%', x: Math.abs(calc.ch), v: nvClamp(Math.abs(calc.ch) * 2) };
+    case 'dominant': case 'lead': return { m: 'share', x: calc.share, v: nvClamp(calc.share * 1.25) };
+    case 'conc': return { m: 'share', x: calc.p, v: nvClamp(calc.p) };
+    case 'contrast': return { m: 'ratio', x: calc.x, v: nvClamp(25 * Math.log2(Math.max(1, calc.x))) };
+    case 'outlier': { const iqr = v.q3 - v.q1, out = Math.max(v.value - v.q3, v.q1 - v.value) / (iqr || 1); return { m: 'iqr', x: out, v: nvClamp(40 + 20 * out) }; }
+    case 'corr': case 'assoc': return { m: 'rho', x: Math.abs(calc.rho), v: nvClamp(Math.abs(calc.rho) * 100) };
+    case 'contrib': return { m: 'share', x: Math.abs(calc.p), v: nvClamp(Math.abs(calc.p)) };
+    case 'shift': return { m: 'pp', x: Math.abs(calc.d), v: nvClamp(Math.abs(calc.d) * 8) };
+    case 'dist': return { m: 'gap%', x: Math.abs(calc.gap), v: nvClamp(Math.abs(calc.gap) / 2) };
+    case 'outrows': return { m: 'share', x: calc.p, v: nvClamp(calc.p * 5) };
+    case 'ratio': return { m: 'share', x: calc.p, v: nvClamp(calc.p) };
+    case 'dropc': return { m: 'share', x: calc.p, v: nvClamp(calc.p * 1.5) };
+    case 'gappp': return { m: 'pp', x: Math.abs(calc.d), v: nvClamp(Math.abs(calc.d) * 3) };
+    case 'overview': return { m: 'none', x: 0, v: 0 };
+    default: return { m: 'none', x: 0, v: 50 };
+  }
+}
+// ctx: { decision, area, audience }; devolve { score, label, caveats, why } ou null quando não há como pontuar
+function nvScore(item, ctx) {
+  const ev = item.ev; if (!ev || !NV_CALC[ev.kind]) return null;
+  const chk = nvCheckItem(item), w = NV_CFG.w;
+  if (chk.errors.length) return null; // inválido não pontua: é descartado pelo validador
+  const mg = nvMagnitude(ev);
+  const pri = typeof storyPri === 'function' ? storyPri(item, ctx.decision, ctx.area) : 2, aud = ((NV_CFG.aud[ctx.audience] || {})[ev.kind]) || 0;
+  const generic = ctx.cases && !/^c_/.test(item.act || '') && item.id !== 'st-ov'; // em casos e pesquisas, o que é específico de casos vem antes dos achados genéricos de período (mesma regra de storyPri para concentração e contraste)
+  const relevance = nvClamp(100 - 16 * (generic ? 6 : pri) + (generic ? 0 : aud), 5, 100);
+  const n = ev.sampleSize != null ? ev.sampleSize : 0, K = ev.method === 'count' || NV_ROWKINDS.has(ev.kind) ? NV_CFG.confK.rows : NV_CFG.confK.period, expl = chk.warns.filter(x => x.code === 'exploratory').length;
+  const confidence = nvClamp(100 * (1 - Math.exp(-n / K)) - 25 * expl);
+  const flags = { metric: !!(item.calc && item.calc.rows && item.calc.rows.length), comparison: !!(item.calc && item.calc.rows && item.calc.rows.length >= 2), subject: (ev.refs || []).length > 0, number: (ev.shown || []).length > 0 };
+  const clarity = 25 * Object.values(flags).filter(Boolean).length;
+  let total = Math.round(w.relevance * relevance + w.magnitude * mg.v + w.confidence * confidence + w.clarity * clarity);
+  const weak = confidence < NV_CFG.minConf; if (weak) total = Math.min(total, NV_CFG.capLow); // magnitude alta não compensa evidência fraca
+  const label = weak || expl ? 'exploratory' : confidence >= 70 ? 'high' : 'medium';
+  return { score: { relevance: Math.round(relevance), magnitude: Math.round(mg.v), confidence: Math.round(confidence), clarity, total }, label, caveats: chk.warns.map(x => x.code),
+    why: { relevance: { priority: pri, audience: aud }, magnitude: { measure: mg.m, value: mg.x }, confidence: { n, k: K, penalties: expl }, clarity: flags } };
+}
+function nvScoreAll(items, ctx) { items.forEach(it => { const r = nvScore(it, ctx || {}); if (r) { it.score = r.score; it.confidenceLabel = r.label; it.caveats = r.caveats; it.scoreWhy = r.why; } }); return items; }
+
+const NV_DIRC = new Set(['change', 'trend', 'shift', 'contrib', 'gap', 'assoc', 'dist']); // classes em que o sinal muda o sentido da afirmação
+// classe de um item: nos atos de casos vale o tipo do ato (taxa, impacto, onde varia, causa), não o tipo do cálculo
+const nvCls = it => (/^c_/.test(it.act || '') ? it.act : it.ev ? NV_CLASS[it.ev.kind] || it.ev.kind : it.act);
+// identidade semântica: classe do fenômeno + assunto + direção
+function nvIdentity(it) {
+  const ev = it.ev; if (!ev) return null; const k = ev.kind, c = nvCls(it), refs = (ev.refs || []).slice(0, 2).map(x => String(x).toLowerCase()).join('+');
+  let dir = '';
+  try { const r = NV_DIRC.has(c) && NV_CALC[k] && NV_CALC[k](ev.values || {}); if (r) { const x = r.ch ?? r.dev ?? r.d ?? r.gap ?? r.rho ?? null; dir = x === null ? '' : x >= 0 ? '+' : '-'; } } catch (e) { dir = ''; }
+  return `${c}|${refs}|${dir}`;
+}
+// agrupa afirmações redundantes (mesma classe, assunto e direção): fica a de maior nota e a outra vira evidência complementar dela
+function nvDedupe(items) {
+  const keep = [], by = new Map(), merged = [];
+  items.forEach((it, i) => {
+    const key = nvIdentity(it); if (!key || key.split('|')[1] === '') { keep.push(it); return; }
+    const hit = by.get(key);
+    if (!hit) { by.set(key, it); keep.push(it); return; }
+    const best = (it.score ? it.score.total : 0) > (hit.score ? hit.score.total : 0) ? it : hit, other = best === it ? hit : it;
+    best.ev = { ...best.ev, extra: [...(best.ev.extra || []), { id: other.id, ev: other.ev }] }; best.related = [...(best.related || []), { id: other.id, rel: 'corrobora' }];
+    merged.push({ kept: best.id, merged: other.id, key });
+    if (best === it) { keep[keep.indexOf(hit)] = it; by.set(key, it); }
+  });
+  return { items: keep, merged };
+}
+// relações entre os achados que ficam: corrobora (mesma classe, assuntos diferentes não entram aqui), complementa (mesmo assunto, classes diferentes), segmenta (contribuição ou mudança de participação sobre uma evolução)
+function nvRelations(items) {
+  const out = [], ref0 = it => ((it.ev && it.ev.refs) || []).map(x => String(x).toLowerCase());
+  for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) {
+    const a = items[i], b = items[j]; if (!a.ev || !b.ev) continue;
+    const ca = nvCls(a), cb = nvCls(b), ra = ref0(a), rb = ref0(b), shared = ra.some(x => rb.includes(x)); if (!shared || ca === cb) continue;
+    const seg = (x, y) => ['contrib', 'shift'].includes(x) && ['trend', 'change'].includes(y);
+    out.push({ a: a.id, b: b.id, rel: seg(ca, cb) || seg(cb, ca) ? 'segmenta' : 'complementa' });
+  }
+  return out;
+}
+// seleção determinística: maior nota primeiro, com desconto por repetir a mesma classe de achado; o panorama (sem nota) sempre fica
+function nvSelect(items, cap) {
+  const idx = items.map((it, i) => i), keep = new Set(), used = {};
+  items.forEach((it, i) => { if (it.id === 'st-ov') keep.add(i); });
+  const rest = idx.filter(i => !keep.has(i));
+  while (keep.size < cap && rest.length) {
+    let bi = -1, bv = -1;
+    for (const i of rest) { const it = items[i], cl = nvCls(it), base = it.score ? it.score.total : 40, v = base * (1 - NV_CFG.varPenalty * (used[cl] || 0)); if (v > bv + 1e-9) { bv = v; bi = i; } }
+    const it = items[bi], cl = nvCls(it); used[cl] = (used[cl] || 0) + 1; keep.add(bi); rest.splice(rest.indexOf(bi), 1);
+  }
+  return keep;
+}

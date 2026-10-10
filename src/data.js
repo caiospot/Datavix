@@ -407,7 +407,7 @@ function buildSeriesBase(ds, m, opts) {
   return {
     kind: m.kind, vz: { series }, names, unit, aggKind, grain, period, cal,
     stats: { rowsUsed: g.used, rowsTotal: ds.rowCount, points: yRec.length, xCount: xs.length, sCount: sc ? ss.length : 0, topN: !!othersX, topNs: !!othersS },
-    totX, totS, xIsTime: isTime,
+    totX, totS, xIsTime: isTime, rowStats: aggKind === 'count' ? null : nvRowStats(ds, yc),
   };
 }
 

@@ -385,3 +385,27 @@ Object.assign(I18N.en, {
   title_need_h: 'What is the presentation title?', title_need_p: 'The title is the theme and shows on the first slide. Write yours to continue.',
   title_need_ok: 'Continue', title_need_use: 'Use the suggested title',
 });
+
+/* famílias linha a linha do motor de história: distribuição, atípicos e associação */
+Object.assign(I18N.pt, {
+    rs_base: 'Linhas da planilha', rs_median: 'Mediana', rs_avg: 'Média', rs_gap: 'Diferença da média para a mediana', rs_outside: 'Registros fora da faixa usual', rs_range: 'Faixa usual (IQR)', rs_pairs: 'Linhas com os dois valores',
+    ins_dist_up: (n, med, avg, gap) => `Em ${n}, metade dos registros fica abaixo de ${med}, mas a média é ${avg} (${gap} acima): poucos valores altos puxam a média.`,
+    ins_dist_dn: (n, med, avg, gap) => `Em ${n}, metade dos registros fica abaixo de ${med}, e a média é ${avg} (${gap} abaixo): poucos valores baixos puxam a média.`,
+    calc_dist: 'Mediana contra média', f_dist: 'Mediana = valor do meio dos registros; diferença = (média ÷ mediana − 1) × 100. Só com mediana > 0 e pelo menos 30 registros.',
+    ins_outrows: (n, k, t, p, side) => `${k} de ${t} registros (${p}) de ${n} ficam ${{ above: 'acima', below: 'abaixo', both: 'fora' }[side]} da faixa usual: valores atípicos que merecem uma olhada.`,
+    calc_outrows: 'Registros fora da faixa usual', f_outrows: 'Faixa usual = de Q1 − 1,5×IQR a Q3 + 1,5×IQR. Valor atípico é um sinal para investigar, não prova de erro.',
+    ins_assoc_p: (a, b, r) => `${a} e ${b} variam juntos (correlação de Spearman ${r}): linhas com ${a} maior tendem a ter ${b} maior.`,
+    ins_assoc_n: (a, b, r) => `${a} e ${b} variam em sentidos opostos (correlação de Spearman ${r}): linhas com ${a} maior tendem a ter ${b} menor.`,
+    calc_assoc: 'Associação entre duas colunas', f_assoc: 'Correlação de postos de Spearman nas linhas que têm os dois valores. Mede se variam juntas; não indica que uma cause a outra.',
+});
+Object.assign(I18N.en, {
+    rs_base: 'Spreadsheet rows', rs_median: 'Median', rs_avg: 'Average', rs_gap: 'Average vs. median', rs_outside: 'Records outside the usual range', rs_range: 'Usual range (IQR)', rs_pairs: 'Rows with both values',
+    ins_dist_up: (n, med, avg, gap) => `In ${n}, half of the records are below ${med}, but the average is ${avg} (${gap} higher): a few high values pull the average up.`,
+    ins_dist_dn: (n, med, avg, gap) => `In ${n}, half of the records are below ${med}, and the average is ${avg} (${gap} lower): a few low values pull the average down.`,
+    calc_dist: 'Median vs. average', f_dist: 'Median = middle value of the records; gap = (average ÷ median − 1) × 100. Only with median > 0 and at least 30 records.',
+    ins_outrows: (n, k, t, p, side) => `${k} of ${t} records (${p}) of ${n} fall ${{ above: 'above', below: 'below', both: 'outside' }[side]} the usual range: atypical values worth a look.`,
+    calc_outrows: 'Records outside the usual range', f_outrows: 'Usual range = from Q1 − 1.5×IQR to Q3 + 1.5×IQR. An atypical value is a signal to investigate, not proof of an error.',
+    ins_assoc_p: (a, b, r) => `${a} and ${b} vary together (Spearman correlation ${r}): rows with higher ${a} tend to have higher ${b}.`,
+    ins_assoc_n: (a, b, r) => `${a} and ${b} move in opposite directions (Spearman correlation ${r}): rows with higher ${a} tend to have lower ${b}.`,
+    calc_assoc: 'Association between two columns', f_assoc: 'Spearman rank correlation over the rows that have both values. It measures whether they vary together; it does not mean one causes the other.',
+});

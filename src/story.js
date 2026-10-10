@@ -122,7 +122,8 @@ function allInsights(P) {
   const b = P.built, reg = CHART_REG[P.type], csD = reg && b.cs && b.cs[P.type], br = { ...(P.br || {}), limit: 14, all: true };
   let extra = []; try { extra = csD && reg.insights ? reg.insights(csD, br, LANG, T) : computeInsights(b, br, LANG, T); } catch (e) { extra = []; }
   const have = new Set((P.insights || []).map(i => i.id + '|' + i.text));
-  return [...(P.insights || []), ...extra.filter(i => !have.has(i.id + '|' + i.text))];
+  let rows = []; try { rows = nvRowInsights(b, LANG, T); } catch (e) { rows = []; } // famílias linha a linha: distribuição, atípicos e associação
+  return [...(P.insights || []), ...extra.filter(i => !have.has(i.id + '|' + i.text)), ...rows.filter(i => !have.has(i.id + '|' + i.text))];
 }
 // matriz grupo × período dos gráficos de tempo (Rio ou Cordilheira): base das análises "quem explica a mudança" e "quem ganhou participação"
 function storyMatrix(P, want) {
@@ -155,23 +156,27 @@ function casesFacts(P) {
       const v = f.pos + f.neg, p = pc(r(f.pos, f.neg));
       s = { id: 'c-rate-' + i, short: f.name, act: 'c_rate', head: X.rateH(f.name, p, I(f.pos), I(v)), hl: p, big: { text: p, label: X.lbl.rate }, bars: [{ k: X.yes, p: r(f.pos, f.neg), t: p }, { k: X.no, p: r(f.neg, f.pos), t: pc(r(f.neg, f.pos)) }],
         viz: { title: f.name, rows: [{ k: X.yes, p: r(f.pos, f.neg), t: p, sub: I(f.pos) }, { k: X.no, p: r(f.neg, f.pos), t: pc(r(f.neg, f.pos)), sub: I(f.neg) }], note: `${I(f.other + f.blank)} · ${X.outside}` },
-        calc: { title: X.rateT, formula: X.rateF, rows: [{ k: X.yes, v: I(f.pos), n: f.n }, { k: X.no, v: I(f.neg) }, { k: X.valid, v: I(v) }, { k: X.outside, v: I(f.other + f.blank) }, { k: X.rate, v: p }] } };
+        calc: { title: X.rateT, formula: X.rateF, rows: [{ k: X.yes, v: I(f.pos), n: f.n }, { k: X.no, v: I(f.neg) }, { k: X.valid, v: I(v) }, { k: X.outside, v: I(f.other + f.blank) }, { k: X.rate, v: p }] },
+        ev: nvEv('ratio', { num: f.pos, den: v }, [{ k: 'p', value: r(f.pos, f.neg), text: p }], { n: v, method: 'count', refs: [f.name] }) };
     } else if (f.k === 'impact') {
       const p1 = pc(r(f.a1, f.v1 - f.a1)), p0 = pc(r(f.a0, f.v0 - f.a0)), d = ppt(f.d);
       s = { id: 'c-imp-' + i, short: f.f, act: 'c_impact', head: X.impactH(f.o, f.f, p1, I(f.a1), I(f.v1), p0, I(f.a0), I(f.v0)), hl: '', big: { text: d, label: X.lbl.gap }, bars: [{ k: `${X.when} ${X.yes}`, p: r(f.a1, f.v1 - f.a1), t: p1 }, { k: `${X.when} ${X.no}`, p: r(f.a0, f.v0 - f.a0), t: p0 }],
         viz: { title: f.f, rows: [{ k: `${X.when} “${f.o}” = ${X.yes}`, ks: `${X.when} ${X.yes}`, p: r(f.a1, f.v1 - f.a1), t: p1, sub: `${I(f.a1)}/${I(f.v1)}` }, { k: `${X.when} “${f.o}” = ${X.no}`, ks: `${X.when} ${X.no}`, p: r(f.a0, f.v0 - f.a0), t: p0, sub: `${I(f.a0)}/${I(f.v0)}` }], note: X.vizImpact },
-        calc: { title: X.impactT, formula: X.impactF, rows: [{ k: `${f.o} = ${X.yes} · ${f.f} = ${X.yes}`, v: `${p1} (${I(f.a1)}/${I(f.v1)})` }, { k: `${f.o} = ${X.no} · ${f.f} = ${X.yes}`, v: `${p0} (${I(f.a0)}/${I(f.v0)})` }, { k: X.gap, v: d }] } };
+        calc: { title: X.impactT, formula: X.impactF, rows: [{ k: `${f.o} = ${X.yes} · ${f.f} = ${X.yes}`, v: `${p1} (${I(f.a1)}/${I(f.v1)})` }, { k: `${f.o} = ${X.no} · ${f.f} = ${X.yes}`, v: `${p0} (${I(f.a0)}/${I(f.v0)})` }, { k: X.gap, v: d }] },
+        ev: nvEv('gappp', { a1: f.a1, v1: f.v1, a0: f.a0, v0: f.v0 }, [{ k: 'd', value: f.d, text: d }], { n: Math.min(f.v1, f.v0), method: 'count', refs: [f.o, f.f] }) };
     } else if (f.k === 'where') {
       const plo = pc(f.lo.a / f.lo.v * 100), phi = pc(f.hi.a / f.hi.v * 100), pall = pc(f.all.a / f.all.v * 100), d = ppt(f.spread).replace('+', '');
       s = { id: 'c-where-' + i, short: f.g, act: 'c_where', head: X.whereH(f.g, f.o, f.lo.l, plo, I(f.lo.a), I(f.lo.v), f.hi.l, phi, I(f.hi.a), I(f.hi.v)), hl: '', big: { text: d, label: X.lbl.spread }, bars: [{ k: f.lo.l, p: f.lo.a / f.lo.v * 100, t: plo }, { k: f.hi.l, p: f.hi.a / f.hi.v * 100, t: phi }, { k: X.all, p: f.all.a / f.all.v * 100, t: pall }],
         viz: { title: `${f.o} · ${f.g}`, rows: (f.gs || [f.hi, f.lo]).map(g => ({ k: g.l, p: g.a / g.v * 100, t: pc(g.a / g.v * 100), sub: `${I(g.a)}/${I(g.v)}`, hi: g.l === f.hi.l || g.l === f.lo.l })), ref: { p: f.all.a / f.all.v * 100, label: `${X.all} ${pall}` }, note: X.vizWhere },
-        calc: { title: X.whereT, formula: X.whereF, rows: [{ k: f.lo.l, v: `${plo} (${I(f.lo.a)}/${I(f.lo.v)})` }, { k: f.hi.l, v: `${phi} (${I(f.hi.a)}/${I(f.hi.v)})` }, { k: X.all, v: `${pall} (${I(f.all.a)}/${I(f.all.v)})` }, { k: X.gap, v: d }] } };
+        calc: { title: X.whereT, formula: X.whereF, rows: [{ k: f.lo.l, v: `${plo} (${I(f.lo.a)}/${I(f.lo.v)})` }, { k: f.hi.l, v: `${phi} (${I(f.hi.a)}/${I(f.hi.v)})` }, { k: X.all, v: `${pall} (${I(f.all.a)}/${I(f.all.v)})` }, { k: X.gap, v: d }] },
+        ev: nvEv('gappp', { a1: f.hi.a, v1: f.hi.v, a0: f.lo.a, v0: f.lo.v }, [{ k: 'd', value: f.spread, text: d }], { n: Math.min(f.hi.v, f.lo.v), method: 'count', refs: [f.g, f.o] }) };
     } else if (f.k === 'cause' || f.k === 'terms') {
       const top = f.top[0], p = pc(top.n / f.filled * 100), cause = f.k === 'cause';
       s = { id: (cause ? 'c-cause-' : 'c-terms-') + i, short: f.name, type: 'prio', act: cause ? 'c_cause' : 'c_terms', head: cause ? X.causeH(f.name, top.l, I(top.n), I(f.filled)) : X.termsH(f.name, top.l, I(top.n), I(f.filled)), hl: '', big: { text: p, label: cause ? X.lbl.top : X.lbl.terms },
         rank: f.top.map((x, j) => ({ n: j + 1, k: x.l, v: I(x.n), s: pc(x.n / f.filled * 100) })),
         viz: { title: f.name, rows: f.top.map(x => ({ k: x.l, p: x.n / f.top[0].n * 100, t: I(x.n), sub: pc(x.n / f.filled * 100) })), note: `${I(f.filled)} · ${X.filled}` },
-        calc: { title: cause ? X.causeT : X.termsT, formula: cause ? X.causeF : X.termsF, rows: [...f.top.map(x => ({ k: x.l, v: `${I(x.n)} (${pc(x.n / f.filled * 100)})` })), { k: X.filled, v: I(f.filled), n: f.n }] } };
+        calc: { title: cause ? X.causeT : X.termsT, formula: cause ? X.causeF : X.termsF, rows: [...f.top.map(x => ({ k: x.l, v: `${I(x.n)} (${pc(x.n / f.filled * 100)})` })), { k: X.filled, v: I(f.filled), n: f.n }] },
+        ev: nvEv('ratio', { num: top.n, den: f.filled }, [{ k: 'p', value: top.n / f.filled * 100, text: p }], { n: f.filled, method: 'count', refs: [f.name, top.l], allow: cause ? ['causal'] : [] }) }; // o nome da coluna pode ser "Causa": a frase só ranqueia respostas, não afirma causa
     }
     if (s) { s.state = null; if (!s.head.includes(s.hl)) s.hl = ''; out.push(s); }
   });
@@ -274,13 +279,15 @@ function storyCut(story, cap, decision, area) {
 
 /* ---------------- construtor de história: respostas viram slides ---------------- */
 // prioridade de um fato para a decisão escolhida (menor = mais importante)
+// prioridade (menor vem antes) das famílias linha a linha, que não fazem parte da ordem por decisão
+const NV_PRI = { assoc: 2.4, dist_skew: 3.3, outlier_rows: 3.6 };
 function storyPri(s, decision, area) {
   const ord = (typeof INSIGHT_ORDER !== 'undefined' && INSIGHT_ORDER[decision]) || [], gen = { leader: 1.5, balance: 1.5, relation: 1.5, conc: 2.5, contrast: 3.5, contrib: 1.2, shift: 2.2, c_impact: 0.6, c_cause: 1.0, c_rate: 1.4, c_where: 1.6, c_terms: 2.8 };
   if (s.id === 'st-ov') return -1;
   const bo = ((AREAS[area] || {}).boost || {})[s.act] || 0; // a área pesa mais certos fatos (nunca esconde nenhum)
   if (s.lowPri) return 6;
   if (/^c-rate-[1-9]/.test(s.id)) return 3.2; // o resultado principal vale mais que as demais taxas
-  if (s.insight) { const k = ord.indexOf(s.act); return (k >= 0 ? k : 2) + bo; }
+  if (s.insight) { const k = ord.indexOf(s.act); return (k >= 0 ? k : NV_PRI[s.act] ?? 2) + bo; }
   return (gen[s.act] ?? 5) + bo;
 }
 // fatos candidatos, o mais indicado para a decisão e a evidência sugerida

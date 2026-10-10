@@ -56,7 +56,11 @@ function onWorker(e) {
     if (!m.rowCount || !m.columns.length) return go('upload', T('up_empty'));
     S._rt = new Set(); rdStart(S.ds); rdRetype();
     S.mapping = defaultMapping();
-    go('preview');
+    // caminho curto: com leitura confiável vai direto para a geração; só a leitura incerta para na tela "Como li a sua planilha"
+    // (o build de teste mantém a tela de prévia para os testes antigos; ?auto liga o caminho curto)
+    if (window.__DV_NOFIND && !/[?&]auto\b/.test(location.search)) go('preview');
+    else if (S.read && S.read.conf === 'baixa') go('read');
+    else { rdApply(); S.ds.columns.shape = S.read.shape; S.mapping = defaultMapping(); go('gen'); }
   } else if (m.type === 'retyped') {
     S.ds.columns[m.col] = m.column; rdStart(S.ds, true); rdRetype(); if (S.mapModal) { refreshMapModal(); return; } S.mapping = defaultMapping(); render();
   } else if (m.type === 'error') {
@@ -429,7 +433,7 @@ function runGeneration() {
   [[T('gen_1'), 0], [T('gen_2'), 0.36], [T('gen_3'), 0.7]].forEach(([txt, f]) => setTimeout(() => { const e = $('#gen-st'); if (e && S.step === 'gen') e.textContent = txt + '…'; }, total * f));
   let piece, err;
   setTimeout(() => { try { piece = makePiece(); } catch (e) { err = e; } }, 60); // deixa a tela aparecer antes do cálculo
-  setTimeout(() => { if (S.step !== 'gen') return; if (err) return go('mapping', T('mp_no_data')); S.piece = piece; S.find = null; S.sb = null; S._bctx = null; go(window.__DV_NOFIND && !/[?&]find\b/.test(location.search) ? 'editor' : 'find'); npsTrack('gen'); npsSession.switched = false; npsMoment('gen'); }, Math.max(0, total - (performance.now() - t0)));
+  setTimeout(() => { if (S.step !== 'gen') return; if (err) return go('mapping', T('mp_no_data')); S.piece = piece; S.find = null; S.sb = null; S._bctx = null; go(!/[?&]find\b/.test(location.search) ? 'editor' : 'find'); npsTrack('gen'); npsSession.switched = false; npsMoment('gen'); }, Math.max(0, total - (performance.now() - t0)));
 }
 
 /* ---- animação de pontos (identidade Doto) ---- */

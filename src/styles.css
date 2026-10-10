@@ -277,6 +277,7 @@ body.mdl-open { overflow: hidden; }
 #dvs.gen-s { z-index: 80; }
 #dvs.gen-s svg { width: min(300px, 64vw); }
 #dvs.gen-s .tag b { color: #d4ff00; }
+#dvs.gen-s .tag { white-space: normal; text-align: center; max-width: min(92vw, 560px); line-height: 1.5; letter-spacing: .1em; }
 #dvs.gen-s .bar { width: 190px; }
 /* transições de tela com profundidade */
 ::view-transition-old(root) { animation: vt-out .5s cubic-bezier(.4, 0, .2, 1) both; }

@@ -42,6 +42,14 @@ function bCtx() {
 }
 const bFactCard = (f, o = {}) => `<div class="fd-card${o.sel ? ' on' : ''}"><button type="button" class="fd-main" data-a="${o.a}" data-v="${esc(f.id)}" aria-pressed="${!!o.sel}">${o.badge ? `<span class="fd-badge">${esc(o.badge)}</span>` : ''}<span class="fd-kick">${esc(o.kick || f.kick.label)}</span><span class="fd-head">${esc(f.head)}</span>${f.big ? `<span class="fd-big"><b>${esc(f.big.text)}</b><small>${esc(f.big.label)}</small></span>` : ''}</button>${f.calc ? `<details class="fd-calc"><summary>${esc(BT().calc)}</summary><div class="fd-cb"><b>${esc(f.calc.title)}</b><span>${esc(f.calc.formula)}</span>${f.calc.rows.map(r => `<div><span>${esc(r.k)}</span><b>${esc(r.v)}</b></div>`).join('')}</div></details>` : ''}</div>`;
 
+// "Editar história", "Detalhar" e "Ver o que encontrei" abrem num modal sobre o editor (com Fechar); fora do editor (primeiro uso) seguem como tela
+const BLAYER = new Set(['script', 'story', 'find']);
+function bgo(step) {
+  if (S.layer && step === 'editor') { closeLayer(true); return; }
+  if (BLAYER.has(step) && (S.layer || S.step === 'editor')) { S.layer = step; if (!document.getElementById('layer')) openLayerEl(); renderLayer(); return; }
+  go(step);
+}
+const bscroll = () => { const b = document.getElementById('layer-body'); if (b) b.scrollTop = 0; else window.scrollTo(0, 0); };
 /* ---- tela "O que encontrei" ---- */
 function findScreen() {
   const B = BT(), c = bCtx(), cand = c.cand, ranked = cand.ranked;
@@ -168,13 +176,13 @@ function scriptScreen() {
 }
 function scFinish() {
   const P = S.piece, ans = scAnswers(S.sc); P.sb = ans; P.title = String(S.sc.title || '').trim();
-  S.dirty = true; S.sc = null; S.find = null; S._bctx = null; go('editor');
+  S.dirty = true; S.sc = null; S.find = null; S._bctx = null; bgo('editor');
   const n = (() => { try { return (storyFromAnswers(P, makeMeta(P), buildSteps(P, makeMeta(P))) || []).length; } catch (e) { return 0; } })();
   toast(BT().done(n, Math.max(1, Math.round(n * 0.75))));
 }
 function scStep(d) {
-  const a = S.sc; if (a.step + d < 0) { const from = a.from; S.sc = null; go(from === 'editor' ? 'editor' : 'find'); return; }
-  a.step = Math.max(0, Math.min(2, a.step + d)); a.edit = null; render(); window.scrollTo(0, 0);
+  const a = S.sc; if (a.step + d < 0) { const from = a.from; S.sc = null; bgo(from === 'editor' ? 'editor' : 'find'); return; }
+  a.step = Math.max(0, Math.min(2, a.step + d)); a.edit = null; render(); bscroll();
 }
 function scClick(a, v, t) {
   const A = S.sc, c = bCtx(); if (!A) return false;
@@ -186,7 +194,7 @@ function scClick(a, v, t) {
   else if (a === 'sc-add') { const order = c.cand.facts.map(f => f.id); A.script.push(v); const head = A.script.shift(), rest = A.script.sort((x, y) => order.indexOf(x) - order.indexOf(y)); A.script = [head, ...rest]; render(); }
   else if (a === 'sc-edit') { A.edit = v; render(); } else if (a === 'sc-editdone') { A.edit = null; render(); }
   else if (a === 'sc-reset') { delete A.edits[v]; render(); }
-  else if (a === 'sc-detail') { S.piece.sb = scAnswers(A); S.sb = sbInit(A.from); S.sc = null; go('story'); }
+  else if (a === 'sc-detail') { S.piece.sb = scAnswers(A); S.sb = sbInit(A.from); S.sc = null; bgo('story'); }
   else if (a === 'sb-sug') { const k = t.dataset.k, sug = storySuggest(c.P, c.by(A.script[0])); if (k === 'sctitle') A.title = c.P.autoTitle || ''; else { const txt = k === 'scmsg' ? sug.msg.filter(x => x !== titleOf(c.P)).slice(0, 2)[+v] : sug.ask; if (k === 'scmsg') A.thesis = txt; else A.ask = txt; } render(); }
   else return false;
   return true;
@@ -200,7 +208,7 @@ function scInput(e) {
 
 function sbFinish() {
   const P = S.piece, ans = sbAnswers(S.sb); P.sb = ans;
-  S.dirty = true; S.sb = null; S.find = null; S._bctx = null; go('editor');
+  S.dirty = true; S.sb = null; S.find = null; S._bctx = null; bgo('editor');
   const n = (() => { try { return (storyFromAnswers(P, makeMeta(P), buildSteps(P, makeMeta(P))) || []).length; } catch (e) { return 0; } })();
   toast(BT().done(n, Math.max(1, Math.round(n * 0.75))));
 }
@@ -208,11 +216,11 @@ function fdQuick() {
   const P = S.piece, c = bCtx(), center = (S.find && c.by(S.find.center)) ? S.find.center : c.cand.center, cap = { quick: 1, normal: 2, full: 3 }[(P.br && P.br.time) || 'full'];
   const script = scDefaultScript(c, center);
   P.sb = { msg: '', center, ev: script.slice(1), script, edits: {}, titles: {}, thesis: '', diag: { fact: null, text: '' }, impl: [], prio: null, plan: [], ask: '' };
-  S.dirty = true; S.find = null; go('editor');
+  S.dirty = true; S.find = null; bgo('editor');
 }
 function sbStep(d) {
-  const a = S.sb; if (a.step + d < 0) { if (a.from === 'editor') { S.sb = null; go('editor'); } else { S.sb = null; go('find'); } return; }
-  a.step = Math.max(0, Math.min(SB_N - 1, a.step + d)); render(); window.scrollTo(0, 0);
+  const a = S.sb; if (a.step + d < 0) { if (a.from === 'editor') { S.sb = null; bgo('editor'); } else { S.sb = null; bgo('find'); } return; }
+  a.step = Math.max(0, Math.min(SB_N - 1, a.step + d)); render(); bscroll();
 }
 function sbSkip() { // pular limpa a resposta desta pergunta
   const a = S.sb; if (a.step === 1) a.ev = []; else if (a.step === 2) a.diag = { fact: null, text: '' }; else if (a.step === 3) a.impl = ['', '', '']; else if (a.step === 4) a.prio = null; else if (a.step === 5) a.plan = [{ a: '', o: '', d: '', m: '' }]; else if (a.step === 6) a.ask = '';
@@ -225,12 +233,12 @@ function builderClick(e) {
   const P = S.piece;
   if (a === 'fd-pick') { S.find.center = v; document.querySelectorAll('.fd-main').forEach(b => { const on = b.dataset.v === v; b.setAttribute('aria-pressed', String(on)); b.closest('.fd-card').classList.toggle('on', on); }); }
   else if (a === 'fd-quick') fdQuick();
-  else if (a === 'fd-guide') { S.sb = sbInit('find'); go('story'); }
-  else if (a === 'fd-guide3') { S.sc = scInit('find'); go('script'); }
+  else if (a === 'fd-guide') { S.sb = sbInit('find'); bgo('story'); }
+  else if (a === 'fd-guide3') { S.sc = scInit('find'); bgo('script'); }
   else if (a.indexOf('sc-') === 0 || (a === 'sb-sug' && S.sc)) { scClick(a, v, t); }
-  else if (a === 'story-edit') { if (!P) return; S.find = null; if (P.sb && !P.sb.script && (P.sb.diag && (P.sb.diag.fact || P.sb.diag.text) || (P.sb.impl || []).length || P.sb.prio || (P.sb.plan || []).length)) { S.sb = sbInit('editor'); go('story'); } else { S.sc = scInit('editor'); go('script'); } }
-  else if (a === 'story-detail') { if (!P) return; S.find = null; S.sb = sbInit('editor'); go('story'); }
-  else if (a === 'story-find') { if (!P) return; S.find = null; go('find'); }
+  else if (a === 'story-edit') { if (!P) return; S.find = null; if (P.sb && !P.sb.script && (P.sb.diag && (P.sb.diag.fact || P.sb.diag.text) || (P.sb.impl || []).length || P.sb.prio || (P.sb.plan || []).length)) { S.sb = sbInit('editor'); bgo('story'); } else { S.sc = scInit('editor'); bgo('script'); } }
+  else if (a === 'story-detail') { if (!P) return; S.find = null; S.sb = sbInit('editor'); bgo('story'); }
+  else if (a === 'story-find') { if (!P) return; S.find = null; bgo('find'); }
   else if (!S.sb) return;
   else if (a === 'sb-next') sbStep(1);
   else if (a === 'sb-back') sbStep(-1);

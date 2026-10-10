@@ -122,6 +122,8 @@ async function doExport(kind) {
       download(new Blob([buildExportHtml(P)], { type: 'text/html' }), `${base}.html`);
     } else if (kind === 'png' || kind === 'png2') {
       download(await renderPng(P, { scale: kind === 'png2' ? 2 : 1, filter: P.host ? P.host.ix.filterFn() : null, cumul: P.host ? P.host.ix.cumul : false }), `${base}${kind === 'png2' ? '-4k' : ''}.png`);
+    } else if (kind === 'pptx') {
+      download(new Blob([await buildPptx(P)], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }), `${base}.pptx`);
     } else if (kind === 'steps') {
       const meta = P.host.ix.meta, steps = buildSteps(P, meta), files = [];
       for (let i = 0; i < steps.length; i++) {

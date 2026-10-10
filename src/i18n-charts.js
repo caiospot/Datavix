@@ -432,3 +432,9 @@ Object.assign(I18N.en, { ob_skip: 'Skip' });
 /* apresentação: textos editáveis, comparativo de dois pontos */
 Object.assign(I18N.pt, { pres_ph: 'Digite aqui seu conteúdo', card_cmp_hint: 'Clique em outro ponto para trocar; clique no mesmo para tirar. Esc fecha.', card_cmp_none: 'Os dois pontos não têm campos em comum para comparar.' });
 Object.assign(I18N.en, { pres_ph: 'Type your content here', card_cmp_hint: 'Click another point to swap; click the same one to remove it. Esc closes.', card_cmp_none: 'The two points have no fields in common to compare.' });
+
+Object.assign(I18N.pt, { ex_pptx: 'PowerPoint (.pptx)' });
+Object.assign(I18N.en, { ex_pptx: 'PowerPoint (.pptx)' });
+
+Object.assign(I18N.pt, { layer_close: 'Fechar' });
+Object.assign(I18N.en, { layer_close: 'Close' });

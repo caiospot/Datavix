@@ -17,7 +17,7 @@ const S = {
   lang: 'pt', ui: 'dark', step: 'entry', user: null, ob: 0,
   br: { area: null, audience: null, decision: null, time: null, message: '', story: null, tone: null, place: null },
   ds: null, mapping: null, nullPolicy: 'ignore', loading: null, error: null, sheets: null, fileName: null, isSample: false,
-  menu: false, sheet: false, ptab: 'chart', fpOpen: false, piece: null, panelOpen: lsGet('dv-panel') !== '0',
+  layer: null, menu: false, sheet: false, ptab: 'chart', fpOpen: false, piece: null, panelOpen: lsGet('dv-panel') !== '0',
 };
 
 /* ---------------- worker embutido ---------------- */
@@ -152,7 +152,30 @@ function header() {
     <div class="top-m">${prim}<button class="ico burger" data-a="menu" aria-label="${T('menu_open')}" aria-expanded="${!!S.menu}" aria-controls="drawer"><i></i><i></i><i></i></button></div></header>${drawer}`;
 }
 
+/* ---- camada (modal) das telas de história: o editor fica por baixo, com Fechar ---- */
+function layerTitle() { return S.layer === 'script' ? BT().panelBtn : S.layer === 'story' ? BST().panelDetail : BT().panelFind; }
+function openLayerEl() {
+  const m = document.createElement('div'); m.className = 'mdl layer'; m.id = 'layer'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true');
+  m._prev = document.activeElement;
+  m.innerHTML = `<div class="mdl-box wide layer-box"><div class="mdl-h"><h3 id="layer-t"></h3><button type="button" class="mdl-x" data-a="layer-close" aria-label="${T('layer_close')}">×</button></div><div class="mdl-b layer-body" id="layer-body"></div><div class="mdl-a layer-foot"><button type="button" class="btn ghost" data-a="layer-close">${T('layer_close')}</button></div></div>`;
+  document.body.appendChild(m); document.body.classList.add('mdl-open');
+  m.addEventListener('mousedown', e => { if (e.target === m) closeLayer(); });
+}
+function renderLayer() {
+  const m = document.getElementById('layer'); if (!m) return;
+  const screens = { find: findScreen, story: storyScreen, script: scriptScreen }, body = m.querySelector('#layer-body'), keep = body.scrollTop;
+  m.querySelector('#layer-t').textContent = layerTitle(); m.setAttribute('aria-label', layerTitle());
+  body.innerHTML = screens[S.layer] ? screens[S.layer]() : ''; body.scrollTop = keep;
+  const f = body.querySelector('textarea, input, .btn:not(.ghost)'); if (f && !m._focused) { m._focused = true; f.focus({ preventScroll: true }); }
+}
+function closeLayer(finished) {
+  const m = document.getElementById('layer'); S.layer = null; S.sc = null; S.sb = null; S.find = null; S._bctx = null;
+  if (m) { const prev = m._prev; m.remove(); if (!document.querySelector('.mdl')) document.body.classList.remove('mdl-open'); if (prev && prev.focus && document.contains(prev)) prev.focus({ preventScroll: true }); }
+  if (finished && S.step === 'editor') { try { syncTexts(); refreshBar(); } catch (e) { /* editor ainda montando */ } }
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && S.layer && document.getElementById('layer') && [...document.querySelectorAll('.mdl')].pop().id === 'layer') { e.preventDefault(); e.stopPropagation(); closeLayer(); } }, true);
 function render() {
+  if (S.layer && S.step === 'editor' && document.getElementById('layer')) { renderLayer(); return; } // com a camada aberta, só ela se atualiza; o editor não é refeito
   document.documentElement.dataset.ui = S.ui;
   if (S.step !== 'editor') S.sheet = false;
   document.body.classList.toggle('menu-open', !!S.menu); document.body.classList.toggle('sheet-open', !!S.sheet);
@@ -572,7 +595,7 @@ function panel() {
     ${P.bg.mode === 'solid' || P.bg.mode === 'gradient' ? `<div class="picker"><input type="color" id="bgcolor" value="${P.bg.mode === 'solid' ? P.bg.color : P.bg.base}" aria-label="${T('bg_h')}"></div>` : ''}</section>
   <section data-t="style"><h3>[ ${T('font_h')} ]</h3>${fontPicker}</section>
   <section data-t="style"><h3>[ ${T('opt_h')} ]</h3><div class="sws">${[['legend', 'opt_legend'], ['grid', 'opt_grid'], ['labels', 'opt_labels'], ['annotations', 'opt_ann'], ['notes', 'opt_notes']].map(([k, l]) => `<button class="sw2" role="switch" data-a="opt" data-v="${k}" aria-checked="${k === 'labels' ? !!P.opts[k] : P.opts[k] !== false}"><span>${T(l)}</span><i></i></button>`).join('')}</div><button class="sw2" role="switch" data-a="big" aria-checked="${!!P.big}" style="margin-top:6px"><span>${T('opt_big')}</span><i></i></button><p class="note" style="margin:8px 0 0">${T('labels_hint')} ${T('edit_hint')}</p></section>
-  <section data-t="share"><h3>[ ${T('ex_h')} ]</h3><div class="exps"><button class="btn sm" data-a="present">▶ ${T('present')}</button><button class="btn ghost sm" data-a="ex" data-v="html">${T('ex_html')}</button><button class="btn ghost sm" data-a="ex" data-v="png">${T('ex_png')}</button><button class="btn ghost sm" data-a="ex" data-v="png2">${T('ex_png2')}</button><button class="btn ghost sm" data-a="ex" data-v="steps">${T('ex_steps')}</button></div>
+  <section data-t="share"><h3>[ ${T('ex_h')} ]</h3><div class="exps"><button class="btn sm" data-a="present">▶ ${T('present')}</button><button class="btn ghost sm" data-a="ex" data-v="html">${T('ex_html')}</button><button class="btn ghost sm" data-a="ex" data-v="png">${T('ex_png')}</button><button class="btn ghost sm" data-a="ex" data-v="png2">${T('ex_png2')}</button><button class="btn ghost sm" data-a="ex" data-v="pptx">${T('ex_pptx')}</button><button class="btn ghost sm" data-a="ex" data-v="steps">${T('ex_steps')}</button></div>
     <p class="note" style="margin:10px 0 0" id="exstat" role="status">${T('ex_note')}</p><p class="note" style="margin:4px 0 0">${T('present_hint')}</p></section>
   <section class="s1" data-t="share"><h3>[ ${BT().panelH} ]</h3><div class="exps"><button class="btn sm" data-a="story-edit">✎ ${BT().panelBtn}</button><button class="btn ghost sm" data-a="story-detail">${BST().panelDetail}</button><button class="btn ghost sm" data-a="story-find">${BT().panelFind}</button></div><p class="note" style="margin:10px 0 0">${BT().panelNote}</p></section>
   <section data-t="share"><h3>[ ${T('vid_h')} ]</h3><button class="btn sm" data-a="video">🎬 ${T('vid_btn')}</button><p class="note" style="margin:10px 0 0">${T('vid_note')}</p></section>
@@ -679,6 +702,7 @@ document.addEventListener('click', e => {
     case 'menu-close': setMenu(false); break;
     case 'sheet-toggle': setSheet(!S.sheet); break;
     case 'sheet-close': setSheet(false); break;
+    case 'layer-close': closeLayer(); break;
     case 'pwa-ios': openIosInstall(); break;
     case 'privacy': openPrivacy(); break;
     case 'video': ensureTitle().then(ok => { if (ok) openVideoDialog(); }); break;

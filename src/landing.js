@@ -4,6 +4,7 @@ const LP = {
   pt: {
     nav: [['como', 'Como funciona'], ['graficos', 'Gráficos'], ['diferenciais', 'Diferenciais'], ['faq', 'FAQ']],
     start: 'Começar agora', newp: 'Novo projeto', how_cta: 'Ver como funciona',
+    em_ph: 'Qual é o seu e-mail?', em_btn: 'Começar de graça', em_hint: 'Opcional. O e-mail fica só no seu navegador.', em_bad: 'Esse e-mail parece incompleto. Confira ou deixe em branco.',
     hero_k: 'Tudo vira dado.', hero_h: ['Da planilha ao', 'storytelling'],
     hero_p: 'O Datavix transforma a sua planilha em dataviz executivo animado e interativo. Tudo acontece no seu navegador: a planilha não sai do seu computador.',
     chips: ['XLSX · XLS · CSV', 'Exporta HTML offline', 'PT / EN'], hero_cap: 'Árvore radial com dados fictícios. Passe o mouse.',
@@ -52,6 +53,7 @@ const LP = {
   en: {
     nav: [['como', 'How it works'], ['graficos', 'Charts'], ['diferenciais', 'Why Datavix'], ['faq', 'FAQ']],
     start: 'Get started', newp: 'New project', how_cta: 'See how it works',
+    em_ph: 'What\'s your email?', em_btn: 'Start for free', em_hint: 'Optional. Your email stays in your browser only.', em_bad: 'That email looks incomplete. Check it or leave it blank.',
     hero_k: 'Everything becomes data.', hero_h: ['From spreadsheet to', 'storytelling'],
     hero_p: 'Datavix turns your spreadsheet into animated, interactive executive dataviz. Everything happens in your browser: the spreadsheet never leaves your computer.',
     chips: ['XLSX · XLS · CSV', 'Exports offline HTML', 'PT / EN'], hero_cap: 'Radial tree with sample data. Hover it.',
@@ -111,6 +113,8 @@ const lpPh = (label, ratio = '16/10', k) => `<figure class="ph" style="aspect-ra
 function landingHtml() {
   const L = LPT(), mine = S.user;
   const cta = mine ? `<button class="btn" data-a="start">${L.newp} →</button>` : `<button class="btn" data-a="start">${L.start} →</button>`;
+  // hero: campo de e-mail + "Começar de graça" (opcional; o e-mail não sai do navegador). Quem já tem sessão vê "Novo projeto"
+  const heroCta = mine ? cta : `<div class="lp-mailbox"><form class="lp-mail" id="lpmail" novalidate><label class="sr" for="lpem">${esc(L.em_ph)}</label><input class="lp-em" id="lpem" name="email" type="email" inputmode="email" autocomplete="email" placeholder="${esc(L.em_ph)}" aria-describedby="lpem-h"><button class="btn" type="submit">${esc(L.em_btn)}</button></form><p class="lp-em-h" id="lpem-h" role="status">${esc(L.em_hint)}</p></div>`;
   return `<div class="lp">
   <section class="lp-hero" id="top"><div class="lp-stick">
     <div class="lp-glow" aria-hidden="true"></div>
@@ -119,7 +123,7 @@ function landingHtml() {
       <div class="lp-eyebrow">${esc(L.hero_k)}</div>
       <h1 class="lp-h1">${lpTitle(L.hero_h[0], L.hero_h[1])}</h1>
       <p class="lp-sub">${esc(L.hero_p)}</p>
-      <div class="lp-cta">${cta}<a class="btn ghost" href="#como" data-a="anchor">${L.how_cta}</a></div>
+      <div class="lp-cta${mine ? '' : ' lp-cta-mail'}">${heroCta}<a class="btn ghost" href="#como" data-a="anchor">${L.how_cta}</a></div>
       <div class="lp-meta">${L.chips.map(c => `<span>${esc(c)}</span>`).join('<i></i>')}</div>
     </div>
     <div class="lp-capline" aria-hidden="true">${esc(L.hero_cap)}</div>

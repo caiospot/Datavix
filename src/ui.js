@@ -664,6 +664,15 @@ function openIosInstall() {
 })();
 
 /* ---------------- eventos ---------------- */
+// hero da página inicial: e-mail opcional + "Começar de graça". O e-mail só é validado e fica em memória nesta sessão; nada é enviado
+document.addEventListener('submit', e => {
+  const f = e.target.closest && e.target.closest('#lpmail'); if (!f) return; e.preventDefault();
+  const v = (f.elements.email.value || '').trim(), ok = !v || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v), h = $('#lpem-h');
+  f.classList.toggle('bad', !ok); if (h) { h.classList.toggle('bad', !ok); h.textContent = ok ? LPT().em_hint : LPT().em_bad; }
+  f.elements.email.setAttribute('aria-invalid', ok ? 'false' : 'true');
+  if (!ok) { f.elements.email.focus(); return; }
+  S.user = { guest: true, ...(v ? { email: v } : {}) }; S.ob = 0; go('ob');
+});
 document.addEventListener('click', e => {
   if (S.fpOpen && !e.target.closest('#fp')) setFp(false);
   const t = e.target.closest('[data-a]'); if (!t) return;

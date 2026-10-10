@@ -302,12 +302,24 @@ body.mdl-open { overflow: hidden; }
 .lp-treewrap { position: absolute; inset: 0; transform: translateY(calc(2vh + (1 - var(--p)) * 44vh)) scale(calc(.9 + var(--p) * -.04)); transform-origin: 50% 55%; opacity: calc(.6 + var(--p) * .4); will-change: transform, opacity; }
 .lp-treewrap canvas { width: 100%; height: 100%; display: block; }
 .lp-copy { position: absolute; left: 0; right: 0; top: 0; padding: calc(61px + 11vh) 24px 0; display: grid; justify-items: center; text-align: center; gap: 0; opacity: calc(1 - var(--p) * 1.8); transform: translateY(calc(var(--p) * -48px)); pointer-events: none; will-change: transform, opacity; }
-.lp-copy .btn, .lp-copy a { pointer-events: auto; }
+.lp-copy .btn, .lp-copy a, .lp-copy form, .lp-copy input { pointer-events: auto; }
 .lp-eyebrow { font: 400 12px var(--mono); letter-spacing: .26em; text-transform: uppercase; color: var(--muted); }
 .lp-h1 { font-size: clamp(40px, 7.4vw, 108px); letter-spacing: -.028em; line-height: 1.02; margin-top: 22px; max-width: 15ch; text-wrap: balance; }
 .lp-sub { color: var(--muted); font-size: clamp(16px, 1.5vw, 21px); line-height: 1.5; max-width: 46ch; margin: 22px 0 0; text-wrap: balance; }
 .lp-cta { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 30px; }
 .lp-cta a.btn { text-decoration: none; }
+/* campo de e-mail do hero: cápsula com o botão principal dentro (mesma linguagem de pílula, borda fina e lime do sistema) */
+.lp-mail { display: flex; align-items: center; gap: 8px; width: 100%; box-sizing: border-box; padding: 6px 6px 6px 22px; border: 1px solid var(--line); border-radius: 999px; background: color-mix(in srgb, var(--card) 82%, transparent); transition: border-color .15s; }
+.lp-mail:focus-within { border-color: var(--muted); }
+.lp-mail.bad { border-color: var(--danger); }
+.lp-em { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--fg); font: 400 15px var(--sans, inherit); padding: 10px 0; }
+.lp-em::placeholder { color: var(--muted); opacity: 1; }
+.lp-mail .btn { flex: none; white-space: nowrap; padding: 11px 20px; }
+.lp-em-h { margin: 10px 0 0; font: 400 12px var(--mono); letter-spacing: .04em; color: var(--muted); text-align: center; }
+.lp-em-h.bad { color: var(--danger); }
+.lp-cta-mail { flex-direction: column; align-items: center; gap: 18px; width: min(460px, 100%); }
+.lp-mailbox { width: 100%; }
+@media (max-width: 480px) { .lp-mail { padding-left: 16px; } .lp-mail .btn { padding: 10px 14px; font-size: 14px; } }
 .lp-meta { display: flex; align-items: center; gap: 14px; margin-top: 26px; font: 400 11.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); flex-wrap: wrap; justify-content: center; }
 .lp-meta i { width: 3px; height: 3px; border-radius: 50%; background: var(--muted); opacity: .6; }
 .lp-capline { position: absolute; left: 0; right: 0; bottom: 2.4vh; text-align: center; font: 400 12px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); opacity: calc((var(--p) - .72) * 4); pointer-events: none; }

@@ -157,7 +157,7 @@ function layerTitle() { return S.layer === 'script' ? BT().panelBtn : S.layer ==
 function openLayerEl() {
   const m = document.createElement('div'); m.className = 'mdl layer'; m.id = 'layer'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true');
   m._prev = document.activeElement;
-  m.innerHTML = `<div class="mdl-box wide layer-box"><div class="mdl-h"><h3 id="layer-t"></h3><button type="button" class="mdl-x" data-a="layer-close" aria-label="${T('layer_close')}">×</button></div><div class="mdl-b layer-body" id="layer-body"></div><div class="mdl-a layer-foot"><button type="button" class="btn ghost" data-a="layer-close">${T('layer_close')}</button></div></div>`;
+  m.innerHTML = `<div class="mdl-box wide layer-box"><div class="mdl-h"><h3 id="layer-t"></h3><button type="button" class="btn ghost sm layer-close" data-a="layer-close">${T('layer_close')}</button></div><div class="mdl-b layer-body" id="layer-body"></div></div>`; // um só Fechar, no topo
   document.body.appendChild(m); document.body.classList.add('mdl-open');
   m.addEventListener('mousedown', e => { if (e.target === m) closeLayer(); });
 }
@@ -166,6 +166,7 @@ function renderLayer() {
   const screens = { find: findScreen, story: storyScreen, script: scriptScreen }, body = m.querySelector('#layer-body'), keep = body.scrollTop;
   m.querySelector('#layer-t').textContent = layerTitle(); m.setAttribute('aria-label', layerTitle());
   body.innerHTML = screens[S.layer] ? screens[S.layer]() : ''; body.scrollTop = keep;
+  body.querySelectorAll('[data-a$="-back"]').forEach(b => b.remove()); // no modal não há Voltar: quem quer sair usa Fechar
   const f = body.querySelector('textarea, input, .btn:not(.ghost)'); if (f && !m._focused) { m._focused = true; f.focus({ preventScroll: true }); }
 }
 function closeLayer(finished) {

@@ -9,7 +9,7 @@ Gerado no navegador, sem biblioteca: um pacote OOXML montado à mão (zip sem co
 - Limites: o PowerPoint usa a fonte instalada na máquina (se a fonte da peça não existir, ele substitui); animações e transições da apresentação não vão para o arquivo; tipos sem equivalente nativo mostram uma aproximação, não o desenho original.
 
 ## Modal da história
-"Editar história", "Detalhar" e "Ver o que encontrei" agora abrem num **modal sobre o editor**, com **Fechar** (botão no rodapé, × no topo, Esc e clique fora). Dentro dele seguem os mesmos passos (Continuar, Voltar, Concluir); concluir grava e fecha, voltar no primeiro passo fecha, e o editor e o gráfico por baixo não são refeitos (`bgo`, `openLayerEl`, `renderLayer`, `closeLayer` em builder.js e ui.js). Fora do editor (primeiro uso) continuam como telas.
+"Editar história", "Detalhar" e "Ver o que encontrei" agora abrem num **modal sobre o editor**, com um único **Fechar** (no topo; também Esc e clique fora). Não há botão Voltar no modal. Dentro dele seguem os mesmos passos (Continuar, Voltar, Concluir); concluir grava e fecha, voltar no primeiro passo fecha, e o editor e o gráfico por baixo não são refeitos (`bgo`, `openLayerEl`, `renderLayer`, `closeLayer` em builder.js e ui.js). Fora do editor (primeiro uso) continuam como telas.
 
 ## Testes
 `test/m/pptx-make.js` (gera um .pptx por tipo; hash `arquivo|aba|tipos`), `test/pptx-check.py`, `test/m/pptx-ui.js` (botão e status) e `test/m/layer-run.js` (modais, Fechar, Esc, fluxo completo, voltar). Regressão: `script-run`, `builder-check`, `builder-extra` e `builder-run` iguais ao anterior.

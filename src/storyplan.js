@@ -32,7 +32,7 @@ const nvpT = () => NVP[LANG] || NVP.pt;
 const nvpSlotPred = (slot, isTime) => f => {
   const k = f.ev.kind, a = f.act || '';
   if (slot === 'evol') return k === 'trend' || k === 'jump' || (isTime && (k === 'peak' || k === 'low'));
-  if (slot === 'comp') return k === 'lead' || k === 'contrast' || k === 'dropc' || k === 'gappp' || (!isTime && (k === 'peak' || k === 'low')) || /^c_(where|impact)$/.test(a);
+  if (slot === 'comp') return k === 'lead' || k === 'gapz' || k === 'contrast' || k === 'dropc' || k === 'gappp' || (!isTime && (k === 'peak' || k === 'low')) || /^c_(where|impact)$/.test(a);
   if (slot === 'conc') return k === 'conc' || k === 'contrib' || k === 'shift' || k === 'dominant';
   if (slot === 'dist') return k === 'dist' || k === 'outrows' || k === 'outlier';
   return false;

@@ -4,7 +4,8 @@ const RIVER_MAX_CAT = 12, RIVER_MAX_P = 48, RIVER_GROW_S = 2.6, RIVER_TUT_KEY = 
 
 /* ---------------- dados ---------------- */
 // período que dá de 8 a 48 pontos (do mais largo para o mais fino); aceita de 4 a 48 se não houver melhor
-function riverGrain(min, max) {
+function riverGrain(min, max, col) {
+  if (col && monthStartsOnly(col)) { const n = bucketCount(min, max, 'month'); if (n >= 4 && n <= RIVER_MAX_P) return 'month'; } // datas só no dia 1: meses, mesmo que poucos
   const gs = ['year', 'quarter', 'month', 'week', 'day'];
   for (const g of gs) { const n = bucketCount(min, max, g); if (n >= 8 && n <= RIVER_MAX_P) return g; }
   for (const g of gs) { const n = bucketCount(min, max, g); if (n >= 4 && n <= RIVER_MAX_P) return g; }
@@ -12,7 +13,7 @@ function riverGrain(min, max) {
 }
 function riverSuggest(cols) {
   const value = bestMeasure(cols); if (value < 0) return null;
-  const period = cols.findIndex(c => c.kind === 'date' && riverGrain(c.min, c.max));
+  const period = cols.findIndex(c => c.kind === 'date' && riverGrain(c.min, c.max, c));
   if (period < 0) return null;
   const ok = cols.map((c, i) => i).filter(i => isGroupDim(cols[i]) && cols[i].codes && csAvgLen(cols[i]) <= 45 && distinctOf(cols[i]) >= 3 && distinctOf(cols[i]) <= 60);
   const few = ok.filter(i => distinctOf(cols[i]) <= RIVER_MAX_CAT).sort((a, b) => Math.abs(distinctOf(cols[a]) - 6) - Math.abs(distinctOf(cols[b]) - 6));
@@ -26,7 +27,7 @@ function riverBuild(ds, m, opts, map) {
   const cols = ds.columns, n = ds.rowCount, lang = opts.lang || 'pt', policy = opts.nullPolicy || 'ignore';
   const pc = cols[m.period], cc = cols[m.cat], vc = m.value >= 0 ? cols[m.value] : null;
   if (!pc || !cc || !cc.codes || (vc && !isMeasure(vc))) return null;
-  const isDate = pc.kind === 'date', grain = isDate ? riverGrain(pc.min, pc.max) : null;
+  const isDate = pc.kind === 'date', grain = isDate ? riverGrain(pc.min, pc.max, pc) : null;
   if (isDate ? !grain : !pc.codes) return null;
   const agg = vc ? (m.agg === 'count' ? 'count' : 'sum') : 'count';
   const acc = new Map(), catTot = new Map(), pers = new Set(); let used = 0;

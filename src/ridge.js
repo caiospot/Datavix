@@ -6,7 +6,7 @@ const RIDGE_MAX_E = 24, RIDGE_GROW_S = 2.6, RIDGE_TUT_KEY = 'dv-ridge-tutorial',
 /* ---------------- dados ---------------- */
 function ridgeSuggest(cols) {
   const value = bestMeasure(cols); if (value < 0) return null;
-  const time = cols.findIndex(c => c.kind === 'date' && riverGrain(c.min, c.max)); if (time < 0) return null;
+  const time = cols.findIndex(c => c.kind === 'date' && riverGrain(c.min, c.max, c)); if (time < 0) return null;
   const dims = cols.map((c, i) => i).filter(i => isGroupDim(cols[i]) && cols[i].codes && csAvgLen(cols[i]) <= 45);
   const comp = dims.find(i => distinctOf(cols[i]) === 2);
   const ents = dims.filter(i => i !== comp && distinctOf(cols[i]) >= 3 && distinctOf(cols[i]) <= 60).sort((a, b) => Math.abs(distinctOf(cols[a]) - 10) - Math.abs(distinctOf(cols[b]) - 10));
@@ -19,7 +19,7 @@ function ridgeBuild(ds, m, opts) {
   const cols = ds.columns, n = ds.rowCount, lang = opts.lang || 'pt', policy = opts.nullPolicy || 'ignore';
   const tc = cols[m.time], ec = cols[m.ent], vc = cols[m.value], cc = m.comp >= 0 && cols[m.comp] && cols[m.comp].codes ? cols[m.comp] : null;
   if (!tc || tc.kind !== 'date' || !ec || !ec.codes || !vc || !isMeasure(vc)) return null;
-  const grain = riverGrain(tc.min, tc.max); if (!grain) return null;
+  const grain = riverGrain(tc.min, tc.max, tc); if (!grain) return null;
   const agg = m.agg === 'mean' || m.agg === 'count' ? m.agg : 'sum', acc = new Map(), entTot = new Map(), compTot = new Map(), times = new Set(); let used = 0;
   for (let i = 0; i < n; i++) {
     const t0 = tc.data[i]; if (Number.isNaN(t0)) continue; const e = ec.codes[i]; if (e < 0) continue;

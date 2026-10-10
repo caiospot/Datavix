@@ -1,0 +1,126 @@
+{
+ "vendas_sazonal": {
+  "rows": 1800,
+  "plant": {
+   "trend": "up",
+   "leader": "Sudeste"
+  }
+ },
+ "vendas_plana": {
+  "rows": 1500,
+  "plant": {
+   "forbid": [
+    "trend"
+   ],
+   "balanced": true
+  }
+ },
+ "nps_pesquisa": {
+  "rows": 900,
+  "plant": {
+   "lowGroup": "Telefone"
+  }
+ },
+ "rh_folha": {
+  "rows": 600,
+  "plant": {
+   "dist": true,
+   "noAssocWith": [
+    "Matrícula"
+   ],
+   "idCols": [
+    "Matrícula"
+   ]
+  }
+ },
+ "marketing_campanhas": {
+  "rows": 360,
+  "plant": {
+   "assoc": true,
+   "outliers": true
+  }
+ },
+ "saude_atendimentos": {
+  "rows": 1200,
+  "plant": {
+   "dist": true,
+   "outliers": true,
+   "lowGroup": "Norte"
+  }
+ },
+ "educacao_notas": {
+  "rows": 500,
+  "plant": {
+   "assoc": true,
+   "noAssocWith": [
+    "Aluno"
+   ],
+   "idCols": [
+    "Aluno"
+   ]
+  }
+ },
+ "publico_orcamento": {
+  "rows": 120,
+  "plant": {
+   "forbidAssoc": true
+  }
+ },
+ "armadilha_ids": {
+  "rows": 400,
+  "plant": {
+   "noAssocWith": [
+    "CEP",
+    "Telefone",
+    "Código"
+   ],
+   "idCols": [
+    "CEP",
+    "Telefone",
+    "Código"
+   ]
+  }
+ },
+ "pequena": {
+  "rows": 12,
+  "plant": {
+   "small": true
+  }
+ },
+ "dados_faltantes": {
+  "rows": 800,
+  "plant": {
+   "missing": true
+  }
+ },
+ "negativos_zero": {
+  "rows": 500,
+  "plant": {
+   "negatives": true
+  }
+ },
+ "concentrado": {
+  "rows": 700,
+  "plant": {
+   "dominant": "Cliente Alfa"
+  }
+ },
+ "formato_brasil": {
+  "rows": 500,
+  "plant": {
+   "parse": true
+  }
+ },
+ "pivot_largo": {
+  "rows": 4,
+  "plant": {
+   "unpivot": true
+  }
+ },
+ "texto_livre": {
+  "rows": 600,
+  "plant": {
+   "text": true
+  }
+ }
+}

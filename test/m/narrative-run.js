@@ -46,8 +46,9 @@
   ok('u-rank-empates', JSON.stringify(nvRank([10, 20, 20, 30])) === JSON.stringify([1, 2.5, 2.5, 4]));
   ok('u-spearman-monotona', Math.abs(nvSpearman([1, 2, 3, 4, 5], [1, 8, 27, 64, 125]) - 1) < 1e-9 && Math.abs(nvSpearman([1, 2, 3, 4, 5], [9, 7, 5, 3, 1]) + 1) < 1e-9);
   ok('u-spearman-constante', nvSpearman([1, 2, 3], [5, 5, 5]) === null);
-  { const n = 100, y = Float64Array.from({ length: n }, (_, i) => (i === 99 ? 1000 : 10 + (i % 10))), x = Float64Array.from({ length: n }, (_, i) => y[i] * 2 + 1), ds = { rowCount: n, columns: [{ name: 'Y', kind: 'number', role: 'measure', data: y }, { name: 'X', kind: 'number', role: 'measure', data: x }, { name: 'ID', kind: 'number', role: 'id', data: x }] };
-    const rs = nvRowStats(ds, ds.columns[0]); ok('u-perfil-linhas', rs.n === 100 && rs.median === 14 && rs.outAbove === 1 && !rs.outBelow && rs.assoc && rs.assoc.name === 'X' && rs.assoc.rho > 0.99);
+  { const n = 100, y = Float64Array.from({ length: n }, (_, i) => (i === 99 ? 1000 : 10 + (i % 10))), x = Float64Array.from({ length: n }, (_, i) => y[i] * (1 + (i % 5) * 0.15)), xm = Float64Array.from({ length: n }, (_, i) => y[i] * 2), ds = { rowCount: n, columns: [{ name: 'Y', kind: 'number', role: 'measure', data: y }, { name: 'X', kind: 'number', role: 'measure', data: x }, { name: 'ID', kind: 'number', role: 'id', data: x }] };
+    { const dm = { rowCount: n, columns: [{ name: 'Y', kind: 'number', role: 'measure', data: y }, { name: 'M', kind: 'number', role: 'measure', data: xm }] }, rm = nvRowStats(dm, dm.columns[0]); ok('u-relacao-mecanica-fora', !rm.assoc && (rm.derived || []).includes('M')); }
+    const rs = nvRowStats(ds, ds.columns[0]); ok('u-perfil-linhas', rs.n === 100 && rs.median === 14 && rs.outAbove === 1 && !rs.outBelow && rs.assoc && rs.assoc.name === 'X' && rs.assoc.rho > 0.3);
     ok('u-id-nao-vira-associacao', rs.assoc.name !== 'ID');
     const ins = nvRowInsights({ rowStats: rs, kind: 'category' }, 'pt', T); ok('u-insights-linhas', ins.map(i => i.id).join() === 'dist_skew,outlier_rows,assoc' || ins.map(i => i.id).join() === 'outlier_rows,assoc' || ins.some(i => i.id === 'assoc'));
     ok('u-insights-linhas-validos', nvValidate(ins).ok && nvValidate(ins).checked === ins.length);
@@ -82,6 +83,15 @@
     const k1 = nvSelect(items, 4), k2 = nvSelect(items, 4);
     ok('u-selecao-panorama-e-variedade', k1.has(0) && k1.has(1) && k1.has(4) && !(k1.has(2) && k1.has(3)) && JSON.stringify([...k1]) === JSON.stringify([...k2]));
     const tie = [mkS('p', 50, 'lead'), mkS('q', 50, 'trend'), mkS('r', 50, 'conc')]; ok('u-selecao-empate-por-indice', [...nvSelect(tie, 2)].join() === '0,1'); }
+  // ---- unidade: calibragem do gate 5 (significância) ----
+  ok('u-tendencia-significativa', nvValidate([mk('trend', { head: 100, tail: 150, w: 4, S: 24, nn: 8 }, [{ k: 'ch', value: 50, text: '+50%' }], 8, 'Crescimento de +50%.')]).ok);
+  ok('u-tendencia-no-acaso', nvValidate([mk('trend', { head: 100, tail: 112, w: 4, S: 8, nn: 8 }, [{ k: 'ch', value: 12, text: '+12%' }], 8, 'Crescimento de +12%.')]).errors.some(e => e.code === 'insignificant'));
+  ok('u-pico-significativo', nvValidate([mk('peak', { top: 300, sum: 1000, n: 10, sd: 40 }, [{ k: 'dev', value: 200, text: '+200%' }, { k: 'top', value: 300, text: '300' }], 10, 'X teve o maior valor: 300 (+200% sobre a média).')]).ok);
+  ok('u-pico-no-acaso', nvValidate([mk('peak', { top: 130, sum: 1000, n: 10, sd: 40 }, [{ k: 'dev', value: 30, text: '+30%' }, { k: 'top', value: 130, text: '130' }], 10, 'X teve o maior valor: 130 (+30% sobre a média).')]).errors.some(e => e.code === 'insignificant'));
+  ok('u-salto-no-acaso', nvValidate([mk('jump', { prev: 100, cur: 112, mc: 5, sc: 6 }, [{ k: 'ch', value: 12, text: '+12%' }], 12, 'Maior salto: +12%.')]).errors.some(e => e.code === 'insignificant'));
+  ok('u-grupo-diferente-significativo', nvValidate([mk('gapz', { gm: 5, om: 7.6, ng: 135, sd: 2.3, k: 4 }, [{ k: 'dev', value: (5 / 7.6 - 1) * 100, text: '-34%' }], 135, 'Em Canal, Telefone tem a menor média: 5 contra 7,6 (-34%).')]).ok);
+  ok('u-grupo-diferente-no-acaso', nvValidate([mk('gapz', { gm: 7.4, om: 7.6, ng: 12, sd: 2.3, k: 4 }, [{ k: 'dev', value: (7.4 / 7.6 - 1) * 100, text: '-3%' }], 12, 'Em Canal, X tem a menor média: 7,4 contra 7,6 (-3%).')]).errors.some(e => e.code === 'insignificant'));
+  ok('u-associacao-com-poucas-linhas', nvValidate([mk('assoc', { rho: 0.45, n: 30 }, [{ k: 'rho', value: 0.45, text: '0,45' }], 30, 'A e B variam juntos (Spearman 0,45).')]).errors.some(e => e.code === 'insignificant'));
   // ---- integração: achados reais ----
   const files = (new URLSearchParams(location.search).get('files') || 'vendas.csv,fluxo.csv,financeiro.xlsx,unidades.csv,canais.csv,pedidos.csv,lojas.csv,funil.csv,projetos.csv').split(',');
   const seenNew = new Set(), jobs = files.map(f => ['/dados-teste/' + f, f, null]).concat((new URLSearchParams(location.search).get('sheets') || 'Vendas,Casos CX,Funil,Resumo,Mapa').split(',').filter(x => x && !location.search.includes('nosheets')).map(sh => ['/dados-teste/datavix-planilha-ideal.xlsx', 'ideal:' + sh, sh]));

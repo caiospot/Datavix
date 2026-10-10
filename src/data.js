@@ -49,6 +49,12 @@ function bucketCount(minMs, maxMs, grain) {
   }
 }
 // prefere o período que um executivo espera: mês quando há de 12 a 120 meses
+// datas que só caem no dia 1 (jan/25, fev/25...): são meses, mesmo que poucos; semanas ou dias deixariam buracos e rótulos estranhos
+function monthStartsOnly(c) {
+  if (c._ms !== undefined) return c._ms; let ok = c.data && c.data.length > 0, seen = 0;
+  for (let i = 0; ok && i < c.data.length; i++) { const t = c.data[i]; if (Number.isNaN(t)) continue; seen++; if (t % 86400000 !== 0 || new Date(t).getUTCDate() !== 1) ok = false; }
+  return (c._ms = ok && seen > 0);
+}
 function pickGrain(minMs, maxMs) {
   const months = bucketCount(minMs, maxMs, 'month');
   if (months >= 12 && months <= MAX_POINTS_TIME) return 'month';
@@ -129,8 +135,9 @@ function suggestMappingBase(story, cols, opt = {}) {
     if (x >= 0) return { ...mc, kind: 'category', x, series: -1 };
     if (firstDate >= 0) return { ...mc, kind: 'time', x: firstDate, series: -1 };
   }
+  const aggY = y >= 0 && cols[y].agg === 'mean' ? 'mean' : 'sum'; // nota, percentual e duração se resumem pela média, não pela soma
   if ((story === 'time') && firstDate >= 0 && y >= 0) {
-    return { ...m, kind: 'time', x: firstDate, y, series: smallestDim(cols, 2, MAX_SERIES) };
+    return { ...m, agg: aggY, kind: 'time', x: firstDate, y, series: smallestDim(cols, 2, MAX_SERIES) };
   }
   if (story === 'relation') {
     const nums = cols.map((c, i) => i).filter(i => isMeasure(cols[i]));
@@ -142,7 +149,7 @@ function suggestMappingBase(story, cols, opt = {}) {
     }
   }
   if (story === 'distribution') {
-    if (!opt.hist && firstDate >= 0 && y >= 0) return { ...m, kind: 'time', x: firstDate, y, series: -1, calendar: true };
+    if (!opt.hist && firstDate >= 0 && y >= 0) return { ...m, agg: aggY, kind: 'time', x: firstDate, y, series: -1, calendar: true };
     const xi = bestMeasure(cols);
     if (xi >= 0) return { ...m, kind: 'hist', x: xi, y: -1, agg: 'count' };
   }
@@ -152,8 +159,8 @@ function suggestMappingBase(story, cols, opt = {}) {
   const fit = dims.filter(i => distinctOf(cols[i]) >= 2 && distinctOf(cols[i]) <= MAX_CATS).sort((a, b) => distinctOf(cols[b]) - distinctOf(cols[a]));
   const x = dimIdx >= 0 ? dimIdx : (fit[0] ?? dims[0] ?? -1);
   const series = story === 'composition' && x >= 0 ? smallestDim(cols, 2, MAX_SERIES, [x]) : -1;
-  if (x < 0 && firstDate >= 0 && y >= 0) return { ...m, kind: 'time', x: firstDate, y, series: -1 };
-  return { ...m, kind: 'category', x, y, series };
+  if (x < 0 && firstDate >= 0 && y >= 0) return { ...m, agg: aggY, kind: 'time', x: firstDate, y, series: -1 };
+  return { ...m, agg: aggY, kind: 'category', x, y, series };
 }
 
 /* ---------- organismo radial: período > entidade > registro ---------- */
@@ -282,7 +289,7 @@ function groupBy(ds, m, policy, opts) {
   const cols = ds.columns, n = ds.rowCount;
   const xc = cols[m.x], sc = m.series >= 0 ? cols[m.series] : null, yc = m.y >= 0 ? cols[m.y] : null;
   const isTime = m.kind === 'time';
-  const grain = isTime ? (m.grain === 'auto' ? pickGrain(xc.min, xc.max) : m.grain) : null;
+  const grain = isTime ? (m.grain === 'auto' ? (monthStartsOnly(xc) && bucketCount(xc.min, xc.max, 'month') >= 2 && bucketCount(xc.min, xc.max, 'month') <= MAX_POINTS_TIME ? 'month' : pickGrain(xc.min, xc.max)) : m.grain) : null;
   const cells = new Map();     // key -> Agg
   const xKeys = new Map();     // x key -> {label, order}
   const sKeys = new Map();     // s key -> label
@@ -574,41 +581,50 @@ function computeInsights(built, briefing, lang, T) {
   const isTime = built.xIsTime;
   const vals = tot.map(t => t.value);
   const sum = vals.reduce((a, b) => a + b, 0), mean = sum / vals.length;
+  // pico e vale só contam quando saem da variação normal dos períodos (com 8 ou mais períodos há como medir); em série plana o maior valor é só acaso
+  const sdV = vals.length >= 8 ? Math.sqrt(vals.reduce((a, b) => a + (b - mean) * (b - mean), 0) / (vals.length - 1)) : null;
 
   // pico
   const iMax = vals.indexOf(Math.max(...vals));
-  if (tot[iMax].value > 0 && mean > 0) {
+  if (tot[iMax].value > 0 && mean > 0 && (sdV === null || (sdV > 0 && (tot[iMax].value - mean) / sdV >= NV_CFG.peakZ))) {
     const d = (tot[iMax].value / mean - 1) * 100;
-    out.peak = { text: T('ins_peak', tot[iMax].label, f(tot[iMax].value), fmtPct(d, lang)), calc: { title: T('calc_peak'), formula: T('f_peak'), rows: [{ k: tot[iMax].label, v: f(tot[iMax].value), n: tot[iMax].rows }, { k: T('mean'), v: f(mean) }], base: base(isTime ? built.names.x : '') }, ev: nvEv('peak', { top: tot[iMax].value, sum, n: vals.length }, [{ k: 'dev', value: d, text: fmtPct(d, lang) }, { k: 'top', value: tot[iMax].value, text: f(tot[iMax].value) }], { n: vals.length, refs: [tot[iMax].label] }) };
+    out.peak = { text: T('ins_peak', tot[iMax].label, f(tot[iMax].value), fmtPct(d, lang)), calc: { title: T('calc_peak'), formula: T('f_peak'), rows: [{ k: tot[iMax].label, v: f(tot[iMax].value), n: tot[iMax].rows }, { k: T('mean'), v: f(mean) }], base: base(isTime ? built.names.x : '') }, ev: nvEv('peak', { top: tot[iMax].value, sum, n: vals.length, sd: sdV }, [{ k: 'dev', value: d, text: fmtPct(d, lang) }, { k: 'top', value: tot[iMax].value, text: f(tot[iMax].value) }], { n: vals.length, refs: [tot[iMax].label] }) };
   }
   // vale
   const iMin = vals.indexOf(Math.min(...vals));
-  if (iMin !== iMax && mean > 0) {
+  if (iMin !== iMax && mean > 0 && (sdV === null || (sdV > 0 && (mean - tot[iMin].value) / sdV >= NV_CFG.peakZ))) {
     const d = (tot[iMin].value / mean - 1) * 100;
-    out.low = { text: T('ins_low', tot[iMin].label, f(tot[iMin].value), fmtPct(d, lang)), calc: { title: T('calc_low'), formula: T('f_peak'), rows: [{ k: tot[iMin].label, v: f(tot[iMin].value), n: tot[iMin].rows }, { k: T('mean'), v: f(mean) }], base: base() }, ev: nvEv('low', { top: tot[iMin].value, sum, n: vals.length }, [{ k: 'dev', value: d, text: fmtPct(d, lang) }, { k: 'top', value: tot[iMin].value, text: f(tot[iMin].value) }], { n: vals.length, refs: [tot[iMin].label] }) };
+    out.low = { text: T('ins_low', tot[iMin].label, f(tot[iMin].value), fmtPct(d, lang)), calc: { title: T('calc_low'), formula: T('f_peak'), rows: [{ k: tot[iMin].label, v: f(tot[iMin].value), n: tot[iMin].rows }, { k: T('mean'), v: f(mean) }], base: base() }, ev: nvEv('low', { top: tot[iMin].value, sum, n: vals.length, sd: sdV }, [{ k: 'dev', value: d, text: fmtPct(d, lang) }, { k: 'top', value: tot[iMin].value, text: f(tot[iMin].value) }], { n: vals.length, refs: [tot[iMin].label] }) };
   }
   // variações período a período (só faz sentido no tempo)
   if (isTime) {
-    let best = null, worst = null;
+    let best = null, worst = null; const chs = [];
     for (let i = 1; i < tot.length; i++) {
       const p = tot[i - 1].value, c = tot[i].value;
       if (p <= 0) continue;
-      const ch = (c / p - 1) * 100;
+      const ch = (c / p - 1) * 100; chs.push(ch);
       if (!best || ch > best.ch) best = { ch, i };
       if (!worst || ch < worst.ch) worst = { ch, i };
     }
-    const mk = (b, key, ttl) => ({ text: T(key, tot[b.i].label, fmtPct(b.ch, lang), tot[b.i - 1].label), calc: { title: T(ttl), formula: T('f_var'), rows: [{ k: tot[b.i - 1].label, v: f(tot[b.i - 1].value), n: tot[b.i - 1].rows }, { k: tot[b.i].label, v: f(tot[b.i].value), n: tot[b.i].rows }, { k: T('variation'), v: fmtPct(b.ch, lang) }], base: base(built.names.x) }, ev: nvEv('jump', { prev: tot[b.i - 1].value, cur: tot[b.i].value }, [{ k: 'ch', value: b.ch, text: fmtPct(b.ch, lang) }], { n: tot.length, refs: [tot[b.i - 1].label, tot[b.i].label] }) /* o salto é o maior entre todos os períodos analisados */ });
+    // o maior salto (ou queda) só conta quando se destaca das demais variações período a período (7 ou mais variações)
+    const mC = chs.length ? chs.reduce((a, b) => a + b, 0) / chs.length : 0, sC = chs.length >= 7 ? Math.sqrt(chs.reduce((a, b) => a + (b - mC) * (b - mC), 0) / (chs.length - 1)) : null;
+    if (sC !== null && !(sC > 0 && (best.ch - mC) / sC >= NV_CFG.peakZ)) best = null;
+    if (sC !== null && worst && !(sC > 0 && (mC - worst.ch) / sC >= NV_CFG.peakZ)) worst = null;
+    const mk = (b, key, ttl) => ({ text: T(key, tot[b.i].label, fmtPct(b.ch, lang), tot[b.i - 1].label), calc: { title: T(ttl), formula: T('f_var'), rows: [{ k: tot[b.i - 1].label, v: f(tot[b.i - 1].value), n: tot[b.i - 1].rows }, { k: tot[b.i].label, v: f(tot[b.i].value), n: tot[b.i].rows }, { k: T('variation'), v: fmtPct(b.ch, lang) }], base: base(built.names.x) }, ev: nvEv('jump', { prev: tot[b.i - 1].value, cur: tot[b.i].value, mc: mC, sc: sC }, [{ k: 'ch', value: b.ch, text: fmtPct(b.ch, lang) }], { n: tot.length, refs: [tot[b.i - 1].label, tot[b.i].label] }) /* o salto é o maior entre todos os períodos analisados */ });
     if (best && best.ch > 5) out.jump_up = mk(best, 'ins_jump', 'calc_jump');
     if (worst && worst.ch < -5) out.drop = mk(worst, 'ins_drop', 'calc_drop');
     // tendência: janela inicial x janela final (até 12 períodos), para não confundir sazonalidade com crescimento
     const w = Math.min(12, Math.floor(tot.length / 2));
     const head = tot.slice(0, w), tail = tot.slice(-w);
     const sh = head.reduce((a, t) => a + t.value, 0), st = tail.reduce((a, t) => a + t.value, 0);
-    if (w >= 2 && sh > 0) {
+    // tendência: teste de Mann-Kendall sobre todos os períodos (quantos pares sobem menos quantos descem); com menos de 6 períodos não há como testar
+    const nn = vals.length; let Sx = 0; for (let i = 0; i < nn; i++) for (let j = i + 1; j < nn; j++) Sx += Math.sign(vals[j] - vals[i]);
+    const zT = nn >= 6 ? (Sx - Math.sign(Sx)) / Math.sqrt(nn * (nn - 1) * (2 * nn + 5) / 18) : null;
+    if (w >= 2 && sh > 0 && zT !== null && Math.abs(zT) >= NV_CFG.trendZ) {
       const ch = (st / sh - 1) * 100;
       const l1 = `${head[0].label} → ${head[w - 1].label}`, l2 = `${tail[0].label} → ${tail[w - 1].label}`;
       const calc = { formula: T('f_trend', w), rows: [{ k: l1, v: f(sh), n: head.reduce((a, t) => a + t.rows, 0) }, { k: l2, v: f(st), n: tail.reduce((a, t) => a + t.rows, 0) }, { k: T('variation'), v: fmtPct(ch, lang) }], base: base(built.names.x) };
-      const evT = () => nvEv('trend', { head: sh, tail: st, w }, [{ k: 'ch', value: ch, text: fmtPct(ch, lang) }], { n: tot.length, refs: [l1, l2] });
+      const evT = () => nvEv('trend', { head: sh, tail: st, w, S: Sx, nn }, [{ k: 'ch', value: ch, text: fmtPct(ch, lang) }], { n: tot.length, refs: [l1, l2] }); // values: janelas, médias e variâncias (z recalculado pelo validador)
       if (ch >= 5) out.trend_up = { text: T('ins_trend_up', fmtPct(ch, lang), l1, l2), calc: { title: T('calc_trend'), ...calc }, ev: evT() };
       if (ch <= -5) out.trend_down = { text: T('ins_trend_down', fmtPct(ch, lang), l1, l2), calc: { title: T('calc_trend'), ...calc }, ev: evT() };
     }

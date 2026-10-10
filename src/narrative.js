@@ -5,7 +5,10 @@
 
 // pesos e limites centralizados (hipóteses de produto, para calibrar depois com dados reais)
 const NV_CFG = {
-  minSample: { usage: 1, missing: 1, gappp: 2, dist: 30, outrows: 30, assoc: 30, ratio: 2, dropc: 2, peak: 2, low: 2, jump: 2, trend: 4, dominant: 2, outlier: 8, lead: 3, conc: 6, contrast: 3, corr: 3, contrib: 4, shift: 4, overview: 1 },
+  minSample: { gapz: 10, usage: 1, missing: 1, gappp: 2, dist: 30, outrows: 30, assoc: 30, ratio: 2, dropc: 2, peak: 2, low: 2, jump: 2, trend: 4, dominant: 2, outlier: 8, lead: 3, conc: 6, contrast: 3, corr: 3, contrib: 4, shift: 4, overview: 1 },
+  peakZ: 2, // pico, vale, maior salto e maior queda: pelo menos 2 desvios-padrão da variação normal (quando há períodos para medir)
+  trendZ: 2, // tendência só com Mann-Kendall z >= 2 sobre os períodos
+  gapzMin: 3, gapzDevMin: 20, derivedCv: 0.08, // grupo que difere da média geral: z e desvio mínimos; relação "mecânica" quando a razão entre as colunas varia menos que isso
   causal: /\b(causou|causa[rm]?|causado|por causa|devido a|provoc\w+|gerou|ocasion\w+|culpa|caused?|causes|because|due to|leads? to|led to|results? in|triggered)\b/i,
   accuse: /\b(erro|fraude|fraudulent\w*|falha|defeito|mentira|errors?|fraud|mistakes?|faulty|wrong)\b/i,
 };
@@ -17,7 +20,7 @@ const NV_CALC = {
   peak: v => ({ dev: (v.top / (v.sum / v.n) - 1) * 100, top: v.top }),
   low: v => ({ dev: (v.top / (v.sum / v.n) - 1) * 100, top: v.top }),
   jump: v => ({ ch: (v.cur / v.prev - 1) * 100 }),
-  trend: v => ({ ch: (v.tail / v.head - 1) * 100 }),
+  trend: v => ({ ch: (v.tail / v.head - 1) * 100, z: v.S != null && v.nn >= 6 ? (v.S - Math.sign(v.S)) / Math.sqrt(v.nn * (v.nn - 1) * (2 * v.nn + 5) / 18) : null }),
   dominant: v => ({ share: v.top / v.total * 100 }),
   outlier: v => { const iqr = v.q3 - v.q1; return { hi: v.q3 + 1.5 * iqr, lo: v.q1 - 1.5 * iqr, out: v.value > v.q3 + 1.5 * iqr || v.value < v.q1 - 1.5 * iqr }; },
   lead: v => ({ share: v.top / v.total * 100, top: v.top }),
@@ -33,11 +36,12 @@ const NV_CALC = {
   dist: v => ({ gap: (v.mean / v.median - 1) * 100 }),
   outrows: v => ({ p: v.count / v.n * 100, count: v.count }),
   assoc: v => ({ rho: v.rho }),
+  gapz: v => ({ dev: (v.gm / v.om - 1) * 100, z: (v.gm - v.om) / (v.sd / Math.sqrt(v.ng)) }),
   usage: v => ({ p: v.used / v.total * 100 }),
   missing: v => ({ p: v.miss / (v.n + v.miss) * 100 }),
 };
 // o denominador de cada cálculo precisa existir e ser positivo (na contribuição, a variação total pode ser queda: vale o módulo)
-const NV_DEN = { usage: v => v.total, missing: v => v.n + v.miss, gappp: v => Math.min(v.v1, v.v0), ratio: v => v.den, dropc: v => v.cur, dist: v => v.median, outrows: v => v.n, assoc: v => v.n, peak: v => v.sum / v.n, low: v => v.sum / v.n, jump: v => v.prev, trend: v => v.head, dominant: v => v.total, lead: v => v.total, conc: v => v.total, contrast: v => v.low, contrib: v => Math.abs(v.dTotal), shift: v => Math.min(v.t0, v.t1) };
+const NV_DEN = { gapz: v => Math.min(v.om, v.sd), usage: v => v.total, missing: v => v.n + v.miss, gappp: v => Math.min(v.v1, v.v0), ratio: v => v.den, dropc: v => v.cur, dist: v => v.median, outrows: v => v.n, assoc: v => v.n, peak: v => v.sum / v.n, low: v => v.sum / v.n, jump: v => v.prev, trend: v => v.head, dominant: v => v.total, lead: v => v.total, conc: v => v.total, contrast: v => v.low, contrib: v => Math.abs(v.dTotal), shift: v => Math.min(v.t0, v.t1) };
 
 /* ---- construtor ---- */
 // kind: chave de NV_CALC; values: entradas brutas; shown: [{ k, value, text }] com o número calculado pelo código e o texto exibido; refs: de onde vieram (rótulos, períodos)
@@ -68,6 +72,11 @@ function nvCheckItem(item, lang) {
   }
   if (!NV_CAUSAL_OK.has(ev.kind) && !(ev.allow || []).includes('causal') && NV_CFG.causal.test(text)) bad('causal', 'afirmação com linguagem de causa');
   if (['corr', 'assoc', 'outlier', 'outrows', 'dist'].includes(ev.kind) && NV_CFG.accuse.test(text)) bad('accusation', 'anomalia ou associação descrita como erro ou fraude');
+  if (ev.kind === 'trend' && v.S != null) { const z = NV_CALC.trend(v).z; if (z === null || Math.abs(z) < NV_CFG.trendZ - 1e-9) bad('insignificant', 'tendência dentro da variação normal dos períodos'); }
+  if ((ev.kind === 'peak' || ev.kind === 'low') && v.sd != null && v.n >= 8) { const z = ((ev.kind === 'peak' ? 1 : -1) * (v.top - v.sum / v.n)) / v.sd; if (!(z >= NV_CFG.peakZ - 1e-9)) bad('insignificant', 'valor extremo dentro da variação normal dos períodos'); }
+  if (ev.kind === 'jump' && v.sc != null) { const ch = (v.cur / v.prev - 1) * 100, z = (ch - v.mc) / v.sc; if (!(Math.abs(z) >= NV_CFG.peakZ - 1e-9)) bad('insignificant', 'variação dentro do que é normal entre períodos'); }
+  if (ev.kind === 'gapz') { const z = NV_CALC.gapz(v).z; if (!(Math.abs(z) >= nvZNeed(v.k || 1) - 1e-9)) bad('insignificant', 'diferença do grupo dentro da variação normal'); }
+  if (ev.kind === 'assoc' && v.n >= 2 && Math.abs(v.rho) * Math.sqrt(v.n - 1) < NV_ROWS.rhoZ - 1e-9) bad('insignificant', 'associação dentro do que o acaso gera com tão poucas linhas');
   if (ev.kind === 'assoc' && Math.abs(v.rho) > 1) bad('out-of-range', 'correlação fora de -1 a 1');
   if (ev.kind === 'outrows' && !(v.count > 0 && v.count <= v.n)) bad('bad-count', 'contagem de atípicos inválida');
   if (ev.kind === 'outlier' && ev.sampleSize != null && ev.sampleSize < 12) warns.push({ id, code: 'exploratory', msg: 'poucas observações para a referência do IQR' });
@@ -103,7 +112,7 @@ function nvGuard(items, lang) {
 
 /* ---- famílias que dependem dos valores linha a linha: distribuição, atípicos nas linhas e associação ---- */
 // calculado uma vez na montagem dos dados (buildSeriesBase) e guardado em built.rowStats; os achados saem daí, sem reler a planilha
-const NV_ROWS = { min: 30, assocCols: 8, assocCap: 20000, gapMin: 25, outMinPct: 1, rhoMin: 0.5 };
+const NV_ROWS = { min: 30, assocCols: 8, assocCap: 20000, gapMin: 15, dimMax: 5, dimCats: 300, dimLeadMin: 40, outMinPct: 1, rhoMin: 0.4, rhoZ: 3.5 }; // associação: |ρ| mínimo e |ρ|·√(n−1) mínimo (o acaso em poucas linhas gera ρ alto)
 function nvRank(a) { // postos com média nos empates
   const idx = a.map((v, i) => i).sort((x, y) => a[x] - a[y]), r = new Array(a.length);
   for (let i = 0; i < idx.length;) { let j = i; while (j + 1 < idx.length && a[idx[j + 1]] === a[idx[i]]) j++; const m = (i + j) / 2 + 1; for (let k = i; k <= j; k++) r[idx[k]] = m; i = j + 1; }
@@ -130,9 +139,20 @@ function nvRowStats(ds, yc) {
   const step = Math.max(1, Math.ceil(n / NV_ROWS.assocCap));
   for (const [c] of others) {
     const xs = [], ys = []; for (let i = 0; i < n; i += step) { const a = yc.data[i], b = c.data[i]; if (Number.isFinite(a) && Number.isFinite(b)) { xs.push(a); ys.push(b); } }
-    if (xs.length < NV_ROWS.min) continue; const rho = nvSpearman(xs, ys); if (rho !== null) best.push({ name: c.name, unit: c.unit || null, rho, n: xs.length });
+    if (xs.length < NV_ROWS.min) continue;
+    const rr = []; for (let i = 0; i < xs.length; i++) if (xs[i] !== 0) rr.push(ys[i] / xs[i]); const mr = rr.reduce((a, b) => a + b, 0) / (rr.length || 1), cv = rr.length > 10 && mr !== 0 ? Math.sqrt(rr.reduce((a, b) => a + (b - mr) * (b - mr), 0) / rr.length) / Math.abs(mr) : 1;
+    if (cv < NV_CFG.derivedCv) { (out.derived = out.derived || []).push(c.name); continue; } // uma coluna é praticamente um múltiplo da outra (executado ≈ 90% do orçado): relação mecânica, não é achado
+    const rho = nvSpearman(xs, ys); if (rho !== null) best.push({ name: c.name, unit: c.unit || null, rho, n: xs.length });
   }
   best.sort((a, b) => Math.abs(b.rho) - Math.abs(a.rho)); if (best[0]) out.assoc = best[0];
+  // outras dimensões da planilha (o gráfico só mostra uma): contagem e soma por grupo
+  out.sd = Math.sqrt(vals.reduce((a, b) => a + (b - mean) * (b - mean), 0) / (vals.length - 1));
+  const dims = ds.columns.filter(c => c.role === 'category' && c.use !== false && !c.hide && c.codes && c.dict && c.dict.length >= 2 && c.dict.length <= NV_ROWS.dimCats).sort((a, b) => a.dict.length - b.dict.length).slice(0, NV_ROWS.dimMax); out.dims = [];
+  for (const c of dims) {
+    const g = c.dict.map(() => ({ n: 0, sum: 0 })); let used = 0;
+    for (let i = 0; i < n; i++) { const v = yc.data[i], k = c.codes[i]; if (k < 0 || !Number.isFinite(v)) continue; g[k].n++; g[k].sum += v; used++; }
+    const list = g.map((x, k) => ({ label: c.dict[k], n: x.n, sum: x.sum })).filter(x => x.n > 0); if (list.length >= 2 && used >= NV_ROWS.min) out.dims.push({ name: c.name, groups: list, used });
+  }
   return out;
 }
 function nvRowInsights(built, lang, T) {
@@ -153,16 +173,34 @@ function nvRowInsights(built, lang, T) {
       ev: nvEv('outrows', { count: k, n: rs.n, q1: rs.q1, q3: rs.q3 }, [{ k: 'p', value: p, text: pt }, { k: 'count', value: k, text: fmtInt(k, lang) }], { n: rs.n, method: 'iqr', refs: [nm] }) });
   }
   const a = rs.assoc;
-  if (a && Math.abs(a.rho) >= NV_ROWS.rhoMin && a.n >= NV_ROWS.min) {
+  if (a && Math.abs(a.rho) >= NV_ROWS.rhoMin && a.n >= NV_ROWS.min && Math.abs(a.rho) * Math.sqrt(a.n - 1) >= NV_ROWS.rhoZ) {
     const rt = a.rho.toFixed(2).replace('.', lang === 'pt' ? ',' : '.');
     out.push({ id: 'assoc', text: T(a.rho > 0 ? 'ins_assoc_p' : 'ins_assoc_n', nm, a.name, rt), calc: { title: T('calc_assoc'), formula: T('f_assoc'), rows: [{ k: 'ρ (Spearman)', v: rt, n: a.n }, { k: T('rs_pairs'), v: fmtInt(a.n, lang) }], base: `${T('rs_base')} · ${nm} × ${a.name}` },
       ev: nvEv('assoc', { rho: a.rho, n: a.n }, [{ k: 'rho', value: a.rho, text: rt }], { n: a.n, method: 'spearman', refs: [nm, a.name] }) });
+  }
+  // outras dimensões: quem concentra a soma e quem se afasta da média geral por registro
+  const aggSum = built.aggKind === 'sum', om = rs.mean, sdAll = rs.sd;
+  for (const d of rs.dims || []) {
+    const tot = d.groups.reduce((a, g) => a + g.sum, 0), srt = d.groups.slice().sort((a, b) => b.sum - a.sum), top = srt[0];
+    if (aggSum && d.groups.length >= 3 && tot > 0 && d.groups.every(g => g.sum >= 0) && top.sum / tot * 100 >= NV_ROWS.dimLeadMin) {
+      const sh = csPct(top.sum / tot * 100, lang);
+      out.push({ id: 'dim_lead:' + d.name, act: 'dim_lead', text: T('ins_dimlead', d.name, top.label, f(top.sum), sh), calc: { title: T('calc_dimlead'), formula: T('f_dimlead'), rows: [{ k: top.label, v: f(top.sum), n: top.n }, { k: T('total'), v: f(tot) }, { k: T('share'), v: sh }], base: `${T('rs_base')} · ${nm} · ${d.name}` },
+        ev: nvEv('lead', { top: top.sum, total: tot }, [{ k: 'share', value: top.sum / tot * 100, text: sh }, { k: 'top', value: top.sum, text: f(top.sum) }], { n: d.groups.length, refs: [top.label, d.name] }) });
+    }
+    if (om > 0 && sdAll > 0) {
+      let best = null; for (const g of d.groups) { if (g.n < 10) continue; const gm = g.sum / g.n, z = (gm - om) / (sdAll / Math.sqrt(g.n)), dev = (gm / om - 1) * 100; if (Math.abs(z) >= nvZNeed(d.groups.length) && Math.abs(dev) >= NV_CFG.gapzDevMin && (!best || Math.abs(z) > Math.abs(best.z))) best = { g, gm, z, dev }; }
+      if (best) { const lo = best.dev < 0, dt = fmtPct(best.dev, lang);
+        out.push({ id: 'dim_gap:' + d.name, act: 'dim_gap', text: T(lo ? 'ins_dimgap_lo' : 'ins_dimgap_hi', d.name, best.g.label, nm, f(best.gm), f(om), dt), calc: { title: T('calc_dimgap'), formula: T('f_dimgap'), rows: [{ k: best.g.label, v: f(best.gm), n: best.g.n }, { k: T('rs_avg_all'), v: f(om), n: rs.n }, { k: T('rs_gap'), v: dt }], base: `${T('rs_base')} · ${nm} · ${d.name}` },
+          ev: nvEv('gapz', { gm: best.gm, om, ng: best.g.n, sd: sdAll, k: d.groups.length }, [{ k: 'dev', value: best.dev, text: dt }], { n: best.g.n, method: 'z', refs: [best.g.label, d.name] }) }); }
+    }
   }
   return out;
 }
 
 
 /* ---- pontuação, deduplicação, relações e seleção ---- */
+// z mínimo para um grupo se destacar: sobe com o número de grupos comparados (mais comparações, mais chance de acaso)
+const nvZNeed = k => NV_CFG.gapzMin + 0.8 * Math.log10(Math.max(1, k));
 // pesos e limites são hipóteses de produto (centralizados para calibrar com dados reais), não medidas científicas de importância
 Object.assign(NV_CFG, {
   w: { relevance: 0.30, magnitude: 0.25, confidence: 0.30, clarity: 0.15 },
@@ -171,7 +209,7 @@ Object.assign(NV_CFG, {
   aud: { board: { lead: 8, dominant: 8, conc: 8, trend: 8, jump: 6 }, clevel: { lead: 8, dominant: 8, conc: 8, trend: 8, jump: 6 }, director: {}, team: { contrast: 6, gappp: 6, ratio: 4, dist: 6, outrows: 6 }, client: { lead: 4, trend: 6 } },
 });
 // família do fenômeno: o que "diz a mesma coisa" cai na mesma classe
-const NV_CLASS = { lead: 'top', dominant: 'top', peak: 'top', low: 'bottom', contrast: 'spread', conc: 'conc', jump: 'change', trend: 'trend', outlier: 'atypical', corr: 'assoc', assoc: 'assoc', contrib: 'contrib', shift: 'shift', dist: 'dist', outrows: 'atypical-rows', ratio: 'ratio', dropc: 'drop', gappp: 'gap', overview: 'overview' };
+const NV_CLASS = { lead: 'top', dominant: 'top', peak: 'top', low: 'bottom', contrast: 'spread', conc: 'conc', jump: 'change', trend: 'trend', outlier: 'atypical', corr: 'assoc', assoc: 'assoc', contrib: 'contrib', shift: 'shift', dist: 'dist', gapz: 'dimgap', outrows: 'atypical-rows', ratio: 'ratio', dropc: 'drop', gappp: 'gap', overview: 'overview' };
 const NV_ROWKINDS = new Set(['dist', 'outrows', 'assoc', 'corr']);
 const nvClamp = (x, lo = 0, hi = 100) => Math.max(lo, Math.min(hi, x));
 // magnitude: medida própria de cada tipo, sempre de 0 a 100 (não compara correlação com variação percentual como se fossem a mesma unidade)
@@ -187,6 +225,7 @@ function nvMagnitude(ev) {
     case 'corr': case 'assoc': return { m: 'rho', x: Math.abs(calc.rho), v: nvClamp(Math.abs(calc.rho) * 100) };
     case 'contrib': return { m: 'share', x: Math.abs(calc.p), v: nvClamp(Math.abs(calc.p)) };
     case 'shift': return { m: 'pp', x: Math.abs(calc.d), v: nvClamp(Math.abs(calc.d) * 8) };
+    case 'gapz': return { m: 'dev%', x: Math.abs(calc.dev), v: nvClamp(Math.abs(calc.dev) * 1.2) };
     case 'dist': return { m: 'gap%', x: Math.abs(calc.gap), v: nvClamp(Math.abs(calc.gap) / 2) };
     case 'outrows': return { m: 'share', x: calc.p, v: nvClamp(calc.p * 5) };
     case 'ratio': return { m: 'share', x: calc.p, v: nvClamp(calc.p) };

@@ -409,3 +409,19 @@ Object.assign(I18N.en, {
     ins_assoc_n: (a, b, r) => `${a} and ${b} move in opposite directions (Spearman correlation ${r}): rows with higher ${a} tend to have lower ${b}.`,
     calc_assoc: 'Association between two columns', f_assoc: 'Spearman rank correlation over the rows that have both values. It measures whether they vary together; it does not mean one causes the other.',
 });
+
+/* outras dimensões da planilha no motor de história */
+Object.assign(I18N.pt, {
+    rs_avg_all: 'Média geral por registro', calc_dimlead: 'Maior participação em outra coluna', f_dimlead: 'Participação = soma do grupo ÷ soma de todos os grupos, em outra coluna da planilha. Só com 3 ou mais grupos e valores não negativos.',
+    ins_dimlead: (d, l, v, p) => `Em ${d}, ${l} concentra ${p} do total (${v}).`,
+    calc_dimgap: 'Grupo contra a média geral', f_dimgap: 'Média por registro do grupo contra a média geral. Só entra quando a diferença passa de 20% e de 3 erros-padrão, com pelo menos 10 registros no grupo.',
+    ins_dimgap_lo: (d, l, m, g, o, p) => `Em ${d}, ${l} tem a menor média de ${m} por registro: ${g} contra ${o} no geral (${p}).`,
+    ins_dimgap_hi: (d, l, m, g, o, p) => `Em ${d}, ${l} tem a maior média de ${m} por registro: ${g} contra ${o} no geral (${p}).`,
+});
+Object.assign(I18N.en, {
+    rs_avg_all: 'Overall average per record', calc_dimlead: 'Largest share in another column', f_dimlead: 'Share = group sum ÷ sum of all groups, in another column of the spreadsheet. Only with 3 or more groups and non-negative values.',
+    ins_dimlead: (d, l, v, p) => `In ${d}, ${l} accounts for ${p} of the total (${v}).`,
+    calc_dimgap: 'Group against the overall average', f_dimgap: 'Group average per record against the overall average. Only when the gap exceeds 20% and 3 standard errors, with at least 10 records in the group.',
+    ins_dimgap_lo: (d, l, m, g, o, p) => `In ${d}, ${l} has the lowest average ${m} per record: ${g} vs ${o} overall (${p}).`,
+    ins_dimgap_hi: (d, l, m, g, o, p) => `In ${d}, ${l} has the highest average ${m} per record: ${g} vs ${o} overall (${p}).`,
+});

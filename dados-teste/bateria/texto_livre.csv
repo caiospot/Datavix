@@ -1,0 +1,601 @@
+Protocolo;Canal;Comentário;Resolvido
+200000;Site;atendimento demorado no pedido;SIM
+200001;App;prazo cumprido ontem;SIM
+200002;App;entrega atrasou ontem;SIM
+200003;Site;entrega atrasou ontem;NÃO
+200004;App;prazo cumprido no pedido;SIM
+200005;Site;entrega atrasou no pedido;NÃO
+200006;App;entrega atrasou ontem;SIM
+200007;Loja;entrega atrasou ontem;NÃO
+200008;Site;cobrança indevida de novo;NÃO
+200009;Loja;entrega atrasou ;SIM
+200010;Site;produto veio com defeito ;NÃO
+200011;Loja;atendimento demorado ontem;SIM
+200012;App;tudo certo de novo;NÃO
+200013;App;produto veio com defeito de novo;SIM
+200014;App;entrega atrasou ontem;SIM
+200015;Loja;prazo cumprido de novo;SIM
+200016;Loja;prazo cumprido ;NÃO
+200017;App;atendimento demorado no pedido;SIM
+200018;Site;tudo certo ontem;SIM
+200019;Site;entrega atrasou no pedido;NÃO
+200020;Site;entrega atrasou de novo;SIM
+200021;Loja;prazo cumprido ontem;SIM
+200022;Site;tudo certo de novo;SIM
+200023;Site;tudo certo no pedido;NÃO
+200024;Loja;prazo cumprido ;NÃO
+200025;Loja;entrega atrasou de novo;NÃO
+200026;App;tudo certo ;SIM
+200027;Loja;atendimento demorado ontem;SIM
+200028;Site;entrega atrasou no pedido;SIM
+200029;App;prazo cumprido no pedido;SIM
+200030;App;tudo certo no pedido;SIM
+200031;Site;entrega atrasou de novo;SIM
+200032;Site;atendimento demorado de novo;SIM
+200033;Site;cobrança indevida ontem;NÃO
+200034;Loja;atendimento demorado ontem;SIM
+200035;App;entrega atrasou ;NÃO
+200036;App;entrega atrasou de novo;SIM
+200037;Loja;produto veio com defeito ;NÃO
+200038;App;entrega atrasou ontem;SIM
+200039;Site;tudo certo ontem;SIM
+200040;Site;tudo certo ;NÃO
+200041;Site;prazo cumprido no pedido;SIM
+200042;Loja;prazo cumprido de novo;NÃO
+200043;App;entrega atrasou de novo;SIM
+200044;Site;cobrança indevida ontem;NÃO
+200045;App;entrega atrasou no pedido;NÃO
+200046;App;prazo cumprido ;NÃO
+200047;Loja;entrega atrasou ;NÃO
+200048;Loja;entrega atrasou ontem;SIM
+200049;Site;atendimento demorado de novo;NÃO
+200050;App;entrega atrasou no pedido;SIM
+200051;App;entrega atrasou ;NÃO
+200052;App;entrega atrasou no pedido;NÃO
+200053;App;atendimento demorado de novo;NÃO
+200054;Loja;entrega atrasou no pedido;SIM
+200055;Loja;atendimento demorado ontem;NÃO
+200056;App;cobrança indevida ;NÃO
+200057;App;entrega atrasou ;NÃO
+200058;Loja;prazo cumprido de novo;SIM
+200059;App;atendimento demorado ontem;NÃO
+200060;App;prazo cumprido ontem;SIM
+200061;Loja;prazo cumprido ;NÃO
+200062;Site;tudo certo ontem;SIM
+200063;App;atendimento demorado ;SIM
+200064;Site;atendimento demorado ontem;NÃO
+200065;Site;entrega atrasou no pedido;NÃO
+200066;Loja;cobrança indevida ;SIM
+200067;Loja;tudo certo no pedido;SIM
+200068;Loja;entrega atrasou ;SIM
+200069;Loja;entrega atrasou no pedido;SIM
+200070;Loja;prazo cumprido no pedido;NÃO
+200071;Loja;entrega atrasou de novo;SIM
+200072;Site;entrega atrasou ontem;NÃO
+200073;Site;tudo certo ;NÃO
+200074;Loja;produto veio com defeito ;NÃO
+200075;Loja;prazo cumprido ontem;NÃO
+200076;App;entrega atrasou ;NÃO
+200077;Loja;atendimento demorado ;SIM
+200078;App;tudo certo ontem;SIM
+200079;Loja;produto veio com defeito ontem;NÃO
+200080;App;entrega atrasou de novo;SIM
+200081;App;cobrança indevida no pedido;SIM
+200082;Site;prazo cumprido ;NÃO
+200083;App;prazo cumprido ontem;NÃO
+200084;Loja;prazo cumprido de novo;NÃO
+200085;Loja;entrega atrasou ;SIM
+200086;Site;cobrança indevida de novo;SIM
+200087;Site;prazo cumprido ;NÃO
+200088;App;entrega atrasou no pedido;NÃO
+200089;Loja;prazo cumprido ontem;NÃO
+200090;Loja;prazo cumprido no pedido;NÃO
+200091;Site;entrega atrasou ontem;SIM
+200092;Loja;produto veio com defeito ;SIM
+200093;Site;entrega atrasou de novo;SIM
+200094;Loja;produto veio com defeito ontem;SIM
+200095;Loja;entrega atrasou no pedido;NÃO
+200096;Loja;produto veio com defeito no pedido;NÃO
+200097;App;atendimento demorado ;SIM
+200098;Site;tudo certo ontem;SIM
+200099;App;prazo cumprido ;NÃO
+200100;Site;entrega atrasou no pedido;SIM
+200101;Loja;tudo certo de novo;NÃO
+200102;Loja;cobrança indevida de novo;NÃO
+200103;Loja;atendimento demorado de novo;NÃO
+200104;Loja;prazo cumprido ontem;SIM
+200105;Site;entrega atrasou ontem;NÃO
+200106;Site;prazo cumprido de novo;SIM
+200107;App;entrega atrasou ;SIM
+200108;Site;entrega atrasou ontem;SIM
+200109;Site;prazo cumprido ;NÃO
+200110;Site;atendimento demorado de novo;SIM
+200111;Site;prazo cumprido de novo;NÃO
+200112;Site;entrega atrasou ;NÃO
+200113;Site;tudo certo ;NÃO
+200114;Site;produto veio com defeito ;NÃO
+200115;Site;entrega atrasou ;NÃO
+200116;Loja;entrega atrasou ;NÃO
+200117;Site;entrega atrasou ontem;NÃO
+200118;App;produto veio com defeito ontem;SIM
+200119;Site;produto veio com defeito ;SIM
+200120;Site;atendimento demorado de novo;SIM
+200121;Loja;entrega atrasou de novo;NÃO
+200122;Loja;produto veio com defeito ;NÃO
+200123;Site;tudo certo de novo;SIM
+200124;Loja;cobrança indevida ;SIM
+200125;App;cobrança indevida ontem;SIM
+200126;Site;produto veio com defeito de novo;NÃO
+200127;Site;entrega atrasou no pedido;NÃO
+200128;App;entrega atrasou ontem;SIM
+200129;Site;prazo cumprido de novo;NÃO
+200130;Site;prazo cumprido ;NÃO
+200131;App;entrega atrasou ontem;SIM
+200132;Site;prazo cumprido de novo;SIM
+200133;Loja;entrega atrasou ontem;SIM
+200134;App;produto veio com defeito ;SIM
+200135;Loja;entrega atrasou no pedido;SIM
+200136;Site;prazo cumprido ;SIM
+200137;Loja;tudo certo no pedido;SIM
+200138;Site;tudo certo de novo;NÃO
+200139;Loja;atendimento demorado ;NÃO
+200140;App;atendimento demorado ;SIM
+200141;Site;prazo cumprido no pedido;NÃO
+200142;Loja;entrega atrasou de novo;SIM
+200143;Site;entrega atrasou de novo;SIM
+200144;Site;prazo cumprido ontem;NÃO
+200145;App;produto veio com defeito ontem;SIM
+200146;Loja;atendimento demorado ;SIM
+200147;Site;entrega atrasou ;SIM
+200148;Loja;atendimento demorado de novo;NÃO
+200149;Loja;produto veio com defeito ontem;SIM
+200150;App;cobrança indevida ;NÃO
+200151;App;produto veio com defeito ontem;SIM
+200152;Loja;tudo certo de novo;NÃO
+200153;Loja;entrega atrasou ;SIM
+200154;App;entrega atrasou ontem;SIM
+200155;Loja;tudo certo ;NÃO
+200156;App;atendimento demorado ontem;NÃO
+200157;Loja;tudo certo de novo;SIM
+200158;Loja;produto veio com defeito de novo;NÃO
+200159;Site;atendimento demorado ontem;SIM
+200160;Site;tudo certo ;SIM
+200161;Site;entrega atrasou ontem;SIM
+200162;Loja;cobrança indevida ontem;NÃO
+200163;App;atendimento demorado ;SIM
+200164;App;prazo cumprido de novo;NÃO
+200165;Site;produto veio com defeito ;SIM
+200166;Loja;atendimento demorado ;SIM
+200167;App;produto veio com defeito de novo;NÃO
+200168;Loja;entrega atrasou ontem;SIM
+200169;App;entrega atrasou no pedido;SIM
+200170;App;produto veio com defeito no pedido;SIM
+200171;App;cobrança indevida de novo;NÃO
+200172;Site;entrega atrasou ;SIM
+200173;App;produto veio com defeito no pedido;NÃO
+200174;Site;entrega atrasou ;SIM
+200175;Loja;tudo certo ontem;SIM
+200176;App;cobrança indevida no pedido;NÃO
+200177;Loja;entrega atrasou ;NÃO
+200178;App;prazo cumprido de novo;NÃO
+200179;App;atendimento demorado ;NÃO
+200180;Loja;entrega atrasou no pedido;SIM
+200181;Site;entrega atrasou no pedido;SIM
+200182;Site;atendimento demorado ontem;NÃO
+200183;Site;entrega atrasou no pedido;NÃO
+200184;Loja;cobrança indevida no pedido;NÃO
+200185;Loja;entrega atrasou ontem;SIM
+200186;Site;tudo certo ;SIM
+200187;Site;entrega atrasou de novo;NÃO
+200188;Loja;entrega atrasou no pedido;NÃO
+200189;App;produto veio com defeito ;NÃO
+200190;App;entrega atrasou de novo;SIM
+200191;App;cobrança indevida de novo;NÃO
+200192;App;produto veio com defeito ontem;NÃO
+200193;Loja;cobrança indevida de novo;SIM
+200194;Site;entrega atrasou ;NÃO
+200195;Site;prazo cumprido no pedido;SIM
+200196;Loja;atendimento demorado no pedido;NÃO
+200197;App;atendimento demorado de novo;SIM
+200198;Loja;entrega atrasou ontem;SIM
+200199;Loja;atendimento demorado de novo;NÃO
+200200;Site;tudo certo ;SIM
+200201;Site;prazo cumprido ;NÃO
+200202;Site;tudo certo ;NÃO
+200203;Site;tudo certo no pedido;NÃO
+200204;Site;atendimento demorado no pedido;NÃO
+200205;Loja;atendimento demorado ;SIM
+200206;Site;entrega atrasou no pedido;NÃO
+200207;Loja;atendimento demorado ;NÃO
+200208;App;entrega atrasou ontem;SIM
+200209;App;produto veio com defeito ;NÃO
+200210;Loja;produto veio com defeito de novo;SIM
+200211;App;tudo certo ;NÃO
+200212;Site;atendimento demorado ;SIM
+200213;Site;entrega atrasou ontem;SIM
+200214;Loja;atendimento demorado de novo;SIM
+200215;App;entrega atrasou ;NÃO
+200216;Site;entrega atrasou de novo;NÃO
+200217;Loja;entrega atrasou de novo;NÃO
+200218;Loja;produto veio com defeito no pedido;SIM
+200219;App;tudo certo de novo;SIM
+200220;Loja;entrega atrasou ;SIM
+200221;Loja;tudo certo no pedido;SIM
+200222;Site;atendimento demorado no pedido;NÃO
+200223;Site;prazo cumprido no pedido;SIM
+200224;App;tudo certo ontem;SIM
+200225;App;entrega atrasou de novo;SIM
+200226;Loja;produto veio com defeito ontem;SIM
+200227;App;entrega atrasou ontem;SIM
+200228;Site;produto veio com defeito ontem;NÃO
+200229;Site;prazo cumprido ontem;NÃO
+200230;Loja;prazo cumprido de novo;SIM
+200231;App;entrega atrasou ;SIM
+200232;App;atendimento demorado de novo;NÃO
+200233;App;tudo certo de novo;NÃO
+200234;Loja;entrega atrasou no pedido;SIM
+200235;Site;produto veio com defeito de novo;NÃO
+200236;App;prazo cumprido ontem;NÃO
+200237;Site;atendimento demorado ontem;SIM
+200238;App;entrega atrasou ;SIM
+200239;Loja;entrega atrasou ontem;NÃO
+200240;Loja;cobrança indevida ontem;NÃO
+200241;Loja;entrega atrasou ontem;SIM
+200242;Site;atendimento demorado ontem;SIM
+200243;Site;cobrança indevida de novo;NÃO
+200244;Loja;atendimento demorado ;SIM
+200245;Loja;entrega atrasou ;NÃO
+200246;Loja;atendimento demorado de novo;NÃO
+200247;App;atendimento demorado no pedido;SIM
+200248;App;atendimento demorado ;SIM
+200249;Site;prazo cumprido ;NÃO
+200250;Loja;entrega atrasou ;SIM
+200251;Site;atendimento demorado ;NÃO
+200252;Site;entrega atrasou ;SIM
+200253;Site;prazo cumprido no pedido;NÃO
+200254;App;entrega atrasou ;NÃO
+200255;App;atendimento demorado ontem;NÃO
+200256;App;prazo cumprido ;NÃO
+200257;App;produto veio com defeito de novo;SIM
+200258;Loja;cobrança indevida de novo;NÃO
+200259;Site;entrega atrasou ;NÃO
+200260;Site;cobrança indevida ontem;NÃO
+200261;Loja;produto veio com defeito no pedido;NÃO
+200262;Site;produto veio com defeito no pedido;SIM
+200263;Loja;entrega atrasou ;NÃO
+200264;Site;produto veio com defeito ontem;SIM
+200265;App;produto veio com defeito no pedido;NÃO
+200266;Loja;entrega atrasou ontem;SIM
+200267;App;cobrança indevida ;SIM
+200268;App;prazo cumprido ontem;NÃO
+200269;App;entrega atrasou no pedido;NÃO
+200270;Loja;cobrança indevida no pedido;NÃO
+200271;App;entrega atrasou de novo;NÃO
+200272;Site;prazo cumprido de novo;SIM
+200273;App;cobrança indevida ;NÃO
+200274;App;entrega atrasou ;NÃO
+200275;Site;entrega atrasou ;SIM
+200276;Loja;entrega atrasou de novo;SIM
+200277;Loja;prazo cumprido ontem;SIM
+200278;Site;entrega atrasou ontem;NÃO
+200279;Loja;prazo cumprido no pedido;NÃO
+200280;Loja;atendimento demorado ;SIM
+200281;Site;entrega atrasou ontem;SIM
+200282;Site;entrega atrasou de novo;NÃO
+200283;App;entrega atrasou ;SIM
+200284;Site;entrega atrasou ontem;NÃO
+200285;App;entrega atrasou de novo;SIM
+200286;App;atendimento demorado ;SIM
+200287;Loja;entrega atrasou ontem;SIM
+200288;Loja;entrega atrasou de novo;SIM
+200289;Loja;tudo certo ;NÃO
+200290;Site;produto veio com defeito de novo;NÃO
+200291;App;atendimento demorado no pedido;NÃO
+200292;App;entrega atrasou ;SIM
+200293;App;entrega atrasou ;NÃO
+200294;App;produto veio com defeito no pedido;NÃO
+200295;Site;atendimento demorado no pedido;SIM
+200296;App;atendimento demorado ontem;NÃO
+200297;Loja;entrega atrasou ;NÃO
+200298;App;produto veio com defeito de novo;NÃO
+200299;App;entrega atrasou ontem;SIM
+200300;Site;entrega atrasou ontem;NÃO
+200301;Loja;prazo cumprido ontem;NÃO
+200302;Loja;atendimento demorado de novo;SIM
+200303;Loja;produto veio com defeito ontem;SIM
+200304;Site;prazo cumprido ;SIM
+200305;Site;tudo certo ontem;SIM
+200306;App;prazo cumprido no pedido;NÃO
+200307;App;entrega atrasou ;SIM
+200308;App;entrega atrasou ;NÃO
+200309;Loja;produto veio com defeito no pedido;NÃO
+200310;Site;entrega atrasou ;SIM
+200311;App;atendimento demorado ;SIM
+200312;App;entrega atrasou ;NÃO
+200313;Loja;atendimento demorado ontem;SIM
+200314;Loja;prazo cumprido ;NÃO
+200315;App;cobrança indevida no pedido;SIM
+200316;Loja;produto veio com defeito ontem;NÃO
+200317;Site;entrega atrasou ontem;SIM
+200318;App;tudo certo ;NÃO
+200319;App;tudo certo ontem;NÃO
+200320;Site;tudo certo ;NÃO
+200321;Loja;prazo cumprido no pedido;SIM
+200322;Site;atendimento demorado ontem;NÃO
+200323;Loja;entrega atrasou ;NÃO
+200324;App;entrega atrasou de novo;NÃO
+200325;App;atendimento demorado ;NÃO
+200326;Loja;cobrança indevida ontem;SIM
+200327;Loja;entrega atrasou no pedido;SIM
+200328;Loja;cobrança indevida de novo;SIM
+200329;App;atendimento demorado ;NÃO
+200330;Loja;produto veio com defeito ontem;SIM
+200331;App;prazo cumprido de novo;SIM
+200332;App;cobrança indevida de novo;NÃO
+200333;Site;cobrança indevida ontem;NÃO
+200334;App;atendimento demorado de novo;SIM
+200335;App;atendimento demorado ;SIM
+200336;App;tudo certo ontem;SIM
+200337;Loja;prazo cumprido ;NÃO
+200338;App;tudo certo no pedido;NÃO
+200339;App;atendimento demorado ontem;SIM
+200340;App;prazo cumprido ontem;SIM
+200341;Site;prazo cumprido ontem;SIM
+200342;App;produto veio com defeito ;SIM
+200343;Loja;atendimento demorado de novo;SIM
+200344;Site;atendimento demorado ;NÃO
+200345;Site;produto veio com defeito ontem;SIM
+200346;Loja;atendimento demorado de novo;SIM
+200347;Loja;tudo certo no pedido;SIM
+200348;App;cobrança indevida de novo;NÃO
+200349;App;produto veio com defeito de novo;NÃO
+200350;App;produto veio com defeito no pedido;SIM
+200351;Site;entrega atrasou ;SIM
+200352;Loja;produto veio com defeito de novo;NÃO
+200353;Loja;atendimento demorado no pedido;NÃO
+200354;Site;cobrança indevida ;SIM
+200355;Site;entrega atrasou ;NÃO
+200356;App;entrega atrasou ;SIM
+200357;App;entrega atrasou ontem;SIM
+200358;Loja;tudo certo ontem;NÃO
+200359;Loja;atendimento demorado de novo;NÃO
+200360;Site;entrega atrasou no pedido;SIM
+200361;Site;atendimento demorado no pedido;NÃO
+200362;Loja;produto veio com defeito ;NÃO
+200363;App;tudo certo ontem;SIM
+200364;App;produto veio com defeito de novo;SIM
+200365;Site;atendimento demorado ontem;SIM
+200366;Loja;entrega atrasou ;NÃO
+200367;Site;prazo cumprido ;NÃO
+200368;App;entrega atrasou ontem;NÃO
+200369;Loja;tudo certo no pedido;SIM
+200370;Loja;entrega atrasou ;NÃO
+200371;Site;prazo cumprido no pedido;SIM
+200372;Loja;entrega atrasou ;SIM
+200373;Site;produto veio com defeito ontem;NÃO
+200374;Site;produto veio com defeito de novo;NÃO
+200375;Loja;atendimento demorado ontem;NÃO
+200376;App;atendimento demorado de novo;SIM
+200377;Loja;atendimento demorado ;SIM
+200378;Site;entrega atrasou ;NÃO
+200379;Site;produto veio com defeito ;SIM
+200380;App;tudo certo de novo;SIM
+200381;Loja;tudo certo de novo;NÃO
+200382;Loja;entrega atrasou ontem;NÃO
+200383;Loja;entrega atrasou ;NÃO
+200384;App;atendimento demorado de novo;SIM
+200385;App;entrega atrasou de novo;NÃO
+200386;Loja;tudo certo no pedido;NÃO
+200387;Site;produto veio com defeito no pedido;NÃO
+200388;Loja;cobrança indevida no pedido;NÃO
+200389;App;atendimento demorado no pedido;NÃO
+200390;App;tudo certo no pedido;SIM
+200391;App;entrega atrasou no pedido;SIM
+200392;Loja;atendimento demorado de novo;NÃO
+200393;App;atendimento demorado ontem;NÃO
+200394;App;atendimento demorado ontem;NÃO
+200395;Site;atendimento demorado no pedido;SIM
+200396;Loja;atendimento demorado no pedido;SIM
+200397;App;tudo certo ;NÃO
+200398;Site;atendimento demorado ontem;SIM
+200399;App;prazo cumprido ;NÃO
+200400;Site;atendimento demorado ontem;NÃO
+200401;Loja;prazo cumprido de novo;SIM
+200402;Loja;prazo cumprido no pedido;SIM
+200403;Loja;produto veio com defeito no pedido;NÃO
+200404;App;prazo cumprido ;NÃO
+200405;Loja;entrega atrasou ontem;NÃO
+200406;App;prazo cumprido de novo;NÃO
+200407;Loja;prazo cumprido no pedido;SIM
+200408;Site;prazo cumprido ontem;SIM
+200409;Site;atendimento demorado de novo;NÃO
+200410;Loja;entrega atrasou ;NÃO
+200411;Loja;entrega atrasou ontem;NÃO
+200412;Site;entrega atrasou no pedido;NÃO
+200413;Site;atendimento demorado de novo;SIM
+200414;App;tudo certo de novo;NÃO
+200415;Site;atendimento demorado de novo;NÃO
+200416;App;atendimento demorado ontem;NÃO
+200417;Loja;entrega atrasou de novo;NÃO
+200418;App;entrega atrasou de novo;SIM
+200419;Loja;produto veio com defeito de novo;NÃO
+200420;App;entrega atrasou no pedido;NÃO
+200421;Loja;cobrança indevida ;NÃO
+200422;App;entrega atrasou de novo;SIM
+200423;Site;prazo cumprido ontem;SIM
+200424;App;prazo cumprido ;SIM
+200425;Loja;entrega atrasou no pedido;SIM
+200426;Site;entrega atrasou ;SIM
+200427;Site;entrega atrasou ontem;NÃO
+200428;Site;atendimento demorado de novo;NÃO
+200429;App;entrega atrasou no pedido;SIM
+200430;Site;prazo cumprido no pedido;SIM
+200431;App;tudo certo ontem;NÃO
+200432;Loja;atendimento demorado no pedido;NÃO
+200433;App;entrega atrasou de novo;NÃO
+200434;Loja;cobrança indevida ;SIM
+200435;Site;cobrança indevida de novo;SIM
+200436;App;prazo cumprido no pedido;NÃO
+200437;Site;entrega atrasou ;NÃO
+200438;Site;tudo certo no pedido;SIM
+200439;Site;tudo certo ;SIM
+200440;Loja;prazo cumprido ontem;NÃO
+200441;Loja;prazo cumprido ontem;SIM
+200442;Site;tudo certo ;NÃO
+200443;App;produto veio com defeito ;SIM
+200444;Loja;entrega atrasou no pedido;SIM
+200445;Site;cobrança indevida no pedido;SIM
+200446;Site;entrega atrasou de novo;SIM
+200447;Site;atendimento demorado de novo;NÃO
+200448;App;entrega atrasou de novo;NÃO
+200449;Site;cobrança indevida ;NÃO
+200450;App;tudo certo ;SIM
+200451;App;entrega atrasou ;SIM
+200452;Site;entrega atrasou no pedido;SIM
+200453;Loja;atendimento demorado ontem;SIM
+200454;Site;atendimento demorado ;SIM
+200455;Site;tudo certo ontem;SIM
+200456;Loja;atendimento demorado ontem;SIM
+200457;Loja;prazo cumprido ontem;SIM
+200458;App;atendimento demorado ontem;NÃO
+200459;Site;produto veio com defeito ;SIM
+200460;App;entrega atrasou no pedido;SIM
+200461;Loja;entrega atrasou ontem;NÃO
+200462;App;produto veio com defeito no pedido;NÃO
+200463;App;tudo certo no pedido;SIM
+200464;Site;entrega atrasou no pedido;SIM
+200465;App;atendimento demorado ;SIM
+200466;Site;atendimento demorado no pedido;NÃO
+200467;Loja;cobrança indevida de novo;SIM
+200468;App;cobrança indevida de novo;NÃO
+200469;Loja;produto veio com defeito no pedido;NÃO
+200470;Site;atendimento demorado ;SIM
+200471;App;cobrança indevida ;NÃO
+200472;Loja;atendimento demorado ;NÃO
+200473;App;produto veio com defeito ontem;SIM
+200474;Loja;entrega atrasou de novo;SIM
+200475;Site;atendimento demorado ;SIM
+200476;Loja;produto veio com defeito de novo;SIM
+200477;App;entrega atrasou ontem;SIM
+200478;Loja;atendimento demorado ;SIM
+200479;Loja;produto veio com defeito de novo;SIM
+200480;App;atendimento demorado no pedido;NÃO
+200481;Site;tudo certo no pedido;SIM
+200482;Loja;entrega atrasou de novo;NÃO
+200483;Site;atendimento demorado de novo;NÃO
+200484;Loja;prazo cumprido de novo;NÃO
+200485;Site;produto veio com defeito ;NÃO
+200486;Site;prazo cumprido de novo;SIM
+200487;Site;atendimento demorado ontem;SIM
+200488;App;entrega atrasou ;NÃO
+200489;Loja;atendimento demorado ontem;NÃO
+200490;App;atendimento demorado de novo;SIM
+200491;Site;prazo cumprido ;SIM
+200492;App;tudo certo ;NÃO
+200493;Loja;prazo cumprido ;NÃO
+200494;App;atendimento demorado no pedido;NÃO
+200495;Loja;atendimento demorado de novo;SIM
+200496;Site;produto veio com defeito ontem;NÃO
+200497;App;produto veio com defeito ;SIM
+200498;App;cobrança indevida no pedido;SIM
+200499;Site;entrega atrasou no pedido;SIM
+200500;Loja;atendimento demorado ontem;SIM
+200501;Site;entrega atrasou de novo;SIM
+200502;App;entrega atrasou ontem;NÃO
+200503;Site;tudo certo no pedido;SIM
+200504;Loja;cobrança indevida de novo;NÃO
+200505;Site;produto veio com defeito ;SIM
+200506;Loja;produto veio com defeito ontem;NÃO
+200507;Site;atendimento demorado no pedido;NÃO
+200508;Loja;produto veio com defeito no pedido;NÃO
+200509;App;atendimento demorado ontem;SIM
+200510;Site;entrega atrasou de novo;NÃO
+200511;App;atendimento demorado no pedido;SIM
+200512;Site;atendimento demorado ontem;SIM
+200513;Loja;produto veio com defeito no pedido;NÃO
+200514;Site;cobrança indevida de novo;SIM
+200515;App;atendimento demorado ;SIM
+200516;Site;entrega atrasou ;SIM
+200517;App;entrega atrasou de novo;NÃO
+200518;Loja;prazo cumprido no pedido;NÃO
+200519;App;prazo cumprido de novo;NÃO
+200520;Site;tudo certo no pedido;NÃO
+200521;App;tudo certo no pedido;NÃO
+200522;Loja;tudo certo de novo;NÃO
+200523;Loja;prazo cumprido no pedido;NÃO
+200524;Loja;cobrança indevida no pedido;NÃO
+200525;Loja;entrega atrasou ontem;NÃO
+200526;App;entrega atrasou no pedido;SIM
+200527;Loja;entrega atrasou no pedido;NÃO
+200528;Loja;entrega atrasou no pedido;NÃO
+200529;App;tudo certo de novo;NÃO
+200530;Loja;produto veio com defeito no pedido;NÃO
+200531;Loja;entrega atrasou ontem;SIM
+200532;App;entrega atrasou ;NÃO
+200533;Site;atendimento demorado ontem;SIM
+200534;Loja;entrega atrasou ;SIM
+200535;Site;cobrança indevida ;NÃO
+200536;App;entrega atrasou de novo;SIM
+200537;Loja;tudo certo no pedido;NÃO
+200538;Loja;tudo certo ontem;SIM
+200539;App;atendimento demorado ontem;SIM
+200540;Site;produto veio com defeito de novo;SIM
+200541;Loja;atendimento demorado no pedido;SIM
+200542;Site;atendimento demorado ontem;NÃO
+200543;Loja;entrega atrasou de novo;SIM
+200544;Site;entrega atrasou ontem;NÃO
+200545;Loja;entrega atrasou ;NÃO
+200546;Site;entrega atrasou no pedido;NÃO
+200547;App;tudo certo ;SIM
+200548;App;atendimento demorado de novo;NÃO
+200549;Site;entrega atrasou ;NÃO
+200550;Loja;entrega atrasou ;SIM
+200551;Site;entrega atrasou de novo;NÃO
+200552;Site;produto veio com defeito de novo;SIM
+200553;Loja;prazo cumprido no pedido;SIM
+200554;App;produto veio com defeito no pedido;SIM
+200555;Loja;entrega atrasou ontem;NÃO
+200556;Loja;atendimento demorado ;NÃO
+200557;App;entrega atrasou de novo;NÃO
+200558;App;tudo certo no pedido;SIM
+200559;Site;entrega atrasou ;SIM
+200560;Loja;cobrança indevida de novo;NÃO
+200561;App;atendimento demorado no pedido;SIM
+200562;Loja;tudo certo de novo;NÃO
+200563;App;atendimento demorado ontem;SIM
+200564;Loja;tudo certo ontem;NÃO
+200565;App;atendimento demorado ;SIM
+200566;Site;atendimento demorado de novo;NÃO
+200567;Site;atendimento demorado de novo;SIM
+200568;Loja;produto veio com defeito ontem;NÃO
+200569;App;prazo cumprido ;SIM
+200570;Loja;tudo certo ;NÃO
+200571;App;tudo certo de novo;NÃO
+200572;Site;entrega atrasou de novo;NÃO
+200573;App;produto veio com defeito ontem;SIM
+200574;Loja;atendimento demorado ontem;SIM
+200575;App;entrega atrasou ;SIM
+200576;Site;entrega atrasou ;SIM
+200577;Loja;entrega atrasou no pedido;SIM
+200578;App;entrega atrasou ;NÃO
+200579;Site;entrega atrasou de novo;SIM
+200580;App;entrega atrasou ontem;NÃO
+200581;App;entrega atrasou no pedido;SIM
+200582;Loja;cobrança indevida no pedido;SIM
+200583;App;atendimento demorado no pedido;NÃO
+200584;App;prazo cumprido ontem;NÃO
+200585;Loja;cobrança indevida no pedido;NÃO
+200586;Site;atendimento demorado de novo;SIM
+200587;Loja;entrega atrasou ;SIM
+200588;Site;atendimento demorado de novo;SIM
+200589;App;prazo cumprido ontem;SIM
+200590;App;entrega atrasou no pedido;SIM
+200591;Loja;tudo certo ;SIM
+200592;App;tudo certo no pedido;NÃO
+200593;App;entrega atrasou ;SIM
+200594;Loja;entrega atrasou ontem;NÃO
+200595;Loja;prazo cumprido no pedido;NÃO
+200596;App;entrega atrasou de novo;NÃO
+200597;App;produto veio com defeito de novo;NÃO
+200598;Site;cobrança indevida ontem;NÃO
+200599;Loja;prazo cumprido no pedido;SIM

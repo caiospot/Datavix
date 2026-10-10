@@ -286,7 +286,7 @@ function storyCut(story, cap, decision, area) {
 /* ---------------- construtor de história: respostas viram slides ---------------- */
 // prioridade de um fato para a decisão escolhida (menor = mais importante)
 // prioridade (menor vem antes) das famílias linha a linha, que não fazem parte da ordem por decisão
-const NV_PRI = { assoc: 2.4, dist_skew: 3.3, outlier_rows: 3.6 };
+const NV_PRI = { assoc: 2.4, dist_skew: 3.3, outlier_rows: 3.6, dim_lead: 2.0, dim_gap: 2.6 };
 function storyPri(s, decision, area) {
   const ord = (typeof INSIGHT_ORDER !== 'undefined' && INSIGHT_ORDER[decision]) || [], gen = { leader: 1.5, balance: 1.5, relation: 1.5, conc: 2.5, contrast: 3.5, contrib: 1.2, shift: 2.2, c_impact: 0.6, c_cause: 1.0, c_rate: 1.4, c_where: 1.6, c_terms: 2.8 };
   if (s.id === 'st-ov') return -1;

@@ -8,7 +8,7 @@ const U_NAME_PERSON = /(^|[^a-z])(nome|name|respons[aá]vel|solicitante|analista
 const U_NAME_CUSTOMER = /(^|[^a-z])(cliente|customer|client)([^a-z]|$)/i;
 const U_NAME_NOTPERSON = /(produto|product|item|empresa|company|unidade|loja|store|campanha|campaign|cidade|city|categoria|category|marca|brand|setor|projeto|project|arquivo|file|canal|channel|jornada|journey|segmento|regi[aã]o)/i;
 const U_NAME_PHONE = /(tel|fone|phone|celular|whats|msisdn|contato|contrato)/i;
-const U_NAME_ID = /(^|[^a-z])(id|c[oó]digo|code|cod|n[uú]mero|num|n[ºo°]|protocolo|ticket|caso|pedido|chave|key|uuid|guid|ref|refer[eê]ncia|matr[ií]cula|sku|serial|lote|nf|contrato|lead|conta|chamado|ordem|os)([^a-z]|$)/i;
+const U_NAME_ID = /(^|[^a-z])(id|c[oó]digo|code|cod|n[uú]mero|num|n[ºo°]|protocolo|ticket|caso|pedido|chave|key|uuid|guid|ref|refer[eê]ncia|matr[ií]cula|sku|serial|lote|nf|contrato|lead|conta|chamado|ordem|os|cep|zip|cnpj|cpf)([^a-z]|$)/i;
 const U_MEASURE_NAME = /receita|valor|venda|faturamento|revenue|total|amount|sales|realizado|custo|cost|lucro|profit|pre[cç]o|price/i;
 const U_NAME_ATTR = /(taxa|rate|margem|margin|percent|%|(^|[^a-z])idade|(^|[^a-z])age([^a-z]|$)|pre[cç]o|price|ticket m[eé]dio|m[eé]dia|average|avg|desconto|discount|peso|weight|altura|temperatura)/i;
 const U_NAME_DURATION = /(dias|days|dura[cç][aã]o|duration|tempo|prazo|esfor[cç]o|sla|tat|meses|months|horas|hours)/i;
@@ -60,7 +60,8 @@ function uProfileColumn(c, nRows, area) {
     const arr = c.data, N = arr.length; let ints = 0, n2 = 0, digits = 0; const seen = new Set(); let sorted = true, prev = -Infinity;
     for (let i = 0; i < N && n2 < 20000; i++) { const x = arr[i]; if (Number.isNaN(x)) continue; n2++; if (Number.isInteger(x)) ints++; seen.add(x); digits = Math.max(digits, String(Math.abs(Math.trunc(x))).length); if (x < prev) sorted = false; prev = x; }
     const uq = seen.size / Math.max(1, n2), isInt = ints === n2;
-    if (isInt && uq >= 0.95 && n2 >= 8 && !U_MEASURE_NAME.test(name) && (U_NAME_ID.test(name) || areaHit(area, 'id', name) || digits >= 9 || (sorted && c.min <= 1) || /^(id|#)$/i.test(name.trim()))) { c.role = 'id'; c.why = 'identificador'; return c; }
+    const consecutive = isInt && sorted && n2 >= 20 && seen.size === n2 && (c.max - c.min + 1) === n2; // 20000, 20001, 20002...: é um índice, qualquer que seja o nome
+    if (isInt && uq >= 0.95 && n2 >= 8 && !U_MEASURE_NAME.test(name) && (consecutive || U_NAME_ID.test(name) || areaHit(area, 'id', name) || digits >= 9 || (sorted && c.min <= 1) || /^(id|#)$/i.test(name.trim()))) { c.role = 'id'; c.why = 'identificador'; return c; }
     if (isInt && digits >= 10 && uq >= 0.9 && U_NAME_PHONE.test(name)) { c.role = 'pii'; c.hide = true; c.why = 'telefone'; return c; }
     c.role = 'measure'; const uniq = seen.size;
     const smallInt = (isInt && c.min >= 0 && c.max <= 10 && uniq <= 11) || (isInt && c.min >= 1 && c.max <= 5), at = areaMeasureType(area, name);

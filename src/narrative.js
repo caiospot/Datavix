@@ -5,7 +5,7 @@
 
 // pesos e limites centralizados (hipóteses de produto, para calibrar depois com dados reais)
 const NV_CFG = {
-  minSample: { gappp: 2, dist: 30, outrows: 30, assoc: 30, ratio: 2, dropc: 2, peak: 2, low: 2, jump: 2, trend: 4, dominant: 2, outlier: 8, lead: 3, conc: 6, contrast: 3, corr: 3, contrib: 4, shift: 4, overview: 1 },
+  minSample: { usage: 1, missing: 1, gappp: 2, dist: 30, outrows: 30, assoc: 30, ratio: 2, dropc: 2, peak: 2, low: 2, jump: 2, trend: 4, dominant: 2, outlier: 8, lead: 3, conc: 6, contrast: 3, corr: 3, contrib: 4, shift: 4, overview: 1 },
   causal: /\b(causou|causa[rm]?|causado|por causa|devido a|provoc\w+|gerou|ocasion\w+|culpa|caused?|causes|because|due to|leads? to|led to|results? in|triggered)\b/i,
   accuse: /\b(erro|fraude|fraudulent\w*|falha|defeito|mentira|errors?|fraud|mistakes?|faulty|wrong)\b/i,
 };
@@ -33,9 +33,11 @@ const NV_CALC = {
   dist: v => ({ gap: (v.mean / v.median - 1) * 100 }),
   outrows: v => ({ p: v.count / v.n * 100, count: v.count }),
   assoc: v => ({ rho: v.rho }),
+  usage: v => ({ p: v.used / v.total * 100 }),
+  missing: v => ({ p: v.miss / (v.n + v.miss) * 100 }),
 };
 // o denominador de cada cálculo precisa existir e ser positivo (na contribuição, a variação total pode ser queda: vale o módulo)
-const NV_DEN = { gappp: v => Math.min(v.v1, v.v0), ratio: v => v.den, dropc: v => v.cur, dist: v => v.median, outrows: v => v.n, assoc: v => v.n, peak: v => v.sum / v.n, low: v => v.sum / v.n, jump: v => v.prev, trend: v => v.head, dominant: v => v.total, lead: v => v.total, conc: v => v.total, contrast: v => v.low, contrib: v => Math.abs(v.dTotal), shift: v => Math.min(v.t0, v.t1) };
+const NV_DEN = { usage: v => v.total, missing: v => v.n + v.miss, gappp: v => Math.min(v.v1, v.v0), ratio: v => v.den, dropc: v => v.cur, dist: v => v.median, outrows: v => v.n, assoc: v => v.n, peak: v => v.sum / v.n, low: v => v.sum / v.n, jump: v => v.prev, trend: v => v.head, dominant: v => v.total, lead: v => v.total, conc: v => v.total, contrast: v => v.low, contrib: v => Math.abs(v.dTotal), shift: v => Math.min(v.t0, v.t1) };
 
 /* ---- construtor ---- */
 // kind: chave de NV_CALC; values: entradas brutas; shown: [{ k, value, text }] com o número calculado pelo código e o texto exibido; refs: de onde vieram (rótulos, períodos)

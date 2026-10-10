@@ -41,12 +41,13 @@ function vLogo(ctx, cx, y, size, color) {
 function videoPlan(P, fmt) {
   const meta = P.host.ix.meta, base = buildSteps(P, meta), isIns = s => /^i\d/.test(s.id), sq = fmt === 'square';
   let hero = null, ov = null; try { hero = kpiCards(P.built, LANG, T)[0] || null; ov = genOverview(P); } catch (e) { /* sem indicador */ }
-  let story = []; try { story = P.sb ? storyFromAnswers(P, meta, base) : buildStory(P, meta, base); } catch (e) { console.error(e); }
+  let story = []; try { story = P.sb ? storyFromAnswers(P, meta, base) : nvPlan(P, meta, base, 5).slides.slice(1); } catch (e) { console.error(e); } // vídeo: o plano de 5 sem o contexto (o gancho já faz esse papel)
+  if (!P.sb && !story.length) { try { story = buildStory(P, meta, base); } catch (e) { console.error(e); } }
   const scenes = [{ kind: 'hook', ms: 2700 }], SLx = STORY_TXT[LANG] || STORY_TXT.pt;
   const listOf = s => (s.type === 'prio' ? s.rank.map(r => `${r.n}. ${r.k}, ${r.v}${r.s ? ' (' + r.s + ')' : ''}`) : s.type === 'impl' ? s.lines : s.type === 'plan' ? s.rows.map(r => [r.a, r.o, r.d].filter(Boolean).join(' · ')) : s.type === 'diag' ? (s.chips || []).map(c => `${c.text} ${c.label}`) : null);
   // roteiro guiado: o vídeo mostra até 5 atos; ficam o panorama, o centro, o diagnóstico, as prioridades e a decisão, e o resto preenche pela ordem
   const pickV = arr => { if (arr.length <= 5) return arr; const must = new Set([0, 1]); arr.forEach((s, i) => { if (s.type === 'diag' || s.type === 'prio' || s.type === 'ask') must.add(i); }); const keep = new Set([...must].slice(0, 5)); for (let i = 0; i < arr.length && keep.size < 5; i++) keep.add(i); return arr.filter((s, i) => keep.has(i)); };
-  if (story.length >= 3) (P.sb ? pickV(story) : story.slice(0, 4)).forEach(s => { const ls = listOf(s); scenes.push({ kind: 'step', ms: s.calc || ls ? 3600 : 2800, kick: s.kick.label, head: s.type === 'impl' || s.type === 'plan' ? s.kick.label : s.head, sub: '', calc: ls ? null : s.calc, list: ls, state: s.state, viz: s.viz || null }); });
+  if (story.length >= 3) (P.sb ? pickV(story) : story.slice(0, 4)).forEach(s => { const ls = listOf(s); scenes.push({ kind: 'step', ms: s.calc || ls ? 3600 : 2800, kick: s.kick.label, head: s.type === 'impl' || s.type === 'plan' ? s.kick.label : s.head, sub: s.note || '', calc: ls ? null : s.calc, list: ls, state: s.state, viz: s.viz || null }); });
   else {
     const cut = c => { const p = c.split(' · '); return [p[0], p.slice(1).join(' · ')]; };
     const seg = base.filter(s => s.id !== 'overview' && s.id !== 'end' && !isIns(s) && s.caption).slice(0, 2), ins = base.filter(isIns).slice(0, 2);
@@ -55,7 +56,7 @@ function videoPlan(P, fmt) {
     ins.forEach(s => scenes.push({ kind: 'step', ms: 3500, head: s.caption, sub: '', calc: s.calc, state: s.state }));
   }
   const sumLine = x => (x.type === 'prio' ? `${x.head}: ${x.rank.map(r => r.k).join(', ')}` : x.type === 'plan' ? x.rows.map(r => r.a).join(' · ') : x.head);
-  const lines = (story.length >= 3 ? (P.sb ? story.filter(x => x.id !== 'st-ov').slice(-4) : story.slice(1)).map(sumLine) : (P.insights || []).map(x => x.text)).slice(0, sq ? 2 : 4);
+  const lines = (story.length >= 3 ? (P.sb ? story.filter(x => x.id !== 'st-ov').slice(-4) : story.some(x => x.role) ? story.filter(x => !x.synthetic).slice(0, 4) : story.slice(1)).map(sumLine) : (P.insights || []).map(x => x.text)).slice(0, sq ? 2 : 4);
   scenes.push({ kind: 'summary', ms: 3000, lines, facts: ov && ov.left ? ov.left.slice(0, 4) : [] }, { kind: 'brand', ms: 2600 });
   let t = 0; scenes.forEach(s => { s.t0 = t; t += s.ms; s.t1 = t; }); scenes.total = t;
   const stepsOnly = scenes.filter(s => s.kind === 'step');

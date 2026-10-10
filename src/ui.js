@@ -685,7 +685,7 @@ document.addEventListener('click', e => {
     case 'lang': setLang(v); if (S.step === 'editor') { rebuildPieceForLang(); } render(); break;
     case 'ui': S.ui = S.ui === 'dark' ? 'light' : 'dark'; render(); break;
     case 'guest': { const x = $('.mdl .mdl-x'); if (x) x.click(); S.user = { guest: true }; S.ob = 0; go('ob'); break; }
-    case 'start': if (!S.user) S.user = { guest: true }; S.ob = 0; go('ob'); break;
+    case 'start': if (!S.user) { let em = ''; try { em = (JSON.parse(localStorage.getItem('dv-signup')) || {}).email || ''; } catch (e) { em = ''; } S.user = { guest: true, ...(em ? { email: em } : {}) }; } S.ob = 0; go('ob'); break;
     case 'anchor': { e.preventDefault(); const el = document.getElementById((t.getAttribute('href') || '').slice(1)); if (el) el.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'start' }); break; }
     case 'pick': {
       const key = OB[S.ob].key; if (!S.br.other) S.br.other = {};

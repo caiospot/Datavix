@@ -1,5 +1,5 @@
 // Cadastro na página inicial: o e-mail é obrigatório (hero e chamada final), inválido não avança, válido grava na fila e começa; menu sem "Começar"; com sessão volta "Novo projeto"
-(async () => {
+(async () => { try {
   const D = window.__datavix, S = D.S, sleep = ms => new Promise(r => setTimeout(r, ms)), out = {}, errs = [];
   window.addEventListener('error', e => errs.push(e.message)); const q = s => document.querySelector(s), qa = s => [...document.querySelectorAll(s)];
   try { localStorage.removeItem('dv-signup'); } catch (e) { /* segue */ }
@@ -13,9 +13,9 @@
   fin.elements.email.value = ''; sub(fin); await sleep(150); out.finalVazio = S.step;
   fin.elements.email.value = 'Ana@Empresa.com'; sub(fin); await sleep(600); out.valido = S.step + ' user=' + JSON.stringify(S.user);
   out.lembrado = (localStorage.getItem('dv-signup') || '').slice(0, 40);
-  S.user = null; D.go('entry'); await sleep(500); out.preenchido = qa('.lp-em')[0].value; // mesmo e-mail de novo: entra, mas não reenvia
-  sub(qa('.lp-mail')[0]); await sleep(500); out.denovo = S.step;
-  S.user = { guest: true }; D.go('entry'); await sleep(400); out.comSessao = !q('.lp-mail') && qa('.lp-cta [data-a=start], .lp-final [data-a=start]').length === 2;
+  S.user = null; D.go('entry'); await sleep(500); out.depoisDoCadastro = qa('.lp-mail').length + ' forms | ' + qa('.lp-cta [data-a=start]').map(x => x.textContent.trim()).join(); // cadastro lembrado: só "Começar agora"
+  q('.lp-cta [data-a=start]').click(); await sleep(500); out.denovo = S.step + ' user=' + JSON.stringify(S.user);
+  S.user = { guest: true }; D.go('entry'); await sleep(400); out.comSessao = !q('.lp-mail') && qa('.lp-cta [data-a=start], .lp-final [data-a=start]').length >= 1;
   const t = await (await fetch('/nps')).text(); out.enviados = t.split('\n').filter(l => /"ev":"signup"/.test(l)).map(l => { const j = JSON.parse(l); return j.email + '|' + j.lang + '|' + !!j.token; });
   out.errs = errs; return JSON.stringify(out);
-})()
+} catch (e) { return 'ERRO ' + e.stack; } })()

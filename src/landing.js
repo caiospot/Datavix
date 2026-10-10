@@ -4,6 +4,7 @@ const LP = {
   pt: {
     nav: [['como', 'Como funciona'], ['graficos', 'Gráficos'], ['diferenciais', 'Diferenciais'], ['faq', 'FAQ']],
     start: 'Começar agora', newp: 'Novo projeto', how_cta: 'Ver como funciona',
+    fr: { t: 'Vendas por estado', src: 'Fonte: exemplo-vendas.csv · dados fictícios', ins: '{u} lidera com {p} da receita.', lead: 'Maior UF', share: 'Participação', calc: 'ver cálculo', ov: 'Visão geral', det: 'Detalhe', rows: 'Registros', ufs: 'UF', cats: 'Categorias', big: 'Maior', hover: 'Passe o mouse numa bolha para ver os detalhes.', list: 'Lista', per: 'Período', cat: 'Categoria', by: 'Receita por ano', bys: 'Receita por UF', unsaved: 'Não salvo', save: 'Salvar projeto', present: 'Apresentar', howto: 'Como usar', yr: 'Ano', rev: 'Receita', total: 'Total' },
     em_ph: 'Qual é o seu e-mail?', em_btn: 'Começar de graça', em_bad: 'Esse e-mail parece incompleto. Confira e tente de novo.', em_req: 'Digite o seu e-mail para começar.',
     hero_k: 'Tudo vira dado.', hero_h: ['Da planilha ao', 'storytelling'],
     hero_p: 'O Datavix transforma a sua planilha em dataviz executivo animado e interativo. Tudo acontece no seu navegador: a planilha não sai do seu computador.',
@@ -53,6 +54,7 @@ const LP = {
   en: {
     nav: [['como', 'How it works'], ['graficos', 'Charts'], ['diferenciais', 'Why Datavix'], ['faq', 'FAQ']],
     start: 'Get started', newp: 'New project', how_cta: 'See how it works',
+    fr: { t: 'Sales by state', src: 'Source: sales-example.csv · sample data', ins: '{u} leads with {p} of revenue.', lead: 'Largest state', share: 'Share', calc: 'see calculation', ov: 'Overview', det: 'Detail', rows: 'Rows', ufs: 'States', cats: 'Categories', big: 'Largest', hover: 'Hover a bubble to see the details.', list: 'List', per: 'Period', cat: 'Category', by: 'Revenue by year', bys: 'Revenue by state', unsaved: 'Not saved', save: 'Save project', present: 'Present', howto: 'How to use', yr: 'Year', rev: 'Revenue', total: 'Total' },
     em_ph: 'What\'s your email?', em_btn: 'Start for free', em_bad: 'That email looks incomplete. Check it and try again.', em_req: 'Enter your email to get started.',
     hero_k: 'Everything becomes data.', hero_h: ['From spreadsheet to', 'storytelling'],
     hero_p: 'Datavix turns your spreadsheet into animated, interactive executive dataviz. Everything happens in your browser: the spreadsheet never leaves your computer.',
@@ -116,21 +118,21 @@ function landingHtml() {
   // cadastro: o e-mail é obrigatório para começar (hero e chamada final). Quem já tem sessão vê "Novo projeto". O e-mail lembrado neste navegador já vem preenchido
   let known = ''; try { known = (JSON.parse(localStorage.getItem('dv-signup')) || {}).email || ''; } catch (e) { known = ''; }
   const mailForm = k => `<div class="lp-mailbox"><form class="lp-mail" novalidate><label class="sr" for="lpem-${k}">${esc(L.em_ph)}</label><input class="lp-em" id="lpem-${k}" name="email" type="email" inputmode="email" autocomplete="email" required value="${esc(known)}" placeholder="${esc(L.em_ph)}" aria-describedby="lpem-h-${k}"><button class="btn" type="submit">${esc(L.em_btn)}</button></form><p class="lp-em-h" id="lpem-h-${k}" role="alert"></p></div>`;
-  const heroCta = mine ? cta : mailForm('a');
+  const reg = !mine && !!known, startBtn = `<button class="btn" data-a="start">${L.start} →</button>`; // já se cadastrou neste navegador: só "Começar agora"
+  const heroCta = mine ? cta : reg ? startBtn : mailForm('a');
   return `<div class="lp">
-  <section class="lp-hero" id="top"><div class="lp-stick">
+  <section class="lp-hero" id="top">
     <div class="lp-glow" aria-hidden="true"></div>
-    <div class="lp-clip"><div class="lp-treewrap"><canvas id="lpcv" aria-label="${esc(L.hero_cap)}" role="img"></canvas></div></div>
     <div class="lp-copy">
-      <div class="lp-eyebrow">${esc(L.hero_k)}</div>
-      <h1 class="lp-h1">${lpTitle(L.hero_h[0], L.hero_h[1])}</h1>
-      <p class="lp-sub">${esc(L.hero_p)}</p>
-      <div class="lp-cta${mine ? '' : ' lp-cta-mail'}">${heroCta}${mine ? `<a class="btn ghost" href="#como" data-a="anchor">${L.how_cta}</a>` : ''}</div>
-      <div class="lp-meta">${L.chips.map(c => `<span>${esc(c)}</span>`).join('<i></i>')}</div>
+      <div class="lp-titlebox"><div class="lp-eyebrow">${esc(L.hero_k)}</div>
+      <h1 class="lp-h1">${lpTitle(L.hero_h[0], L.hero_h[1])}</h1></div>
+      <div class="lp-side"><p class="lp-sub">${esc(L.hero_p)}</p>
+        <div class="lp-cta${mine || reg ? '' : ' lp-cta-mail'}">${heroCta}${mine ? `<a class="btn ghost" href="#como" data-a="anchor">${L.how_cta}</a>` : ''}</div>
+        <div class="lp-meta">${L.chips.map(c => `<span>${esc(c)}</span>`).join('<i></i>')}</div></div>
     </div>
-    <div class="lp-capline" aria-hidden="true">${esc(L.hero_cap)}</div>
-    <div class="lp-cue" aria-hidden="true"><i></i></div>
-  </div></section>
+    ${lpFrame(L)}
+    <p class="lp-capline">${esc(L.hero_cap)}</p>
+  </section>
   ${(S.recents || []).length ? `<section class="lp-sec lp-saved" id="salvos"><div class="lbl">[ ${esc(L.saved_k)} ]</div><h2>${lpTitle(L.saved_h[0], L.saved_h[1])}</h2><div class="pj-grid">${projCards(6)}</div><div class="row pj-more">${S.recents.length > 6 ? `<button class="btn ghost sm" data-a="projects">${L.all} (${S.recents.length})</button>` : ''}<span class="note">${esc(L.saved_note)}</span></div></section>` : ''}
   <section class="lp-sec" id="como"><div class="lbl">[ ${esc(L.how_k)} ]</div><h2>${lpTitle(L.how_h[0], L.how_h[1])}</h2>
     <div class="lp-steps">${L.steps.map((s, i) => `<article class="lp-step" data-rv><div class="lp-n num">${String(i + 1).padStart(2, '0')}</div>${lpShot(LP_IMGS[i], s[2])}<h3>${esc(s[0])}</h3><p>${esc(s[1])}</p></article>`).join('')}</div></section>
@@ -143,7 +145,7 @@ function landingHtml() {
     <div class="lp-aud">${L.aud.map(a => `<article data-rv><h3>${esc(a[0])}</h3><p>${esc(a[1])}</p></article>`).join('')}</div></section>
   <section class="lp-sec lp-faq" id="faq"><div class="lbl">[ ${esc(L.faq_k)} ]</div>
     <div>${L.faq.concat(npsOn() ? [[T('nps_faq_q'), T('nps_faq_a')]] : []).map(f => `<details><summary>${esc(f[0])}</summary><p>${esc(f[1])}</p></details>`).join('')}</div></section>
-  <section class="lp-final"><h2>${lpTitle(L.cta_h[0], L.cta_h[1])}</h2><div class="lp-final-cta">${mine ? cta : mailForm('b')}</div></section>
+  <section class="lp-final"><h2>${lpTitle(L.cta_h[0], L.cta_h[1])}</h2><div class="lp-final-cta">${mine ? cta : reg ? startBtn : mailForm('b')}</div></section>
   <footer class="lp-foot"><span class="brand-s"><i></i>DATAVIX</span><span class="note"><a class="lp-site" href="https://${DV_SITE}" target="_blank" rel="noopener">${DV_SITE}</a> · ${esc(L.hero_k)} · ${esc(L.foot)} · <button type="button" class="lp-fb" data-a="privacy">${esc(privT().link)}</button>${npsOn() ? ` · <button type="button" class="lp-fb" data-a="feedback">${esc(T('nps_fb'))}</button>` : ''}${anFooter()}</span></footer></div>`;
 }
 
@@ -155,38 +157,88 @@ function landingData() {
   hubs.forEach((_, h) => ents.forEach((_, e) => { if (rnd() < 0.62) { const k = 1 + Math.floor(rnd() * 3); for (let j = 0; j < k; j++) leaves.push([h, e, Math.floor(rnd() * cols.length), 10 + Math.pow(rnd(), 3) * 900, 1, '', null]); } }));
   return { hubName: LANG === 'pt' ? 'Ano' : 'Year', entName: LANG === 'pt' ? 'UF' : 'State', colName: LANG === 'pt' ? 'Categoria' : 'Category', sizeName: LANG === 'pt' ? 'Receita' : 'Revenue', unit: null, grain: 'year', perRow: false, rowsUsed: leaves.length, rowsTotal: leaves.length, hubs, ents: ents.map(l => ({ label: l, v: 0, n: 0 })), cols, leaves, fields: [] };
 }
+/* ---- quadro da ferramenta no hero: o mesmo layout do produto, com os números calculados dos mesmos dados fictícios da árvore ---- */
+const LP_PAL = () => PALETTES.cosmos.slice();
+function lpStats() {
+  const D = landingData(), pal = LP_PAL(), f = x => fmtNum(x, null, LANG);
+  const yearTot = D.hubs.map(() => 0), catTot = D.cols.map(() => 0), entTot = D.ents.map(() => 0); let total = 0;
+  D.leaves.forEach(l => { yearTot[l[0]] += l[3]; entTot[l[1]] += l[3]; catTot[l[2]] += l[3]; total += l[3]; });
+  const top = D.leaves.map((l, i) => ({ i, h: l[0], e: l[1], c: l[2], v: l[3] })).sort((x, y) => y.v - x.v).slice(0, 14);
+  const big = entTot.reduce((m, v, i) => (v > entTot[m] ? i : m), 0), g = yearTot[yearTot.length - 1] / yearTot[0] - 1;
+  return { D, pal, f, yearTot, catTot, entTot, total, top, big, g, n: D.leaves.length };
+}
+function lpFrame(L) {
+  const F = L.fr, st = lpStats(), { D, pal, f } = st, y0 = D.hubs[0].label, y1 = D.hubs[D.hubs.length - 1].label, c = i => pal[i % pal.length];
+  const sh = st.entTot[st.big] / st.total, shTxt = `${Math.round(sh * 100)}%`, mx = Math.max(...st.yearTot), mn = Math.min(...st.yearTot), W = 100, H = 40;
+  const pts = st.yearTot.map((v, i) => [i / (st.yearTot.length - 1) * W, H - 4 - (v - mn) / ((mx - mn) || 1) * (H - 10)]);
+  const line = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+  const ents = st.entTot.map((v, i) => [v, i]).sort((a, b) => b[0] - a[0]).slice(0, 5), em = ents[0][0];
+  const row = t => `<button type="button" class="lpf-row" data-leaf="${t.i}" style="--c:${c(t.c)}"><i></i><span class="t"><b>${esc(D.ents[t.e].label)}</b><small>${esc(D.cols[t.c].label)} · ${esc(D.hubs[t.h].label)}</small></span><span>${f(t.v)}</span></button>`;
+  return `<div class="lp-frame" id="lpframe" role="group" aria-label="${esc(L.hero_cap)}" data-total="${st.total.toFixed(2)}">
+    <div class="lpf-bar" aria-hidden="true"><span class="lpf-dots"><i></i><i></i><i></i></span><span>DATAVIX</span><span class="sp"></span><span class="lpf-warn">● ${esc(F.unsaved)}</span><span class="lpf-pill">${esc(F.save)}</span></div>
+    <div class="lpf-body">
+      <aside class="lpf-left">
+        <div><h3 class="lpf-title">${esc(F.t)}</h3><p class="lpf-src">${esc(F.src)} · ${y0} – ${y1}</p></div>
+        <div class="lpf-ins"><div class="lpf-lbl">[ INSIGHT // 01 ]</div><p>${esc(F.ins.replace('{u}', D.ents[st.big].label).replace('{p}', shTxt))}</p>
+          <details><summary>${esc(F.calc)}</summary><dl><dt>${esc(D.ents[st.big].label)}</dt><dd>${f(st.entTot[st.big])}</dd><dt>${esc(F.total)}</dt><dd>${f(st.total)}</dd><dt>${esc(F.share)}</dt><dd>${shTxt}</dd></dl></details></div>
+        <div class="lpf-per"><div class="lpf-lbl">${esc(F.per)}</div><div class="yrs"><span>${y0}</span><span>${y1}</span></div><div class="trk"><i id="lpf-now" style="left:0%"></i></div></div>
+        <div><div class="lpf-lbl">${esc(F.cat)}</div><div class="lpf-cats">${D.cols.map((k, i) => `<button type="button" class="lpf-chip" data-cat="${i}" aria-pressed="true" style="--c:${c(i)}"><i></i>${esc(k.label)}</button>`).join('')}</div></div>
+        <div class="lpf-spark"><div class="lpf-lbl">${esc(F.by)}</div><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><path class="area" d="${line} L${W} ${H} L0 ${H} Z"/><path d="${line}"/><circle id="lpf-dot" cx="${pts[0][0]}" cy="${pts[0][1].toFixed(1)}" r="1.6"/></svg></div>
+        <div><div class="lpf-lbl">${esc(F.bys)}</div><div class="lpf-bars">${ents.map(([v, i]) => `<div><span>${esc(D.ents[i].label)}</span><b style="--w:${Math.round(v / em * 100)}%"></b><span>${f(v)}</span></div>`).join('')}</div></div>
+      </aside>
+      <section class="lpf-mid">
+        <div class="lpf-ov" id="lpf-ov" aria-live="polite"></div>
+        <div class="lpf-list"><div class="h lpf-lbl">[ ${esc(F.list)} · ${fmtInt(st.n, LANG)} ]</div><div class="lpf-rows">${st.top.map(row).join('')}</div></div>
+      </section>
+      <div class="lpf-stage"><canvas id="lpcv" aria-label="${esc(L.hero_cap)}" role="img"></canvas><div class="lpf-tools" aria-hidden="true"><span>▶ ${esc(F.present)}</span><span>? ${esc(F.howto)}</span></div></div>
+    </div></div>`;
+}
 let _lp = null;
 function landingMount() {
   landingUnmount();
-  const cv = $('#lpcv'); if (!cv) return;
-  const dark = S.ui === 'dark', th = { base: dark ? '#0b0d0a' : '#eef0eb', fg: dark ? '#eef0eb' : '#0b0d0a', colors: PALETTES.cosmos.slice(), font: "Geist, system-ui, sans-serif" };
-  const eng = new OrgEngine(landingData(), th, { rm: RM }); eng.ctx = cv.getContext('2d');
-  const fit = () => { const w = Math.max(240, cv.clientWidth), h = Math.max(240, cv.clientHeight), dpr = Math.min(2, devicePixelRatio || 1); cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); eng.resize(w, h, dpr); };
-  const ro = new ResizeObserver(fit); ro.observe(cv); fit(); if (RM) eng.snap();
-  let t = 0, idle = true;
-  const timer = RM ? 0 : setInterval(() => { if (!idle || document.hidden) return; t++; const n = eng.D.hubs.length, ph = t % (n + 2); eng.setState({ focus: ph < n ? ph : null }); }, 3200);
-  const mv = e => { const r = cv.getBoundingClientRect(), hit = eng.pick(e.clientX - r.left, e.clientY - r.top); idle = !hit; eng.hov.leaf = hit && hit.type === 'leaf' ? hit.i : -1; eng.hov.hub = hit && hit.type === 'hub' ? hit.i : -1; cv.style.cursor = hit ? 'pointer' : 'default'; eng.kick(); };
-  const lv = () => { idle = true; eng.hov.leaf = -1; eng.hov.hub = -1; eng.kick(); };
-  cv.addEventListener('mousemove', mv); cv.addEventListener('mouseleave', lv);
-  _lp = { eng, ro, timer };
-  // rolagem ligada à animação: o texto recua e a árvore sobe e se revela (só no desktop e sem movimento reduzido)
-  const hero = $('.lp-hero'), top = $('.top'), narrow = () => innerWidth < 860 || RM;
-  let ticking = false;
-  const onScroll = () => {
-    if (ticking) return; ticking = true;
-    requestAnimationFrame(() => {
-      ticking = false; if (top) top.classList.toggle('at-top', scrollY < 8);
-      if (!hero) return; const max = hero.offsetHeight - innerHeight, p = narrow() || max <= 0 ? 0 : Math.max(0, Math.min(1, scrollY / max));
-      hero.style.setProperty('--p', p.toFixed(4)); idle = p > 0.15 ? idle : true;
-    });
+  const cv = $('#lpcv'), fr = $('#lpframe'); if (!cv || !fr) return;
+  const L = LPT(), F = L.fr, st = lpStats(), { D, pal, f } = st, nY = D.hubs.length, dark = S.ui === 'dark';
+  const th = { base: dark ? '#0b0d0a' : '#eef0eb', fg: dark ? '#eef0eb' : '#0b0d0a', colors: pal, font: "Geist, system-ui, sans-serif" };
+  const ov = $('#lpf-ov'), now = $('#lpf-now'), dot = $('#lpf-dot'), rows = $$('.lpf-row', fr), chips = $$('.lpf-chip', fr), cats = new Set(D.cols.map((_, i) => i));
+  const pts = (() => { const mx = Math.max(...st.yearTot), mn = Math.min(...st.yearTot); return st.yearTot.map((v, i) => [i / (nY - 1) * 100, 40 - 4 - (v - mn) / ((mx - mn) || 1) * 30]); })();
+  let eng = null, focus = null, hover = -1, visible = false, idle = true;
+  // cartão "Visão geral": período todo, um ano em foco ou o registro sob o mouse; tudo calculado dos dados do gráfico
+  const showOv = () => {
+    const sel = [...cats]; let yrs = focus === null ? [0, nY - 1] : [focus, focus], rowsN = 0, tot = 0, ents = new Set();
+    D.leaves.forEach(l => { if (l[0] >= yrs[0] && l[0] <= yrs[1] && cats.has(l[2])) { rowsN++; tot += l[3]; ents.add(l[1]); } });
+    if (hover >= 0) {
+      const l = D.leaves[hover], k = D.cols[l[2]];
+      ov.innerHTML = `<div class="h"><div><span class="lpf-lbl">${esc(F.det)}</span><b>${esc(D.ents[l[1]].label)} · ${esc(D.hubs[l[0]].label)}</b></div><em>${f(l[3])}</em></div><div class="b"><div><span>${esc(F.cat)}</span><b><i style="background:${pal[l[2] % pal.length]}"></i>${esc(k.label)}</b></div><div><span>${esc(F.ufs)}</span><b>${esc(D.ents[l[1]].label)}</b></div><div><span>${esc(F.yr)}</span><b>${esc(D.hubs[l[0]].label)}</b></div><div><span>${esc(F.rev)}</span><b>${f(l[3])}</b></div></div><div class="f">${esc(F.hover)}</div>`; return;
+    }
+    const big = (() => { const t = D.ents.map(() => 0); D.leaves.forEach(l => { if (l[0] >= yrs[0] && l[0] <= yrs[1] && cats.has(l[2])) t[l[1]] += l[3]; }); const i = t.reduce((m, v, j) => (v > t[m] ? j : m), 0); return t[i] > 0 ? D.ents[i].label + ' · ' + f(t[i]) : '—'; })();
+    ov.innerHTML = `<div class="h"><div><span class="lpf-lbl">${esc(F.ov)}</span><b>${focus === null ? esc(D.hubs[0].label) + ' – ' + esc(D.hubs[nY - 1].label) : esc(D.hubs[focus].label)}</b></div><em>${f(tot)}</em></div><div class="b"><div><span>${esc(F.rows)}</span><b>${fmtInt(rowsN, LANG)}</b></div><div><span>${esc(F.ufs)}</span><b>${ents.size}</b></div><div><span>${esc(F.cats)}</span><b>${sel.length}</b></div><div><span>${esc(F.big)}</span><b>${esc(big)}</b></div></div><div class="f">${esc(F.hover)}</div>`;
   };
-  window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', onScroll); _lp.onScroll = onScroll; onScroll();
+  const setFocus = h => { focus = h; if (now) now.style.left = (h === null ? 0 : h / (nY - 1) * 100) + '%'; if (dot) { const p = pts[h === null ? 0 : h]; dot.setAttribute('cx', p[0]); dot.setAttribute('cy', p[1].toFixed(1)); } if (eng) eng.setState({ focus: h }); if (hover < 0) showOv(); };
+  const setHover = i => { if (i === hover) return; hover = i; rows.forEach(r => r.classList.toggle('on', +r.dataset.leaf === i)); if (eng) { eng.hov.leaf = i; eng.kick(); } cv.style.cursor = i >= 0 ? 'pointer' : 'default'; idle = i < 0; showOv(); };
+  showOv();
+  // o gráfico nasce (e a árvore cresce) quando o quadro aparece na tela, e pausa quando sai dela
+  const fit = () => { if (!eng) return; const w = Math.max(240, cv.clientWidth), h = Math.max(240, cv.clientHeight), dpr = Math.min(2, devicePixelRatio || 1); cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); eng.resize(w, h, dpr); };
+  const ro = new ResizeObserver(fit);
+  const boot = () => { eng = new OrgEngine(D, th, { rm: RM }); eng.ctx = cv.getContext('2d'); ro.observe(cv); fit(); if (RM) eng.snap(); _lp.eng = eng; };
+  const timer = RM ? 0 : setInterval(() => { if (!idle || !visible || document.hidden) return; t++; const ph = t % (nY + 2); setFocus(ph < nY ? ph : null); }, 3200); let t = 0;
+  cv.addEventListener('mousemove', e => { if (!eng) return; const r = cv.getBoundingClientRect(), hit = eng.pick(e.clientX - r.left, e.clientY - r.top); idle = !hit; eng.hov.hub = hit && hit.type === 'hub' ? hit.i : -1; if (hit && hit.type === 'leaf') setHover(hit.i); else { setHover(-1); eng.hov.leaf = -1; eng.kick(); cv.style.cursor = hit ? 'pointer' : 'default'; } });
+  cv.addEventListener('mouseleave', () => { idle = true; if (eng) { eng.hov.hub = -1; } setHover(-1); });
+  rows.forEach(r => { const i = +r.dataset.leaf; r.addEventListener('mouseenter', () => { idle = false; setHover(i); }); r.addEventListener('mouseleave', () => { idle = true; setHover(-1); }); r.addEventListener('focus', () => setHover(i)); r.addEventListener('blur', () => setHover(-1)); });
+  chips.forEach(b => b.addEventListener('click', () => { const i = +b.dataset.cat, on = cats.has(i); if (on && cats.size === 1) return; on ? cats.delete(i) : cats.add(i); b.setAttribute('aria-pressed', String(!on)); if (eng) eng.setState({ colors: cats.size === D.cols.length ? null : [...cats] }); if (hover < 0) showOv(); }));
+  _lp = { eng: null, ro, timer, io2: null };
+  let io = null;
+  if (window.IntersectionObserver) { io = new IntersectionObserver(es => es.forEach(e => { visible = e.isIntersecting; if (visible) { if (!eng) boot(); else eng.kick(); } else if (eng) eng.stop(); }), { threshold: 0.2 }); io.observe(fr); }
+  else { visible = true; boot(); }
+  _lp.io2 = io;
+  const top = $('.top'); let ticking = false;
+  const onScroll = () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { ticking = false; if (top) top.classList.toggle('at-top', scrollY < 8); }); };
+  window.addEventListener('scroll', onScroll, { passive: true }); _lp.onScroll = onScroll; onScroll();
   // entrada suave das seções ao rolar
   const rv = $$('[data-rv]');
   if (RM || !window.IntersectionObserver) rv.forEach(n => n.classList.add('in'));
-  else { const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 }); rv.forEach(n => io.observe(n)); _lp.io = io; }
+  else { const io2 = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io2.unobserve(e.target); } }), { threshold: 0.12 }); rv.forEach(n => io2.observe(n)); _lp.io = io2; }
 }
-function landingUnmount() { if (!_lp) return; window.removeEventListener('scroll', _lp.onScroll); window.removeEventListener('resize', _lp.onScroll); const tp = $('.top'); if (tp) tp.classList.remove('at-top'); _lp.eng.stop(); _lp.ro.disconnect(); if (_lp.timer) clearInterval(_lp.timer); if (_lp.io) _lp.io.disconnect(); _lp = null; }
+function landingUnmount() { if (!_lp) return; window.removeEventListener('scroll', _lp.onScroll); const tp = $('.top'); if (tp) tp.classList.remove('at-top'); if (_lp.eng) _lp.eng.stop(); _lp.ro.disconnect(); if (_lp.timer) clearInterval(_lp.timer); if (_lp.io) _lp.io.disconnect(); if (_lp.io2) _lp.io2.disconnect(); _lp = null; }
 
 /* ---- projetos salvos (neste navegador): cartões na página inicial e lista no modal ---- */
 function projMeta(p) {

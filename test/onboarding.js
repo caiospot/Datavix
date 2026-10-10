@@ -4,6 +4,7 @@
   const pt = [...document.querySelectorAll('button')].find(b => b.textContent.trim() === 'PT'); if (pt) pt.click();
   await sleep(2500);
   out.hasMagic = document.body.innerText.toLowerCase().includes('link mágico') || !!document.querySelector('#email');
+  try { localStorage.setItem('dv-signup', JSON.stringify({ email: 't@t.com' })); } catch (e) { /* segue */ } D.go('entry'); await sleep(500); // quem já se cadastrou vê "Começar agora"
   document.querySelector('.lp-hero [data-a=start], [data-a=start]').click(); await sleep(600);
   out.afterStart = S.step + ' modal=' + !!document.querySelector('.mdl') + ' user=' + JSON.stringify(S.user);
   const opts = () => [...document.querySelectorAll('.opt')].map(b => b.querySelector('strong').textContent);

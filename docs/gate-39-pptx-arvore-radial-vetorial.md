@@ -15,3 +15,16 @@ Novos recursos de `PxSlide`: `shape`, `free`, `group`, e `rot`/`nowrap` em `text
 **Teste:** `test/m/pptx-make.js` (hash `lojas.csv||organism,...`) + `test/pptx-check.py` (agora reconhece desenhos agrupados). Aberto e exportado a PDF no PowerPoint real sem reparo; regressão de barras, linha, pizza, raios e rio sem mudança.
 
 **Próximos:** Raios, Leque, Cordilheira, Rio, Funil, Bolhas agrupadas e os dois mapas.
+
+## Etapa 2 — os outros oito gráficos (`src/pxvec.js`)
+
+Em vez de portar cada gráfico à mão, o PPTX passa a **gravar os comandos de canvas** que cada gráfico já usa (`drawCsStatic` aceita qualquer contexto). `PxRec` é um contexto falso: acompanha matriz, estilos, `save/restore`, `Path2D` (substituído durante a gravação) e converte:
+- círculos → elipses; caminhos (retas, Bézier, arcos) → formas livres; traços seguidos com o mesmo estilo → uma forma só;
+- textos → caixas de texto reais (fonte do tema, rotação preservada);
+- degradês lineares e radiais → preenchimentos em degradê (inclusive em contornos);
+- tracejado → traço personalizado; imagem pequena do mapa de isolinhas → retângulos por trecho de células, recortados pelo contorno do Brasil;
+- poeira decorativa de fundo é descartada (não é dado).
+
+Cobre: **Raios, Leque, Cordilheira, Rio, Funil, Bolhas agrupadas, Mapa de bolhas e Mapa de isolinhas**. A Árvore radial mantém o desenho dedicado (nomes e texto alternativo por bolha). Se a gravação falhar, o slide cai no gráfico nativo de barras dos mesmos dados.
+
+Verificado no PowerPoint real (PDF → PNG) para os 9 gráficos; regressão dos nativos igual. Dados de teste novos: `dados-teste/pontos-geo.csv` (latitude/longitude para o mapa de isolinhas). O mapa de isolinhas gera ~800 KB por slide (3,4 MB no arquivo de 4 slides).

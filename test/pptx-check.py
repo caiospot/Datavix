@@ -20,7 +20,7 @@ for f in sorted(glob.glob('test/out/pptx-*.pptx')):
                         for se in pl.series:
                             vals = list(se.values) if hasattr(se, 'values') else []
                             assert len(vals) > 0 or name in ('kpi',), 'série vazia'
-                elif sh.shape_type == 6 and len(sh.shapes) > 20: groups += 1  # desenho vetorial agrupado (árvore radial)
+                elif sh.shape_type == 6 and len(sh.shapes) > 5: groups += 1  # desenho vetorial agrupado (árvore radial)
                 elif sh.has_text_frame and sh.text_frame.text.strip(): texts += 1
                 elif getattr(sh, 'has_table', False) and sh.has_table: tables += 1
         ok = len(p.slides) >= 4 and texts >= 8 and (charts == wb) and (charts >= 1 or groups >= 1 or name == 'kpi')

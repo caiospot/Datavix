@@ -202,7 +202,7 @@ function pxVecOrganism(P, state) {
   const note = `${N.t}: ${D.hubName} · ${N.e}: ${D.entName}${D.colName ? ` · ${N.c}: ${D.colName}` : ''} · ${N.s}: ${D.sizeName}${total > PX_ORG_MAX ? ` · ${N.cut} ${PX_ORG_MAX} / ${total}` : ''}`;
   return { vec: draw, note };
 }
-function pxSpec(P, state) {
+function pxSpec(P, state, noVec) {
   const b = P.built, t = P.type, cs = (b.cs && b.cs[t]) || null, th = P.__pxth, pal = P.colors, note = pxT().note, sel = state && state.sel && state.sel.length ? state.sel : null;
   const topN = (items, n) => items.slice().sort((x, y) => y.v - x.v).slice(0, n);
   const barOf = (items, name, dir, horizOk = true) => { const it = topN(items.filter(x => x.v != null), 25); return { type: 'bar', dir: horizOk && it.length > 6 ? 'bar' : 'col', grouping: 'clustered', cats: it.map(x => String(x.label)), series: [{ name, vals: it.map(x => pxNum(x.v)), color: pal[0], ptColors: pxMute(it.map(x => x.label), sel, th, pal[0]) || undefined }], labels: it.length <= 14, legend: false, approx: true }; };
@@ -232,13 +232,20 @@ function pxSpec(P, state) {
   }
   if (t === 'kpi') { let cards = []; try { cards = kpiCards(b, LANG, T).slice(0, 6); } catch (e) { cards = []; } return { kpi: cards }; }
   if (t === 'calendar' && b.cal) { const m = new Map(); b.cal.days.forEach(d => { const dt = new Date(d[0]), k = dt.getUTCFullYear() * 100 + dt.getUTCMonth(); m.set(k, (m.get(k) || 0) + d[1]); }); const keys = [...m.keys()].sort((a, c) => a - c), MS = LANG === 'en' ? MONTHS_EN : MONTHS_PT; return { type: 'bar', dir: 'col', grouping: 'clustered', cats: keys.map(k => `${MS[k % 100]}/${String(Math.floor(k / 100)).slice(2)}`), series: [{ name: b.names.y || '', vals: keys.map(k => pxNum(m.get(k))), color: pal[0] }], labels: keys.length <= 14, legend: false, note: pxT().cal }; }
-  if (t === 'organism' && b.org) return pxVecOrganism(P, state);
+  if (t === 'organism' && b.org && noVec) { const o = barOf(b.org.ents.map(e => ({ label: e.label, v: e.v })), b.org.sizeName || '', 'bar'); o.note = note; return o; }
+  if (t === 'organism' && b.org) { const v = pxVecOrganism(P, state); v.fallback = pxSpec(P, state, true); return v; }
+  if (!noVec && t === 'rays' && cs) { const v = pxVecCanvas(P, state, 'Raios'), f = pxSpec(P, state, true); if (f) v.fallback = f; return v; }
   if (t === 'rays' && cs) { const o = barOf(cs.ents.map(e => ({ label: e.label, v: e.v })), cs.valName, 'bar'); o.note = note; return o; }
+  if (!noVec && t === 'fan' && cs) { const v = pxVecCanvas(P, state, 'Leque'), f = pxSpec(P, state, true); if (f) v.fallback = f; return v; }
   if (t === 'fan' && cs) { const o = barOf(cs.cats.map(e => ({ label: e.label, v: e.v })), cs.valName, 'bar'); o.note = note; return o; }
+  if (!noVec && t === 'packed' && cs) { const v = pxVecCanvas(P, state, 'Bolhas agrupadas'), f = pxSpec(P, state, true); if (f) v.fallback = f; return v; }
   if (t === 'packed' && cs) { const o = barOf(cs.items.map(e => ({ label: e.label, v: e.v })), cs.valName, 'bar'); o.note = note; return o; }
   if (t === 'words' && cs) { const o = barOf(cs.items.map(e => ({ label: e.label, v: e.v })), cs.valName, 'bar'); o.note = note; return o; }
+  if (!noVec && t === 'river' && cs) { const v = pxVecCanvas(P, state, 'Rio'), f = pxSpec(P, state, true); if (f) v.fallback = f; return v; }
   if (t === 'river' && cs) return { type: 'area', grouping: 'stacked', cats: cs.periods.map(p => p.label), series: cs.cats.map((c, i) => ({ name: c.label, vals: cs.m[i].map(pxNum), color: pal[i % pal.length], alpha: sel ? (sel.includes(c.label) ? 100 : 28) : undefined })), legend: true, note };
+  if (!noVec && t === 'ridge' && cs) { const v = pxVecCanvas(P, state, 'Cordilheira'), f = pxSpec(P, state, true); if (f) v.fallback = f; return v; }
   if (t === 'ridge' && cs) return { type: 'line', cats: cs.times.map(p => p.label), series: cs.ents.map((e, i) => ({ name: e.label, vals: cs.times.map((_, k) => pxNum(cs.m[i].reduce((a, q) => a + (+q[k] || 0), 0))), color: pal[i % pal.length], alpha: sel ? (sel.includes(e.label) ? 100 : 28) : undefined })), legend: true, note };
+  if (!noVec && t === 'flow' && cs) { const v = pxVecCanvas(P, state, 'Funil'), f = pxSpec(P, state, true); if (f) v.fallback = f; return v; }
   if (t === 'flow' && cs) { const C = flowCompute(cs, null); return { type: 'bar', dir: 'col', grouping: 'clustered', cats: cs.stages.map(s => s.name), series: [{ name: cs.valName, vals: C.T.map(pxNum), color: pal[0] }], labels: true, legend: false, note }; }
   if ((t === 'pie' || t === 'donut') && cs) { const ptc = cs.items.map((it, i) => ({ c: pal[i % pal.length], a: state && state.cs && state.cs.spot != null && state.cs.spot !== i ? 28 : 100 })); return { type: t === 'pie' ? 'pie' : 'doughnut', cats: cs.items.map(i => i.label), series: [{ name: cs.valName, vals: cs.items.map(i => pxNum(i.v)), ptColors: ptc }], labels: true, legend: true }; }
   if ((t === 'pies' || t === 'donuts') && cs) return { multi: cs.panels.map((p, k) => { const it = p.items.map(i => cs.items[i]); return { title: p.label, spec: { type: t === 'pies' ? 'pie' : 'doughnut', cats: it.map(x => x.label), series: [{ name: p.label, vals: it.map(x => pxNum(x.v)), ptColors: it.map((x, i) => ({ c: pal[i % pal.length], a: 100 })) }], labels: false, legend: k === 0 } }; }) };
@@ -256,8 +263,10 @@ function pxSpec(P, state) {
     return { type: 'box', dir: 'col', grouping: 'stacked', cats: it.map(x => x.label), gap: 80, legend: false, labels: false, note: LANG === 'pt' ? 'Caixa: 1º quartil, mediana e 3º quartil; hastes: limites' : 'Box: first quartile, median and third quartile; whiskers: limits',
       series: [{ name: 'Q1', vals: q1.map(pxNum), noFill: true, err: { dir: 'minus', vals: q1.map((v, i) => pxNum(Math.max(0, v - lo[i]))), name: LANG === 'pt' ? 'Q1 − mínimo' : 'Q1 − minimum' } }, { name: LANG === 'pt' ? 'Q1 → mediana' : 'Q1 → median', vals: md.map((v, i) => pxNum(v - q1[i])), color: pal[0], alpha: 70 }, { name: LANG === 'pt' ? 'Mediana → Q3' : 'Median → Q3', vals: q3.map((v, i) => pxNum(v - md[i])), color: pal[0], err: { dir: 'plus', vals: hi.map((v, i) => pxNum(Math.max(0, v - q3[i]))), name: LANG === 'pt' ? 'Máximo − Q3' : 'Maximum − Q3', col: 1 } }] };
   }
+  if (!noVec && t === 'bubmap' && cs) { const v = pxVecCanvas(P, state, 'Mapa de bolhas'), f = pxSpec(P, state, true); if (f) v.fallback = f; return v; }
   if (t === 'bubmap' && cs) { const ps = cs.items.filter(i => GEO_BR[i.uf]).map(i => ({ x: GEO_BR[i.uf].c[0] / 100, y: GEO_BR[i.uf].c[1] / 100, z: i.v, label: i.label })); return { type: 'bubble', series: [{ name: cs.valName, xs: ps.map(p => pxNum(p.x)), ys: ps.map(p => pxNum(p.y)), zs: ps.map(p => pxNum(p.z)), color: pal[0] }], xTitle: LANG === 'pt' ? 'Longitude' : 'Longitude', yTitle: 'Latitude', sizeName: cs.valName, legend: false, note: LANG === 'pt' ? 'Mapa de bolhas exibido como gráfico de bolhas por longitude e latitude (centro de cada estado)' : 'Bubble map shown as a bubble chart by longitude and latitude (center of each state)', bubScale: 1 };
   }
+  if (!noVec && t === 'isomap' && cs) { const v = pxVecCanvas(P, state, 'Mapa de isolinhas'), f = pxSpec(P, state, true); if (f) v.fallback = f; return v; }
   if (t === 'isomap' && cs && cs.pts) return { type: 'scatter', series: [{ name: cs.valName, xs: cs.pts.map(p => pxNum(p[0])), ys: cs.pts.map(p => pxNum(p[1])), zs: [], color: pal[0] }], xTitle: 'Longitude', yTitle: 'Latitude', legend: false, note: LANG === 'pt' ? 'Mapa de isolinhas exibido como dispersão dos pontos (longitude e latitude)' : 'Isoline map shown as a scatter of the points (longitude and latitude)' };
   return null;
 }
@@ -294,7 +303,9 @@ function pxDeck(P) {
       k.forEach((c, i) => { const cx = x + (i % cols) * (cw + g), cy = y + Math.floor(i / cols) * (ch + g); s.text(cx, cy, cw, ch, [s.para(String(c.label).toUpperCase(), { sz: 10, col: th.muted, font: th.fontBody, after: 6 }), s.para(kpiFmt(c), { sz: 34, b: true, col: acc, font: th.fontTitle, after: 4 }), s.para(String(c.sub || ''), { sz: 11, col: th.muted, font: th.fontBody })], { name: 'Indicador ' + (i + 1), pad: 14, fill: th.fg, fillAlpha: 6, line: th.grid }); });
       return;
     }
-    if (spec.vec) { spec.vec(s, x, y, w, h); if (spec.note) s.text(x, y + h + 4, w, 36, s.para(spec.note, { sz: 10, col: th.muted, i: true, font: th.fontBody }), { name: 'Nota do gráfico' }); return; }
+    if (spec.vec) { // desenho vetorial; se algo falhar, cai para o gráfico nativo dos mesmos dados
+      const n0 = s.sh.length; try { spec.vec(s, x, y, w, h); if (spec.note) s.text(x, y + h + 4, w, 36, s.para(spec.note, { sz: 10, col: th.muted, i: true, font: th.fontBody }), { name: 'Nota do gráfico' }); return; } catch (e) { console.error(e); s.sh.length = n0; if (!spec.fallback) return; spec = spec.fallback; }
+    }
     if (spec.multi) { const m = spec.multi.slice(0, 6), cols = m.length <= 2 ? m.length : 3, rows = Math.ceil(m.length / cols), cw = w / cols, ch = h / rows; m.forEach((g, i) => { const cx = x + (i % cols) * cw, cy = y + Math.floor(i / cols) * ch; s.text(cx, cy, cw - 8, 22, s.para(g.title, { sz: 12, b: true, col: th.fg, font: th.fontBody, algn: 'ctr' }), { name: 'Título ' + g.title }); s.chart(cx, cy + 22, cw - 8, ch - 30, addChart(g.spec), 'Gráfico ' + g.title); }); return; }
     s.chart(x, y, w, h, addChart(spec), name || 'Gráfico');
     if (spec.note) s.text(x, y + h + 4, w, 36, s.para(spec.note, { sz: 10, col: th.muted, i: true, font: th.fontBody }), { name: 'Nota do gráfico' });

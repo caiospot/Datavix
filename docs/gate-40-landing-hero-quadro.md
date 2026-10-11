@@ -26,3 +26,9 @@
 - Os 4 gráficos usam os **construtores reais do produto** (`raysBuild`, `riverBuild`, `ridgeBuild`) sobre uma planilha sintética montada dos mesmos registros fictícios (`lpDs`: Ano, UF, Categoria, Receita, Data); nada é desenhado à mão.
 - Os chips de categoria refazem o gráfico atual (na árvore, só ligam/desligam as cores); passar o mouse destaca no gráfico (na árvore também no cartão e na lista).
 - Teste: `test/m/lp-charts.js` (abas, pixels desenhados em cada gráfico, chip, mouse, sem estouro lateral).
+
+## Ajustes pós-portão 3 (pedido do usuário)
+- **Como funciona virou carrossel** (inspirado no carrossel de extensões do Raycast): título agora "Quatro passos e a sua planilha" (EN: "Four steps and your spreadsheet"); 4 cartões com pedaços reais do produto, seguindo o texto de cada passo — 1) a pergunta "Para quem é a apresentação?" com as opções da ferramenta; 2) área de soltar a planilha, arquivo lido e colunas reconhecidas (nomes e contagem vêm dos dados fictícios); 3) a Árvore radial viva com o cartão de insight e "ver cálculo" (só roda quando o cartão aparece); 4) painel Exportar com paletas, Apresentar, HTML, PNG e ZIP. Pílulas 01–04, botões anterior/próximo, contador, teclado (← →) e rolagem por toque; o cartão seguinte aparece pela borda.
+- **Para quem:** as mesmas 3 informações dentro de cartões, cada um com um pedaço do produto (tabela → barras; insight com cálculo; arquivos por cliente com paletas).
+- **Hero:** halo claro e desfocado (lavanda, com toques de lime e azul) por trás do quadro da ferramenta, que some suavemente embaixo.
+- Testes: `test/m/lp-how.js` (carrossel e cartões), além dos de hero, cadastro, gráficos e Sair.

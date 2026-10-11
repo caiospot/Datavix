@@ -5,11 +5,12 @@ const LP = {
     nav: [['como', 'Como funciona'], ['graficos', 'Gráficos'], ['diferenciais', 'Diferenciais'], ['faq', 'FAQ']],
     start: 'Começar agora', newp: 'Novo projeto', how_cta: 'Ver como funciona',
     fr: { t: 'Vendas por estado', src: 'Fonte: exemplo-vendas.csv · dados fictícios', ins: '{u} lidera com {p} da receita.', lead: 'Maior UF', share: 'Participação', calc: 'ver cálculo', ov: 'Visão geral', det: 'Detalhe', rows: 'Registros', ufs: 'UF', cats: 'Categorias', big: 'Maior', hover: 'Passe o mouse numa bolha para ver os detalhes.', hover2: 'Passe o mouse no gráfico para destacar.', same: 'A mesma planilha, outros gráficos', list: 'Lista', per: 'Período', cat: 'Categoria', by: 'Receita por ano', bys: 'Receita por UF', unsaved: 'Não salvo', save: 'Salvar projeto', present: 'Apresentar', howto: 'Como usar', yr: 'Ano', rev: 'Receita', total: 'Total' },
+    hw: { drop: 'Arraste a planilha ou escolha um arquivo', file: 'vendas.csv', rows: '{n} linhas', det: 'Colunas reconhecidas', num: 'número', cat: 'categoria', tabs: ['Gráfico', 'Estilo', 'Exportar'], font: 'Tipografia', prev: 'Passo anterior', next: 'Próximo passo', pick: 'Ir para o passo', cli: 'Cliente' },
     em_ph: 'Qual é o seu e-mail?', em_btn: 'Começar de graça', em_bad: 'Esse e-mail parece incompleto. Confira e tente de novo.', em_req: 'Digite o seu e-mail para começar.',
     hero_k: 'Tudo vira dado.', hero_h: ['Da planilha ao', 'storytelling'],
     hero_p: 'O Datavix transforma a sua planilha em dataviz executivo animado e interativo. Tudo acontece no seu navegador: a planilha não sai do seu computador.',
     chips: ['XLSX · XLS · CSV', 'Exporta HTML offline', 'PT / EN'], hero_cap: 'Árvore radial com dados fictícios. Passe o mouse.', hero_cap2: '{c} com dados fictícios. Passe o mouse.',
-    how_k: 'Como funciona', how_h: ['Quatro passos, zero', 'designer'],
+    how_k: 'Como funciona', how_h: ['Quatro passos e a sua', 'planilha'],
     steps: [
       ['Responda 4 perguntas', 'Qual é a sua área, para quem é, que decisão você quer provocar e quanto tempo tem. Depois da planilha, o Datavix mostra o que encontrou e escolhe o gráfico.', 'opções de público na primeira pergunta do Datavix'],
       ['Suba a planilha', 'Excel ou CSV com dezenas de milhares de linhas. Reconhecemos colunas, datas, números em formato brasileiro e a qualidade dos dados.', 'área para arrastar ou escolher a planilha'],
@@ -55,11 +56,12 @@ const LP = {
     nav: [['como', 'How it works'], ['graficos', 'Charts'], ['diferenciais', 'Why Datavix'], ['faq', 'FAQ']],
     start: 'Get started', newp: 'New project', how_cta: 'See how it works',
     fr: { t: 'Sales by state', src: 'Source: sales-example.csv · sample data', ins: '{u} leads with {p} of revenue.', lead: 'Largest state', share: 'Share', calc: 'see calculation', ov: 'Overview', det: 'Detail', rows: 'Rows', ufs: 'States', cats: 'Categories', big: 'Largest', hover: 'Hover a bubble to see the details.', hover2: 'Hover the chart to highlight.', same: 'The same spreadsheet, other charts', list: 'List', per: 'Period', cat: 'Category', by: 'Revenue by year', bys: 'Revenue by state', unsaved: 'Not saved', save: 'Save project', present: 'Present', howto: 'How to use', yr: 'Year', rev: 'Revenue', total: 'Total' },
+    hw: { drop: 'Drag the spreadsheet or pick a file', file: 'sales.csv', rows: '{n} rows', det: 'Detected columns', num: 'number', cat: 'category', tabs: ['Chart', 'Style', 'Export'], font: 'Typography', prev: 'Previous step', next: 'Next step', pick: 'Go to step', cli: 'Client' },
     em_ph: 'What\'s your email?', em_btn: 'Start for free', em_bad: 'That email looks incomplete. Check it and try again.', em_req: 'Enter your email to get started.',
     hero_k: 'Everything becomes data.', hero_h: ['From spreadsheet to', 'storytelling'],
     hero_p: 'Datavix turns your spreadsheet into animated, interactive executive dataviz. Everything happens in your browser: the spreadsheet never leaves your computer.',
     chips: ['XLSX · XLS · CSV', 'Exports offline HTML', 'PT / EN'], hero_cap: 'Radial tree with sample data. Hover it.', hero_cap2: '{c} with sample data. Hover it.',
-    how_k: 'How it works', how_h: ['Four steps, zero', 'designers'],
+    how_k: 'How it works', how_h: ['Four steps and your', 'spreadsheet'],
     steps: [
       ['Answer 4 questions', 'Which area you work in, who it is for, which decision you want to trigger and how much time you have. After the spreadsheet, Datavix shows what it found and picks the chart.', 'audience options on the first Datavix question'],
       ['Upload the spreadsheet', 'Excel or CSV with tens of thousands of rows. We detect columns, dates, number formats and data quality.', 'area to drag or pick the spreadsheet'],
@@ -134,15 +136,13 @@ function landingHtml() {
     <p class="lp-capline" id="lp-cap">${esc(L.hero_cap)}</p>
   </section>
   ${(S.recents || []).length ? `<section class="lp-sec lp-saved" id="salvos"><div class="lbl">[ ${esc(L.saved_k)} ]</div><h2>${lpTitle(L.saved_h[0], L.saved_h[1])}</h2><div class="pj-grid">${projCards(6)}</div><div class="row pj-more">${S.recents.length > 6 ? `<button class="btn ghost sm" data-a="projects">${L.all} (${S.recents.length})</button>` : ''}<span class="note">${esc(L.saved_note)}</span></div></section>` : ''}
-  <section class="lp-sec" id="como"><div class="lp-sechead"><div class="lbl">[ ${esc(L.how_k)} ]</div><h2>${lpTitle(L.how_h[0], L.how_h[1])}</h2></div>
-    <div class="lp-rows">${L.steps.map((s, i) => `<article class="lp-row${i % 2 ? ' rev' : ''}" data-rv><div class="lp-row-t"><div class="lp-n num">${String(i + 1).padStart(2, '0')}</div><h3>${esc(s[0])}</h3><p>${esc(s[1])}</p></div><div class="lp-row-i">${lpShot(LP_IMGS[i], s[2])}</div></article>`).join('')}</div></section>
+  <section class="lp-sec lp-how" id="como">${lpHow(L)}</section>
   <section class="lp-sec" id="graficos"><div class="lp-split"><div class="lp-split-h"><div class="lbl">[ ${esc(L.ch_k)} ]</div><h2>${lpTitle(L.ch_h[0], L.ch_h[1])}</h2><p class="sub">${esc(L.ch_p)}</p></div>
     <div class="lp-clist">${L.charts.map((c, i) => `<article class="lp-ch" data-rv>${lpChart(LP_CH_ICON[i], c[0])}<div class="lp-ch-b"><div class="lp-ch-h"><h3>${esc(c[0])}</h3><span class="tag${c[2] ? ' on' : ''}">${c[2] ? L.avail : L.soon}</span></div><p>${esc(c[1])}</p></div></article>`).join('')}</div></div>
     <p class="lp-also"><span>${esc(T('lp_also'))}</span>${['bars', 'hbars', 'stacked100', 'treemap', 'pie', 'donut', 'pies', 'donuts', 'packed', 'cols', 'lines', 'radial', 'radar', 'box', 'words', 'bubmap', 'isomap', 'race', 'line', 'area', 'calendar', 'scatter', 'bubble', 'kpi'].map(t => `<b>${chartIcon(t)}${esc(T('chart')[t])}</b>`).join('')}</p></section>
   <section class="lp-sec" id="diferenciais"><div class="lp-split"><div class="lp-split-h"><div class="lbl">[ ${esc(L.df_k)} ]</div><h2>${lpTitle(L.df_h[0], L.df_h[1], L.df_h2)}</h2></div>
     <div class="lp-dlist">${L.diffs.map((d, i) => `<article class="lp-df" data-rv><div class="lbl">${String(i + 1).padStart(2, '0')}</div><div><h3>${esc(d[0])}</h3><p>${esc(d[1])}</p></div></article>`).join('')}</div></div></section>
-  <section class="lp-sec"><div class="lp-split"><div class="lp-split-h"><div class="lbl">[ ${esc(L.au_k)} ]</div></div>
-    <div class="lp-aud">${L.aud.map(a => `<article data-rv><h3>${esc(a[0])}</h3><p>${esc(a[1])}</p></article>`).join('')}</div></div></section>
+  <section class="lp-sec lp-who">${lpWho(L)}</section>
   <section class="lp-sec lp-faq" id="faq"><div class="lbl">[ ${esc(L.faq_k)} ]</div>
     <div>${L.faq.concat(npsOn() ? [[T('nps_faq_q'), T('nps_faq_a')]] : []).map(f => `<details><summary>${esc(f[0])}</summary><p>${esc(f[1])}</p></details>`).join('')}</div></section>
   <section class="lp-final"><h2>${lpTitle(L.cta_h[0], L.cta_h[1])}</h2><div class="lp-final-cta">${mine ? cta : reg ? startBtn : mailForm('b')}</div></section>
@@ -190,7 +190,7 @@ function lpFrame(L) {
   const line = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
   const ents = st.entTot.map((v, i) => [v, i]).sort((a, b) => b[0] - a[0]).slice(0, 5), em = ents[0][0];
   const row = t => `<button type="button" class="lpf-row" data-leaf="${t.i}" style="--c:${c(t.c)}"><i></i><span class="t"><b>${esc(D.ents[t.e].label)}</b><small>${esc(D.cols[t.c].label)} · ${esc(D.hubs[t.h].label)}</small></span><span>${f(t.v)}</span></button>`;
-  return `<div class="lp-frame" id="lpframe" role="group" aria-label="${esc(L.hero_cap)}" data-total="${st.total.toFixed(2)}">
+  return `<div class="lp-framewrap"><div class="lp-frame" id="lpframe" role="group" aria-label="${esc(L.hero_cap)}" data-total="${st.total.toFixed(2)}">
     <div class="lpf-bar" aria-hidden="true"><span class="lpf-dots"><i></i><i></i><i></i></span><span>DATAVIX</span><span class="sp"></span><span class="lpf-warn">● ${esc(F.unsaved)}</span><span class="lpf-pill">${esc(F.save)}</span></div>
     <div class="lpf-body">
       <aside class="lpf-left">
@@ -207,7 +207,35 @@ function lpFrame(L) {
         <div class="lpf-list"><div class="h lpf-lbl">[ ${esc(F.list)} · ${fmtInt(st.n, LANG)} ]</div><div class="lpf-rows">${st.top.map(row).join('')}</div></div>
       </section>
       <div class="lpf-stage"><div class="lpf-tabs" role="tablist" aria-label="${esc(F.same)}">${LP_CHARTS.map((id, i) => `<button type="button" role="tab" class="lpf-tab" data-ch="${id}" aria-selected="${i === 0}">${esc(T('chart')[id])}</button>`).join('')}<span class="lpf-tools" aria-hidden="true"><span>▶ ${esc(F.present)}</span><span>? ${esc(F.howto)}</span></span></div><div class="lpf-cvw"><canvas id="lpcv" aria-label="${esc(L.hero_cap)}" role="img"></canvas></div></div>
-    </div></div>`;
+    </div></div></div>`;
+}
+
+/* ---- Como funciona: carrossel de 4 cartões, cada um com um pedaço real da ferramenta ---- */
+const lpIco = k => `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${{ q: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>', up: '<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v4h16v-4"/>', play: '<circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5z"/>', ex: '<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>' }[k]}</svg>`;
+function lpHow(L) {
+  const st = lpStats(), { D, pal, f } = st, H = L.hw, O = I18N[LANG].o, F = L.fr, N = L.steps.length, pn = T('pal'), sh = Math.round(st.entTot[st.big] / st.total * 100);
+  const v1 = `<div class="v1"><div class="xdots"><i class="on"></i><i></i><i></i><i></i></div><div class="xq">${esc(T('q_audience')[0])} <b>${esc(T('q_audience')[1])}</b></div><div class="xopts">${['board', 'clevel', 'director', 'team'].map(k => `<span class="${k === 'director' ? 'on' : ''}"><b>${esc(O.audience[k][0])}</b><small>${esc(O.audience[k][1])}</small></span>`).join('')}</div></div>`;
+  const cols = [[D.hubName, H.cat], [D.entName, H.cat], [D.colName, H.cat], [D.sizeName, H.num]];
+  const v2 = `<div class="v2"><div class="xdrop"><b>${esc(H.drop)}</b><small>.xlsx · .xls · .csv</small></div><div class="xfile"><span>${esc(H.file)}</span><em>${esc(H.rows.replace('{n}', fmtInt(st.n, LANG)))}</em><i class="xbar"><u></u></i></div><div class="xdet"><div class="lpf-lbl">${esc(H.det)}</div><div class="xcols">${cols.map(c => `<span>${esc(c[0])}<small>${esc(c[1])}</small></span>`).join('')}</div></div></div>`;
+  const v3 = `<div class="v3"><canvas id="lphcv" aria-hidden="true"></canvas><div class="xins"><div class="lpf-lbl">[ INSIGHT // 01 ]</div><p>${esc(F.ins.replace('{u}', D.ents[st.big].label).replace('{p}', sh + '%'))}</p><details open><summary>${esc(F.calc)}</summary><dl><dt>${esc(D.ents[st.big].label)}</dt><dd>${f(st.entTot[st.big])}</dd><dt>${esc(F.total)}</dt><dd>${f(st.total)}</dd><dt>${esc(F.share)}</dt><dd>${sh}%</dd></dl></details></div></div>`;
+  const sw = ['cosmos', 'corporate', 'editorial', 'tech', 'vibrant'], ex = [['▶', T('present')], ['&lt;/&gt;', T('ex_html')], ['▣', T('ex_png')], ['⇩', T('ex_steps')]];
+  const v4 = `<div class="v4"><div class="xtabs">${H.tabs.map((t, i) => `<span class="${i === 2 ? 'on' : ''}">${esc(t)}</span>`).join('')}</div><div class="xpal"><div class="lpf-lbl">${esc(T('pal_h'))}</div>${sw.map((k, i) => `<div class="pr${i === 0 ? ' on' : ''}"><span>${esc(pn[k])}</span><i>${PALETTES[k].slice(0, 5).map(c => `<u style="background:${c}"></u>`).join('')}</i></div>`).join('')}</div><div class="xexp">${ex.map(e => `<span><b>${e[0]}</b>${esc(e[1])}</span>`).join('')}</div></div>`;
+  const vis = [v1, v2, v3, v4], ic = ['q', 'up', 'play', 'ex'];
+  const card = i => `<article class="lph-card c${i + 1}" data-i="${i}" role="group" aria-roledescription="slide" aria-label="${i + 1} / ${N}"><div class="lph-h"><span class="lph-ic">${lpIco(ic[i])}</span><h3>${esc(L.steps[i][0])}</h3><span class="lph-n num">0${i + 1}</span></div><p>${esc(L.steps[i][1])}</p><div class="lph-vis" role="img" aria-label="${esc(L.steps[i][2])}">${vis[i]}</div></article>`;
+  return `<div class="lph-top"><div><div class="lbl">[ ${esc(L.how_k)} ]</div><h2>${lpTitle(L.how_h[0], L.how_h[1])}</h2></div>
+    <div class="lph-pills" role="group" aria-label="${esc(H.pick)}">${L.steps.map((s, i) => `<button type="button" class="lph-pill" data-go="${i}" aria-label="${esc(H.pick + ' ' + (i + 1))}" aria-pressed="${i === 0}">0${i + 1}</button>`).join('')}</div></div>
+    <div class="lph-track" id="lph-track" tabindex="0" aria-roledescription="carousel" aria-label="${esc(L.how_k)}">${L.steps.map((_, i) => card(i)).join('')}</div>
+    <div class="lph-foot"><span class="lph-count"><b id="lph-cur">01</b> / 0${N}</span><div class="lph-btns"><button type="button" class="lph-btn" data-dir="-1" aria-label="${esc(H.prev)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><button type="button" class="lph-btn" data-dir="1" aria-label="${esc(H.next)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div></div>`;
+}
+
+/* ---- Para quem: três cartões, cada um com um pedaço do produto ---- */
+function lpWho(L) {
+  const st = lpStats(), { D, f } = st, F = L.fr, H = L.hw, pn = T('pal'), sh = Math.round(st.entTot[st.big] / st.total * 100);
+  const top = st.entTot.map((v, i) => [v, i]).sort((a, b) => b[0] - a[0]).slice(0, 5), mx = top[0][0];
+  const a1 = `<div class="va1"><div class="xsheet">${top.map(([v, i]) => `<span>${esc(D.ents[i].label)}</span><span>${f(v)}</span>`).join('')}</div><svg viewBox="0 0 10 10" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M1 5h7M5.5 2.5L8 5 5.5 7.5"/></svg><div class="xbars">${top.map(([v]) => `<b style="--h:${Math.round(v / mx * 100)}%"></b>`).join('')}</div></div>`;
+  const a2 = `<div class="va2"><div class="xins"><div class="lpf-lbl">[ INSIGHT // 01 ]</div><p>${esc(F.ins.replace('{u}', D.ents[st.big].label).replace('{p}', sh + '%'))}</p><div class="xcalc"><span>${esc(F.calc)}</span><span>${f(st.entTot[st.big])} / ${f(st.total)}</span></div></div></div>`;
+  const a3 = `<div class="va3">${['corporate', 'editorial', 'vibrant'].map((k, i) => `<div><span>${esc(H.cli)} ${'ABC'[i]}</span><i>${PALETTES[k].slice(0, 5).map(c => `<u style="background:${c}"></u>`).join('')}</i><small>${esc(pn[k])}</small></div>`).join('')}</div>`;
+  return `<div class="lbl">[ ${esc(L.au_k)} ]</div><div class="lpa-grid">${L.aud.map((a, i) => `<article class="lpa-card" data-rv><div class="lpa-vis" aria-hidden="true">${[a1, a2, a3][i]}</div><h3>${esc(a[0])}</h3><p>${esc(a[1])}</p></article>`).join('')}</div>`;
 }
 let _lp = null;
 function landingMount() {
@@ -269,12 +297,35 @@ function landingMount() {
   const top = $('.top'); let ticking = false;
   const onScroll = () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { ticking = false; if (top) top.classList.toggle('at-top', scrollY < 8); }); };
   window.addEventListener('scroll', onScroll, { passive: true }); _lp.onScroll = onScroll; onScroll();
+  // carrossel "Como funciona": botões, pílulas e contador seguem a rolagem; a árvore do passo 3 só roda quando o cartão aparece
+  const trk = $('#lph-track');
+  if (trk) {
+    const cards = $$('.lph-card', trk), pills = $$('.lph-pill'), cur = $('#lph-cur');
+    const pad = () => parseFloat(getComputedStyle(trk).paddingLeft) || 0;
+    let force = -1; // passo escolhido por botão/pílula: vale até a pessoa rolar sozinha (no fim da rolagem dois cartões cabem na tela)
+    const pos = () => { let b = 0, bd = 1e9; cards.forEach((c, i) => { const d = Math.abs(c.offsetLeft - trk.scrollLeft - pad()); if (d < bd) { bd = d; b = i; } }); if (trk.scrollLeft + trk.clientWidth >= trk.scrollWidth - 4) b = cards.length - 1; return b; };
+    const idx = () => (force >= 0 ? force : pos());
+    const sync = () => { const i = idx(); pills.forEach((p, k) => p.setAttribute('aria-pressed', String(k === i))); if (cur) cur.textContent = '0' + (i + 1); };
+    const go = i => { i = Math.max(0, Math.min(cards.length - 1, i)); force = i; trk.scrollTo({ left: cards[i].offsetLeft - pad(), behavior: RM ? 'auto' : 'smooth' }); sync(); };
+    ['wheel', 'touchstart', 'pointerdown'].forEach(ev => trk.addEventListener(ev, () => { force = -1; }, { passive: true }));
+    trk.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
+    pills.forEach(p => p.addEventListener('click', () => go(+p.dataset.go)));
+    $$('.lph-btn').forEach(b => b.addEventListener('click', () => go(idx() + +b.dataset.dir)));
+    trk.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); go(idx() + 1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); go(idx() - 1); } });
+    const hc = $('#lphcv');
+    if (hc) {
+      let he = null; const hfit = () => { if (!he) return; const w = Math.max(160, hc.clientWidth), h = Math.max(160, hc.clientHeight), dpr = Math.min(2, devicePixelRatio || 1); hc.width = Math.round(w * dpr); hc.height = Math.round(h * dpr); he.resize(w, h, dpr); };
+      const hro = new ResizeObserver(hfit); _lp.hro = hro;
+      const hio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { if (!he) { he = new OrgEngine(D, th, { rm: RM }); he.ctx = hc.getContext('2d'); hro.observe(hc); hfit(); if (RM) he.snap(); } else he.kick(); } else if (he) he.stop(); }), { threshold: 0.5 });
+      hio.observe(hc); _lp.hio = hio; _lp.hEng = () => he;
+    }
+  }
   // entrada suave das seções ao rolar
   const rv = $$('[data-rv]');
   if (RM || !window.IntersectionObserver) rv.forEach(n => n.classList.add('in'));
   else { const io2 = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io2.unobserve(e.target); } }), { threshold: 0.12 }); rv.forEach(n => io2.observe(n)); _lp.io = io2; }
 }
-function landingUnmount() { if (!_lp) return; window.removeEventListener('scroll', _lp.onScroll); const tp = $('.top'); if (tp) tp.classList.remove('at-top'); if (_lp.eng) _lp.eng.stop(); _lp.ro.disconnect(); if (_lp.timer) clearInterval(_lp.timer); if (_lp.io) _lp.io.disconnect(); if (_lp.io2) _lp.io2.disconnect(); _lp = null; }
+function landingUnmount() { if (!_lp) return; window.removeEventListener('scroll', _lp.onScroll); const tp = $('.top'); if (tp) tp.classList.remove('at-top'); if (_lp.eng) _lp.eng.stop(); _lp.ro.disconnect(); if (_lp.timer) clearInterval(_lp.timer); if (_lp.io) _lp.io.disconnect(); if (_lp.io2) _lp.io2.disconnect(); if (_lp.hio) _lp.hio.disconnect(); if (_lp.hro) _lp.hro.disconnect(); if (_lp.hEng && _lp.hEng()) _lp.hEng().stop(); _lp = null; }
 
 /* ---- projetos salvos (neste navegador): cartões na página inicial e lista no modal ---- */
 function projMeta(p) {

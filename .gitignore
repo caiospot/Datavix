@@ -7,3 +7,6 @@
 /spike-vizzu/
 node_modules/
 /test/out/
+
+# segredos locais do build (URL e token do Apps Script)
+/.env.local

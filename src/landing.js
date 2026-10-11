@@ -10,12 +10,12 @@ const LP = {
     hero_k: 'Tudo vira dado.', hero_h: ['Da planilha ao', 'storytelling'],
     hero_p: 'O Datavix transforma a sua planilha em dataviz executivo animado e interativo. Tudo acontece no seu navegador: a planilha não sai do seu computador.',
     chips: ['XLSX · XLS · CSV', 'Exporta HTML offline', 'PT / EN'], hero_cap: 'Árvore radial com dados fictícios. Passe o mouse.', hero_cap2: '{c} com dados fictícios. Passe o mouse.',
-    how_k: 'Como funciona', how_h: ['Quatro passos e a sua', 'planilha'],
+    how_k: 'Como funciona', how_h: ['Quatro passos até o', 'Storytelling'],
     steps: [
-      ['Responda 4 perguntas', 'Qual é a sua área, para quem é, que decisão você quer provocar e quanto tempo tem. Depois da planilha, o Datavix mostra o que encontrou e escolhe o gráfico.', 'opções de público na primeira pergunta do Datavix'],
-      ['Suba a planilha', 'Excel ou CSV com dezenas de milhares de linhas. Reconhecemos colunas, datas, números em formato brasileiro e a qualidade dos dados.', 'área para arrastar ou escolher a planilha'],
-      ['Veja a animação', 'O gráfico entra com animação orquestrada. Insights só aparecem com cálculo que os sustente, e o “ver cálculo” mostra a conta.', 'detalhe da árvore radial animada: períodos, ramos e cada registro como uma bolha'],
-      ['Edite e exporte', 'Troque gráfico, paleta, fundo e fontes. Exporte HTML interativo que abre offline, PNG ou um ZIP com um PNG por etapa.', 'painel de exportação: apresentar, HTML, PNG e ZIP'],
+      ['Responda 4 perguntas', 'Área, público, decisão e tempo. Depois da planilha, o Datavix mostra o que achou e escolhe o gráfico.', 'opções de público na primeira pergunta do Datavix'],
+      ['Suba a planilha', 'Excel ou CSV com dezenas de milhares de linhas. Reconhecemos colunas, datas e formatos brasileiros.', 'área para arrastar ou escolher a planilha'],
+      ['Veja a animação', 'O gráfico entra animado. Todo insight vem com cálculo, e o “ver cálculo” mostra a conta.', 'detalhe da árvore radial animada: períodos, ramos e cada registro como uma bolha'],
+      ['Edite e exporte', 'Troque gráfico, paleta, fundo e fontes. Exporte HTML offline, PNG ou ZIP com um PNG por etapa.', 'painel de exportação: apresentar, HTML, PNG e ZIP'],
     ],
     ch_k: 'Gráficos', ch_h: ['Um gráfico para cada', 'história'], ch_p: 'A sugestão segue o formato dos seus dados. Você escolhe entre a principal e as alternativas.',
     avail: 'Disponível', soon: 'Em breve', ch_more: 'Também: barras, linhas, áreas, treemap, bolhas, dispersão, calendário e indicadores.',
@@ -61,12 +61,12 @@ const LP = {
     hero_k: 'Everything becomes data.', hero_h: ['From spreadsheet to', 'storytelling'],
     hero_p: 'Datavix turns your spreadsheet into animated, interactive executive dataviz. Everything happens in your browser: the spreadsheet never leaves your computer.',
     chips: ['XLSX · XLS · CSV', 'Exports offline HTML', 'PT / EN'], hero_cap: 'Radial tree with sample data. Hover it.', hero_cap2: '{c} with sample data. Hover it.',
-    how_k: 'How it works', how_h: ['Four steps and your', 'spreadsheet'],
+    how_k: 'How it works', how_h: ['Four steps to', 'Storytelling'],
     steps: [
-      ['Answer 4 questions', 'Which area you work in, who it is for, which decision you want to trigger and how much time you have. After the spreadsheet, Datavix shows what it found and picks the chart.', 'audience options on the first Datavix question'],
-      ['Upload the spreadsheet', 'Excel or CSV with tens of thousands of rows. We detect columns, dates, number formats and data quality.', 'area to drag or pick the spreadsheet'],
-      ['Watch it animate', 'The chart enters with orchestrated animation. Insights only appear when a calculation supports them, and “see calculation” shows the math.', 'detail of the animated radial tree: periods, branches and each record as a bubble'],
-      ['Edit and export', 'Change chart, palette, background and fonts. Export interactive HTML that opens offline, a PNG, or a ZIP with one PNG per step.', 'export panel: present, HTML, PNG and ZIP'],
+      ['Answer 4 questions', 'Area, audience, decision and time. After the spreadsheet, Datavix shows what it found and picks the chart.', 'audience options on the first Datavix question'],
+      ['Upload the spreadsheet', 'Excel or CSV with tens of thousands of rows. We detect columns, dates and number formats.', 'area to drag or pick the spreadsheet'],
+      ['Watch it animate', 'The chart enters animated. Every insight comes with its math, and “see calculation” shows it.', 'detail of the animated radial tree: periods, branches and each record as a bubble'],
+      ['Edit and export', 'Change chart, palette, background and fonts. Export offline HTML, PNG or a ZIP with a PNG per step.', 'export panel: present, HTML, PNG and ZIP'],
     ],
     ch_k: 'Charts', ch_h: ['A chart for every', 'story'], ch_p: 'The suggestion follows the shape of your data. You choose between the main one and the alternatives.',
     avail: 'Available', soon: 'Coming soon', ch_more: 'Also: bars, lines, areas, treemap, bubbles, scatter, calendar and KPI cards.',
@@ -167,10 +167,10 @@ function lpDs(cats) {
     { name: D.sizeName, kind: 'number', unit: null, data: Float64Array.from(rows, l => l[3]) }, { name: LANG === 'pt' ? 'Data' : 'Date', kind: 'date', unit: null, data: dates, min: Math.min(...dates), max: Math.max(...dates) }];
   return { columns, rowCount: rows.length };
 }
-const LP_MAP = { rays: { entity: 1, group: 2, value: 3, agg: 'sum', details: [] }, river: { period: 0, cat: 2, value: 3, agg: 'sum' }, ridge: { time: 4, ent: 1, value: 3, comp: 2, agg: 'sum' } };
+const LP_MAP = { fan: { value: 3, label: -1, cat: 2, agg: 'sum' }, flow: { s1: 2, s2: 1, s3: 0, value: 3, agg: 'sum' }, rays: { entity: 1, group: 2, value: 3, agg: 'sum', details: [] }, river: { period: 0, cat: 2, value: 3, agg: 'sum' }, ridge: { time: 4, ent: 1, value: 3, comp: 2, agg: 'sum' } };
 function lpEngine(id, th, cats) {
   if (id === 'organism') { const D = landingData(); return new OrgEngine(D, th, { rm: RM }); }
-  const B = { rays: raysBuild, river: riverBuild, ridge: ridgeBuild }[id], C = { rays: RaysEngine, river: RiverEngine, ridge: RidgeEngine }[id];
+  const B = { rays: raysBuild, river: riverBuild, ridge: ridgeBuild, fan: fanBuild, flow: flowBuild }[id], C = { rays: RaysEngine, river: RiverEngine, ridge: RidgeEngine, fan: FanEngine, flow: FlowEngine }[id];
   const d = B(lpDs(cats), LP_MAP[id], { lang: LANG, nullPolicy: 'ignore' }); return d ? new C(d, th, { rm: RM }) : null;
 }
 function lpStats() {
@@ -215,13 +215,13 @@ function lpHow(L) {
   const v1 = `<div class="v1"><div class="xdots"><i class="on"></i><i></i><i></i><i></i></div><div class="xq">${esc(T('q_audience')[0])} <b>${esc(T('q_audience')[1])}</b></div><div class="xopts">${['board', 'clevel', 'director', 'team'].map(k => `<span class="${k === 'director' ? 'on' : ''}"><b>${esc(O.audience[k][0])}</b><small>${esc(O.audience[k][1])}</small></span>`).join('')}</div></div>`;
   const cols = [[D.hubName, H.cat], [D.entName, H.cat], [D.colName, H.cat], [D.sizeName, H.num]];
   const v2 = `<div class="v2"><div class="xdrop"><b>${esc(H.drop)}</b><small>.xlsx · .xls · .csv</small></div><div class="xfile"><span>${esc(H.file)}</span><em>${esc(H.rows.replace('{n}', fmtInt(st.n, LANG)))}</em><i class="xbar"><u></u></i></div><div class="xdet"><div class="lpf-lbl">${esc(H.det)}</div><div class="xcols">${cols.map(c => `<span>${esc(c[0])}<small>${esc(c[1])}</small></span>`).join('')}</div></div></div>`;
-  const v3 = `<div class="v3"><canvas id="lphcv" aria-hidden="true"></canvas><div class="xins"><div class="lpf-lbl">[ INSIGHT // 01 ]</div><p>${esc(F.ins.replace('{u}', D.ents[st.big].label).replace('{p}', sh + '%'))}</p><details open><summary>${esc(F.calc)}</summary><dl><dt>${esc(D.ents[st.big].label)}</dt><dd>${f(st.entTot[st.big])}</dd><dt>${esc(F.total)}</dt><dd>${f(st.total)}</dd><dt>${esc(F.share)}</dt><dd>${sh}%</dd></dl></details></div></div>`;
+  const v3 = `<div class="v3"><canvas id="lphcv" aria-hidden="true"></canvas><div class="xins"><div class="lpf-lbl">[ INSIGHT // 01 ]</div><p>${esc(F.ins.replace('{u}', D.ents[st.big].label).replace('{p}', sh + '%'))}</p><details><summary>${esc(F.calc)}</summary><dl><dt>${esc(D.ents[st.big].label)}</dt><dd>${f(st.entTot[st.big])}</dd><dt>${esc(F.total)}</dt><dd>${f(st.total)}</dd><dt>${esc(F.share)}</dt><dd>${sh}%</dd></dl></details></div></div>`;
   const sw = ['cosmos', 'corporate', 'editorial', 'tech', 'vibrant'], ex = [['▶', T('present')], ['&lt;/&gt;', T('ex_html')], ['▣', T('ex_png')], ['⇩', T('ex_steps')]];
   const v4 = `<div class="v4"><div class="xtabs">${H.tabs.map((t, i) => `<span class="${i === 2 ? 'on' : ''}">${esc(t)}</span>`).join('')}</div><div class="xpal"><div class="lpf-lbl">${esc(T('pal_h'))}</div>${sw.map((k, i) => `<div class="pr${i === 0 ? ' on' : ''}"><span>${esc(pn[k])}</span><i>${PALETTES[k].slice(0, 5).map(c => `<u style="background:${c}"></u>`).join('')}</i></div>`).join('')}</div><div class="xexp">${ex.map(e => `<span><b>${e[0]}</b>${esc(e[1])}</span>`).join('')}</div></div>`;
   const vis = [v1, v2, v3, v4], ic = ['q', 'up', 'play', 'ex'];
   const card = i => `<article class="lph-card c${i + 1}" data-i="${i}" role="group" aria-roledescription="slide" aria-label="${i + 1} / ${N}"><div class="lph-h"><span class="lph-ic">${lpIco(ic[i])}</span><h3>${esc(L.steps[i][0])}</h3><span class="lph-n num">0${i + 1}</span></div><p>${esc(L.steps[i][1])}</p><div class="lph-vis" role="img" aria-label="${esc(L.steps[i][2])}">${vis[i]}</div></article>`;
   return `<div class="lph-top"><div><div class="lbl">[ ${esc(L.how_k)} ]</div><h2>${lpTitle(L.how_h[0], L.how_h[1])}</h2></div>
-    <div class="lph-pills" role="group" aria-label="${esc(H.pick)}">${L.steps.map((s, i) => `<button type="button" class="lph-pill" data-go="${i}" aria-label="${esc(H.pick + ' ' + (i + 1))}" aria-pressed="${i === 0}">0${i + 1}</button>`).join('')}</div></div>
+</div>
     <div class="lph-track" tabindex="0" aria-roledescription="carousel" aria-label="${esc(L.how_k)}">${L.steps.map((_, i) => card(i)).join('')}</div>
     <div class="lph-foot"><span class="lph-count"><b class="lph-cur">01</b> / 0${N}</span><div class="lph-btns"><button type="button" class="lph-btn" data-dir="-1" aria-label="${esc(H.prev)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><button type="button" class="lph-btn" data-dir="1" aria-label="${esc(H.next)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div></div>`;
 }
@@ -239,9 +239,9 @@ function lpWho(L) {
 /* ---- Gráficos: carrossel de cartões (o mesmo desenho do "Como funciona"), cada um com a ilustração do gráfico ---- */
 function lpGraficos(L) {
   const H = L.hw, N = L.charts.length, tints = ['106, 92, 255', '2, 184, 204', '212, 255, 0', '255, 92, 138', '255, 138, 61', '76, 201, 240'];
-  const card = (c, i) => `<article class="lph-card lpg-card" style="--tint:${tints[i % tints.length]}" data-i="${i}" role="group" aria-roledescription="slide" aria-label="${i + 1} / ${N}"><div class="lph-h"><span class="lph-ic lpg-ic">${chartIcon(LP_CH_ICON[i])}</span><h3>${esc(c[0])}</h3><span class="tag${c[2] ? ' on' : ''}">${c[2] ? L.avail : L.soon}</span></div><p>${esc(c[1])}</p><div class="lph-vis lpg-vis" role="img" aria-label="${esc(c[0])}"><div class="lpg-art">${chartIcon(LP_CH_ICON[i])}</div></div></article>`;
+  const card = (c, i) => `<article class="lph-card lpg-card" style="--tint:${tints[i % tints.length]}" data-i="${i}" role="group" aria-roledescription="slide" aria-label="${i + 1} / ${N}"><div class="lph-h"><span class="lph-ic lpg-ic">${chartIcon(LP_CH_ICON[i])}</span><h3>${esc(c[0])}</h3><span class="tag${c[2] ? ' on' : ''}">${c[2] ? L.avail : L.soon}</span></div><p>${esc(c[1])}</p><div class="lph-vis lpg-vis" role="img" aria-label="${esc(c[0])}"><div class="lpg-art">${chartIcon(LP_CH_ICON[i])}<canvas class="lpg-cv" data-ch="${LP_CH_ICON[i]}" aria-hidden="true"></canvas></div></div></article>`;
   return `<div class="lph-top"><div><div class="lbl">[ ${esc(L.ch_k)} ]</div><h2>${lpTitle(L.ch_h[0], L.ch_h[1])}</h2><p class="sub">${esc(L.ch_p)}</p></div>
-    <div class="lph-pills" role="group" aria-label="${esc(H.pick)}">${L.charts.map((c, i) => `<button type="button" class="lph-pill" data-go="${i}" aria-label="${esc(H.pick + ' ' + (i + 1))}" aria-pressed="${i === 0}">0${i + 1}</button>`).join('')}</div></div>
+</div>
     <div class="lph-track" tabindex="0" aria-roledescription="carousel" aria-label="${esc(L.ch_k)}">${L.charts.map(card).join('')}</div>
     <div class="lph-foot"><span class="lph-count"><b class="lph-cur">01</b> / 0${N}</span><div class="lph-btns"><button type="button" class="lph-btn" data-dir="-1" aria-label="${esc(H.prev)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><button type="button" class="lph-btn" data-dir="1" aria-label="${esc(H.next)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div></div>`;
 }
@@ -326,16 +326,34 @@ function landingMount() {
     if (hc) {
       let he = null; const hfit = () => { if (!he) return; const w = Math.max(160, hc.clientWidth), h = Math.max(160, hc.clientHeight), dpr = Math.min(2, devicePixelRatio || 1); hc.width = Math.round(w * dpr); hc.height = Math.round(h * dpr); he.resize(w, h, dpr); };
       const hro = new ResizeObserver(hfit); _lp.hro = hro;
-      const hio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { if (!he) { he = new OrgEngine(D, th, { rm: RM }); he.ctx = hc.getContext('2d'); hro.observe(hc); hfit(); if (RM) he.snap(); } else he.kick(); } else if (he) he.stop(); }), { threshold: 0.5 });
+      const hio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { if (!he) { he = lpEngine('rays', th, null) || new OrgEngine(D, th, { rm: RM }); he.ctx = hc.getContext('2d'); hro.observe(hc); hfit(); if (RM) he.snap(); } else he.kick(); } else if (he) he.stop(); }), { threshold: 0.5 });
       hio.observe(hc); _lp.hio = hio; _lp.hEng = () => he;
     }
+  }
+  // seção Gráficos: cada cartão roda o gráfico real da ferramenta (mesmos dados fictícios), só enquanto aparece na tela
+  const gcv = $$('.lpg-cv');
+  if (gcv.length) {
+    const gEng = new Map(), gfit = (cv, en) => { const w = Math.max(160, cv.clientWidth), h = Math.max(120, cv.clientHeight), dpr = Math.min(2, devicePixelRatio || 1); cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); en.resize(w, h, dpr); };
+    const gro = new ResizeObserver(es => es.forEach(e => { const en = gEng.get(e.target); if (en) gfit(e.target, en); }));
+    const gio = new IntersectionObserver(es => es.forEach(e => {
+      const cv = e.target; let en = gEng.get(cv);
+      if (e.isIntersecting) {
+        if (!en) { try { en = lpEngine(cv.dataset.ch, th, null); } catch (err) { en = null; } if (!en) return; en.ctx = cv.getContext('2d'); gEng.set(cv, en); gro.observe(cv); gfit(cv, en); cv.closest('.lpg-art').classList.add('live'); if (RM) en.snap(); } else en.kick();
+      } else if (en) en.stop();
+    }), { threshold: 0.45 });
+    gcv.forEach(cv => {
+      gio.observe(cv); const org = cv.dataset.ch === 'organism';
+      cv.addEventListener('mousemove', e => { const en = gEng.get(cv); if (!en) return; const r = cv.getBoundingClientRect(), hit = en.pick(e.clientX - r.left, e.clientY - r.top); if (org) { en.hov.leaf = hit && hit.type === 'leaf' ? hit.i : -1; en.hov.hub = hit && hit.type === 'hub' ? hit.i : -1; en.kick(); cv.style.cursor = hit ? 'pointer' : 'default'; } else { const id = hit === undefined ? null : hit; if (en.setHover) en.setHover(id); cv.style.cursor = id === null ? 'default' : 'pointer'; } });
+      cv.addEventListener('mouseleave', () => { const en = gEng.get(cv); if (!en) return; if (org) { en.hov.leaf = -1; en.hov.hub = -1; en.kick(); } else if (en.setHover) en.setHover(null); });
+    });
+    _lp.gio = gio; _lp.gro = gro; _lp.gEng = gEng;
   }
   // entrada suave das seções ao rolar
   const rv = $$('[data-rv]');
   if (RM || !window.IntersectionObserver) rv.forEach(n => n.classList.add('in'));
   else { const io2 = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io2.unobserve(e.target); } }), { threshold: 0.12 }); rv.forEach(n => io2.observe(n)); _lp.io = io2; }
 }
-function landingUnmount() { if (!_lp) return; window.removeEventListener('scroll', _lp.onScroll); const tp = $('.top'); if (tp) tp.classList.remove('at-top'); if (_lp.eng) _lp.eng.stop(); _lp.ro.disconnect(); if (_lp.timer) clearInterval(_lp.timer); if (_lp.io) _lp.io.disconnect(); if (_lp.io2) _lp.io2.disconnect(); if (_lp.hio) _lp.hio.disconnect(); if (_lp.hro) _lp.hro.disconnect(); if (_lp.hEng && _lp.hEng()) _lp.hEng().stop(); _lp = null; }
+function landingUnmount() { if (!_lp) return; window.removeEventListener('scroll', _lp.onScroll); const tp = $('.top'); if (tp) tp.classList.remove('at-top'); if (_lp.eng) _lp.eng.stop(); _lp.ro.disconnect(); if (_lp.timer) clearInterval(_lp.timer); if (_lp.io) _lp.io.disconnect(); if (_lp.io2) _lp.io2.disconnect(); if (_lp.hio) _lp.hio.disconnect(); if (_lp.gio) _lp.gio.disconnect(); if (_lp.gro) _lp.gro.disconnect(); if (_lp.gEng) _lp.gEng.forEach(e => e.stop()); if (_lp.hro) _lp.hro.disconnect(); if (_lp.hEng && _lp.hEng()) _lp.hEng().stop(); _lp = null; }
 
 /* ---- projetos salvos (neste navegador): cartões na página inicial e lista no modal ---- */
 function projMeta(p) {

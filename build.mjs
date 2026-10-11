@@ -44,6 +44,8 @@ setTimeout(function(){fail(pt?'o app demorou demais para carregar. Abra o consol
 }
 const splash = splashHtml();
 // NPS: o endereço (Google Apps Script) e o token entram só na hora do build, por variável de ambiente; sem eles o NPS fica desligado
+// .env.local (fora do git): linhas CHAVE=valor, para não digitar DATAVIX_NPS_URL/DATAVIX_NPS_TOKEN a cada build
+try { for (const ln of fs.readFileSync(new URL('.env.local', import.meta.url), 'utf8').split('\n')) { const m = /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/.exec(ln); if (m && !ln.trim().startsWith('#') && process.env[m[1]] === undefined) process.env[m[1]] = m[2].replace(/^["']|["']$/g, ''); } } catch (e) { /* sem .env.local */ }
 const NPS_URL = process.env.DATAVIX_NPS_URL || '', NPS_TOKEN = process.env.DATAVIX_NPS_TOKEN || '';
 // Microsoft Clarity (opcional, só no site publicado e só com aceite): o id é público; DATAVIX_CLARITY_ID='' desliga
 const CLARITY_ID = process.env.DATAVIX_CLARITY_ID !== undefined ? process.env.DATAVIX_CLARITY_ID : 'yun6nstisc', CLARITY_HOST = process.env.DATAVIX_CLARITY_HOST || 'caiospot.github.io';

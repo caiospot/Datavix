@@ -41,3 +41,8 @@ A página inicial pede o e-mail para começar (obrigatório, hero e chamada fina
 - **Para valer:** cole o novo `nps/apps-script/Code.gs` no projeto e use **Implantar → Gerenciar implantações → editar → Nova versão** (o URL continua o mesmo). O build publicado precisa de `DATAVIX_NPS_URL`/`DATAVIX_NPS_TOKEN` (já são secrets do workflow). Sem eles o e-mail é exigido, mas não é enviado.
 - O app lembra o e-mail neste navegador (localStorage `dv-signup`) para preencher o campo e não reenviar o mesmo e-mail. Exclusão a pedido: apague a linha na aba.
 - Teste do script: `node test/apps-script-signup.mjs`.
+
+### Se o e-mail não aparece na aba Cadastros
+1. **No localhost o app não fala com o Google:** `test/dev.html` envia para um servidor de teste local (`test/out/nps.jsonl`) e o `index.html` gerado sem as variáveis fica com o NPS desligado. Só o site publicado (que usa os secrets) ou um build com `DATAVIX_NPS_URL` e `DATAVIX_NPS_TOKEN` envia ao Google. Para testar local de verdade, crie um arquivo `.env.local` (não vai para o git) com as duas linhas `DATAVIX_NPS_URL=...` e `DATAVIX_NPS_TOKEN=...`, rode `node build.mjs` e abra o `index.html`.
+2. **Confira o script direto:** `node nps/testar-cadastro.mjs seu@email.com` manda um cadastro de teste ao Apps Script e diz o que o Google respondeu (OK, Code.gs antigo, token errado…).
+3. O `Code.gs` novo precisa estar colado no projeto e a implantação atualizada (**Implantar → Gerenciar implantações → editar → Nova versão**).

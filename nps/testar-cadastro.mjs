@@ -5,9 +5,11 @@ import fs from 'node:fs';
 try { for (const ln of fs.readFileSync(new URL('../.env.local', import.meta.url), 'utf8').split('\n')) { const m = /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/.exec(ln); if (m && process.env[m[1]] === undefined) process.env[m[1]] = m[2].replace(/^["']|["']$/g, ''); } } catch (e) { /* sem .env.local */ }
 const url = process.env.DATAVIX_NPS_URL, token = process.env.DATAVIX_NPS_TOKEN || '';
 if (!url) { console.log('Falta DATAVIX_NPS_URL (o URL do app da web, terminado em /exec).'); process.exit(1); }
+if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]{10,}\/exec$/.test(url)) { console.log('O URL não parece o do Apps Script. Ele deve ser igual a https://script.google.com/macros/s/AKfy.../exec (copie em Implantar > Gerenciar implantações). Recebi:', url); process.exit(1); }
+if (!token || /COLE_AQUI|seu-token/i.test(token)) console.log('Aviso: o token está vazio ou é o texto de exemplo; se o script exige TOKEN, vai responder "token".');
 const email = process.argv[2] || `teste+${Date.now().toString(36)}@datavix.app`;
 const body = { v: 1, rid: 'teste-' + Math.random().toString(36).slice(2), id: 'teste-cadastro', ts: new Date().toISOString(), ev: 'signup', email, lang: 'pt', app: 'teste', token };
-const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body), redirect: 'follow' });
+let r; try { r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body), redirect: 'follow' }); } catch (e) { console.log('Não consegui falar com o Google:', e.message); process.exit(1); }
 const txt = await r.text(); console.log('HTTP', r.status, '| e-mail enviado:', email); console.log(txt.slice(0, 400));
 let j = null; try { j = JSON.parse(txt); } catch (e) { /* não é JSON */ }
 if (j && j.ok) console.log(j.repetido ? '\nOK, mas esse e-mail já existia na aba Cadastros.' : '\nOK: confira a aba Cadastros, deve ter uma linha nova.');

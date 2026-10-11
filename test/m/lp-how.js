@@ -4,12 +4,13 @@
   window.addEventListener('error', e => errs.push(e.message)); const q = s => document.querySelector(s), qa = s => [...document.querySelectorAll(s)];
   const pt = qa('button').find(b => b.textContent.trim() === 'PT'); if (pt) pt.click(); await sleep(300);
   S.user = null; D.go('entry'); await sleep(800);
-  out.titulo = q('#como h2').textContent.replace(/\s+/g, ' ').trim(); out.cartoes = qa('.lph-card').length; out.pilulas = qa('.lph-pill').length;
+  out.titulo = q('#como h2').textContent.replace(/\s+/g, ' ').trim(); out.cartoes = qa('#como .lph-card').length; out.pilulas = qa('#como .lph-pill').length;
   q('#como').scrollIntoView(); await sleep(1500);
   const cv = q('#lphcv'); await sleep(1500); const px = cv.getContext('2d').getImageData(0, 0, cv.width, cv.height).data; let lit = 0; for (let i = 3; i < px.length; i += 4 * 97) if (px[i]) lit++; out.arvoreViva = lit > 30;
-  const trk = q('#lph-track'); q('.lph-btn[data-dir="1"]').click(); await sleep(900); out.depoisProximo = q('#lph-cur').textContent + ' left=' + trk.scrollLeft;
-  q('.lph-pill[data-go="3"]').click(); await sleep(1000); out.pilula4 = q('#lph-cur').textContent + ' pressed=' + q('.lph-pill[data-go="3"]').getAttribute('aria-pressed');
-  q('.lph-btn[data-dir="-1"]').click(); await sleep(900); out.voltou = q('#lph-cur').textContent;
+  const trk = q('#como .lph-track'); q('#como .lph-btn[data-dir="1"]').click(); await sleep(900); out.depoisProximo = q('#como .lph-cur').textContent + ' left=' + trk.scrollLeft;
+  q('#como .lph-pill[data-go="3"]').click(); await sleep(1000); out.pilula4 = q('#como .lph-cur').textContent + ' pressed=' + q('#como .lph-pill[data-go="3"]').getAttribute('aria-pressed');
+  q('#como .lph-btn[data-dir="-1"]').click(); await sleep(900); out.voltou = q('#como .lph-cur').textContent;
   out.paraQuem = qa('.lpa-card').length + ' cartões | ' + qa('.lpa-card h3').map(h => h.textContent).join(' / ');
+  q('#graficos').scrollIntoView(); await sleep(600); q('#graficos .lph-btn[data-dir="1"]').click(); await sleep(900); out.graficos = qa('#graficos .lph-card').length + ' cartões | ' + q('#graficos .lph-cur').textContent + ' | svg=' + qa('#graficos .lpg-art svg').length;
   out.larg = document.documentElement.scrollWidth + '/' + innerWidth; out.errs = errs; return JSON.stringify(out);
 } catch (e) { return 'ERRO ' + e.stack; } })()

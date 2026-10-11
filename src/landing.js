@@ -111,7 +111,6 @@ const lpTitle = (a, b, c) => `${esc(a)} <b>${esc(b)}</b>${c ? ' ' + esc(c) : ''}
 const lpShot = (src, label) => `<figure class="shot"><img src="${src}" alt="${esc(label)}" loading="lazy" decoding="async" draggable="false"></figure>`;
 // o mesmo desenho do menu de gráficos da ferramenta, em tamanho grande, ilustra cada gráfico da seção Gráficos
 const LP_CH_ICON = ['organism', 'rays', 'river', 'fan', 'ridge', 'flow'];
-const lpChart = (id, label) => `<figure class="ch-art" role="img" aria-label="${esc(label)}">${chartIcon(id)}</figure>`;
 const lpPh = (label, ratio = '16/10', k) => `<figure class="ph" style="aspect-ratio:${ratio}"><div class="ph-in"><span class="lbl">[ ${LPT().ph}${k ? ' ' + k : ''} ]</span><em>${esc(label)}</em></div></figure>`;
 
 function landingHtml() {
@@ -137,8 +136,7 @@ function landingHtml() {
   </section>
   ${(S.recents || []).length ? `<section class="lp-sec lp-saved" id="salvos"><div class="lbl">[ ${esc(L.saved_k)} ]</div><h2>${lpTitle(L.saved_h[0], L.saved_h[1])}</h2><div class="pj-grid">${projCards(6)}</div><div class="row pj-more">${S.recents.length > 6 ? `<button class="btn ghost sm" data-a="projects">${L.all} (${S.recents.length})</button>` : ''}<span class="note">${esc(L.saved_note)}</span></div></section>` : ''}
   <section class="lp-sec lp-how" id="como">${lpHow(L)}</section>
-  <section class="lp-sec" id="graficos"><div class="lp-split"><div class="lp-split-h"><div class="lbl">[ ${esc(L.ch_k)} ]</div><h2>${lpTitle(L.ch_h[0], L.ch_h[1])}</h2><p class="sub">${esc(L.ch_p)}</p></div>
-    <div class="lp-clist">${L.charts.map((c, i) => `<article class="lp-ch" data-rv>${lpChart(LP_CH_ICON[i], c[0])}<div class="lp-ch-b"><div class="lp-ch-h"><h3>${esc(c[0])}</h3><span class="tag${c[2] ? ' on' : ''}">${c[2] ? L.avail : L.soon}</span></div><p>${esc(c[1])}</p></div></article>`).join('')}</div></div>
+  <section class="lp-sec lp-how lp-gr" id="graficos">${lpGraficos(L)}
     <p class="lp-also"><span>${esc(T('lp_also'))}</span>${['bars', 'hbars', 'stacked100', 'treemap', 'pie', 'donut', 'pies', 'donuts', 'packed', 'cols', 'lines', 'radial', 'radar', 'box', 'words', 'bubmap', 'isomap', 'race', 'line', 'area', 'calendar', 'scatter', 'bubble', 'kpi'].map(t => `<b>${chartIcon(t)}${esc(T('chart')[t])}</b>`).join('')}</p></section>
   <section class="lp-sec" id="diferenciais"><div class="lp-split"><div class="lp-split-h"><div class="lbl">[ ${esc(L.df_k)} ]</div><h2>${lpTitle(L.df_h[0], L.df_h[1], L.df_h2)}</h2></div>
     <div class="lp-dlist">${L.diffs.map((d, i) => `<article class="lp-df" data-rv><div class="lbl">${String(i + 1).padStart(2, '0')}</div><div><h3>${esc(d[0])}</h3><p>${esc(d[1])}</p></div></article>`).join('')}</div></div></section>
@@ -224,8 +222,8 @@ function lpHow(L) {
   const card = i => `<article class="lph-card c${i + 1}" data-i="${i}" role="group" aria-roledescription="slide" aria-label="${i + 1} / ${N}"><div class="lph-h"><span class="lph-ic">${lpIco(ic[i])}</span><h3>${esc(L.steps[i][0])}</h3><span class="lph-n num">0${i + 1}</span></div><p>${esc(L.steps[i][1])}</p><div class="lph-vis" role="img" aria-label="${esc(L.steps[i][2])}">${vis[i]}</div></article>`;
   return `<div class="lph-top"><div><div class="lbl">[ ${esc(L.how_k)} ]</div><h2>${lpTitle(L.how_h[0], L.how_h[1])}</h2></div>
     <div class="lph-pills" role="group" aria-label="${esc(H.pick)}">${L.steps.map((s, i) => `<button type="button" class="lph-pill" data-go="${i}" aria-label="${esc(H.pick + ' ' + (i + 1))}" aria-pressed="${i === 0}">0${i + 1}</button>`).join('')}</div></div>
-    <div class="lph-track" id="lph-track" tabindex="0" aria-roledescription="carousel" aria-label="${esc(L.how_k)}">${L.steps.map((_, i) => card(i)).join('')}</div>
-    <div class="lph-foot"><span class="lph-count"><b id="lph-cur">01</b> / 0${N}</span><div class="lph-btns"><button type="button" class="lph-btn" data-dir="-1" aria-label="${esc(H.prev)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><button type="button" class="lph-btn" data-dir="1" aria-label="${esc(H.next)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div></div>`;
+    <div class="lph-track" tabindex="0" aria-roledescription="carousel" aria-label="${esc(L.how_k)}">${L.steps.map((_, i) => card(i)).join('')}</div>
+    <div class="lph-foot"><span class="lph-count"><b class="lph-cur">01</b> / 0${N}</span><div class="lph-btns"><button type="button" class="lph-btn" data-dir="-1" aria-label="${esc(H.prev)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><button type="button" class="lph-btn" data-dir="1" aria-label="${esc(H.next)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div></div>`;
 }
 
 /* ---- Para quem: três cartões, cada um com um pedaço do produto ---- */
@@ -236,6 +234,16 @@ function lpWho(L) {
   const a2 = `<div class="va2"><div class="xins"><div class="lpf-lbl">[ INSIGHT // 01 ]</div><p>${esc(F.ins.replace('{u}', D.ents[st.big].label).replace('{p}', sh + '%'))}</p><div class="xcalc"><span>${esc(F.calc)}</span><span>${f(st.entTot[st.big])} / ${f(st.total)}</span></div></div></div>`;
   const a3 = `<div class="va3">${['corporate', 'editorial', 'vibrant'].map((k, i) => `<div><span>${esc(H.cli)} ${'ABC'[i]}</span><i>${PALETTES[k].slice(0, 5).map(c => `<u style="background:${c}"></u>`).join('')}</i><small>${esc(pn[k])}</small></div>`).join('')}</div>`;
   return `<div class="lbl">[ ${esc(L.au_k)} ]</div><div class="lpa-grid">${L.aud.map((a, i) => `<article class="lpa-card" data-rv><div class="lpa-vis" aria-hidden="true">${[a1, a2, a3][i]}</div><h3>${esc(a[0])}</h3><p>${esc(a[1])}</p></article>`).join('')}</div>`;
+}
+
+/* ---- Gráficos: carrossel de cartões (o mesmo desenho do "Como funciona"), cada um com a ilustração do gráfico ---- */
+function lpGraficos(L) {
+  const H = L.hw, N = L.charts.length, tints = ['106, 92, 255', '2, 184, 204', '212, 255, 0', '255, 92, 138', '255, 138, 61', '76, 201, 240'];
+  const card = (c, i) => `<article class="lph-card lpg-card" style="--tint:${tints[i % tints.length]}" data-i="${i}" role="group" aria-roledescription="slide" aria-label="${i + 1} / ${N}"><div class="lph-h"><span class="lph-ic lpg-ic">${chartIcon(LP_CH_ICON[i])}</span><h3>${esc(c[0])}</h3><span class="tag${c[2] ? ' on' : ''}">${c[2] ? L.avail : L.soon}</span></div><p>${esc(c[1])}</p><div class="lph-vis lpg-vis" role="img" aria-label="${esc(c[0])}"><div class="lpg-art">${chartIcon(LP_CH_ICON[i])}</div></div></article>`;
+  return `<div class="lph-top"><div><div class="lbl">[ ${esc(L.ch_k)} ]</div><h2>${lpTitle(L.ch_h[0], L.ch_h[1])}</h2><p class="sub">${esc(L.ch_p)}</p></div>
+    <div class="lph-pills" role="group" aria-label="${esc(H.pick)}">${L.charts.map((c, i) => `<button type="button" class="lph-pill" data-go="${i}" aria-label="${esc(H.pick + ' ' + (i + 1))}" aria-pressed="${i === 0}">0${i + 1}</button>`).join('')}</div></div>
+    <div class="lph-track" tabindex="0" aria-roledescription="carousel" aria-label="${esc(L.ch_k)}">${L.charts.map(card).join('')}</div>
+    <div class="lph-foot"><span class="lph-count"><b class="lph-cur">01</b> / 0${N}</span><div class="lph-btns"><button type="button" class="lph-btn" data-dir="-1" aria-label="${esc(H.prev)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><button type="button" class="lph-btn" data-dir="1" aria-label="${esc(H.next)}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div></div>`;
 }
 let _lp = null;
 function landingMount() {
@@ -297,10 +305,10 @@ function landingMount() {
   const top = $('.top'); let ticking = false;
   const onScroll = () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { ticking = false; if (top) top.classList.toggle('at-top', scrollY < 8); }); };
   window.addEventListener('scroll', onScroll, { passive: true }); _lp.onScroll = onScroll; onScroll();
-  // carrossel "Como funciona": botões, pílulas e contador seguem a rolagem; a árvore do passo 3 só roda quando o cartão aparece
-  const trk = $('#lph-track');
-  if (trk) {
-    const cards = $$('.lph-card', trk), pills = $$('.lph-pill'), cur = $('#lph-cur');
+  // carrosséis ("Como funciona" e "Gráficos"): botões, pílulas e contador seguem a rolagem; a árvore do passo 3 só roda quando o cartão aparece
+  $$('.lp-how').forEach(sec => {
+    const trk = $('.lph-track', sec); if (!trk) return;
+    const cards = $$('.lph-card', trk), pills = $$('.lph-pill', sec), cur = $('.lph-cur', sec);
     const pad = () => parseFloat(getComputedStyle(trk).paddingLeft) || 0;
     let force = -1; // passo escolhido por botão/pílula: vale até a pessoa rolar sozinha (no fim da rolagem dois cartões cabem na tela)
     const pos = () => { let b = 0, bd = 1e9; cards.forEach((c, i) => { const d = Math.abs(c.offsetLeft - trk.scrollLeft - pad()); if (d < bd) { bd = d; b = i; } }); if (trk.scrollLeft + trk.clientWidth >= trk.scrollWidth - 4) b = cards.length - 1; return b; };
@@ -310,8 +318,10 @@ function landingMount() {
     ['wheel', 'touchstart', 'pointerdown'].forEach(ev => trk.addEventListener(ev, () => { force = -1; }, { passive: true }));
     trk.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
     pills.forEach(p => p.addEventListener('click', () => go(+p.dataset.go)));
-    $$('.lph-btn').forEach(b => b.addEventListener('click', () => go(idx() + +b.dataset.dir)));
+    $$('.lph-btn', sec).forEach(b => b.addEventListener('click', () => go(idx() + +b.dataset.dir)));
     trk.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); go(idx() + 1); } else if (e.key === 'ArrowLeft') { e.preventDefault(); go(idx() - 1); } });
+  });
+  {
     const hc = $('#lphcv');
     if (hc) {
       let he = null; const hfit = () => { if (!he) return; const w = Math.max(160, hc.clientWidth), h = Math.max(160, hc.clientHeight), dpr = Math.min(2, devicePixelRatio || 1); hc.width = Math.round(w * dpr); hc.height = Math.round(h * dpr); he.resize(w, h, dpr); };

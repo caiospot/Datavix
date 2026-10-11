@@ -32,3 +32,7 @@
 - **Para quem:** as mesmas 3 informações dentro de cartões, cada um com um pedaço do produto (tabela → barras; insight com cálculo; arquivos por cliente com paletas).
 - **Hero:** halo claro e desfocado (lavanda, com toques de lime e azul) por trás do quadro da ferramenta, que some suavemente embaixo.
 - Testes: `test/m/lp-how.js` (carrossel e cartões), além dos de hero, cadastro, gráficos e Sair.
+
+## Gráficos em cartões e novos ícones
+- **Seção Gráficos** agora segue o carrossel do "Como funciona" (mesmos cartões, pílulas 01–06, botões, contador e teclado): cada cartão tem ícone, nome, etiqueta "Disponível" (neutra, com ponto lime), o texto original e, embaixo, a **ilustração grande do gráfico** sobre um brilho na cor do cartão. A lista de "Também" continua abaixo, com os ícones novos. Carrossel agora é genérico (`.lp-how`), um código para as duas seções.
+- **Ícones refeitos** (`src/icons.js`, 30 gráficos, ferramenta e site): mesma grade 48×32, formas preenchidas em camadas de opacidade da cor do texto e **um elemento de destaque** em lime (oliva no tema claro) por gráfico — a fatia, a barra, o raio ou a série principal. Árvore e Rio redesenhados com curvas suaves; Funil e Cordilheira reconstruídos; pizzas, roscas e mapas ganharam fatias separadas e contornos. Variável `--ia` controla o destaque.

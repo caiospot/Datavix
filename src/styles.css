@@ -486,6 +486,9 @@ body.mdl-open { overflow: hidden; }
 .lpg-art .cico { width: 82%; height: auto; max-height: 86%; color: color-mix(in srgb, var(--fg) 84%, transparent); stroke-width: 1.2; }
 .lpg-art.live .cico { display: none; }
 .lpg-cv { position: absolute; left: 12%; top: 7%; width: 76%; height: 86%; display: block; }
+/* ajuste de tamanho por gráfico (o gráfico se desenha na área do canvas; a caixa recorta o excesso, que é só margem vazia) */
+.lpg-cv[data-ch='fan'], .lpg-cv[data-ch='flow'] { left: 50%; top: 50%; width: 99%; height: 100%; transform: translate(-50%, -50%); }
+.lpg-cv[data-ch='ridge'] { left: 50%; top: 50%; width: 133%; height: 150%; transform: translate(-50%, -50%); }
 
 /* projetos salvos */
 .lp-saved { padding-bottom: 8px; }

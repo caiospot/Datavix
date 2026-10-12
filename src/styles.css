@@ -5,6 +5,8 @@
   --r: 8px; --sans: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif; --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace; --dot: 'Doto', 'Geist Mono', ui-monospace, monospace;
   color-scheme: dark;
 }
+/* ferramenta (fora da página inicial): superfícies em cinza neutro */
+:root[data-view='app'] { --bg: #121212; --bg2: #171717; --card: #1c1c1c; --line: #2c2c2c; --muted: #a3a3a3; --fg: #f1f1ef; }
 [data-ui='light'] { --bg: #f8f9f5; --bg2: #eceee6; --card: #ffffff; --line: #b4bcab; --fg: #0b0d0a; --muted: #353d31; --lime-t: #4f6400; --sel: #0b0d0a; --danger: #b3261e; --warn: #7a4e00; color-scheme: light; }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
@@ -118,7 +120,7 @@ th.num-c, td.num-c { text-align: right; font-variant-numeric: tabular-nums; }
 
 /* editor */
 .editor { display: grid; grid-template-columns: minmax(0, 1fr) 320px; height: calc(100vh - 61px); }
-.stage { overflow: auto; padding: 24px; background: var(--bg2); min-width: 0; }
+.stage { overflow: auto; padding: 0; background: var(--bg); min-width: 0; }
 .editor.nopanel { grid-template-columns: minmax(0, 1fr); }
 .editor.nopanel .panel { display: none; }
 .panel { border-left: 1px solid var(--line); overflow: auto; padding: 18px 18px 40px; background: var(--bg); }

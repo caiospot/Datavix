@@ -178,7 +178,7 @@ function closeLayer(finished) {
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && S.layer && document.getElementById('layer') && [...document.querySelectorAll('.mdl')].pop().id === 'layer') { e.preventDefault(); e.stopPropagation(); closeLayer(); } }, true);
 function render() {
   if (S.layer && S.step === 'editor' && document.getElementById('layer')) { renderLayer(); return; } // com a camada aberta, só ela se atualiza; o editor não é refeito
-  document.documentElement.dataset.ui = S.ui;
+  document.documentElement.dataset.ui = S.ui; document.documentElement.dataset.view = S.step === 'entry' ? 'site' : 'app'; // a ferramenta usa cinza neutro; a página inicial mantém o fundo próprio
   if (S.step !== 'editor') S.sheet = false;
   document.body.classList.toggle('menu-open', !!S.menu); document.body.classList.toggle('sheet-open', !!S.sheet);
   const tc = document.querySelector('meta[name=theme-color]'); if (tc) tc.content = S.ui === 'dark' ? '#0b0d0a' : '#f8f9f5';

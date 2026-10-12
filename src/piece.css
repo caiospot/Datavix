@@ -518,3 +518,21 @@
 .piece.presenting .pcard .cf.cmp b { font-size: .92em; font-weight: 500; line-height: 1.3; }
 .piece.presenting .pcard.cmp .cmpc .val { font-size: 1.5em; }
 .pcard.cmp .cardhint { text-transform: none; letter-spacing: .02em; }
+
+/* ---- layout em cartões (só no editor, dentro de .stage; o HTML exportado não muda): painel esquerdo, coluna de detalhes e palco são três cartões separados sobre o fundo da peça ---- */
+.stage .piece:not(.presenting) { padding: 14px; gap: 12px; min-height: max(560px, calc(100dvh - 61px - 28px)); box-shadow: none; border-radius: 14px; }
+.stage .piece:not(.presenting)[data-lay='wide'] { grid-template-columns: 290px 316px minmax(0, 1fr); align-items: stretch; }
+.stage .piece:not(.presenting)[data-lay='mid'] { grid-template-columns: 290px minmax(0, 1fr); gap: 12px; }
+.stage .piece:not(.presenting)[data-lay='wide'] .c1, .stage .piece:not(.presenting)[data-lay='mid'] .c1 { background: var(--o-card); border: 1px solid var(--o-line); border-radius: 12px; padding: 22px 20px 26px; align-self: stretch; overflow-y: auto; overflow-x: hidden; }
+.stage .piece:not(.presenting)[data-lay='wide'] .c2 { top: 0; height: auto; align-self: stretch; position: relative; }
+.stage .piece:not(.presenting)[data-lay='wide'] .c2 .pcard, .stage .piece:not(.presenting)[data-lay='wide'] .c2 .plist { position: relative; }
+.stage .piece:not(.presenting) .pcard, .stage .piece:not(.presenting) .plist { border-radius: 12px; }
+.stage .piece:not(.presenting) .c3 { background: var(--o-card); border: 1px solid var(--o-line); border-radius: 12px; gap: 0; position: relative; top: auto; overflow: hidden; align-self: stretch; }
+.stage .piece:not(.presenting) .c3 .orgtools.row { position: relative; align-self: stretch; margin: 0; padding: 11px 18px; justify-content: flex-end; border-bottom: 1px solid var(--o-line); }
+.stage .piece:not(.presenting) .c3 .vzbox { flex: 1; min-height: clamp(380px, 70vh, 860px); margin: 0; }
+.stage .piece:not(.presenting) .c3 .caption, .stage .piece:not(.presenting) .c3 .foot { padding: 0 18px 12px; }
+.stage .piece:not(.presenting) .c3 .caption:empty, .stage .piece:not(.presenting) .c3 .foot:empty { display: none; }
+.stage .piece:not(.presenting) .plogo { display: none; }
+/* faixa do topo do palco: "Apresentar" e "Como usar" numa barra com divisória */
+.stage .piece:not(.presenting) .c3 .vzbox:has(.orgtools)::before, .stage .piece:not(.presenting) .c3 .orgstage::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 40px; border-bottom: 1px solid var(--o-line); z-index: 3; pointer-events: none; }
+.stage .piece:not(.presenting) .orgtools:not(.row) { top: 11px; right: 18px; }

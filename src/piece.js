@@ -17,7 +17,7 @@ const PALETTES = {
 const TONE_DEFAULT = {
   corporate: { pal: 'corporate', bg: { mode: 'light', color: '#f7f8f4', base: '#f7f8f4' }, pair: 'modern' },
   editorial: { pal: 'editorial', bg: { mode: 'solid', color: '#f6f1e7', base: '#f6f1e7' }, pair: 'editorial' },
-  tech: { pal: 'cosmos', bg: { mode: 'solid', color: '#06061a', base: '#06061a' }, pair: 'tech' },
+  tech: { pal: 'cosmos', bg: { mode: 'solid', color: '#161616', base: '#161616' }, pair: 'tech' },
   vibrant: { pal: 'vibrant', bg: { mode: 'gradient', color: '#14102b', base: '#14102b' }, pair: 'modern' },
 };
 // pares tipográficos: título + corpo/gráfico. Todas as fontes vão embutidas no arquivo.
@@ -107,7 +107,8 @@ function applyPieceCss(P, el) {
   el = el || document.getElementById('piece'); if (!el) return;
   const base = bgBase(P.bg), fg = readableOn(base);
   const f = fontsOf(P); el.classList.toggle('big', !!P.big);
-  el.style.background = bgCss(P.bg, P.colors[0]); el.style.color = fg; el.style.setProperty('--accent', P.colors[0]); el.style.setProperty('--pt-font', f.title); el.style.setProperty('--pt-w', f.tw); el.style.fontFamily = f.body;
+  el.style.background = bgCss(P.bg, P.colors[0]); el.style.color = fg; if (el.parentElement && el.parentElement.classList.contains('stage')) el.parentElement.style.background = bgCss(P.bg, P.colors[0]); el.style.setProperty('--accent', P.colors[0]); el.style.setProperty('--pt-font', f.title); el.style.setProperty('--pt-w', f.tw); el.style.fontFamily = f.body;
+  // no editor, o fundo em volta dos cartões (.stage) é o da própria peça
   // cores do cartão e dos painéis laterais: seguem o fundo da peça
   el.style.setProperty('--o-card', mixHex(base, fg, 0.07)); el.style.setProperty('--o-fg', fg); el.style.setProperty('--o-muted', mixHex(fg, base, 0.5)); el.style.setProperty('--o-line', `rgba(${hexToRgb(fg).join(',')},.14)`); el.style.setProperty('--o-accent', P.colors[0]);
   el.classList.toggle('no-ann', P.opts.annotations === false); el.classList.toggle('no-notes', P.opts.notes === false);

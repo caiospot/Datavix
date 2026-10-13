@@ -25,7 +25,7 @@
   ok('janela fecha', !q('.mdl'));
   ok('seletor do painel reflete', q('[data-a=story-kind]') && q('[data-a=story-kind]').value === second);
   const meta = P.host.ix.meta, steps = buildSteps(P, meta);
-  const pl = nvPlanFor(P, meta, steps); ok('o roteiro segue a história escolhida', pl.story === second && pl.slides.length === 10 && pl.report.ok);
+  const pl = nvPlanFor(P, meta, steps); ok('o roteiro segue a história escolhida', pl.story === second && pl.slides.length >= 1 && pl.slides.length <= 10 && pl.report.ok);
   out.roteiro = pl.slides.map(s => s.planTitle).join(' > ');
   // trocar pelo painel
   const sel = q('[data-a=story-kind]'), other = [...sel.options].find(o => o.value && o.value !== second && !o.disabled).value; sel.value = other; sel.dispatchEvent(new Event('change', { bubbles: true })); await sl(300);

@@ -573,7 +573,16 @@ const INSIGHT_ORDER = {
 
 function quantile(sorted, p) { return sorted[Math.min(sorted.length - 1, Math.floor(p * (sorted.length - 1)))]; }
 
+// contagem de linhas por grupo só vira achado quando a tabela tem registros de verdade: 30 ou mais linhas e grupos de pelo menos 3 linhas (mediana).
+// Sem isso, "X lidera: 4, 17% do total" só descreve a estrutura da tabela (quantas linhas têm aquele rótulo), não o mundo.
+function nvCountThin(built) {
+  if (!built || built.aggKind !== 'count') return false;
+  const st = built.stats || {}, rows = st.rowsUsed != null ? st.rowsUsed : 0, sz = (built.totX || []).filter(t => t.value !== null).map(t => t.rows || 0).sort((a, b) => a - b);
+  const med = sz.length ? sz[Math.floor(sz.length / 2)] : 0;
+  return rows < NV_ROWS.min || med < 3;
+}
 function computeInsights(built, briefing, lang, T) {
+  if (nvCountThin(built)) return [];
   const out = {};
   const unit = built.unit, name = built.names.y;
   const f = v => fmtNum(v, unit, lang);

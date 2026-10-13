@@ -21,7 +21,7 @@
   const P = S.piece; ok('Funil remonta a peça com o mapeamento de fluxo', P.br.storyKind === 'funnel' && P.mstory === 'flow'); out.tipoDepois = P.type;
   const meta = P.host && P.host.ix && P.host.ix.meta; for (let i = 0; i < 30 && !(S.piece.host && S.piece.host.ix); i++) await sl(150);
   const P2 = S.piece, m2 = P2.host.ix.meta, st2 = buildSteps(P2, m2), fails = [];
-  for (const N of [2, 5, 10]) { const pl = nvPlan(P2, m2, st2, N, 'funnel'); if (!pl || pl.slides.length !== N || !pl.report.ok) fails.push(N + ': ' + (pl ? pl.report.errors.map(e => e.code).join(',') : 'sem plano')); out['funil_' + N] = pl ? pl.slides.map(s => s.planTitle).join(' > ').slice(0, 160) : ''; }
+  for (const N of [2, 5, 10]) { const pl = nvPlan(P2, m2, st2, N, 'funnel'); if (!pl || pl.slides.length > N || !pl.slides.length || !pl.report.ok) fails.push(N + ': ' + (pl ? pl.report.errors.map(e => e.code).join(',') : 'sem plano')); out['funil_' + N] = pl ? pl.slides.map(s => s.planTitle).join(' > ').slice(0, 160) : ''; }
   ok('arcos do Funil válidos (2, 5, 10)' + (fails.length ? ' ' + fails.join(' | ') : ''), !fails.length);
   // geografia: planilha ideal (UF)
   await load('datavix-planilha-ideal.xlsx', 'Vendas'); const e2 = nvStoryEligibility(S.ds, { lang: 'pt' });
@@ -31,7 +31,7 @@
   for (let i = 0; i < 30 && !(S.piece.host && S.piece.host.ix); i++) await sl(150);
   const P3 = S.piece, m3 = P3.host.ix.meta, st3 = buildSteps(P3, m3), f3 = [];
   ok('Geografia remonta com o mapeamento de geo', P3.br.storyKind === 'geo' && P3.mstory === 'geo'); out.tipoGeo = P3.type;
-  for (const N of [2, 5, 10]) { const pl = nvPlan(P3, m3, st3, N, 'geo'); if (!pl || pl.slides.length !== N || !pl.report.ok) f3.push(N + ': ' + (pl ? pl.report.errors.map(e => e.code).join(',') : 'sem plano')); out['geo_' + N] = pl ? pl.slides.map(s => s.planTitle).join(' > ').slice(0, 160) : ''; }
+  for (const N of [2, 5, 10]) { const pl = nvPlan(P3, m3, st3, N, 'geo'); if (!pl || pl.slides.length > N || !pl.slides.length || !pl.report.ok) f3.push(N + ': ' + (pl ? pl.report.errors.map(e => e.code).join(',') : 'sem plano')); out['geo_' + N] = pl ? pl.slides.map(s => s.planTitle).join(' > ').slice(0, 160) : ''; }
   ok('arcos de Geografia válidos' + (f3.length ? ' ' + f3.join(' | ') : ''), !f3.length);
   // latitude e longitude
   await load('pontos-geo.csv'); const e3 = nvStoryEligibility(S.ds, { lang: 'pt' }); ok('lat/long: Geografia possível', e3.geo.ok); out.latlon = e3.geo.why;

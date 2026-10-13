@@ -11,7 +11,7 @@
     for (let i = 0; i < 80 && !(S.piece && S.piece.host && S.piece.host.ix); i++) await sl(150); await sl(500); if (q('.mdl')) { q('.mdl [data-m="1"]').click(); await sl(300); }
   };
   const plans = (P, id) => { const meta = P.host.ix.meta, steps = buildSteps(P, meta), r = {}; for (const N of [2, 5, 10]) { const pl = nvPlan(P, meta, steps, N, id); r[N] = pl; } return r; };
-  const planOk = (pl, N) => pl && pl.slides.length === N && pl.report.ok;
+  const planOk = (pl, N) => pl && pl.slides.length >= 1 && pl.slides.length <= N && pl.report.ok;
   // ----- meta
   await load('metas.csv'); let P = S.piece, e = nvStoryEligibility(S.ds, { lang: 'pt' });
   ok('metas: Meta e desempenho possível', e.goal.ok && /×/.test(e.goal.why)); out.meta = e.goal.why + ' | ' + e.goal.score.toFixed(2);

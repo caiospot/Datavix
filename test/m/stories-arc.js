@@ -18,7 +18,8 @@
         const pl = nvPlanStory(P, meta, steps, N, id, pool), f = [];
         if (!pl) { f.push('sem plano'); } else {
           tot.planos++; tot.slides += pl.slides.length;
-          if (pl.slides.length !== N) f.push(N + ': tamanho ' + pl.slides.length);
+          if (pl.slides.length > N || pl.slides.length < 1) f.push(N + ': tamanho ' + pl.slides.length); // o tempo escolhido é o máximo
+          if (pl.slides.some(s => s.role === 'nos')) f.push(N + ': slide "sem dados" não deveria existir');
           if (!pl.report.ok) f.push(N + ': validador ' + pl.report.errors.map(e => e.code + ':' + e.id).join(','));
           for (const s of pl.slides) {
             if (!s.synthetic) { nFacts++; tot.fatos++; if (!nvStoryAllows(id, s)) f.push(N + ': fora da história ' + s.id + ' (' + nvStoryFam(s) + ')'); }

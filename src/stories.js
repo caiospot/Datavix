@@ -248,13 +248,13 @@ function nvPlanStory(P, meta, steps, N, id, basePool) {
   const sCtx = () => { const c = nvpContext(P, X, N > 2); return nvpSynth('plan-ctx', 'ctx', R.ctx, c.lines, c.ev); };
   for (const [kind, key, cls] of arc) {
     if (kind === 'ctx') slides.push(sCtx());
-    else if (kind === 'over') { const ov = nvpOverview(P, X); slides.push(nvpSynth('plan-over', 'over', R.over, ov.lines, ov.ev)); }
-    else if (kind === 'limits') slides.push(nvpSynth('plan-limits', 'limits', TT[key || 'limits'], [X.noRange]));
+    else if (kind === 'over') { const ov = nvpOverview(P, X), cx = nvpContext(P, X, true); if (nvpOverviewAdds(b, ov, cx)) slides.push(nvpSynth('plan-over', 'over', R.over, ov.lines, ov.ev)); }
+    else if (kind === 'limits') { if (slides.some(s => !s.synthetic)) slides.push(nvpSynth('plan-limits', 'limits', TT[key || 'limits'], [X.noRange])); }
     else if (kind === 'fact') {
       let f = take(cls), role = key;
       if (!f) { // sem achado desta classe: um achado complementar da mesma história, se sobrar; senão o slide diz que não há base
         f = nvpTake(pool, used, () => true); role = 'extra';
-        if (!f) { gaps.push(`${TT[key]}: ${X.no.nogen}`); slides.push(nvpSynth('plan-no-' + key, 'nos', R.nos, [`${TT[key]}: ${X.no.nogen}`])); continue; }
+        if (!f) { gaps.push(`${TT[key]}: ${X.no.nogen}`); continue; } // não vira slide: vai para a nota de limites
       }
       if (!main) main = f;
       slides.push(fact(f, role, role === 'extra' ? R.extra : TT[key]));
@@ -262,12 +262,17 @@ function nvPlanStory(P, meta, steps, N, id, basePool) {
       const c = nvpContext(P, X, false), left = pool.items.filter(f => !used.has(f.id)).slice(0, 3); left.forEach(f => used.add(f.id));
       const lim = []; const ex = pool.items.filter(f => f.confidenceLabel === 'exploratory').length; if (ex) lim.push(X.expl(ex));
       lim.push(...c.lines.filter(l => !/^(Todas|All) /.test(l) && /\d/.test(l) && /(usadas|used|ignoradas|ignored|fora dos cálculos|left out|Poucas|Few)/.test(l)));
-      const sl = [...lim, ...gaps, ...left.map(f => f.head)].slice(0, 5), sy = nvpSynth('plan-synth', 'synthesis', R.synth, [...sl, X.noRange]);
-      sy.allow = left.some(f => ((f.ev && f.ev.allow) || []).includes('causal')) ? ['causal'] : []; slides.push(sy);
+      const sl = [...lim, ...gaps, ...left.map(f => f.head)].slice(0, 5);
+      if (sl.length) { const sy = nvpSynth('plan-synth', 'synthesis', R.synth, [...sl, X.noRange]); sy.allow = left.some(f => ((f.ev && f.ev.allow) || []).includes('causal')) ? ['causal'] : []; slides.push(sy); }
     } else if (kind === 'impl') {
       const lines = [nvpQ(main, X, b.xIsTime), X.noRange], ex = pool.items.filter(f => f.confidenceLabel === 'exploratory').length; if (ex) lines.splice(1, 0, X.expl(ex));
       slides.push(nvpSynth('plan-impl', 'implication', N === 2 ? R.q2 : R.impl, lines));
     }
+  }
+  if (!slides.some(s => !s.synthetic)) { // a história não achou nada nos dados: roteiro curto e honesto, igual ao do Panorama sem achados
+    const c = nvpContext(P, X, true), numeric = !!(b.rowStats || (b.aggKind && b.aggKind !== 'count'));
+    const base = [nvpSynth('plan-ctx', 'ctx', R.ctx, c.lines, c.ev), nvpSynth('plan-lim', 'synth', R.synth, [X.noFind, ...(numeric ? [] : [X.noNum]), X.noRange])];
+    const o = nvFinishPlan(P, base.slice(0, N), N, pool, null); o.story = id; return o;
   }
   if (N === 2 && slides[0] && slides[0].role !== 'ctx') { const c = nvpContext(P, X, false); if (!slides[0].synthetic) slides[0].note = [c.lines.slice(0, 2).join(' · '), slides[0].note].filter(Boolean).join('. '); }
   const out = nvFinishPlan(P, slides.filter(Boolean), N, pool, main); out.story = id;

@@ -114,6 +114,10 @@ function storyGroups(P) {
   else if (cs && ['cols', 'lines', 'radial'].includes(t) && cs.series.length >= 3 && cs.grpName) { g = mp(cs.series.map(s => ({ label: s.label, v: s.v, n: s.n }))); name = cs.grpName; }
   else if (t === 'organism' && b.org) { g = mp(b.org.ents); name = b.org.entName; }
   if (g) g = g.filter(x => !isPlaceholderLabel(x.label));
+  if (g && b.aggKind === 'count') { // contagem de linhas por grupo só vale com registros de verdade (ver nvCountThin)
+    const sz = g.map(x => x.rows || 0).sort((p, q) => p - q), med = sz.length ? sz[Math.floor(sz.length / 2)] : 0, tot = (b.stats && b.stats.rowsUsed) || 0;
+    if (tot < NV_ROWS.min || med < 3) g = null;
+  }
   return g && g.length >= 3 ? { list: g, name: name || '' } : null;
 }
 
@@ -205,7 +209,7 @@ function buildStory(P, meta, steps, opt = {}) {
       calc: { title: L.calc.ovT, formula: L.calc.ovF, rows: [{ k: L.calc.total, v: isSum ? f(sum) : totTxt, n: rows }, { k: L.calc.groups, v: fmtInt(gn || n, LANG) }, { k: L.calc.mean, v: f(mean) }] } });
     casesFacts(P).forEach(add); // casos e pesquisas: taxas, impacto, onde varia, causas e termos logo depois do panorama
     // 2) o líder, 3) a concentração e 4) o contraste: sobre os grupos do gráfico escolhido
-    if (gn >= 3) {
+    if (gn >= 3 && !nvCountThin(b)) { // contagem de linhas por rótulo, em tabela pequena ou de grupos minúsculos, não é achado
       const gsum = gl.reduce((a, t) => a + t.value, 0), srt = gl.slice().sort((x, y) => y.value - x.value), top = srt[0], low = srt[gn - 1], n2 = gn;
       if (isSum && gsum > 0) {
         const share = top.value / gsum * 100, balanced = share <= 125 / n2;

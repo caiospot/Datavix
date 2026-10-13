@@ -13,7 +13,7 @@ const NVP = {
     med: (m, a) => `Mediana ${m} e média ${a}`, total: (l, v) => `${l}: ${v}`, noRange: 'Os números descrevem esta planilha e não provam relações entre as variáveis',
     q: { top: s => `O que diferencia ${s} dos demais? Vale olhar ${s} por outra dimensão da planilha antes de concluir`, change: (a, b) => `O que mudou entre ${a} e ${b}? Vale checar se foi pontual ou se se repete`, atyp: 'Os valores atípicos têm algo em comum? Vale olhar um a um antes de concluir', assoc: 'A relação se mantém dentro de cada grupo? Vale separar por categoria antes de tirar conclusões', gen: 'Vale investigar o que há por trás dessa diferença, com outras colunas da planilha', period: s => `O que aconteceu em ${s}? Vale checar se foi sazonal ou pontual antes de concluir` },
     no: { nogen: 'Nenhum achado confiável nesta dimensão com os dados atuais', conc6: 'Há menos de 6 grupos: pouco para falar de concentração', nonum: 'Não há uma coluna de valores numéricos para analisar a distribuição', evol: 'Os dados não têm uma coluna de data: não há como analisar a evolução no tempo', evol2: 'Não houve variação relevante nem dados suficientes para destacar a evolução no tempo', comp: 'Há poucos grupos para comparar', conc: 'Não há grupos suficientes ou um total somável para analisar concentração', dist: 'Há menos de 30 linhas com valor: pouco para analisar a distribuição', dist2: 'Nenhum valor atípico relevante foi encontrado' },
-    evLines: 'Evidências complementares', lim: 'Limites',
+    evLines: 'Evidências complementares', lim: 'Limites', noNum: 'Esta planilha não tem números para comparar: li como uma lista de itens', noFind: 'Não há achados confiáveis com os dados atuais',
   },
   en: {
     r: { ctx: 'Context', q1: 'What is happening?', q2: 'What does it suggest?', main: 'Main finding', evid: 'Evidence', explore: 'Exploration', impl: 'Implications and next steps', over: 'Overview and data quality', evol: 'Change over time', comp: 'Comparison across groups', conc: 'Concentration and composition', dist: 'Distribution and atypical values', synth: 'Summary and limits', extra: 'Further evidence', nos: 'Not enough data for this analysis', detail: 'Evidence in detail' },
@@ -22,7 +22,7 @@ const NVP = {
     med: (m, a) => `Median ${m} and average ${a}`, total: (l, v) => `${l}: ${v}`, noRange: 'The numbers describe this spreadsheet and do not prove relationships between variables',
     q: { top: s => `What sets ${s} apart from the rest? Look at ${s} through another dimension of the spreadsheet before concluding`, change: (a, b) => `What changed between ${a} and ${b}? Check whether it was a one-off or repeats`, atyp: 'Do the atypical values have something in common? Look at them one by one before concluding', assoc: 'Does the relationship hold within each group? Split by category before drawing conclusions', gen: 'Worth investigating what lies behind this difference, using other columns of the spreadsheet', period: s => `What happened in ${s}? Check whether it was seasonal or a one-off before concluding` },
     no: { nogen: 'No reliable finding in this dimension with the current data', conc6: 'Fewer than 6 groups: too few to talk about concentration', nonum: 'There is no numeric value column to analyze the distribution', evol: 'The data has no date column: there is no way to analyze change over time', evol2: 'There was no relevant change or enough data to highlight change over time', comp: 'There are too few groups to compare', conc: 'There are not enough groups or a summable total to analyze concentration', dist: 'Fewer than 30 rows have a value: too little to analyze the distribution', dist2: 'No relevant atypical value was found' },
-    evLines: 'Further evidence', lim: 'Limits',
+    evLines: 'Further evidence', lim: 'Limits', noNum: 'This spreadsheet has no numbers to compare: I read it as a list of items', noFind: 'There are no reliable findings with the current data',
   },
 };
 const nvpT = () => NVP[LANG] || NVP.pt;
@@ -77,6 +77,13 @@ function nvpOverview(P, X) { // visão geral e qualidade: totais, mediana e méd
   return { lines: [...L, ...r.lines.slice(1)], ev: r.ev };
 }
 
+// a visão geral só vale um slide se traz algo além do contexto: um total que não seja só a contagem de linhas, ou mediana e média
+function nvpOverviewAdds(b, ov, ctx) {
+  const extra = ov.lines.filter(l => !ctx.lines.includes(l));
+  if (b.aggKind === 'count' && !(b.rowStats && b.rowStats.median != null)) return false; // total de linhas já está no contexto
+  return extra.length > 0;
+}
+
 /* ---- escolha dos achados ---- */
 function nvpPool(P, meta, steps) { // todos os achados válidos e pontuados, sem repetição, do melhor para o pior
   const br = P.br || {}, all = buildStory(P, meta, steps, { insights: allInsights(P), extras: true }), rep = all.report || null;
@@ -111,8 +118,8 @@ function nvPlan(P, meta, steps, N, storyId) {
   const fact = (f, role, title) => (f ? nvpFactSlide(f, role, title, N) : null);
   if (!main) { // sem nenhum achado válido: roteiro descritivo com contexto e limites, no tamanho pedido
     const c = nvpContext(P, X, true), ov = nvpOverview(P, X);
-    const base = [nvpSynth('plan-ctx', 'ctx', R.ctx, c.lines, c.ev), nvpSynth('plan-over', 'over', R.over, ov.lines, ov.ev), nvpSynth('plan-lim', 'synth', R.synth, [X.noRange, ...(c.lines.slice(-1))])];
-    while (base.length < N) base.push(nvpSynth('plan-nos-' + base.length, 'nos', R.nos, [X.no.gen || X.q.gen]));
+    const numeric = !!(b.rowStats || (b.aggKind && b.aggKind !== 'count')), lines = [X.noFind, ...(numeric ? [] : [X.noNum]), X.noRange];
+    const base = [nvpSynth('plan-ctx', 'ctx', R.ctx, c.lines, c.ev), nvpSynth('plan-lim', 'synth', R.synth, lines)]; // roteiro curto e honesto: o que há na planilha e por que não há achado
     return nvFinishPlan(P, base.slice(0, N), N, pool, null);
   }
   if (N === 2) {
@@ -122,27 +129,28 @@ function nvPlan(P, meta, steps, N, storyId) {
     slides.push(s1, s2);
   } else if (N === 5) {
     const c = nvpContext(P, X, true); slides.push(nvpSynth('plan-ctx', 'ctx', R.ctx, c.lines, c.ev), fact(main, 'finding', R.main));
-    const ev = nvpEvidence(pool, used, main); slides.push(ev ? fact(ev, 'evidence', R.evid) : nvpSynth('plan-ev', 'evidence', R.evid, [X.noRange]));
+    const ev = nvpEvidence(pool, used, main); if (ev) slides.push(fact(ev, 'evidence', R.evid));
     const ex = nvpTake(pool, used, f => nvCls(f) !== nvCls(main) && (!ev || nvCls(f) !== nvCls(ev)) && !((f.ev.refs || [])[0] && (f.ev.refs || [])[0] === (main.ev.refs || [])[0])) || nvpTake(pool, used, f => nvCls(f) !== nvCls(main)) || nvpTake(pool, used, () => true);
-    slides.push(ex ? fact(ex, 'exploration', R.explore) : nvpSynth('plan-ex', 'exploration', R.explore, [X.no.comp]));
+    if (ex) slides.push(fact(ex, 'exploration', R.explore));
     slides.push(nvpSynth('plan-impl', 'implication', R.impl, impl()));
   } else { // 10
     const c = nvpContext(P, X, false), ov = nvpOverview(P, X);
-    slides.push(nvpSynth('plan-ctx', 'ctx', R.ctx, c.lines, c.ev), nvpSynth('plan-over', 'over', R.over, ov.lines, ov.ev), fact(main, 'finding', R.main));
-    const ev = nvpEvidence(pool, used, main); slides.push(ev ? fact(ev, 'evidence', R.detail) : nvpSynth('plan-ev', 'evidence', R.detail, [X.noRange]));
+    slides.push(nvpSynth('plan-ctx', 'ctx', R.ctx, c.lines, c.ev)); if (nvpOverviewAdds(b, ov, c)) slides.push(nvpSynth('plan-over', 'over', R.over, ov.lines, ov.ev)); // a visão geral só entra se traz algo além do contexto
+    slides.push(fact(main, 'finding', R.main));
+    const ev = nvpEvidence(pool, used, main); if (ev) slides.push(fact(ev, 'evidence', R.detail));
     const gaps = []; // limites definitivos dos dados (sem coluna de data, poucos grupos...) vão para o slide de síntese e limitações
     const slot = (key, role, title, why, definitive) => {
       let f = nvpTake(pool, used, nvpSlotPred(key, !!b.xIsTime)); if (f) return fact(f, role, title);
-      if (definitive) gaps.push(why);
+      gaps.push(`${title}: ${why}`); // o que faltou vai para a nota de limites; não vira slide
       f = nvpTake(pool, used, () => true); if (f) return fact(f, 'extra', R.extra); // sobrou achado: melhor um achado complementar do que um slide vazio
-      return unsupported(role, role, R.nos, `${title}: ${why}`);
+      return null;
     };
     const rs = b.rowStats, evolWhy = !b.xIsTime ? X.no.evol : X.no.evol2, compWhy = gn < 3 ? X.no.comp : X.no.nogen, concWhy = gn < 6 ? X.no.conc6 : X.no.nogen, distWhy = !rs ? X.no.nonum : rs.n < NV_ROWS.min ? X.no.dist : X.no.dist2; // cada motivo descreve o que os dados realmente têm
     slides.push(slot('evol', 'evolution', R.evol, evolWhy, !b.xIsTime), slot('comp', 'comparison', R.comp, compWhy, gn < 3), slot('conc', 'concentration', R.conc, concWhy, gn < 6), slot('dist', 'distribution', R.dist, distWhy, !rs || rs.n < NV_ROWS.min));
     const left = pool.items.filter(f => !used.has(f.id)).slice(0, 3); left.forEach(f => used.add(f.id));
     const lim = []; const ex = pool.items.filter(f => f.confidenceLabel === 'exploratory').length; if (ex) lim.push(X.expl(ex)); lim.push(...c.lines.filter(l => !/^(Todas|All) /.test(l) && /\d/.test(l) && /(usadas|used|ignoradas|ignored|fora dos cálculos|left out|Poucas|Few)/.test(l)));
     const sl = [...lim, ...gaps, ...left.map(f => f.head)].slice(0, 5);
-    const synth = nvpSynth('plan-synth', 'synthesis', R.synth, [...sl, X.noRange]); synth.allow = left.some(f => ((f.ev && f.ev.allow) || []).includes('causal')) ? ['causal'] : []; slides.push(synth); // o nome de uma coluna pode ser "Causa"
+    if (sl.length) { const synth = nvpSynth('plan-synth', 'synthesis', R.synth, [...sl, X.noRange]); synth.allow = left.some(f => ((f.ev && f.ev.allow) || []).includes('causal')) ? ['causal'] : []; slides.push(synth); } // o nome de uma coluna pode ser "Causa"; sem o que dizer, não há slide de limites
     slides.push(nvpSynth('plan-impl', 'implication', R.impl, impl()));
   }
   return nvFinishPlan(P, slides.filter(Boolean), N, pool, main);
@@ -158,7 +166,7 @@ const nvPlanFor = (P, meta, steps) => nvPlan(P, meta, steps, nvSlideCount(P.br),
 /* ---- validação do plano ---- */
 function nvValidatePlan(slides, N, pool) {
   const errors = [], warnings = [], ids = new Set((pool && pool.items || []).map(f => f.id)), seen = new Map();
-  if (slides.length !== N) errors.push({ id: 'plan', code: 'slide-count', msg: `o plano tem ${slides.length} slides e deveria ter ${N}` });
+  if (slides.length > N || slides.length < 1) errors.push({ id: 'plan', code: 'slide-count', msg: `o plano tem ${slides.length} slides e deveria ter de 1 a ${N}` }); // o tempo escolhido é o máximo: só entra slide com conteúdo
   slides.forEach((s, i) => {
     const id = s.id || 'slide-' + i;
     if (!s.role || !s.planTitle) errors.push({ id, code: 'no-role', msg: 'slide sem papel ou título' });

@@ -524,6 +524,7 @@ function makePiece() {
   S.dirty = true;
   const autoT = S.read && S.read.shape === 'cases' ? autoTitle(built, choice.primary).replace(/^(Rows|Linhas)\b/, LANG === 'en' ? 'Cases' : 'Casos') : autoTitle(built, choice.primary); // sugestão: o título é escrito pela pessoa (no build de teste já vem preenchido)
   const P = { built, cases: S.read && S.read.shape === 'cases' ? casesAnalyze(S.ds) : null, choice, insights, type: choice.primary, palId: tone.pal, colors: PALETTES[tone.pal].slice(), bg: { ...tone.bg }, id: newId(), hadIns: insights.length > 0, title: S.br.message.trim() || (window.__DV_NOFIND && !/[?&]asktitle\b/.test(location.search) ? autoT : ''), autoTitle: autoT, subtitle: null, foot: null, fontPair: tone.pair, opts: { ...DEFAULT_OPTS }, br: { ...S.br }, big: S.br.place === 'projector', place: S.br.place, fileName: S.fileName, isSample: S.isSample, lang: LANG, sort: 'value', host: null, hist: [], hi: -1 };
+  P.mstory = S.br.story || (S.mapping && S.mapping.story) || null; // história (vocabulário antigo) com que os dados foram mapeados
   P.hist.push(snap(P)); P.hi = 0;
   return P;
 }

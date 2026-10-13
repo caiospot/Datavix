@@ -15,8 +15,20 @@ function storyEnv(P) {
 const storyName = id => (id ? nvStoryInfo(id, LANG).name : T('story_pan'));
 const storyCard = (id, rk, sel) => { const i = nvStoryInfo(id, LANG), why = (rk.all[id] && rk.all[id].why) || '', n = rk.facts[id]; return `<button type="button" class="tell-c" data-id="${id}" aria-pressed="${sel === id}"><b>${esc(i.name)}</b><span>${esc(i.ask)}</span><small>${esc([why, n != null ? T('tell_facts', n) : ''].filter(Boolean).join(' · '))}</small></button>`; };
 
+// remonta a peça com o mapeamento da história (tempo, geografia, funil…), guardando o que a pessoa já editou; devolve true se remontou
+function storyRebuild(kind) {
+  const P = S.piece; if (!P || !S.ds || !kind) return false; const lg = nvStoryLegacy(kind); if (lg === P.mstory) return false;
+  const prevStory = S.br.story, prevMap = S.mapping;
+  try {
+    S.br.story = lg; S.mapping = defaultMapping(); const np = makePiece();
+    Object.assign(np, { id: P.id, saveName: P.saveName, palId: P.palId, colors: P.colors, bg: P.bg, fontPair: P.fontPair, opts: P.opts, title: P.title, subtitle: P.subtitle, foot: P.foot, hist: P.hist, hi: P.hi, sedits: P.sedits });
+    np.br = { ...(P.br || {}), story: lg, storyKind: kind }; if (np.sb === undefined && P.sb) np.sb = P.sb;
+    teardownChart(); S.piece = np; render(); return true;
+  } catch (e) { console.error(e); S.br.story = prevStory; S.mapping = prevMap; return false; }
+}
 function storyApply(id, opt = {}) {
-  const P = S.piece; if (!P) return; const kind = id && NV_STORIES[id] ? id : null;
+  let P = S.piece; if (!P) return; const kind = id && NV_STORIES[id] ? id : null;
+  if (kind && !opt.noRebuild) { const env = storyEnv(P), n = env && env.rk.facts[kind]; if ((n === 0 || n === null || n === undefined) && storyRebuild(kind)) { P = S.piece; if (!opt.silent) toast(T('story_set', storyName(kind))); } }
   P.br = P.br || {}; P.br.storyKind = kind; S.br.storyKind = kind; if (kind) { P.br.story = nvStoryLegacy(kind); S.br.story = P.br.story; }
   if (!opt.silent) { markDirty(); const sel = $('[data-a=story-kind]'); if (sel) sel.value = kind || ''; }
   const pc = kind && NV_STORIES[kind].charts.primary;
@@ -29,7 +41,7 @@ async function showTell() {
   const rk = env.rk, list = rk.list;
   if (list.length < 2) { storyApply(list[0] || null, { silent: true }); if (!list.length) toast(T('tell_none')); return; } // 0 ou 1 história possível: não há o que escolher
   let sel = list[0];
-  const rest = NV_ST_ORDER.filter(id => !list.includes(id)), restRow = id => { const ok = rk.all[id] && rk.all[id].ok && rk.facts[id] > 0; return ok ? storyCard(id, rk, sel) : `<div class="tell-c off"><b>${esc(nvStoryInfo(id, LANG).name)}</b><small>${esc(NV_STORIES[id].phase > 1 && rk.all[id] && rk.all[id].planned ? T('tell_soon') : T('tell_blocked') + ': ' + ((rk.all[id] && rk.all[id].why) || ''))}</small></div>`; };
+  const rest = NV_ST_ORDER.filter(id => !list.includes(id)), restRow = id => { const ok = rk.all[id] && rk.all[id].ok; return ok ? storyCard(id, rk, sel) : `<div class="tell-c off"><b>${esc(nvStoryInfo(id, LANG).name)}</b><small>${esc(NV_STORIES[id].phase > 1 && rk.all[id] && rk.all[id].planned ? T('tell_soon') : T('tell_blocked') + ': ' + ((rk.all[id] && rk.all[id].why) || ''))}</small></div>`; };
   const body = `<p class="note tell-p">${esc(T('tell_p'))}</p><div class="tell">${list.map(id => storyCard(id, rk, sel)).join('')}</div>
     <details class="tell-more"><summary>${esc(T('tell_all'))}</summary><div class="tell">${rest.map(restRow).join('')}<button type="button" class="tell-c" data-id="" aria-pressed="false"><b>${esc(T('story_pan'))}</b><span>${esc(T('tell_pan_ask'))}</span></button></div></details>`;
   const r = await modal({ title: `${esc(T('tell_t')[0])} <b>${esc(T('tell_t')[1])}</b>`, body, wide: true, actions: [{ label: T('tell_go'), v: 'ok', kind: 'primary' }, { label: T('tell_pan'), v: 'pan', kind: 'ghost' }],
@@ -43,7 +55,7 @@ function maybeTell() {
 function storyPanelHtml(P) {
   const env = P.host && P.host.ix ? storyEnv(P) : null, cur = (P.br && P.br.storyKind) || '', rk = env && env.rk;
   const opts = [`<option value=""${cur === '' ? ' selected' : ''}>${esc(T('story_pan'))}</option>`].concat(NV_ST_ORDER.filter(id => NV_STORIES[id].phase === 1 || (rk && rk.all[id] && rk.all[id].ok) || id === cur).map(id => {
-    const okk = !rk || (rk.all[id] ? rk.all[id].ok && rk.facts[id] > 0 : rk.possible.includes(id)); return `<option value="${id}"${cur === id ? ' selected' : ''}${okk || id === cur ? '' : ' disabled'}>${esc(storyName(id))}${okk || id === cur ? '' : ' · ' + esc(T('tell_blocked'))}</option>`; }));
+    const okk = !rk || (rk.all[id] ? rk.all[id].ok : rk.possible.includes(id)); return `<option value="${id}"${cur === id ? ' selected' : ''}${okk || id === cur ? '' : ' disabled'}>${esc(storyName(id))}${okk || id === cur ? '' : ' · ' + esc(T('tell_blocked'))}</option>`; }));
   return `<section class="s1" data-t="chart"><h3>[ ${esc(T('story_h'))} ]</h3><select class="sel" data-a="story-kind" aria-label="${esc(T('story_h'))}">${opts.join('')}</select><p class="note" style="margin:8px 0 0">${esc(cur ? nvStoryInfo(cur, LANG).ask : T('tell_pan_ask'))}</p></section>`;
 }
 document.addEventListener('change', e => { const t = e.target; if (t && t.matches && t.matches('[data-a=story-kind]')) storyApply(t.value || null); });

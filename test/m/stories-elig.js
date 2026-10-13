@@ -32,6 +32,7 @@
     for (const id of g.poss) if (!sg.possible.includes(id)) f.push('deveria ser possível: ' + id + ' (' + sg.all[id].why + ')');
     if (!g.poss.some(id => sg.list.includes(id))) f.push('nenhuma esperada entre as sugeridas');
     for (const id of g.block) if (sg.possible.includes(id) && sg.all[id].score >= NV_ST_MIN_SCORE) f.push('deveria estar bloqueada ou fraca: ' + id + ' (' + sg.all[id].why + ')');
+    for (const id of ['geo', 'funnel']) if (sg.possible.includes(id) && !(name === 'publico_orcamento' && id === 'geo')) f.push('Fase 2 falso positivo: ' + id + ' (' + sg.all[id].why + ')'); // só publico_orcamento tem estado (UF); nenhuma tem coordenadas ou etapas
     out[name] = { sugere: sg.list.map(id => id + ' ' + sg.all[id].score.toFixed(2)).join(' | '), bloqueadas: sg.blocked.map(id => id + ': ' + sg.all[id].why).join(' | ').slice(0, 220), falhas: f };
     if (f.length) fails.push(name + ': ' + f.join('; '));
   }

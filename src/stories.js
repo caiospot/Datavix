@@ -73,8 +73,8 @@ function nvStoryShares(ds, g, m) {
 
 /* ---- elegibilidade ---- */
 const NV_TX = {
-  pt: { rows: 'contagem de linhas', vals: 'valores', per: 'períodos', noGroup: 'falta uma coluna de categorias (2 a 12 valores)', noGroup6: 'nenhuma coluna de categorias com 6 ou mais valores', manyGroups: 'categorias demais (use Ranking e concentração)', noDate: 'falta uma coluna de datas com pelo menos 4 períodos', noAdd: 'a medida é uma média ou razão: não soma', negs: 'há valores negativos demais para falar em partes de um todo', noMeasure: 'falta uma coluna numérica', fewRows: n => `só ${n} linhas com valor (mínimo 30)`, flat: 'os valores quase não variam', noPair: 'é preciso uma segunda coluna numérica com 30 ou mais pares', mech: 'as colunas numéricas são múltiplos uma da outra (relação mecânica)', weak: r => `relação fraca (|ρ| máx ${r})`, soon: 'em breve', top3: p => `os 3 maiores somam ${p}%`, rho: r => `ρ ${r}` },
-  en: { rows: 'row count', vals: 'values', per: 'periods', noGroup: 'needs a category column (2 to 12 values)', noGroup6: 'no category column with 6 or more values', manyGroups: 'too many categories (use Ranking and concentration)', noDate: 'needs a date column with at least 4 periods', noAdd: 'the measure is an average or ratio: it does not add up', negs: 'too many negative values to talk about parts of a whole', noMeasure: 'needs a numeric column', fewRows: n => `only ${n} rows with a value (minimum 30)`, flat: 'the values hardly vary', noPair: 'needs a second numeric column with 30 or more pairs', mech: 'the numeric columns are multiples of each other (mechanical relationship)', weak: r => `weak relationship (max |ρ| ${r})`, soon: 'coming soon', top3: p => `the top 3 add up to ${p}%`, rho: r => `ρ ${r}` },
+  pt: { rows: 'contagem de linhas', vals: 'valores', per: 'períodos', noGroup: 'falta uma coluna de categorias (2 a 12 valores)', noGroup6: 'nenhuma coluna de categorias com 6 ou mais valores', manyGroups: 'categorias demais (use Ranking e concentração)', noDate: 'falta uma coluna de datas com pelo menos 4 períodos', noAdd: 'a medida é uma média ou razão: não soma', negs: 'há valores negativos demais para falar em partes de um todo', noMeasure: 'falta uma coluna numérica', fewRows: n => `só ${n} linhas com valor (mínimo 30)`, fewPts: 'poucos pontos de latitude e longitude (mínimo 20)', noGeo: 'falta uma coluna de estado, cidade ou latitude e longitude', noFlow: 'faltam colunas de etapas em sequência (2 a 5)', flat: 'os valores quase não variam', noPair: 'é preciso uma segunda coluna numérica com 30 ou mais pares', mech: 'as colunas numéricas são múltiplos uma da outra (relação mecânica)', weak: r => `relação fraca (|ρ| máx ${r})`, soon: 'em breve', top3: p => `os 3 maiores somam ${p}%`, rho: r => `ρ ${r}` },
+  en: { rows: 'row count', vals: 'values', per: 'periods', noGroup: 'needs a category column (2 to 12 values)', noGroup6: 'no category column with 6 or more values', manyGroups: 'too many categories (use Ranking and concentration)', noDate: 'needs a date column with at least 4 periods', noAdd: 'the measure is an average or ratio: it does not add up', negs: 'too many negative values to talk about parts of a whole', noMeasure: 'needs a numeric column', fewRows: n => `only ${n} rows with a value (minimum 30)`, fewPts: 'too few latitude and longitude points (minimum 20)', noGeo: 'needs a state, city or latitude and longitude column', noFlow: 'needs stage columns in sequence (2 to 5)', flat: 'the values hardly vary', noPair: 'needs a second numeric column with 30 or more pairs', mech: 'the numeric columns are multiples of each other (mechanical relationship)', weak: r => `weak relationship (max |ρ| ${r})`, soon: 'coming soon', top3: p => `the top 3 add up to ${p}%`, rho: r => `ρ ${r}` },
 };
 const nvPct = (x, lang) => (Math.round(x * 100)).toString();
 const nvRho = (x, lang) => (Math.round(Math.abs(x) * 100) / 100).toString().replace('.', lang === 'en' ? '.' : ',');
@@ -131,6 +131,22 @@ function nvStoryEligibility(ds, opt = {}) {
     if (bestR && bestR.score < NV_ST_MIN_SCORE) bestR.weak = X.weak(nvRho(weakMax, lang));
     out.relation = bestR || no(derived ? X.mech : why || X.noPair); }
 
+  // geo (Fase 2): UF/estado/município reconhecido, ou latitude e longitude, com uma medida (ou contagem)
+  { let sg = null; try { sg = CHART_REG.bubmap && CHART_REG.bubmap.suggest(ds.columns); } catch (e) { sg = null; }
+    let si = null; try { si = CHART_REG.isomap && CHART_REG.isomap.suggest(ds.columns); } catch (e) { si = null; }
+    if (si) { const la = ds.columns[si.lat], pts = ds.rowCount; out.geo = pts >= 20 ? { ok: true, score: Math.min(1, 0.6 + (pts >= 100 ? 0.25 : 0.1) + (F.mainCol ? 0.1 : 0)), why: `${ds.columns[si.lat].name} + ${ds.columns[si.lon].name}: ${fmtInt(pts, lang)} ${lang === 'en' ? 'points' : 'pontos'}`, cols: { lat: si.lat, lon: si.lon, measure: si.val } } : no(X.fewPts); }
+    else if (sg) { const c = ds.columns[sg.geo !== undefined ? sg.geo : sg.cat]; const k = c && c.dict ? c.dict.length : 0; out.geo = c && k >= 2 ? { ok: true, score: Math.min(1, 0.6 + (k >= 5 ? 0.25 : 0.1) + (F.mainCol ? 0.1 : 0)), why: `${c.name}: ${k} ${X.vals} · ${mname}`, cols: { geo: sg.geo, measure: F.main } } : no(X.noGeo); }
+    else out.geo = no(X.noGeo); }
+  // funnel (Fase 2): 2 a 5 colunas de etapa reconhecidas pelo gráfico de funil
+  { let fl = null; try { fl = CHART_REG.flow && CHART_REG.flow.suggest(ds.columns); } catch (e) { fl = null; }
+    const idx = fl ? [fl.s1, fl.s2, fl.s3, fl.s4, fl.s5].filter(i => i !== undefined && i >= 0) : [];
+    // só é funil se as colunas parecem etapas: o nome diz (etapa, fase, proposta…) ou o preenchimento cai de uma etapa para a próxima (quem sai do funil deixa as etapas seguintes vazias)
+    const fill = i => { const c = ds.columns[i]; let k = 0; for (let r = 0; r < ds.rowCount; r++) if (c.codes[r] >= 0) k++; return k / Math.max(1, ds.rowCount); };
+    const hint = idx.filter(i => /etapa|est[aá]gio|fase|funil|stage|phase|status|jornada|qualific|proposta|proposal|resultado|result|convers|fechament|closing/i.test(ds.columns[i].name)).length;
+    const fills = idx.map(fill), drops = fills.slice(1).filter((f, k) => f < fills[k] - 0.05).length;
+    if (idx.length >= 2 && hint < 2 && drops < 1) idx.length = 0;
+    out.funnel = idx.length >= 2 ? { ok: true, score: Math.min(1, 0.5 + 0.12 * idx.length + (fl.value >= 0 ? 0.1 : 0)), why: idx.map(i => ds.columns[i].name).join(' → '), cols: { stages: idx, measure: fl.value } } : no(X.noFlow); }
+
   // fases seguintes: o catálogo já existe, a elegibilidade chega nos próximos portões
   for (const id of NV_ST_ORDER) if (!out[id]) out[id] = no(X.soon, { planned: true, phase: NV_STORIES[id].phase });
   for (const id of NV_ST_ORDER) { out[id].id = id; out[id].phase = NV_STORIES[id].phase; }
@@ -150,6 +166,16 @@ function nvStorySuggest(ds, opt = {}) {
  * synth (síntese e limites), impl (implicações). Achado fora de `allow` nunca entra; sem achado para um passo, o slide diz que não há base.
  * ===================================================================================================================== */
 const NV_ARCS = {
+  geo: {
+    2: [['fact', 'lead', ['top', 'conc']], ['impl']],
+    5: [['ctx'], ['fact', 'lead', ['top', 'conc']], ['fact', 'last', ['bottom']], ['fact', 'diff', ['spread', 'dimgap']], ['impl']],
+    10: [['ctx'], ['over'], ['fact', 'lead', ['top']], ['fact', 'conc', ['conc']], ['fact', 'last', ['bottom']], ['fact', 'diff', ['spread']], ['fact', 'by', ['dimgap']], ['fact', 'extra1', ['top', 'bottom', 'conc', 'spread', 'dimgap']], ['synth'], ['impl']],
+  },
+  funnel: {
+    2: [['fact', 'drop', ['drop', 'ratio']], ['impl']],
+    5: [['ctx'], ['fact', 'rate', ['ratio']], ['fact', 'drop', ['drop']], ['fact', 'diff', ['dimgap']], ['impl']],
+    10: [['ctx'], ['over'], ['fact', 'rate', ['ratio']], ['fact', 'drop', ['drop']], ['fact', 'drop2', ['drop']], ['fact', 'diff', ['dimgap']], ['fact', 'lead', ['top']], ['fact', 'last', ['bottom']], ['synth'], ['impl']],
+  },
   compare: {
     2: [['fact', 'lead', ['top', 'spread']], ['impl']],
     5: [['ctx'], ['fact', 'lead', ['top', 'spread']], ['fact', 'last', ['bottom', 'gap']], ['fact', 'diff', ['dimgap', 'ratio', 'shift']], ['impl']],
@@ -184,10 +210,10 @@ const NV_ARCS = {
 for (const id in NV_ARCS) NV_STORIES[id].arc = NV_ARCS[id];
 
 const NVS_T = {
-  pt: { lead: 'Quem lidera', dist: 'Distância entre os primeiros', last: 'Quem fica atrás', diff: 'O que diferencia os grupos', ratio: 'Quantas vezes maior', exc: 'Exceção', var: 'Variação no período', trend: 'Tendência', peak: 'Pico', low: 'Vale', turn: 'Ponto de virada', who: 'Quem puxou a variação',
+  pt: { rate: 'Quanto passa de uma etapa à outra', drop: 'Maior perda entre etapas', drop2: 'Segunda maior perda', lead: 'Quem lidera', dist: 'Distância entre os primeiros', last: 'Quem fica atrás', diff: 'O que diferencia os grupos', ratio: 'Quantas vezes maior', exc: 'Exceção', var: 'Variação no período', trend: 'Tendência', peak: 'Pico', low: 'Vale', turn: 'Ponto de virada', who: 'Quem puxou a variação',
     conc: 'Concentração', top: 'Quem lidera', top2: 'Quem vem em seguida', tail: 'A cauda', weight: 'Peso do topo', part: 'Maior parte do total', small: 'Menores partes', mix: 'Mudança de composição', order: 'Ordem das partes', by: 'Por outra dimensão',
     typical: 'Valor típico e faixa', atyp: 'Valores fora do padrão', rows: 'Linhas fora do padrão', grp: 'Grupo que se desvia', extra1: 'Mais um olhar sobre os valores', extra2: 'Outro ponto sobre os valores', rel: 'Relação principal', rel2: 'Segunda relação', out: 'Pontos que fogem da relação', limits: 'O que a relação não mostra' },
-  en: { lead: 'Who leads', dist: 'Distance between the top ones', last: 'Who trails', diff: 'What sets groups apart', ratio: 'How many times larger', exc: 'Exception', var: 'Change in the period', trend: 'Trend', peak: 'Peak', low: 'Low', turn: 'Turning point', who: 'Who drove the change',
+  en: { rate: 'How much moves from one stage to the next', drop: 'Largest loss between stages', drop2: 'Second largest loss', lead: 'Who leads', dist: 'Distance between the top ones', last: 'Who trails', diff: 'What sets groups apart', ratio: 'How many times larger', exc: 'Exception', var: 'Change in the period', trend: 'Trend', peak: 'Peak', low: 'Low', turn: 'Turning point', who: 'Who drove the change',
     conc: 'Concentration', top: 'Who leads', top2: 'Who comes next', tail: 'The tail', weight: 'Weight of the top', part: 'Largest part of the total', small: 'Smallest parts', mix: 'Change in mix', order: 'Order of the parts', by: 'By another dimension',
     typical: 'Typical value and range', atyp: 'Values outside the pattern', rows: 'Rows outside the pattern', grp: 'Group that deviates', extra1: 'Another look at the values', extra2: 'Another point about the values', rel: 'Main relationship', rel2: 'Second relationship', out: 'Points that leave the relationship', limits: 'What the relationship does not show' },
 };
@@ -246,13 +272,14 @@ function nvStoryRank(ds, P, pool, opt = {}) {
   for (const id of NV_ST_ORDER) {
     if (!all[id].ok) continue;
     const items = nvStoryPool(pool, id).items, firm = items.filter(f => f.confidenceLabel !== 'exploratory').length;
+    if (NV_STORIES[id].phase > 1 && nvStoryLegacy(id) !== (P && P.mstory)) { facts[id] = null; score[id] = Math.min(1, all[id].score + (typeof nvStoryAreaBoost === 'function' ? nvStoryAreaBoost(area, id) : 0)); continue; } // história que pede outro mapeamento: os achados só existem depois de remontar a peça
     facts[id] = items.length; let sc = all[id].score;
     if (!items.length) sc = Math.min(sc, 0.3); else sc = Math.min(1, sc * (0.85 + 0.15 * Math.min(1, firm / 3))) + 0.0; // achado firme sobe, só exploratório desce um pouco
     sc += (typeof nvStoryAreaBoost === 'function' ? nvStoryAreaBoost(area, id) : 0);
     score[id] = Math.round(sc * 1000) / 1000;
   }
   const possible = NV_ST_ORDER.filter(id => all[id].ok).sort((a, b) => score[b] - score[a] || (facts[b] - facts[a]) || NV_ST_ORDER.indexOf(a) - NV_ST_ORDER.indexOf(b));
-  const list = possible.filter(id => score[id] >= NV_ST_MIN_SCORE && facts[id] > 0).slice(0, N);
+  const list = possible.filter(id => score[id] >= NV_ST_MIN_SCORE && (facts[id] === null || facts[id] > 0)).slice(0, N);
   return { all, list, possible, blocked: base.blocked, facts, score, area };
 }
 

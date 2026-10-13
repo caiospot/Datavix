@@ -533,9 +533,11 @@
 .stage .piece:not(.presenting) .c3 .caption, .stage .piece:not(.presenting) .c3 .foot { padding: 0 18px 12px; }
 .stage .piece:not(.presenting) .c3 .caption:empty, .stage .piece:not(.presenting) .c3 .foot:empty { display: none; }
 .stage .piece:not(.presenting) .plogo { display: none; }
-/* faixa do topo do palco: "Apresentar" e "Como usar" numa barra com divisória */
-.stage .piece:not(.presenting) .c3 .vzbox:has(.orgtools)::before, .stage .piece:not(.presenting) .c3 .orgstage::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 40px; border-bottom: 1px solid var(--o-line); z-index: 3; pointer-events: none; }
-.stage .piece:not(.presenting) .orgtools:not(.row) { top: 11px; right: 18px; }
+/* faixa do topo do palco: só "Apresentar" e "Como usar" ficam acima da linha; o gráfico começa abaixo dela */
+.stage .piece:not(.presenting) .c3 .vzbox:has(.orgtools)::before { content: ''; position: absolute; left: 0; right: 0; top: 40px; height: 0; border-top: 1px solid var(--o-line); z-index: 3; pointer-events: none; }
+.stage .piece:not(.presenting) .c3 .org { top: 41px; }
+.stage .piece:not(.presenting) .c3 .altview { padding-top: 41px; }
+.stage .piece:not(.presenting) .orgtools:not(.row) { top: -30px; right: 18px; }
 
 /* telas largas: a peça ocupa exatamente a altura da janela; cada cartão rola por dentro e o gráfico se ajusta ao seu, sem passar do limite */
 .stage { overflow: hidden; }

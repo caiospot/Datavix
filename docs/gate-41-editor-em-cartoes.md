@@ -8,3 +8,4 @@ Referência: print do novo layout do usuário.
 
 ## Correção: gráficos passavam da altura do cartão
 Em telas largas e médias a peça agora tem exatamente a altura da janela (`100vh − 65px`, altura real do cabeçalho); cada cartão rola por dentro (painel esquerdo, lista) e o gráfico se ajusta ao cartão do palco, sem esticar a página. Verificado nos 22 gráficos disponíveis, em 1800×1180, 1440×900 e 1200×760: nenhum passa do limite do cartão e a página não rola (o calendário tem só um elemento oculto de dica 3 px abaixo). Celular continua rolando como antes.
+- **Faixa do topo do palco:** acima da linha ficam só "Apresentar" e "Como usar" (canto direito); todo gráfico começa abaixo dela (os de canvas começam 41 px abaixo do topo do cartão; os de tabela/indicadores ganham o mesmo recuo). Verificado nos 22 tipos em 2000×1055 e 1440×900: nenhum elemento visível acima da linha.

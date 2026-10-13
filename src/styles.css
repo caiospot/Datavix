@@ -839,3 +839,11 @@ details.rd-grp > summary .rd-gh { position: relative; padding: 10px 12px; border
 .layer-foot { flex: none; padding: 12px 20px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; }
 @media (max-width: 700px) { .layer-box { max-height: 94dvh; } .layer-body { padding: 4px 16px 16px; } }
 .layer-body .sb-nav, .layer-body .row.sb-nav { position: sticky; bottom: -20px; z-index: 2; background: var(--bg); padding: 14px 0 20px; margin-top: 12px; }
+
+/* escolha da história */
+.tell { display: grid; gap: 10px; margin-top: 12px; }
+.tell-c { display: grid; gap: 4px; text-align: left; width: 100%; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); cursor: pointer; color: var(--fg); }
+.tell-c b { font: 600 16px var(--sans); } .tell-c span { color: var(--muted); font-size: 13.5px; } .tell-c small { font: 400 11.5px var(--mono); letter-spacing: .03em; color: var(--muted); }
+.tell-c:hover { border-color: var(--muted); } .tell-c[aria-pressed='true'] { border-color: var(--sel); box-shadow: 0 0 0 1px var(--sel); background: color-mix(in srgb, var(--lime) 8%, var(--card)); }
+.tell-c.off { opacity: .55; cursor: default; }
+.tell-p { margin: 0; } .tell-more { margin-top: 14px; } .tell-more summary { cursor: pointer; color: var(--muted); font-size: 13px; }

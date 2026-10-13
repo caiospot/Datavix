@@ -41,7 +41,7 @@ function vLogo(ctx, cx, y, size, color) {
 function videoPlan(P, fmt) {
   const meta = P.host.ix.meta, base = buildSteps(P, meta), isIns = s => /^i\d/.test(s.id), sq = fmt === 'square';
   let hero = null, ov = null; try { hero = kpiCards(P.built, LANG, T)[0] || null; ov = genOverview(P); } catch (e) { /* sem indicador */ }
-  let story = []; try { story = P.sb ? storyFromAnswers(P, meta, base) : nvPlan(P, meta, base, 5).slides.slice(1); } catch (e) { console.error(e); } // vídeo: o plano de 5 sem o contexto (o gancho já faz esse papel)
+  let story = []; try { story = P.sb ? storyFromAnswers(P, meta, base) : nvPlan(P, meta, base, 5, P.br && P.br.storyKind).slides.slice(1); } catch (e) { console.error(e); } // vídeo: o plano de 5 sem o contexto (o gancho já faz esse papel)
   if (!P.sb && !story.length) { try { story = buildStory(P, meta, base); } catch (e) { console.error(e); } }
   nvApplyEdits(P, story); // textos que a pessoa escreveu na apresentação
   const scenes = [{ kind: 'hook', ms: 2700 }], SLx = STORY_TXT[LANG] || STORY_TXT.pt;

@@ -289,7 +289,7 @@ function pxDeck(P) {
   P.__pxth = th; const acc = P.colors[0], bgS = P.bg.mode === 'gradient' ? { grad: true, c1: P.bg.base, c2: mixHex(P.bg.base, acc, 0.18) } : { c1: base };
   const slides = [], charts = []; // charts: { xml, rows }
   const meta = P.host.ix.meta, steps = buildSteps(P, meta), N = nvSlideCount(P.br), blank = nvIsBlank(P);
-  let story = []; try { story = P.sb ? storyFromAnswers(P, meta, steps) : nvPlan(P, meta, steps, N).slides; } catch (e) { console.error(e); story = []; }
+  let story = []; try { story = P.sb ? storyFromAnswers(P, meta, steps) : nvPlan(P, meta, steps, N, P.br && P.br.storyKind).slides; } catch (e) { console.error(e); story = []; }
   if (!P.sb && !story.length) { try { story = buildStory(P, meta, steps); } catch (e) { story = []; } }
   if (blank) story = nvBlankSlides(story); nvApplyEdits(P, story);
   const total = () => slides.length;

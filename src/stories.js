@@ -112,7 +112,7 @@ function nvStoryEligibility(ds, opt = {}) {
       if (s.n < NV_ROWS.min) { why = X.fewRows(s.n); continue; }
       if (!(s.sd > 0) || s.max === s.min) { why = X.flat; continue; }
       const outs = (s.outAbove || 0) + (s.outBelow || 0), skew = Math.abs(s.mean - s.median) / s.sd >= 0.2;
-      const sc = Math.min(1, 0.4 + (s.n >= 500 ? 0.3 : s.n >= 100 ? 0.15 : 0) + (outs > 0 || skew ? 0.3 : 0));
+      const odd = outs > 0 || skew, sc = Math.min(1, odd ? 0.5 + (s.n >= 500 ? 0.3 : s.n >= 100 ? 0.15 : 0) + 0.2 : 0.3 + (s.n >= 100 ? 0.1 : 0)); // sem assimetria nem pontos fora da faixa não há o que contar: possível, mas não sugerida
       if (!bestR || sc > bestR.score) bestR = { ok: true, score: sc, why: `${m.c.name}: ${s.n} ${lang === 'en' ? 'rows' : 'linhas'}${outs ? ' · ' + outs + ' ' + (lang === 'en' ? 'outside the usual range' : 'fora da faixa comum') : ''}`, cols: { measure: m.i } };
     }
     out.distribution = bestR || no(why || X.noMeasure); }
@@ -143,3 +143,119 @@ function nvStorySuggest(ds, opt = {}) {
   const list = ids.filter(id => all[id].score >= NV_ST_MIN_SCORE).slice(0, n);
   return { all, list, possible: ids, blocked: NV_ST_ORDER.filter(id => !all[id].ok && !all[id].planned) };
 }
+
+/* =====================================================================================================================
+ * Portão 43: arcos de roteiro por história (2, 5 e 10 slides) e filtro de pertencimento.
+ * Cada passo é [tipo, chave, classes]. tipo: ctx (contexto), over (visão geral), fact (achado de uma das classes, em ordem de preferência),
+ * synth (síntese e limites), impl (implicações). Achado fora de `allow` nunca entra; sem achado para um passo, o slide diz que não há base.
+ * ===================================================================================================================== */
+const NV_ARCS = {
+  compare: {
+    2: [['fact', 'lead', ['top', 'spread']], ['impl']],
+    5: [['ctx'], ['fact', 'lead', ['top', 'spread']], ['fact', 'last', ['bottom', 'gap']], ['fact', 'diff', ['dimgap', 'ratio', 'shift']], ['impl']],
+    10: [['ctx'], ['over'], ['fact', 'lead', ['top']], ['fact', 'dist', ['spread', 'gap']], ['fact', 'last', ['bottom']], ['fact', 'diff', ['dimgap']], ['fact', 'ratio', ['ratio', 'gap']], ['fact', 'exc', ['shift']], ['synth'], ['impl']],
+  },
+  time: {
+    2: [['fact', 'var', ['change', 'trend']], ['impl']],
+    5: [['ctx'], ['fact', 'var', ['change', 'trend']], ['fact', 'trend', ['trend', 'shift']], ['fact', 'peak', ['top', 'bottom', 'drop']], ['impl']],
+    10: [['ctx'], ['over'], ['fact', 'var', ['change']], ['fact', 'trend', ['trend']], ['fact', 'peak', ['top']], ['fact', 'low', ['bottom']], ['fact', 'turn', ['shift', 'drop']], ['fact', 'who', ['contrib']], ['synth'], ['impl']],
+  },
+  rank: {
+    2: [['fact', 'conc', ['conc', 'top']], ['impl']],
+    5: [['ctx'], ['fact', 'conc', ['conc']], ['fact', 'top', ['top']], ['fact', 'tail', ['bottom', 'contrib']], ['impl']],
+    10: [['ctx'], ['over'], ['fact', 'conc', ['conc']], ['fact', 'top', ['top']], ['fact', 'top2', ['top']], ['fact', 'tail', ['bottom']], ['fact', 'weight', ['contrib']], ['fact', 'ratio', ['ratio']], ['synth'], ['impl']],
+  },
+  composition: {
+    2: [['fact', 'part', ['top', 'conc']], ['impl']],
+    5: [['ctx'], ['fact', 'part', ['top', 'conc']], ['fact', 'small', ['bottom']], ['fact', 'mix', ['shift', 'contrib']], ['impl']],
+    10: [['ctx'], ['over'], ['fact', 'part', ['top']], ['fact', 'order', ['conc']], ['fact', 'small', ['bottom']], ['fact', 'mix', ['shift']], ['fact', 'who', ['contrib']], ['fact', 'by', ['dimgap']], ['synth'], ['impl']],
+  },
+  distribution: {
+    2: [['fact', 'typical', ['dist']], ['impl']],
+    5: [['ctx'], ['fact', 'typical', ['dist']], ['fact', 'atyp', ['atypical', 'atypical-rows']], ['fact', 'grp', ['dimgap']], ['impl']],
+    10: [['ctx'], ['over'], ['fact', 'typical', ['dist']], ['fact', 'atyp', ['atypical']], ['fact', 'rows', ['atypical-rows']], ['fact', 'grp', ['dimgap']], ['fact', 'extra1', ['dist', 'atypical', 'atypical-rows', 'dimgap']], ['fact', 'extra2', ['dist', 'atypical', 'atypical-rows', 'dimgap']], ['synth'], ['impl']],
+  },
+  relation: {
+    2: [['fact', 'rel', ['assoc']], ['impl']],
+    5: [['ctx'], ['fact', 'rel', ['assoc']], ['fact', 'grp', ['dimgap']], ['fact', 'out', ['atypical-rows']], ['impl']],
+    10: [['ctx'], ['over'], ['fact', 'rel', ['assoc']], ['fact', 'rel2', ['assoc']], ['fact', 'grp', ['dimgap']], ['fact', 'out', ['atypical-rows']], ['fact', 'ratio', ['ratio']], ['limits'], ['synth'], ['impl']],
+  },
+};
+for (const id in NV_ARCS) NV_STORIES[id].arc = NV_ARCS[id];
+
+const NVS_T = {
+  pt: { lead: 'Quem lidera', dist: 'Distância entre os primeiros', last: 'Quem fica atrás', diff: 'O que diferencia os grupos', ratio: 'Quantas vezes maior', exc: 'Exceção', var: 'Variação no período', trend: 'Tendência', peak: 'Pico', low: 'Vale', turn: 'Ponto de virada', who: 'Quem puxou a variação',
+    conc: 'Concentração', top: 'Quem lidera', top2: 'Quem vem em seguida', tail: 'A cauda', weight: 'Peso do topo', part: 'Maior parte do total', small: 'Menores partes', mix: 'Mudança de composição', order: 'Ordem das partes', by: 'Por outra dimensão',
+    typical: 'Valor típico e faixa', atyp: 'Valores fora do padrão', rows: 'Linhas fora do padrão', grp: 'Grupo que se desvia', extra1: 'Mais um olhar sobre os valores', extra2: 'Outro ponto sobre os valores', rel: 'Relação principal', rel2: 'Segunda relação', out: 'Pontos que fogem da relação', limits: 'O que a relação não mostra' },
+  en: { lead: 'Who leads', dist: 'Distance between the top ones', last: 'Who trails', diff: 'What sets groups apart', ratio: 'How many times larger', exc: 'Exception', var: 'Change in the period', trend: 'Trend', peak: 'Peak', low: 'Low', turn: 'Turning point', who: 'Who drove the change',
+    conc: 'Concentration', top: 'Who leads', top2: 'Who comes next', tail: 'The tail', weight: 'Weight of the top', part: 'Largest part of the total', small: 'Smallest parts', mix: 'Change in mix', order: 'Order of the parts', by: 'By another dimension',
+    typical: 'Typical value and range', atyp: 'Values outside the pattern', rows: 'Rows outside the pattern', grp: 'Group that deviates', extra1: 'Another look at the values', extra2: 'Another point about the values', rel: 'Main relationship', rel2: 'Second relationship', out: 'Points that leave the relationship', limits: 'What the relationship does not show' },
+};
+// classes a que cada tipo de achado de "casos" (pesquisas, protocolos) equivale para efeito de pertencimento
+const NV_ST_CASEFAM = { c_rate: 'ratio', c_where: 'dimgap', c_impact: 'gap', c_cause: 'dimgap', c_terms: 'overview' };
+const nvStoryFam = f => { const c = nvCls(f); return NV_ST_CASEFAM[c] || c; };
+const nvStoryAllows = (id, f) => { const d = NV_STORIES[id]; return !!d && d.allow.includes(nvStoryFam(f)); };
+// o conjunto de achados da história: só o que pertence a ela; relações e fusões seguem coerentes com o recorte
+function nvStoryPool(pool, id) {
+  const items = pool.items.filter(f => nvStoryAllows(id, f)), ids = new Set(items.map(f => f.id));
+  return { ...pool, items, relations: (pool.relations || []).filter(r => ids.has(r.a) && ids.has(r.b)) };
+}
+
+function nvPlanStory(P, meta, steps, N, id, basePool) {
+  const D = NV_STORIES[id], arc = D && D.arc && D.arc[N]; if (!arc) return null;
+  const X = nvpT(), R = X.r, TT = NVS_T[LANG] || NVS_T.pt, b = P.built, full = basePool || nvpPool(P, meta, steps), pool = nvStoryPool(full, id), used = new Set(), slides = [];
+  const gn = ((typeof storyGroups === 'function' && b.kind !== 'relation') ? (storyGroups(P) || { list: [] }).list.length : 0) || ((b.totX || []).filter(t => t.value !== null).length);
+  const take = cls => nvpTake(pool, used, f => cls.includes(nvStoryFam(f)));
+  const fact = (f, role, title) => nvpFactSlide(f, role, title, N);
+  let main = null; const gaps = [];
+  const sCtx = () => { const c = nvpContext(P, X, N > 2); return nvpSynth('plan-ctx', 'ctx', R.ctx, c.lines, c.ev); };
+  for (const [kind, key, cls] of arc) {
+    if (kind === 'ctx') slides.push(sCtx());
+    else if (kind === 'over') { const ov = nvpOverview(P, X); slides.push(nvpSynth('plan-over', 'over', R.over, ov.lines, ov.ev)); }
+    else if (kind === 'limits') slides.push(nvpSynth('plan-limits', 'limits', TT.limits, [X.noRange]));
+    else if (kind === 'fact') {
+      let f = take(cls), role = key;
+      if (!f) { // sem achado desta classe: um achado complementar da mesma história, se sobrar; senão o slide diz que não há base
+        f = nvpTake(pool, used, () => true); role = 'extra';
+        if (!f) { gaps.push(`${TT[key]}: ${X.no.nogen}`); slides.push(nvpSynth('plan-no-' + key, 'nos', R.nos, [`${TT[key]}: ${X.no.nogen}`])); continue; }
+      }
+      if (!main) main = f;
+      slides.push(fact(f, role, role === 'extra' ? R.extra : TT[key]));
+    } else if (kind === 'synth') {
+      const c = nvpContext(P, X, false), left = pool.items.filter(f => !used.has(f.id)).slice(0, 3); left.forEach(f => used.add(f.id));
+      const lim = []; const ex = pool.items.filter(f => f.confidenceLabel === 'exploratory').length; if (ex) lim.push(X.expl(ex));
+      lim.push(...c.lines.filter(l => !/^(Todas|All) /.test(l) && /\d/.test(l) && /(usadas|used|ignoradas|ignored|fora dos cálculos|left out|Poucas|Few)/.test(l)));
+      const sl = [...lim, ...gaps, ...left.map(f => f.head)].slice(0, 5), sy = nvpSynth('plan-synth', 'synthesis', R.synth, [...sl, X.noRange]);
+      sy.allow = left.some(f => ((f.ev && f.ev.allow) || []).includes('causal')) ? ['causal'] : []; slides.push(sy);
+    } else if (kind === 'impl') {
+      const lines = [nvpQ(main, X, b.xIsTime), X.noRange], ex = pool.items.filter(f => f.confidenceLabel === 'exploratory').length; if (ex) lines.splice(1, 0, X.expl(ex));
+      slides.push(nvpSynth('plan-impl', 'implication', N === 2 ? R.q2 : R.impl, lines));
+    }
+  }
+  if (N === 2 && slides[0] && slides[0].role !== 'ctx') { const c = nvpContext(P, X, false); if (!slides[0].synthetic) slides[0].note = [c.lines.slice(0, 2).join(' · '), slides[0].note].filter(Boolean).join('. '); }
+  const out = nvFinishPlan(P, slides.filter(Boolean), N, pool, main); out.story = id;
+  const bad = out.slides.filter(s => !s.synthetic && !nvStoryAllows(id, s)).map(s => s.id); // nunca deve acontecer; o validador também confere
+  if (bad.length) out.report.errors.push({ id: 'plan', code: 'out-of-story', msg: 'achado fora da história: ' + bad.join(',') }), out.report.ok = false;
+  return out;
+}
+
+/* Portão 44: ranking final com os achados já calculados. A elegibilidade diz o que os dados PERMITEM; aqui entra o que o motor realmente ACHOU
+ * dentro de cada história: sem nenhum achado a história cai para fora das sugestões e, com vários, sobe. `pool` vem de nvpPool(P, meta, steps). */
+function nvStoryRank(ds, P, pool, opt = {}) {
+  const base = nvStorySuggest(ds, { ...opt, n: 99 }), all = base.all, area = P && P.br && P.br.area || opt.area || null, N = opt.n || 3, facts = {}, score = {};
+  for (const id of NV_ST_ORDER) {
+    if (!all[id].ok) continue;
+    const items = nvStoryPool(pool, id).items, firm = items.filter(f => f.confidenceLabel !== 'exploratory').length;
+    facts[id] = items.length; let sc = all[id].score;
+    if (!items.length) sc = Math.min(sc, 0.3); else sc = Math.min(1, sc * (0.85 + 0.15 * Math.min(1, firm / 3))) + 0.0; // achado firme sobe, só exploratório desce um pouco
+    sc += (typeof nvStoryAreaBoost === 'function' ? nvStoryAreaBoost(area, id) : 0);
+    score[id] = Math.round(sc * 1000) / 1000;
+  }
+  const possible = NV_ST_ORDER.filter(id => all[id].ok).sort((a, b) => score[b] - score[a] || (facts[b] - facts[a]) || NV_ST_ORDER.indexOf(a) - NV_ST_ORDER.indexOf(b));
+  const list = possible.filter(id => score[id] >= NV_ST_MIN_SCORE && facts[id] > 0).slice(0, N);
+  return { all, list, possible, blocked: base.blocked, facts, score, area };
+}
+
+/* Portão 45: a área de atuação é um SINAL (empurra a sugestão), nunca um filtro. Valores da especificação §8. */
+const NV_ST_AREA = { sales: ['goal', 'rank', 'time'], marketing: ['funnel', 'relation', 'compare'], growth: ['funnel', 'time', 'before_after'], cx: ['compare', 'distribution', 'rank'], finance: ['goal', 'time', 'composition'], ops: ['distribution', 'time', 'funnel'], hr: ['distribution', 'compare', 'composition'], health: ['distribution', 'time', 'geo'], education: ['relation', 'distribution', 'compare'], public: ['goal', 'geo', 'composition'], legal: ['time', 'rank', 'compare'], general: [] };
+const nvStoryAreaBoost = (area, id) => { const l = NV_ST_AREA[area]; if (!l) return 0; const i = l.indexOf(id); return i < 0 ? 0 : [0.08, 0.05, 0.03][i]; };

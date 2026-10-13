@@ -192,7 +192,7 @@ function render() {
 function after(step) {
   if (step === 'entry') landingMount();
   if (step === 'gen') runGeneration();
-  if (step === 'editor') { mountChart(); refreshSaveChip(); }
+  if (step === 'editor') { mountChart(); refreshSaveChip(); if (S.tellPending) { S.tellPending = false; maybeTell(); } }
   if (step === 'ob' && OB[S.ob].text) { const t = $('#msg'); if (t) { t.focus(); t.setSelectionRange(t.value.length, t.value.length); } }
   if (step === 'upload') { const z = $('.drop'); if (z) wireDrop(z); }
 }
@@ -458,7 +458,7 @@ function runGeneration() {
   [[T('gen_1'), 0], [T('gen_2'), 0.36], [T('gen_3'), 0.7]].forEach(([txt, f]) => setTimeout(() => { const e = $('#gen-st'); if (e && S.step === 'gen') e.textContent = txt + '…'; }, total * f));
   let piece, err;
   setTimeout(() => { try { piece = makePiece(); } catch (e) { err = e; } }, 60); // deixa a tela aparecer antes do cálculo
-  setTimeout(() => { if (S.step !== 'gen') return; if (err) return go('mapping', T('mp_no_data')); S.piece = piece; S.find = null; S.sb = null; S._bctx = null; go(!/[?&]find\b/.test(location.search) ? 'editor' : 'find'); npsTrack('gen'); npsSession.switched = false; npsMoment('gen'); }, Math.max(0, total - (performance.now() - t0)));
+  setTimeout(() => { if (S.step !== 'gen') return; if (err) return go('mapping', T('mp_no_data')); S.piece = piece; S.find = null; S.sb = null; S._bctx = null; S.tellPending = !window.__DV_NOFIND || /[?&](auto|tell)\b/.test(location.search); /* escolha da história (portão 44) */ go(!/[?&]find\b/.test(location.search) ? 'editor' : 'find'); npsTrack('gen'); npsSession.switched = false; npsMoment('gen'); }, Math.max(0, total - (performance.now() - t0)));
 }
 
 /* ---- animação de pontos (identidade Doto) ---- */
@@ -589,7 +589,7 @@ function panel() {
   const fontPicker = `<div class="fp" id="fp"><button type="button" class="fp-btn" data-a="fp-toggle" aria-haspopup="listbox" aria-expanded="${!!S.fpOpen}" aria-controls="fp-list"><span class="fp-aa" style="font-family:${fpCur.title};font-weight:${fpCur.tw}">Aa</span><span class="fp-nm"><b>${esc(fpCur.sample)}</b><small>${T('fc_' + fpCur.cat)}</small></span><i aria-hidden="true">▾</i></button>
     <div class="fp-list" id="fp-list" role="listbox" aria-label="${T('font_h')}"${S.fpOpen ? '' : ' hidden'}>${FONT_CATS.map(c => `<div class="fp-g" role="presentation">${T('fc_' + c)}</div>` + Object.keys(FONT_PAIRS).filter(k => FONT_PAIRS[k].cat === c).map(k => { const f = FONT_PAIRS[k]; return `<button type="button" role="option" class="fp-o" data-a="font" data-v="${k}" aria-selected="${P.fontPair === k}"><span class="fp-t" style="font-family:${f.title};font-weight:${f.tw}">${esc(T('fp_sample'))}</span><span class="fp-b" style="font-family:${f.body}">${esc(f.sample)}</span></button>`; }).join('')).join('')}</div></div>`;
   return `<div class="ptabs" role="tablist" aria-label="${T('sheet_h')}">${tabs.map(([k, l]) => `<button type="button" role="tab" id="ptab-${k}" data-a="ptab" data-v="${k}" aria-selected="${S.ptab === k}" tabindex="${S.ptab === k ? 0 : -1}">${T(l)}</button>`).join('')}</div>
-  <section class="s1" data-t="chart"><h3>[ ${T('tg_h')} · ${T('tg_all', ALL_CHARTS.length)} ]</h3><h4 class="tg-sub first">${T('tg_rec')}</h4>${types}</section>
+  ${storyPanelHtml(P)}<section class="s1" data-t="chart"><h3>[ ${T('tg_h')} · ${T('tg_all', ALL_CHARTS.length)} ]</h3><h4 class="tg-sub first">${T('tg_rec')}</h4>${types}</section>
   <section class="s1" data-t="style"><h3>[ ${T('style_h')} ]</h3><div class="pals">${Object.keys(TONE_DEFAULT).map(k => { const tn = TONE_DEFAULT[k], on = P.palId === tn.pal && P.fontPair === tn.pair; return `<button class="pal" data-a="tone" data-v="${k}" aria-pressed="${on}"><span>${esc(I18N[LANG].o.tone[k][0])}</span><span class="sw">${PALETTES[tn.pal].slice(0, 4).map(c => `<i style="background:${c}"></i>`).join('')}</span></button>`; }).join('')}</div></section>
   <section data-t="style"><h3>[ ${T('pal_h')} ]</h3><div class="pals">${Object.keys(PALETTES).map(id => `<button class="pal" data-a="pal" data-v="${id}" aria-pressed="${P.palId === id}"><span>${T('pal')[id]}</span><span class="sw">${PALETTES[id].slice(0, 5).map(c => `<i style="background:${c}"></i>`).join('')}</span></button>`).join('')}</div>
     <div class="picker"><input type="color" id="accent" value="${P.colors[0]}" aria-label="${T('pal_accent')}"><span class="note">${T('pal_accent')}</span></div>

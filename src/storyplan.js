@@ -101,7 +101,8 @@ function nvpEvidence(pool, used, main) {
 }
 
 /* ---- planos ---- */
-function nvPlan(P, meta, steps, N) {
+function nvPlan(P, meta, steps, N, storyId) {
+  if (storyId && typeof nvPlanStory === 'function') { const sp = nvPlanStory(P, meta, steps, N, storyId); if (sp) return sp; } // história escolhida (src/stories.js); sem arco para ela, segue o Panorama abaixo
   const X = nvpT(), pool = nvpPool(P, meta, steps), used = new Set(), slides = [], b = P.built, br = P.br || {};
   const main = nvpMain(pool); if (main) used.add(main.id);
   const R = X.r, impl = () => { const lines = [nvpQ(main, X, b.xIsTime), X.noRange]; const ex = pool.items.filter(f => f.confidenceLabel === 'exploratory').length; if (ex) lines.splice(1, 0, X.expl(ex)); return lines; };
@@ -152,7 +153,7 @@ function nvFinishPlan(P, slides, N, pool, main) {
   const out = { slides, N, report, storyline: { main: main && main.id, order: slides.map(s => s.role + ':' + s.id) } }; slides.isPlan = true; slides.report = report;
   return out;
 }
-const nvPlanFor = (P, meta, steps) => nvPlan(P, meta, steps, nvSlideCount(P.br));
+const nvPlanFor = (P, meta, steps) => nvPlan(P, meta, steps, nvSlideCount(P.br), P.br && P.br.storyKind); // storyKind: história escolhida (portão 44); vazio = Panorama
 
 /* ---- validação do plano ---- */
 function nvValidatePlan(slides, N, pool) {

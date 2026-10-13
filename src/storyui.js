@@ -1,0 +1,49 @@
+/* Datavix: escolha da história na interface (portões 44 e 45). Depois que a peça é gerada, uma janela mostra "Dá para contar:" com até 3 histórias
+ * que a planilha sustenta (a melhor já marcada, um clique para seguir), "Ver todas" e "Panorama" (o roteiro completo de sempre). O painel do editor
+ * ganha um seletor de história. Escolher uma história só muda o roteiro (e sugere o gráfico dela); nada recalcula os dados. */
+Object.assign(I18N.pt, { tell_t: ['QUE HISTÓRIA', 'contar?'], tell_k: 'Dá para contar', tell_p: 'Cada história é uma pergunta que os seus dados respondem. A primeira já está marcada.', tell_go: 'Contar esta história', tell_pan: 'Panorama (visão completa)', tell_all: 'Ver todas as histórias', tell_blocked: 'Indisponível', tell_facts: n => `${n} ${n === 1 ? 'achado' : 'achados'}`, tell_soon: 'Em breve', tell_pan_ask: 'Evolução, comparação, concentração e distribuição, tudo junto.', story_h: 'História', story_pan: 'Panorama (visão completa)', story_chart: n => `Para esta história, o gráfico sugerido é ${n}.`, story_use: 'Usar', story_set: n => `História: ${n}`, tell_none: 'A planilha não sustenta uma história específica: segue o Panorama.' });
+Object.assign(I18N.en, { tell_t: ['WHICH STORY TO', 'tell?'], tell_k: 'You can tell', tell_p: 'Each story is a question your data answers. The first one is already selected.', tell_go: 'Tell this story', tell_pan: 'Overview (full picture)', tell_all: 'See all stories', tell_blocked: 'Unavailable', tell_facts: n => `${n} ${n === 1 ? 'finding' : 'findings'}`, tell_soon: 'Coming soon', tell_pan_ask: 'Change over time, comparison, concentration and distribution, all together.', story_h: 'Story', story_pan: 'Overview (full picture)', story_chart: n => `For this story, the suggested chart is ${n}.`, story_use: 'Use', story_set: n => `Story: ${n}`, tell_none: 'The spreadsheet does not support one specific story: using the Overview.' });
+
+function storyEnv(P) {
+  if (!P || !P.host || !P.host.ix) return null;
+  if (P._stEnv && P._stEnv.key === P.type + '|' + (P.br && P.br.area)) return P._stEnv;
+  const meta = P.host.ix.meta, steps = buildSteps(P, meta), pool = nvpPool(P, meta, steps);
+  let rk; if (S.ds) rk = nvStoryRank(S.ds, P, pool, { lang: LANG });
+  else { const facts = {}, possible = NV_ST_ORDER.filter(id => NV_STORIES[id].phase === 1 && (facts[id] = nvStoryPool(pool, id).items.length) > 0); rk = { all: {}, list: possible.slice(0, 3), possible, blocked: [], facts, score: {} }; } // projeto reaberto: sem a planilha, só os achados dizem o que sustenta
+  const env = { key: P.type + '|' + (P.br && P.br.area), rk, pool }; Object.defineProperty(P, '_stEnv', { value: env, enumerable: false, configurable: true }); return env;
+}
+const storyName = id => (id ? nvStoryInfo(id, LANG).name : T('story_pan'));
+const storyCard = (id, rk, sel) => { const i = nvStoryInfo(id, LANG), why = (rk.all[id] && rk.all[id].why) || '', n = rk.facts[id]; return `<button type="button" class="tell-c" data-id="${id}" aria-pressed="${sel === id}"><b>${esc(i.name)}</b><span>${esc(i.ask)}</span><small>${esc([why, n != null ? T('tell_facts', n) : ''].filter(Boolean).join(' · '))}</small></button>`; };
+
+function storyApply(id, opt = {}) {
+  const P = S.piece; if (!P) return; const kind = id && NV_STORIES[id] ? id : null;
+  P.br = P.br || {}; P.br.storyKind = kind; S.br.storyKind = kind; if (kind) { P.br.story = nvStoryLegacy(kind); S.br.story = P.br.story; }
+  if (!opt.silent) { markDirty(); const sel = $('[data-a=story-kind]'); if (sel) sel.value = kind || ''; }
+  const pc = kind && NV_STORIES[kind].charts.primary;
+  if (pc && pc !== P.type && P.choice.all.includes(pc) && !opt.silent) toast(T('story_chart', T('chart')[pc]), { label: `${T('story_use')} ${T('chart')[pc]}`, fn: () => pickChart(pc) });
+  else if (!opt.silent && opt.toast !== false) toast(T('story_set', storyName(kind)));
+}
+async function showTell() {
+  const P = S.piece; if (!P || S.step !== 'editor') return; const env = storyEnv(P); if (!env) return;
+  const pn = $('#panel'); if (pn) pn.innerHTML = panel(); // agora que há achados, o seletor do painel já sabe quais histórias estão disponíveis
+  const rk = env.rk, list = rk.list;
+  if (list.length < 2) { storyApply(list[0] || null, { silent: true }); if (!list.length) toast(T('tell_none')); return; } // 0 ou 1 história possível: não há o que escolher
+  let sel = list[0];
+  const rest = NV_ST_ORDER.filter(id => !list.includes(id)), restRow = id => { const ok = rk.all[id] && rk.all[id].ok && rk.facts[id] > 0; return ok ? storyCard(id, rk, sel) : `<div class="tell-c off"><b>${esc(nvStoryInfo(id, LANG).name)}</b><small>${esc(NV_STORIES[id].phase > 1 && rk.all[id] && rk.all[id].planned ? T('tell_soon') : T('tell_blocked') + ': ' + ((rk.all[id] && rk.all[id].why) || ''))}</small></div>`; };
+  const body = `<p class="note tell-p">${esc(T('tell_p'))}</p><div class="tell">${list.map(id => storyCard(id, rk, sel)).join('')}</div>
+    <details class="tell-more"><summary>${esc(T('tell_all'))}</summary><div class="tell">${rest.map(restRow).join('')}<button type="button" class="tell-c" data-id="" aria-pressed="false"><b>${esc(T('story_pan'))}</b><span>${esc(T('tell_pan_ask'))}</span></button></div></details>`;
+  const r = await modal({ title: `${esc(T('tell_t')[0])} <b>${esc(T('tell_t')[1])}</b>`, body, wide: true, actions: [{ label: T('tell_go'), v: 'ok', kind: 'primary' }, { label: T('tell_pan'), v: 'pan', kind: 'ghost' }],
+    onOpen: m => { m.addEventListener('click', e => { const c = e.target.closest('.tell-c[data-id]'); if (!c) return; sel = c.dataset.id; m.querySelectorAll('.tell-c[data-id]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.id === sel))); }); } });
+  storyApply(r && r.v === 'ok' ? sel : r && r.v === 'pan' ? null : list[0], { toast: true });
+}
+// janela "Dá para contar" logo depois da primeira geração (espera a peça montar)
+function maybeTell() {
+  let n = 0; const tick = () => { const P = S.piece; if (S.step !== 'editor' || !P) return; if (P.host && P.host.ix && P.host.ix.meta) { showTell(); return; } if (++n < 40) setTimeout(tick, 150); }; tick();
+}
+function storyPanelHtml(P) {
+  const env = P.host && P.host.ix ? storyEnv(P) : null, cur = (P.br && P.br.storyKind) || '', rk = env && env.rk;
+  const opts = [`<option value=""${cur === '' ? ' selected' : ''}>${esc(T('story_pan'))}</option>`].concat(NV_ST_ORDER.filter(id => NV_STORIES[id].phase === 1 || (rk && rk.all[id] && rk.all[id].ok) || id === cur).map(id => {
+    const okk = !rk || (rk.all[id] ? rk.all[id].ok && rk.facts[id] > 0 : rk.possible.includes(id)); return `<option value="${id}"${cur === id ? ' selected' : ''}${okk || id === cur ? '' : ' disabled'}>${esc(storyName(id))}${okk || id === cur ? '' : ' · ' + esc(T('tell_blocked'))}</option>`; }));
+  return `<section class="s1" data-t="chart"><h3>[ ${esc(T('story_h'))} ]</h3><select class="sel" data-a="story-kind" aria-label="${esc(T('story_h'))}">${opts.join('')}</select><p class="note" style="margin:8px 0 0">${esc(cur ? nvStoryInfo(cur, LANG).ask : T('tell_pan_ask'))}</p></section>`;
+}
+document.addEventListener('change', e => { const t = e.target; if (t && t.matches && t.matches('[data-a=story-kind]')) storyApply(t.value || null); });

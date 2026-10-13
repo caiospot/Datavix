@@ -119,7 +119,7 @@ th.num-c, td.num-c { text-align: right; font-variant-numeric: tabular-nums; }
 [data-ui='light'] .gen .steps span.on { color: var(--fg); font-weight: 600; }
 
 /* editor */
-.editor { display: grid; grid-template-columns: minmax(0, 1fr) 320px; height: calc(100vh - 61px); }
+.editor { display: grid; grid-template-columns: minmax(0, 1fr) 320px; height: calc(100vh - 65px); }
 .stage { overflow: auto; padding: 0; background: var(--bg); min-width: 0; }
 .editor.nopanel { grid-template-columns: minmax(0, 1fr); }
 .editor.nopanel .panel { display: none; }

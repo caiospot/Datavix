@@ -215,7 +215,7 @@ Usar a bateria sintética (`dados-teste/bateria`, 16 planilhas com o que foi pla
 
 | Planilha | Deve sugerir (ordem livre) | Deve marcar como impossível |
 |---|---|---|
-| `vendas_sazonal` | `time`, `rank` ou `compare`, `composition` | `relation` (uma medida só), `geo` |
+| `vendas_sazonal` | `time`, `compare`, `composition`, `relation` (Quantidade × Receita, ρ ≈ 0,86) | `geo` |
 | `vendas_plana` | `compare`, `time` (descrevendo estabilidade) | — (e **nenhuma** afirmação de tendência) |
 | `nps_pesquisa` | `compare`, `distribution` | `rank` (4 grupos) |
 | `rh_folha` | `distribution`, `compare` | `relation` com `Matrícula` |

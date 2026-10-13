@@ -114,6 +114,7 @@ function inferStory(cols) { return cols.some(c => c.kind === 'date' && colUsable
 
 /* ---------- sugestão de mapeamento a partir do onboarding ---------- */
 function suggestMapping(story, cols, opt = {}) {
+  story = nvStoryLegacy(story); // aceita os ids novos das histórias (rank, funnel…) e os antigos
   const r = suggestMappingBase(story, cols, opt);
   r.org = suggestOrg(cols);
   r.cs = {}; for (const id in CHART_REG) { try { r.cs[id] = CHART_REG[id].suggest(cols); } catch (e) { r.cs[id] = null; console.error(e); } }
@@ -534,6 +535,7 @@ function availableCharts(built) {
   });
 }
 function chooseChart(briefing, m, built) {
+  if (briefing && briefing.story) briefing = { ...briefing, story: nvStoryLegacy(briefing.story) };
   const avail = availableCharts(built);
   const nS = built.stats.sCount, nX = built.stats.xCount;
   let order;

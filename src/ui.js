@@ -342,7 +342,7 @@ function mappingBody() {
   try { const b = buildSeries(S.ds, m, { lang: LANG, nullPolicy: S.nullPolicy }); valid = true; bb = b; if (b.org) orgSum = `<span class="num" style="font-size:22px">${T('org_sum', fmtInt(b.org.rowsUsed, LANG), fmtInt(b.org.leaves.length, LANG), b.org.hubs.length, b.org.ents.length)}</span>`; sum = `<span class="num" style="font-size:26px">${T('mp_sum', b.stats)}</span>` + (b.grain ? `<span class="chip">${grainName(b.grain, LANG)}</span>` : ''); }
   catch (e) { sum = `<span class="note">${m.x < 0 || (m.kind !== 'hist' && m.kind !== 'category' && m.y < 0) ? T('mp_err') : T('mp_no_data')}</span>`; }
   const kinds = [['time', 'k_time'], ['category', 'k_category'], ['relation', 'k_relation'], ['hist', 'k_hist']];
-  const html = `${['flow', 'geo'].includes(S.br.story) ? `<div class="warn"><span>${T('flow_note')}</span></div>` : ''}
+  const html = `${['flow', 'geo'].includes(nvStoryLegacy(S.br.story)) ? `<div class="warn"><span>${T('flow_note')}</span></div>` : ''}
     ${orgBlock}
     <details class="orgmap"><summary class="lbl" style="cursor:pointer">[ ${T('cs_more')} ]</summary>${csMapBlocks(m, cols, bb)}</details>
     <details class="orgmap"><summary class="lbl" style="cursor:pointer">[ ${T('org_other')} ]</summary>

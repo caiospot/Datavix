@@ -1,8 +1,8 @@
 /* Datavix: escolha da história na interface (portões 44 e 45). Depois que a peça é gerada, uma janela mostra "Dá para contar:" com até 3 histórias
  * que a planilha sustenta (a melhor já marcada, um clique para seguir), "Ver todas" e "Panorama" (o roteiro completo de sempre). O painel do editor
  * ganha um seletor de história. Escolher uma história só muda o roteiro (e sugere o gráfico dela); nada recalcula os dados. */
-Object.assign(I18N.pt, { tell_t: ['QUE HISTÓRIA', 'contar?'], tell_k: 'Dá para contar', tell_p: 'Cada história é uma pergunta que os seus dados respondem. A primeira já está marcada.', tell_go: 'Contar esta história', tell_pan: 'Panorama (visão completa)', tell_all: 'Ver todas as histórias', tell_blocked: 'Indisponível', tell_facts: n => `${n} ${n === 1 ? 'achado' : 'achados'}`, tell_soon: 'Em breve', tell_pan_ask: 'Evolução, comparação, concentração e distribuição, tudo junto.', story_h: 'História', story_pan: 'Panorama (visão completa)', story_chart: n => `Para esta história, o gráfico sugerido é ${n}.`, story_use: 'Usar', story_set: n => `História: ${n}`, tell_none: 'A planilha não sustenta uma história específica: segue o Panorama.' });
-Object.assign(I18N.en, { tell_t: ['WHICH STORY TO', 'tell?'], tell_k: 'You can tell', tell_p: 'Each story is a question your data answers. The first one is already selected.', tell_go: 'Tell this story', tell_pan: 'Overview (full picture)', tell_all: 'See all stories', tell_blocked: 'Unavailable', tell_facts: n => `${n} ${n === 1 ? 'finding' : 'findings'}`, tell_soon: 'Coming soon', tell_pan_ask: 'Change over time, comparison, concentration and distribution, all together.', story_h: 'Story', story_pan: 'Overview (full picture)', story_chart: n => `For this story, the suggested chart is ${n}.`, story_use: 'Use', story_set: n => `Story: ${n}`, tell_none: 'The spreadsheet does not support one specific story: using the Overview.' });
+Object.assign(I18N.pt, { tell_t: ['QUE HISTÓRIA', 'contar?'], tell_k: 'Dá para contar', tell_p: 'Cada história é uma pergunta que os seus dados respondem. A primeira já está marcada.', tell_go: 'Contar esta história', tell_pan: 'Panorama (visão completa)', tell_all: 'Ver todas as histórias', tell_blocked: 'Indisponível', tell_facts: n => `${n} ${n === 1 ? 'achado' : 'achados'}`, tell_soon: 'Em breve', tell_pan_ask: 'Evolução, comparação, concentração e distribuição, tudo junto.', story_h: 'História', story_pan: 'Panorama (visão completa)', story_chart: n => `Para esta história, o gráfico sugerido é ${n}.`, story_use: 'Usar', story_set: n => `História: ${n}`, story_cut: 'Data do marco', tell_none: 'A planilha não sustenta uma história específica: segue o Panorama.' });
+Object.assign(I18N.en, { tell_t: ['WHICH STORY TO', 'tell?'], tell_k: 'You can tell', tell_p: 'Each story is a question your data answers. The first one is already selected.', tell_go: 'Tell this story', tell_pan: 'Overview (full picture)', tell_all: 'See all stories', tell_blocked: 'Unavailable', tell_facts: n => `${n} ${n === 1 ? 'finding' : 'findings'}`, tell_soon: 'Coming soon', tell_pan_ask: 'Change over time, comparison, concentration and distribution, all together.', story_h: 'Story', story_pan: 'Overview (full picture)', story_chart: n => `For this story, the suggested chart is ${n}.`, story_use: 'Use', story_set: n => `Story: ${n}`, story_cut: 'Milestone date', tell_none: 'The spreadsheet does not support one specific story: using the Overview.' });
 
 function storyEnv(P) {
   if (!P || !P.host || !P.host.ix) return null;
@@ -16,21 +16,23 @@ const storyName = id => (id ? nvStoryInfo(id, LANG).name : T('story_pan'));
 const storyCard = (id, rk, sel) => { const i = nvStoryInfo(id, LANG), why = (rk.all[id] && rk.all[id].why) || '', n = rk.facts[id]; return `<button type="button" class="tell-c" data-id="${id}" aria-pressed="${sel === id}"><b>${esc(i.name)}</b><span>${esc(i.ask)}</span><small>${esc([why, n != null ? T('tell_facts', n) : ''].filter(Boolean).join(' · '))}</small></button>`; };
 
 // remonta a peça com o mapeamento da história (tempo, geografia, funil…), guardando o que a pessoa já editou; devolve true se remontou
-function storyRebuild(kind) {
-  const P = S.piece; if (!P || !S.ds || !kind) return false; const lg = nvStoryLegacy(kind); if (lg === P.mstory) return false;
+function storyRebuild(kind, force) {
+  const P = S.piece; if (!P || !S.ds || !kind) return false; const lg = nvStoryLegacy(kind); if (lg === P.mstory && !force) return false;
   const prevStory = S.br.story, prevMap = S.mapping;
   try {
     S.br.story = lg; S.mapping = defaultMapping(); const np = makePiece();
     Object.assign(np, { id: P.id, saveName: P.saveName, palId: P.palId, colors: P.colors, bg: P.bg, fontPair: P.fontPair, opts: P.opts, title: P.title, subtitle: P.subtitle, foot: P.foot, hist: P.hist, hi: P.hi, sedits: P.sedits });
-    np.br = { ...(P.br || {}), story: lg, storyKind: kind }; if (np.sb === undefined && P.sb) np.sb = P.sb;
-    teardownChart(); S.piece = np; render(); return true;
+    np.br = { ...(P.br || {}), story: lg, storyKind: kind, cut: S.br.cut }; if (np.sb === undefined && P.sb) np.sb = P.sb;
+    teardownChart(); S.piece = np; render(); storyPanelLater(); return true;
   } catch (e) { console.error(e); S.br.story = prevStory; S.mapping = prevMap; return false; }
 }
+// depois de remontar, a peça demora um instante para montar o gráfico; quando pronta, o painel se refaz com o estado da história (ex.: o campo da data do marco)
+function storyPanelLater() { let n = 0; const tick = () => { const P = S.piece; if (S.step !== 'editor' || !P) return; if (P.host && P.host.ix && P.host.ix.meta) { const pn = $('#panel'); if (pn) pn.innerHTML = panel(); return; } if (++n < 40) setTimeout(tick, 150); }; tick(); }
 function storyApply(id, opt = {}) {
   let P = S.piece; if (!P) return; const kind = id && NV_STORIES[id] ? id : null;
   if (kind && !opt.noRebuild) { const env = storyEnv(P), n = env && env.rk.facts[kind]; if ((n === 0 || n === null || n === undefined) && storyRebuild(kind)) { P = S.piece; if (!opt.silent) toast(T('story_set', storyName(kind))); } }
   P.br = P.br || {}; P.br.storyKind = kind; S.br.storyKind = kind; if (kind) { P.br.story = nvStoryLegacy(kind); S.br.story = P.br.story; }
-  if (!opt.silent) { markDirty(); const sel = $('[data-a=story-kind]'); if (sel) sel.value = kind || ''; }
+  if (!opt.silent) { markDirty(); const pn = $('#panel'); if (pn) pn.innerHTML = panel(); } // o painel se refaz: a data do marco aparece quando a história precisa dela
   const pc = kind && NV_STORIES[kind].charts.primary;
   if (pc && pc !== P.type && P.choice.all.includes(pc) && !opt.silent) toast(T('story_chart', T('chart')[pc]), { label: `${T('story_use')} ${T('chart')[pc]}`, fn: () => pickChart(pc) });
   else if (!opt.silent && opt.toast !== false) toast(T('story_set', storyName(kind)));
@@ -56,6 +58,12 @@ function storyPanelHtml(P) {
   const env = P.host && P.host.ix ? storyEnv(P) : null, cur = (P.br && P.br.storyKind) || '', rk = env && env.rk;
   const opts = [`<option value=""${cur === '' ? ' selected' : ''}>${esc(T('story_pan'))}</option>`].concat(NV_ST_ORDER.filter(id => NV_STORIES[id].phase === 1 || (rk && rk.all[id] && rk.all[id].ok) || id === cur).map(id => {
     const okk = !rk || (rk.all[id] ? rk.all[id].ok : rk.possible.includes(id)); return `<option value="${id}"${cur === id ? ' selected' : ''}${okk || id === cur ? '' : ' disabled'}>${esc(storyName(id))}${okk || id === cur ? '' : ' · ' + esc(T('tell_blocked'))}</option>`; }));
-  return `<section class="s1" data-t="chart"><h3>[ ${esc(T('story_h'))} ]</h3><select class="sel" data-a="story-kind" aria-label="${esc(T('story_h'))}">${opts.join('')}</select><p class="note" style="margin:8px 0 0">${esc(cur ? nvStoryInfo(cur, LANG).ask : T('tell_pan_ask'))}</p></section>`;
+  const needCut = cur === 'before_after' && rk && rk.all.before_after && rk.all.before_after.needsCut, cutV = P.br && Number.isFinite(P.br.cut) ? new Date(P.br.cut).toISOString().slice(0, 10) : '';
+  const cutHtml = needCut ? `<label class="cut"><span class="lbl">${esc(T('story_cut'))}</span><input type="date" class="field" data-a="story-cut" value="${cutV}"></label>` : '';
+  return `<section class="s1" data-t="chart"><h3>[ ${esc(T('story_h'))} ]</h3><select class="sel" data-a="story-kind" aria-label="${esc(T('story_h'))}">${opts.join('')}</select><p class="note" style="margin:8px 0 0">${esc(cur ? nvStoryInfo(cur, LANG).ask : T('tell_pan_ask'))}</p>${cutHtml}</section>`;
 }
-document.addEventListener('change', e => { const t = e.target; if (t && t.matches && t.matches('[data-a=story-kind]')) storyApply(t.value || null); });
+document.addEventListener('change', e => {
+  const t = e.target; if (!t || !t.matches) return;
+  if (t.matches('[data-a=story-kind]')) storyApply(t.value || null);
+  else if (t.matches('[data-a=story-cut]') && S.piece) { const ms = t.value ? Date.parse(t.value + 'T00:00:00Z') : NaN; S.br.cut = Number.isFinite(ms) ? ms : undefined; if (S.piece.br) S.piece.br.cut = S.br.cut; if (Number.isFinite(ms) && storyRebuild('before_after', true)) toast(T('story_set', storyName('before_after'))); }
+});

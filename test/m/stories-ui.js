@@ -29,9 +29,10 @@
   out.roteiro = pl.slides.map(s => s.planTitle).join(' > ');
   // trocar pelo painel
   const sel = q('[data-a=story-kind]'), other = [...sel.options].find(o => o.value && o.value !== second && !o.disabled).value; sel.value = other; sel.dispatchEvent(new Event('change', { bubbles: true })); await sl(300);
-  ok('trocar no painel muda o roteiro', P.br.storyKind === other && nvPlanFor(P, meta, steps).story === other); out.troca = other + ' | ' + (q('#toast') ? q('#toast').textContent : '');
-  sel.value = ''; sel.dispatchEvent(new Event('change', { bubbles: true })); await sl(200); ok('Panorama volta ao molde antigo', P.br.storyKind === null && !nvPlanFor(P, meta, steps).story);
-  ok('seletor tem Panorama e histórias da Fase 1', [...sel.options].some(o => o.value === '') && ['compare', 'time', 'rank', 'composition', 'distribution', 'relation'].every(id => [...sel.options].some(o => o.value === id)));
+  for (let i = 0; i < 30 && !(S.piece.host && S.piece.host.ix); i++) await sl(150); const P1 = S.piece, m1 = P1.host.ix.meta, s1 = buildSteps(P1, m1); // trocar para uma história sem achados remonta a peça: a referência muda
+  ok('trocar no painel muda o roteiro', P1.br.storyKind === other && nvPlanFor(P1, m1, s1).story === other); out.troca = other + ' | ' + (q('#toast') ? q('#toast').textContent : '');
+  const sel2 = q('[data-a=story-kind]'); sel2.value = ''; sel2.dispatchEvent(new Event('change', { bubbles: true })); await sl(300); ok('Panorama volta ao molde antigo', S.piece.br.storyKind === null && !nvPlanFor(S.piece, S.piece.host.ix.meta, buildSteps(S.piece, S.piece.host.ix.meta)).story);
+  ok('seletor tem Panorama e histórias da Fase 1', [...q('[data-a=story-kind]').options].some(o => o.value === '') && ['compare', 'time', 'rank', 'composition', 'distribution', 'relation'].every(id => [...q('[data-a=story-kind]').options].some(o => o.value === id)));
   // Esc mantém a sugerida; pular pelo botão Panorama
   await run('lojas.csv'); const first = q('.mdl .tell > .tell-c[data-id]').dataset.id; document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await sl(500);
   ok('Esc aceita a primeira sugerida', S.piece.br.storyKind === first);

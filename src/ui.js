@@ -515,7 +515,7 @@ function autoTitle(b, type) {
   return A.by(n.y || '', n.x || '');
 }
 function makePiece() {
-  const built = buildSeries(S.ds, S.mapping, { lang: LANG, nullPolicy: S.nullPolicy });
+  const built = buildSeries(S.ds, S.mapping, { lang: LANG, nullPolicy: S.nullPolicy, cut: S.br.cut });
   const narrow = S.br.place === 'mobile' || innerWidth < 640;
   const choice = chooseChart({ ...S.br, story: S.br.story || S.mapping.story, narrow }, S.mapping, built);
   const reg = CHART_REG[choice.primary], csD = reg && built.cs && built.cs[choice.primary];

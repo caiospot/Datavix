@@ -75,6 +75,7 @@ function nvCheckItem(item, lang) {
   if (ev.kind === 'trend' && v.S != null) { const z = NV_CALC.trend(v).z; if (z === null || Math.abs(z) < NV_CFG.trendZ - 1e-9) bad('insignificant', 'tendência dentro da variação normal dos períodos'); }
   if ((ev.kind === 'peak' || ev.kind === 'low') && v.sd != null && v.n >= 8) { const z = ((ev.kind === 'peak' ? 1 : -1) * (v.top - v.sum / v.n)) / v.sd; if (!(z >= NV_CFG.peakZ - 1e-9)) bad('insignificant', 'valor extremo dentro da variação normal dos períodos'); }
   if (ev.kind === 'jump' && v.sc != null) { const ch = (v.cur / v.prev - 1) * 100, z = (ch - v.mc) / v.sc; if (!(Math.abs(z) >= NV_CFG.peakZ - 1e-9)) bad('insignificant', 'variação dentro do que é normal entre períodos'); }
+  if (ev.kind === 'step') { const t = NV_CALC.step(v).t; if (t === null || !(Math.abs(t) >= NV_CFG.stepT - 1e-9)) bad('insignificant', 'diferença entre antes e depois dentro da variação normal dos períodos'); }
   if (ev.kind === 'gapz') { const z = NV_CALC.gapz(v).z; if (!(Math.abs(z) >= nvZNeed(v.k || 1) - 1e-9)) bad('insignificant', 'diferença do grupo dentro da variação normal'); }
   if (ev.kind === 'assoc' && v.n >= 2 && Math.abs(v.rho) * Math.sqrt(v.n - 1) < NV_ROWS.rhoZ - 1e-9) bad('insignificant', 'associação dentro do que o acaso gera com tão poucas linhas');
   if (ev.kind === 'assoc' && Math.abs(v.rho) > 1) bad('out-of-range', 'correlação fora de -1 a 1');

@@ -25,3 +25,15 @@
 - **Arcos de 2, 5 e 10 slides** para as duas ("Maior perda entre etapas", "Quanto passa de uma etapa à outra", "Quem lidera", "Concentração"…).
 - **Remontagem:** os achados de uma história que pede outro mapeamento (geo, funil, tempo) só existem depois de remontar a peça. Escolher uma história sem achados na peça atual remonta os dados com o mapeamento dela (mantendo título, paleta, fundo e textos editados) e sugere o gráfico dela (mapa de bolhas, funil).
 - Teste `test/m/stories-geo-funnel.js`: funil (leads com etapas), UF (planilha ideal), latitude/longitude, e uma planilha sem nenhum dos dois. Tudo certo. Na bateria, Geografia/Funil só aparecem onde existem (publico_orcamento tem UF).
+
+## Gate 47 — Meta e desempenho, Antes e depois (Fase 3)
+**Achados novos, com evidência e recálculo independente** (`NV_CALC`: `attain`, `varc`, `step`; classes `attain`, `variance`, `step`), validados pelo mesmo `nvCheckItem` dos demais:
+- **Meta e desempenho:** exige uma coluna de meta reconhecida pelo nome (meta, orçado, planejado, previsto, target, budget, forecast…) e uma medida de realizado. Achados: atingimento total (realizado ÷ meta, com os totais à vista), quem mais superou e quem mais ficou aquém (por grupo, só com 3+ grupos e desvio ≥ 5%). **Sem coluna de meta, a história não existe e nada é inventado.**
+- **Antes e depois:** o marco vem de uma coluna de fase com duas categorias (Antes/Depois, Pré/Pós) ou de uma **data escolhida pela pessoa** no painel (campo "Data do marco"). O degrau compara a média por período dos dois lados, no grão mais grosso com 6+ períodos de cada lado (mínimo 4), e só vira achado com **t de Welch ≥ 2**; períodos que misturam os dois lados ficam de fora. Linguagem: "depois do marco", nunca causa. Sem fase e sem data, a história aparece como possível mas **nunca é sugerida sozinha**.
+- **Arcos** de 2, 5 e 10 slides para as duas, com o slide "O que não dá para afirmar".
+- **Sugestão:** meta e antes/depois (com fase) pontuam alto e, em empate, a história específica vence a genérica (Meta sobe para a 1ª posição na planilha de metas).
+- A data do marco fica na peça (`P.br.cut`), vai para o exportado e remonta o degrau ao mudar.
+- Dados de teste: `dados-teste/metas.csv`, `antes-depois.csv`, `serie-sem-fase.csv`. Teste `test/m/stories-goal.js` (26 verificações, inclui degrau pequeno recusado pelo validador, marco que deixa poucos períodos e ausência de meta).
+
+## Resumo dos testes (portões 43 a 47)
+Tudo passou em localhost, sem erros de página: `stories-elig` (16 planilhas contra o gabarito), `stories-migrate` (18 verificações), `stories-arc` (288 planos, 1.632 slides), `stories-ui`, `stories-geo-funnel`, `stories-goal` (26 verificações), e a regressão do que já existia: `battery-run` (16 planilhas, zero falhas), `narrative-run`, `plan-run`, `auto-run` (caminho curto), `layer-run`, `pptx-ui`; o `index.html` abre por `file://` com a CSP estrita sem erros.

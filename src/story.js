@@ -123,7 +123,8 @@ function allInsights(P) {
   let extra = []; try { extra = csD && reg.insights ? reg.insights(csD, br, LANG, T) : computeInsights(b, br, LANG, T); } catch (e) { extra = []; }
   const have = new Set((P.insights || []).map(i => i.id + '|' + i.text));
   let rows = []; try { rows = nvRowInsights(b, LANG, T); } catch (e) { rows = []; } // famílias linha a linha: distribuição, atípicos e associação
-  return [...(P.insights || []), ...extra.filter(i => !have.has(i.id + '|' + i.text)), ...rows.filter(i => !have.has(i.id + '|' + i.text))];
+  let gx = []; try { gx = typeof nvGoalInsights === 'function' ? nvGoalInsights(b, LANG) : []; } catch (e) { gx = []; } // meta e desempenho; antes e depois
+  return [...(P.insights || []), ...extra.filter(i => !have.has(i.id + '|' + i.text)), ...rows.filter(i => !have.has(i.id + '|' + i.text)), ...gx.filter(i => !have.has(i.id + '|' + i.text))];
 }
 // matriz grupo × período dos gráficos de tempo (Rio ou Cordilheira): base das análises "quem explica a mudança" e "quem ganhou participação"
 function storyMatrix(P, want) {

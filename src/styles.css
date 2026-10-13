@@ -847,3 +847,4 @@ details.rd-grp > summary .rd-gh { position: relative; padding: 10px 12px; border
 .tell-c:hover { border-color: var(--muted); } .tell-c[aria-pressed='true'] { border-color: var(--sel); box-shadow: 0 0 0 1px var(--sel); background: color-mix(in srgb, var(--lime) 8%, var(--card)); }
 .tell-c.off { opacity: .55; cursor: default; }
 .tell-p { margin: 0; } .tell-more { margin-top: 14px; } .tell-more summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+.cut { display: grid; gap: 6px; margin-top: 12px; }

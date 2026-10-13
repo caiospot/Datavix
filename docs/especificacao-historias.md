@@ -1,6 +1,13 @@
 # Especificação: histórias do Datavix (storytelling por pergunta)
 
-Status: **proposta para aprovação**. Nada disto está implementado. Escrita em 12/out/2026.
+Status: **implementada localmente nos portões 42 a 47** (13/out/2026), aguardando aprovação para publicar. Escrita em 12/out/2026.
+
+**Diferenças entre o que foi especificado e o que foi construído**
+- A janela "Dá para contar" aparece **depois de gerar a peça** (e não antes de gerar), porque só então os achados existem: a história sem nenhum achado deixa de ser sugerida e as com vários sobem. O caminho continua de um clique.
+- **Panorama** (o roteiro de sempre) é a 11ª opção, na janela e no painel; sem escolha, tudo segue como antes.
+- Escolher uma história que pede outro mapeamento (tempo, geografia, funil) **remonta a peça** com o mapeamento dela, mantendo título, paleta, fundo e textos editados.
+- A data do marco de "Antes e depois" é um campo no painel (a coluna de fase é detectada sozinha).
+- Documentação dos portões: `docs/gate-42-…`, `docs/gate-43-45-…` (inclui 46 e 47).
 
 ## 1. Problema
 

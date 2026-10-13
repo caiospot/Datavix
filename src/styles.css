@@ -6,7 +6,8 @@
   color-scheme: dark;
 }
 /* ferramenta (fora da página inicial): superfícies em cinza neutro */
-:root[data-view='app'] { --bg: #121212; --bg2: #171717; --card: #1c1c1c; --line: #2c2c2c; --muted: #a3a3a3; --fg: #f1f1ef; }
+:root[data-view='app']:not([data-ui='light']) { --bg: #121212; --bg2: #171717; --card: #1c1c1c; --line: #2c2c2c; --muted: #a3a3a3; --fg: #f1f1ef; }
+:root[data-view='app'][data-ui='light'] { --bg: #f4f4f2; --bg2: #ebebe8; --card: #ffffff; --line: #bdbdb8; --muted: #3a3a37; --fg: #0e0e0d; }
 [data-ui='light'] { --bg: #f8f9f5; --bg2: #eceee6; --card: #ffffff; --line: #b4bcab; --fg: #0b0d0a; --muted: #353d31; --lime-t: #4f6400; --sel: #0b0d0a; --danger: #b3261e; --warn: #7a4e00; color-scheme: light; }
 * { box-sizing: border-box; }
 html, body { height: 100%; }

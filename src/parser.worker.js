@@ -220,7 +220,7 @@ function cleanHeader(h, n) {
  * 1) linhas de título acima do cabeçalho; 2) colunas totalmente vazias; 3) linhas de total, subtotal e rodapé;
  * 4) colunas de período (meses, anos, trimestres) desdobradas em linhas (Período e Valor).
  * Cada arrumação é relatada à pessoa e pode ser desfeita (opts). */
-const FIX_ON = { title: true, totals: true, unpivot: true };
+const FIX_ON = { title: true, totals: true, unpivot: true, versus: true };
 let ORIG = null, ORIG_META = null;
 const median = a => { if (!a.length) return 0; const s = a.slice().sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
 const fillOf = r => r.filter(v => !isNull(v)).length;
@@ -248,6 +248,76 @@ function periodHeader(h) {
   if (dp && dp.k === 'dmy' && dp.b >= 1 && dp.b <= 12 && dp.a >= 1 && dp.a <= 31) return { v: new Date(dp.y, dp.b - 1, dp.a) };
   if (/^[a-zç]{3,9}\.?$/i.test(s) && MONTHS[norm(s).slice(0, 3)]) return { label: s };
   return null;
+}
+
+/* ---- face a face: entidades em colunas (Sheet1) ou colunas repetidas por entidade (Grid Senna, Grid Schumacher) ----
+ * Só reorganiza as linhas, nunca altera um valor: o texto original de cada célula fica guardado ("161 largadas" vira Valor 161, Unidade "largadas" e Texto "161 largadas"). */
+// célula → { num, unit, raw } quando começa por número (com unidade curta, % ou observação entre parênteses); texto comum devolve null. "1992-1994" e "Tricampeão (1988…)" não são números
+function parseUnitCell(v) {
+  if (isNull(v) || v instanceof Date) return null;
+  if (typeof v === 'number') return Number.isFinite(v) ? { num: v, unit: '', raw: null } : null;
+  const s = String(v).trim(); if (!s) return null;
+  let m = /^(\d{1,4})\s*[ºª°]\s*([^()]*?)\s*(\(.*\))?$/.exec(s);
+  if (m) return { num: +m[1], unit: 'º', raw: s };
+  m = /^([+-]?\d[\d.,]*)\s*(%)?\s*([^\d()]{0,30}?)\s*(\(.*\))?$/.exec(s);
+  if (!m) return null;
+  const n = numOf(m[1]); if (!Number.isFinite(n)) return null;
+  const word = m[3] ? m[3].trim() : ''; if (!m[2] && word.split(/\s+/).filter(Boolean).length > 3) return null;
+  return { num: n, unit: (m[2] ? '%' : word).slice(0, 24), raw: s === String(n) ? null : s };
+}
+const VS_NOT_ENTITY = /per[ií]odo|^ano$|temporada|season|year|data|date|contexto|categoria|grupo|tipo|^n[ºo°]?$|etapa/i, VS_TOKEN_NO = /^(real|realizado|meta|metas|or[cç]ado|planejado|previsto|budget|actual|target|forecast|total|m[eé]dia|acumulado|ytd)$/i;
+function versusDetect(header, body, ncols) {
+  if (body.length < 5 || ncols < 4) return null;
+  const sample = body.slice(0, 400), cand = [], stat = [];
+  for (let c = 0; c < ncols; c++) {
+    let nn = 0, nums = 0, rich = 0; for (const r of sample) { const v = r[c]; if (isNull(v)) continue; nn++; const p = parseUnitCell(v); if (p) { nums++; if (p.unit || p.raw) rich++; } }
+    const txt = nn - nums; stat[c] = { nn, nums, txt };
+    if (nn >= 5 && nums / nn >= 0.4 && (txt / nn >= 0.12 || rich / nn >= 0.12) && !VS_NOT_ENTITY.test(String(header[c] || ''))) cand.push(c);
+  }
+  // 1) entidades em colunas: 2 a 4 colunas vizinhas, mistas (número e texto), com preenchimento parecido
+  if (cand.length >= 2 && cand.length <= 4 && cand.every((c, i) => i === 0 || c - cand[i - 1] === 1) && cand.every(c => String(header[c] || '').trim()) && new Set(cand.map(c => String(header[c]).trim())).size === cand.length) {
+    const fills = cand.map(c => stat[c].nn), keyCols = []; for (let c = 0; c < ncols; c++) if (!cand.includes(c)) keyCols.push(c);
+    const labelCols = keyCols.filter(c => { const set = new Set(); let st = 0, tot = 0; for (const r of sample) { const v = r[c]; if (isNull(v)) continue; tot++; if (typeof v === 'string') st++; set.add(String(v)); } return tot && st / tot >= 0.8 && set.size >= 3; });
+    if (Math.max(...fills) <= Math.min(...fills) * 1.3 + 2 && labelCols.length) return { kind: 'metric', entCols: cand, keyCols };
+  }
+  // 2) colunas repetidas por entidade: mesmo conjunto de prefixos para 2 a 4 sufixos que não são períodos nem "real/meta"
+  const byTok = new Map();
+  header.forEach((h, c) => { const w = String(h || '').trim().split(/\s+/); if (w.length < 2) return; const tok = w[w.length - 1], pre = w.slice(0, -1).join(' '); if (VS_TOKEN_NO.test(tok) || periodHeader(tok) || /^\d+$/.test(tok) || /[()−\-–]/.test(tok)) return; if (!byTok.has(tok)) byTok.set(tok, new Map()); byTok.get(tok).set(pre, c); });
+  const toks = [...byTok].filter(([, m]) => m.size >= 3);
+  if (toks.length >= 2 && toks.length <= 4) {
+    const common = [...toks[0][1].keys()].filter(p => toks.every(([, m]) => m.has(p)));
+    if (common.length >= 3) {
+      const entCols = new Set(); toks.forEach(([, m]) => common.forEach(p => entCols.add(m.get(p))));
+      const tokNames = toks.map(([t]) => t), derived = [], keyCols = [];
+      for (let c = 0; c < ncols; c++) { if (entCols.has(c)) continue; const h = String(header[c] || ''); if (tokNames.filter(t => h.includes(t)).length >= 2) derived.push(c); else keyCols.push(c); }
+      return { kind: 'suffix', toks: toks.map(([t, m]) => [t, common.map(p => m.get(p))]), prefixes: common, keyCols, derived };
+    }
+  }
+  return null;
+}
+function versusApply(det, header, body, opts) {
+  const info = { form: det.kind === 'metric' ? 'metric-long' : 'entity-long' };
+  if (det.kind === 'metric') {
+    const names = det.entCols.map(c => String(header[c]).trim()), keyH = det.keyCols.map(c => header[c]);
+    info.entities = names; info.k = names.length; info.keys = keyH.map(String);
+    info.periodCol = keyH.map(String).find(h => /per[ií]odo|^ano$|temporada|season|year|data|date/i.test(h)) || null;
+    // rótulo da métrica: a coluna de texto com mais valores diferentes entre as que não são período nem texto longo
+    let best = null; det.keyCols.forEach(c => { const set = new Set(); let len = 0, n = 0; body.forEach(r => { const v = r[c]; if (typeof v === 'string' && v.trim()) { set.add(v); len += v.length; n++; } }); if (String(header[c]) !== info.periodCol && n && len / n <= 40 && (!best || set.size > best.d)) best = { c, d: set.size }; });
+    info.metricCol = best ? String(header[best.c]) : null;
+    if (opts.versus) {
+      const out = []; body.forEach(r => det.entCols.forEach((ec, k) => { const v = r[ec]; if (isNull(v)) return; const p = parseUnitCell(v); out.push([...det.keyCols.map(c => r[c]), names[k], p ? p.num : null, p ? p.unit : '', p && !p.raw ? '' : String(v)]); }));
+      info.rows = out.length; return { info, header: [...keyH, 'Entidade', 'Valor', 'Unidade', 'Texto'], body: out };
+    }
+    return { info };
+  }
+  const names = det.toks.map(([t]) => t), keyH = det.keyCols.map(c => header[c]);
+  info.entities = names; info.k = names.length; info.keys = keyH.map(String); info.metrics = det.prefixes.slice(); info.dropped = det.derived.map(c => String(header[c]).slice(0, 60));
+  info.periodCol = keyH.map(String).find(h => /per[ií]odo|^ano$|temporada|season|year|data|date/i.test(h)) || null;
+  if (opts.versus) {
+    const out = []; body.forEach(r => det.toks.forEach(([tok, cols], k) => { const vals = cols.map(c => (isNull(r[c]) ? null : r[c])); if (vals.every(v => v === null)) return; out.push([...det.keyCols.map(c => r[c]), names[k], ...vals]); }));
+    info.rows = out.length; return { info, header: [...keyH, 'Entidade', ...det.prefixes], body: out };
+  }
+  return { info };
 }
 
 function restructure(matrix, opts) {
@@ -314,6 +384,11 @@ function restructure(matrix, opts) {
         }
       }
     }
+  }
+  // 5) face a face: entidades em colunas, ou colunas repetidas por entidade, viram uma coluna Entidade
+  if (headerLike && !(fixes.unpivot && !fixes.unpivot.skipped)) {
+    const det = versusDetect(header, body, Math.max(header.length, body.reduce((m, r) => Math.max(m, r.length), 0)));
+    if (det) { const R = versusApply(det, header, body, opts); fixes.versus = R.info; if (R.header) { header = R.header; body = R.body; } }
   }
   return { header: headerLike ? header : [], rows: headerLike ? body : body, headerLike, fixes, ncols: Math.max(header.length, body.reduce((m, r) => Math.max(m, r.length), 0)) };
 }

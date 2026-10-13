@@ -77,7 +77,7 @@ const grainName = (g, lang) => ({ day: ['dia', 'day'], week: ['semana', 'week'],
 
 /* ---------- utilidades de coluna ---------- */
 // papéis vindos da leitura da planilha (understand.js): dados pessoais, texto livre, colunas vazias/constantes ou desligadas não entram nos gráficos
-const colUsable = c => c.use !== false && !(c.role && (c.role === 'pii' || c.role === 'text' || c.role === 'empty' || c.role === 'constant'));
+const colUsable = c => c.use !== false && !(c.role && (c.role === 'pii' || c.role === 'text' || c.role === 'empty' || c.role === 'constant' || c.role === 'mixed'));
 const isDim = c => (c.kind === 'category' || c.kind === 'geo') && colUsable(c);
 const isGroupDim = c => isDim(c) && c.role !== 'id'; // escolhas automáticas: código/identificador só serve de rótulo
 const isMeasure = c => c.kind === 'number' && colUsable(c) && c.role !== 'id';
@@ -413,7 +413,7 @@ function buildSeriesBase(ds, m, opts) {
   const period = isTime ? `${bucketLabel(xc.min, grain, lang)} – ${bucketLabel(xc.max, grain, lang)}` : null;
   const cal = isTime ? buildCalendar(ds, m, policy, aggKind) : null;
   return {
-    kind: m.kind, vz: { series }, names, unit, aggKind, grain, period, cal,
+    kind: m.kind, vz: { series }, names, unit, aggKind, grain, period, cal, rowsAreMetrics: !!(ds.fixes && ds.fixes.versus && ds.fixes.versus.form === 'metric-long'),
     stats: { rowsUsed: g.used, rowsTotal: ds.rowCount, points: yRec.length, xCount: xs.length, sCount: sc ? ss.length : 0, topN: !!othersX, topNs: !!othersS },
     totX, totS, xIsTime: isTime, rowStats: aggKind === 'count' ? null : nvRowStats(ds, yc),
     goal: typeof nvGoalStats === 'function' ? nvGoalStats(ds) : null, step: typeof nvStepStats === 'function' ? nvStepStats(ds, opts && opts.cut) : null, // metas e marco "antes e depois" (src/stories.js)
@@ -577,6 +577,7 @@ function quantile(sorted, p) { return sorted[Math.min(sorted.length - 1, Math.fl
 // Sem isso, "X lidera: 4, 17% do total" só descreve a estrutura da tabela (quantas linhas têm aquele rótulo), não o mundo.
 function nvCountThin(built) {
   if (!built || built.aggKind !== 'count') return false;
+  if (built.rowsAreMetrics) return true; // face a face em linhas por métrica: cada linha é uma métrica de um lado, contar linhas não mede nada
   const st = built.stats || {}, rows = st.rowsUsed != null ? st.rowsUsed : 0, sz = (built.totX || []).filter(t => t.value !== null).map(t => t.rows || 0).sort((a, b) => a - b);
   const med = sz.length ? sz[Math.floor(sz.length / 2)] : 0;
   return rows < NV_ROWS.min || med < 3;

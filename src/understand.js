@@ -147,6 +147,8 @@ function uApplyMerges(c, merges) {
 function understandSheet(ds) {
   const area = ds.columns.area || null;
   ds.columns.forEach(c => uProfileColumn(c, ds.rowCount, area));
+  // face a face reorganizado em linhas por métrica: a coluna Valor mistura unidades, nunca entra em soma ou média genérica
+  if (ds.fixes && ds.fixes.versus && ds.fixes.versus.form === 'metric-long') ds.columns.forEach(c => { if (c.name === 'Valor' && c.kind === 'number') { c.role = 'mixed'; c.mtype = null; c.why = 'métricas diferentes'; } });
   const sh = uShape(ds.columns, ds.rowCount, area);
   return { shape: sh.shape, conf: sh.conf, why: sh.why, auto: sh.shape };
 }

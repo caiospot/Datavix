@@ -3,10 +3,15 @@
  * quais histórias são POSSÍVEIS (regra dura), quão bem cada uma se ajusta (score) e por quê (frase com os números da própria planilha).
  * Nada aqui inventa dado: tudo é contagem ou cálculo sobre as colunas lidas. */
 
-const NV_ST_ORDER = ['versus', 'compare', 'time', 'rank', 'composition', 'distribution', 'relation', 'geo', 'funnel', 'goal', 'before_after'];
+const NV_ST_ORDER = ['versus', 'season', 'profile', 'compare', 'time', 'rank', 'composition', 'distribution', 'relation', 'geo', 'funnel', 'goal', 'before_after'];
 const NV_ST_MIN_SCORE = 0.45; // abaixo disso a história é possível, mas não é sugerida
+const NV_OWN = ['versus', 'season', 'profile']; // modelos com roteiro próprio: o plano sai do pacote lido da planilha (built.vs, built.fc), não do conjunto de achados do motor
 const NV_STORIES = {
   versus: { phase: 2, name: { pt: 'Face a face', en: 'Head to head' }, ask: { pt: 'Como A se compara a B, métrica a métrica?', en: 'How does A compare to B, metric by metric?' },
+    allow: [], charts: { primary: null, alts: [] } },
+  season: { phase: 2, name: { pt: 'Resumo por temporada', en: 'Season summary' }, ask: { pt: 'Como cada um evoluiu de uma temporada para a outra?', en: 'How did each one change from one season to the next?' },
+    allow: [], charts: { primary: null, alts: [] } },
+  profile: { phase: 2, name: { pt: 'Ficha / perfil', en: 'Profile sheet' }, ask: { pt: 'Quais são os números e os traços de uma só entidade?', en: 'What are the numbers and traits of a single entity?' },
     allow: [], charts: { primary: null, alts: [] } },
   compare: { phase: 1, name: { pt: 'Comparativo', en: 'Comparison' }, ask: { pt: 'Quem é maior, menor, melhor? Como A se compara a B?', en: 'Who is bigger, smaller, better? How does A compare to B?' },
     allow: ['top', 'bottom', 'spread', 'gap', 'ratio', 'dimgap', 'shift', 'overview'], charts: { primary: 'hbars', alts: ['cols', 'fan', 'rays', 'race'] } },
@@ -32,7 +37,7 @@ const NV_STORIES = {
 
 /* ---- migração: ids antigos do S.br.story (7 valores) ↔ ids novos. Projetos salvos continuam abrindo; o resto do app ainda lê os ids antigos ---- */
 const NV_STORY_FROM_OLD = { time: 'time', compare: 'compare', composition: 'composition', distribution: 'distribution', relation: 'relation', flow: 'funnel', geo: 'geo' };
-const NV_STORY_TO_OLD = { versus: 'compare', compare: 'compare', rank: 'compare', time: 'time', before_after: 'time', composition: 'composition', distribution: 'distribution', relation: 'relation', funnel: 'flow', geo: 'geo', goal: 'compare' };
+const NV_STORY_TO_OLD = { versus: 'compare', season: 'compare', profile: 'compare', compare: 'compare', rank: 'compare', time: 'time', before_after: 'time', composition: 'composition', distribution: 'distribution', relation: 'relation', funnel: 'flow', geo: 'geo', goal: 'compare' };
 // id novo a partir de qualquer id (antigo ou novo); null se não existir
 const nvStoryNorm = s => (!s ? null : NV_STORIES[s] ? s : NV_STORY_FROM_OLD[s] || null);
 // id no vocabulário antigo, que é o que o mapeamento, a escolha de gráfico e a tela de mapeamento ainda entendem
@@ -152,7 +157,15 @@ function nvStoryEligibility(ds, opt = {}) {
   Object.assign(out, nvStoryEligibility3(ds, lang, F)); // Fase 3: meta e antes e depois
   // face a face: a planilha foi lida como comparação entre 2 a 4 entidades, com pelo menos uma métrica comparável
   { let pk = null; try { pk = typeof nvVsPack === 'function' ? nvVsPack(ds) : null; } catch (e) { pk = null; }
-    out.versus = pk && pk.score && pk.score.items.length ? { ok: true, score: 1, why: `${pk.ents.join(' × ')} · ${pk.score.items.length} ${lang === 'en' ? 'comparable metrics' : 'métricas comparáveis'}`, cols: {}, metrics: pk.score.items.length } : no(lang === 'en' ? 'needs 2 to 4 entities with metrics in common' : 'precisa de 2 a 4 entidades com métricas em comum'); }
+    out.versus = pk && pk.score && pk.score.items.length ? { ok: true, score: 1, why: `${pk.ents.join(' × ')} · ${pk.score.items.length} ${lang === 'en' ? 'comparable metrics' : 'métricas comparáveis'}`, cols: {}, metrics: pk.score.items.length } : no(lang === 'en' ? 'needs 2 to 4 entities with metrics in common' : 'precisa de 2 a 4 entidades com métricas em comum');
+    // resumo por temporada: a mesma leitura (entidades × períodos), vista entidade por entidade
+    let ss = null; try { ss = pk && typeof nvSsEligible === 'function' ? nvSsEligible(pk) : null; } catch (e) { ss = null; }
+    out.season = ss ? { ok: true, score: 0.9, why: `${pk.ents.join(' × ')} · ${ss.K} ${lang === 'en' ? 'periods' : 'períodos'} · ${ss.M} ${lang === 'en' ? 'metrics' : 'métricas'}`, cols: {}, metrics: ss.M } : no(lang === 'en' ? 'needs 2 to 4 entities with 3 or more periods and a metric that adds up' : 'precisa de 2 a 4 entidades com 3 ou mais períodos e uma medida que soma');
+    // ficha / perfil: lista de indicadores de uma só entidade (uma linha para cada métrica)
+    let fc = null; try { fc = typeof nvFichaPack === 'function' ? nvFichaPack(ds) : null; } catch (e) { fc = null; }
+    out.profile = fc ? { ok: true, score: fc.strong ? 1 : 0.6, why: `${fc.nNum} ${lang === 'en' ? 'indicators' : 'indicadores'}${fc.nText ? ` + ${fc.nText} ${lang === 'en' ? 'texts' : 'textos'}` : ''}${fc.entity ? ' · ' + fc.entity : ''}`, cols: {}, metrics: fc.nNum + fc.nText } : no(lang === 'en' ? 'needs a list of indicators for a single entity (one row per metric)' : 'precisa de uma lista de indicadores de uma só entidade (uma linha para cada métrica)'); }
+  // linhas que são métricas diferentes (ficha, face a face em linhas por métrica): sem uma medida numérica, contar linhas por grupo não diz nada
+  if (!F.mainCol && (!!(ds.fixes && ds.fixes.versus && ds.fixes.versus.form === 'metric-long') || out.profile.ok)) ['compare', 'rank', 'composition'].forEach(id => { if (out[id] && out[id].ok) out[id] = no(lang === 'en' ? 'the rows are different metrics: counting rows says nothing' : 'as linhas são métricas diferentes: contar linhas não diz nada'); });
   // fases seguintes: o catálogo já existe, a elegibilidade chega nos próximos portões
   for (const id of NV_ST_ORDER) if (!out[id]) out[id] = no(X.soon, { planned: true, phase: NV_STORIES[id].phase });
   for (const id of NV_ST_ORDER) { out[id].id = id; out[id].phase = NV_STORIES[id].phase; }
@@ -292,7 +305,7 @@ function nvStoryRank(ds, P, pool, opt = {}) {
   const base = nvStorySuggest(ds, { ...opt, n: 99 }), all = base.all, area = P && P.br && P.br.area || opt.area || null, N = opt.n || 3, facts = {}, score = {};
   for (const id of NV_ST_ORDER) {
     if (!all[id].ok) continue;
-    if (id === 'versus') { facts[id] = all[id].metrics; score[id] = Math.min(1.5, all[id].score + 0.2 + (typeof nvStoryAreaBoost === 'function' ? nvStoryAreaBoost(area, id) : 0)); continue; } // o roteiro vem do próprio face a face, não do conjunto de achados
+    if (NV_OWN.includes(id)) { facts[id] = all[id].metrics; score[id] = Math.min(1.5, all[id].score + 0.2 + (typeof nvStoryAreaBoost === 'function' ? nvStoryAreaBoost(area, id) : 0)); continue; } // o roteiro vem do próprio pacote (face a face, resumo por temporada, ficha), não do conjunto de achados
     const items = nvStoryPool(pool, id).items, firm = items.filter(f => f.confidenceLabel !== 'exploratory').length;
     if (NV_STORIES[id].phase > 1 && nvStoryLegacy(id) !== (P && P.mstory)) { facts[id] = null; score[id] = Math.min(1, all[id].score + (typeof nvStoryAreaBoost === 'function' ? nvStoryAreaBoost(area, id) : 0)); continue; } // história que pede outro mapeamento: os achados só existem depois de remontar a peça
     facts[id] = items.length; let sc = all[id].score;

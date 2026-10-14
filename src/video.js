@@ -41,9 +41,10 @@ function vLogo(ctx, cx, y, size, color) {
 function videoPlan(P, fmt) {
   const meta = P.host.ix.meta, base = buildSteps(P, meta), isIns = s => /^i\d/.test(s.id), sq = fmt === 'square';
   let hero = null, ov = null; try { hero = kpiCards(P.built, LANG, T)[0] || null; ov = genOverview(P); } catch (e) { /* sem indicador */ }
-  let story = []; try { story = P.sb ? storyFromAnswers(P, meta, base) : nvPlan(P, meta, base, 5, P.br && P.br.storyKind).slides.slice(1); } catch (e) { console.error(e); } // vídeo: o plano de 5 sem o contexto (o gancho já faz esse papel)
+  let story = []; try { story = P.sb ? storyFromAnswers(P, meta, base) : (sl => (sl[0] && sl[0].role === 'ctx' ? sl.slice(1) : sl))(nvPlan(P, meta, base, 5, P.br && P.br.storyKind).slides); } catch (e) { console.error(e); } // só o slide de contexto vira o gancho: um modelo que abre direto no conteúdo (Resumo por temporada) não perde o primeiro slide // vídeo: o plano de 5 sem o contexto (o gancho já faz esse papel)
   if (!P.sb && !story.length) { try { story = buildStory(P, meta, base); } catch (e) { console.error(e); } }
   nvApplyEdits(P, story); // textos que a pessoa escreveu na apresentação
+  story = story.filter(s => !(s.role === 'conclusion' && !String(s.head || '').trim())); // a conclusão em branco não vira cena de vídeo: só entra se a pessoa escreveu
   const scenes = [{ kind: 'hook', ms: 2700 }], SLx = STORY_TXT[LANG] || STORY_TXT.pt;
   const listOf = s => (s.type === 'prio' ? s.rank.map(r => `${r.n}. ${r.k}, ${r.v}${r.s ? ' (' + r.s + ')' : ''}`) : s.type === 'impl' ? s.lines : s.type === 'plan' ? s.rows.map(r => [r.a, r.o, r.d].filter(Boolean).join(' · ')) : s.type === 'diag' ? (s.chips || []).map(c => `${c.text} ${c.label}`) : null);
   // roteiro guiado: o vídeo mostra até 5 atos; ficam o panorama, o centro, o diagnóstico, as prioridades e a decisão, e o resto preenche pela ordem

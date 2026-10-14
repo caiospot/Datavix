@@ -41,7 +41,7 @@ async function showTell(opt = {}) {
   const P = S.piece; if (!P || S.step !== 'editor') return; const env = storyEnv(P); if (!env) return;
   const pn = $('#panel'); if (pn) pn.innerHTML = panel(); // agora que há achados, o seletor do painel já sabe quais histórias estão disponíveis
   const rk = env.rk, list = rk.list;
-  if (!opt.force && list.length < 2) { storyApply(list[0] || null, { silent: true }); if (!list.length) toast(T('tell_none')); return; } // 0 ou 1 modelo possível: não há o que escolher (a galeria continua no painel)
+  if (!opt.force && list.length < 2) { storyApply(list[0] || null, { silent: true }); const pn2 = $('#panel'); if (pn2) pn2.innerHTML = panel(); /* o seletor do painel mostra a história aplicada */ if (!list.length) toast(T('tell_none')); return; } // 0 ou 1 modelo possível: não há o que escolher (a galeria continua no painel)
   const cur = (P.br && P.br.storyKind) || '';
   let sel = opt.force ? (cur === '' || (rk.all[cur] && rk.all[cur].ok) ? cur : list[0] || '') : list[0];
   const body = mgBody(P, env, sel, mgView()); // galeria de modelos (src/modelgallery.js): miniaturas com os dados da planilha, ou a lista

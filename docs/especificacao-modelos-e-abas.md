@@ -151,7 +151,7 @@ Depois da leitura, em vez da janela de texto "Que história contar?" (portão 44
 | 52 ✅ (local) | **Face a face por fases** (pedido do usuário após o roteiro da F1): fases cronológicas, linha do tempo, corrida a corrida (aba Detalhe), conclusão em branco. Ver `docs/gate-52-face-a-face-por-fases.md`. |
 | 53 ✅ (local) | **Conciliação** (§6.4) e slides de detalhe por aba. |
 | 54 ✅ (local) | **Galeria de modelos** (§7) com miniaturas reais; a janela atual vira a versão em lista. |
-| 55 | Modelos extras: **Ficha / perfil** (uma entidade, muitas métricas) e **Resumo por temporada** (a aba `Comparativo` como história de evolução por piloto). |
+| 55 ✅ (local) | Modelos extras: **Ficha / perfil** (uma entidade, muitas métricas) e **Resumo por temporada** (a aba `Comparativo` como história de evolução por piloto). Ver `docs/gate-55-modelos-extras.md`. |
 
 ## 9. Critérios de aceite e testes
 

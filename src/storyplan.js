@@ -110,6 +110,8 @@ function nvpEvidence(pool, used, main) {
 /* ---- planos ---- */
 function nvPlan(P, meta, steps, N, storyId) {
   if (storyId === 'versus' && typeof nvPlanVersus === 'function') { const vp = nvPlanVersus(P, N); if (vp) return vp; } // modelo Face a face (src/versusplan.js)
+  if (storyId === 'season' && typeof nvPlanSeason === 'function') { const sp = nvPlanSeason(P, N); if (sp) return sp; } // modelo Resumo por temporada (src/seasonplan.js)
+  if (storyId === 'profile' && typeof nvPlanFicha === 'function') { const fp = nvPlanFicha(P, N); if (fp) return fp; } // modelo Ficha / perfil (src/ficha.js)
   if (storyId && typeof nvPlanStory === 'function') { const sp = nvPlanStory(P, meta, steps, N, storyId); if (sp) return sp; } // história escolhida (src/stories.js); sem arco para ela, segue o Panorama abaixo
   const X = nvpT(), pool = nvpPool(P, meta, steps), used = new Set(), slides = [], b = P.built, br = P.br || {};
   const main = nvpMain(pool); if (main) used.add(main.id);

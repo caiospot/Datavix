@@ -24,8 +24,8 @@ Object.assign(I18N.en, {
 });
 
 const MG_GROUPS = [
-  { id: 'compare', ids: ['versus', 'compare'] }, { id: 'time', ids: ['time', 'before_after'] }, { id: 'weigh', ids: ['rank', 'composition'] },
-  { id: 'plan', ids: ['goal', 'funnel'] }, { id: 'explore', ids: ['distribution', 'relation', 'geo'] }, { id: 'overview', ids: [''] },
+  { id: 'compare', ids: ['versus', 'compare'] }, { id: 'time', ids: ['time', 'before_after', 'season'] }, { id: 'weigh', ids: ['rank', 'composition'] },
+  { id: 'plan', ids: ['goal', 'funnel'] }, { id: 'explore', ids: ['distribution', 'relation', 'geo'] }, { id: 'overview', ids: ['', 'profile'] },
 ];
 const MG_KICK = { versus: 'timeline', compare: 'lead', time: 'var', rank: 'conc', composition: 'part', distribution: 'typical', relation: 'rel', geo: 'lead', funnel: 'rate', goal: 'att', before_after: 'step' }; // título do slide do gráfico, o mesmo do arco do modelo
 
@@ -109,6 +109,23 @@ function mgTimelineSvg(pk) {
   return s + `<text class="mg-l" x="${x0}" y="${y0 + rows * rh + 10}">${esc(mgClip(pd[0].p, 12))}</text><text class="mg-l" x="304" y="${y0 + rows * rh + 10}" text-anchor="end">${esc(mgClip(pd[pd.length - 1].p, 12))}</text>`;
 }
 
+// resumo por temporada: uma linha por entidade para a primeira medida que soma, com o maior valor de cada uma marcado
+function mgSeasonSvg(D, nm) {
+  const K = D.pd.length, x0 = 16, x1 = 304, y0 = 90, y1 = 150, ents = D.per.filter(p => p.ok).slice(0, 4), val = (p, x) => (x.present.includes(p.e) ? (x.m.find(m => m.name === nm) || { v: [] }).v[p.e] : null);
+  const all = ents.flatMap(p => D.pd.map(x => val(p, x)).filter(v => v !== null && v !== undefined)), hi = Math.max(...all, 1e-12), xs = i => (K > 1 ? x0 + (x1 - x0) * i / (K - 1) : (x0 + x1) / 2), ys = v => y1 - (y1 - y0) * v / hi;
+  let out = ''; ents.forEach((p, k) => {
+    let d = '', pen = false; D.pd.forEach((x, i) => { const v = val(p, x); if (v === null || v === undefined) { pen = false; return; } d += `${pen ? 'L' : 'M'}${xs(i).toFixed(1)} ${ys(v).toFixed(1)}`; pen = true; });
+    out += `<path class="${k ? 'mg-ln2' : 'mg-ln'}" d="${d}"${k > 1 ? ' stroke-dasharray="3 3"' : ''}/>`;
+    const pk = p.peaks[nm]; if (pk) { const i = D.pd.findIndex(x => x.p === pk.ps[0]); if (i >= 0) out += `<circle class="${k ? 'mg-dot2' : 'mg-dot'}" cx="${xs(i).toFixed(1)}" cy="${ys(pk.top).toFixed(1)}" r="3"/>`; }
+  });
+  return out + `<text class="mg-l" x="${x0}" y="168">${esc(mgClip(D.pd[0].p, 14))}</text><text class="mg-l" x="${x1}" y="168" text-anchor="end">${esc(mgClip(D.pd[K - 1].p, 14))}</text>`;
+}
+// ficha: os primeiros indicadores, na ordem da planilha, com o valor como a planilha traz
+function mgFichaSvg(fc) {
+  return fc.items.filter(i => i.num !== null).slice(0, 5).map((it, k) => { const y = 80 + k * 18;
+    return `<text class="mg-l" x="16" y="${y + 11}">${esc(mgClip(it.name, 24))}</text><text class="mg-v" x="304" y="${y + 11}" text-anchor="end">${esc(mgClip(nvFcShow(it), 20))}</text><rect class="mg-tr" x="16" y="${y + 15}" width="288" height="1"/>`; }).join('');
+}
+
 // miniatura de cada modelo: { svg, line } ou null; `line` resume o que a miniatura mostra (usado no texto alternativo)
 function mgThumb(id, ctx) {
   const { ds, rk } = ctx, e = rk.all[id] || {}, c = e.cols || {}, kick = id === '' ? nvpT().r.main : id === 'versus' ? nvfT().t.timeline : ((NVS_T[LANG] || NVS_T.pt)[MG_KICK[id]] || nvStoryInfo(id, LANG).name);
@@ -130,8 +147,11 @@ function mgThumb(id, ctx) {
       return { svg: mgFrame(kick, `${g.actual} × ${g.meta}`, mgPairSvg(items)), line: items.map(x => `${x.k} ${csPct(x.m > 0 ? x.a / x.m * 100 : 0, LANG)}`).join(', ') }; }
     case 'versus': { const pk = nvVsPack(ds); if (!pk) return null; const title = pk.ents.join(' × '); if (pk.pd && pk.pd.length >= 2) return { svg: mgFrame(kick, title, mgTimelineSvg(pk)), line: `${pk.pd[0].p} – ${pk.pd[pk.pd.length - 1].p}` };
       const tl = nvVsTally(pk.score.items, pk.ents.length); return { svg: mgFrame(kick, title, mgBarsSvg(pk.ents.map((en, i) => ({ k: en, v: tl.wins[i], t: String(tl.wins[i]) })))), line: pk.ents.map((en, i) => `${en} ${tl.wins[i]}`).join(' · ') }; }
+    case 'season': { const pk = nvVsPack(ds), D = nvSsData(pk); if (!D) return null; const nm = D.order.find(n => D.per.some(p => p.ok && p.peaks[n])); if (!nm) return null;
+      return { svg: mgFrame(kick, `${nm} · ${D.ents.join(' × ')}`, mgSeasonSvg(D, nm)), line: `${nm}: ${D.pd[0].p} – ${D.pd[D.pd.length - 1].p}` }; }
+    case 'profile': { const fc = nvFichaPack(ds); if (!fc) return null; const n = fc.items.filter(i => i.num !== null).length; return { svg: mgFrame(kick, fc.entity || fc.title || nvXStem(ctx.file) || fc.label, mgFichaSvg(fc)), line: `${fmtInt(n, LANG)} ${LANG === 'en' ? 'indicators' : 'indicadores'}` }; }
     default: { // Panorama: a visão completa começa pelo que a planilha tem de mais forte
-      const pick = rk.possible.find(x => x !== 'versus' && x !== 'distribution' && x !== 'relation' && x !== 'before_after' && x !== 'goal' && x !== 'funnel' && x !== 'geo');
+      const pick = rk.possible.find(x => !NV_OWN.includes(x) && x !== 'distribution' && x !== 'relation' && x !== 'before_after' && x !== 'goal' && x !== 'funnel' && x !== 'geo');
       const t = pick && pick !== '' ? mgThumb(pick, ctx) : null; if (t) return t;
       return { svg: mgFrame(kick, T('mg_pan_t', ctx.file || '', fmtInt(ds.rowCount, LANG)), ''), line: '' };
     }
@@ -142,7 +162,7 @@ const F_main = ds => { const F = nvStoryFacts(ds); return F.main; };
 /* ---------------- sequência de slides do modelo ---------------- */
 function mgSeq(id, ctx) {
   const X = nvpT(), R = X.r, TT = NVS_T[LANG] || NVS_T.pt;
-  if (id === 'versus' && ctx.P && ctx.P.host && ctx.P.host.ix) { try { const P = ctx.P, pl = nvPlan(P, P.host.ix.meta, buildSteps(P, P.host.ix.meta), 5, 'versus'); if (pl && pl.slides.length) return pl.slides.map(s => s.planTitle); } catch (e) { /* segue com a sequência padrão */ } }
+  if (NV_OWN.includes(id) && ctx.P && ctx.P.host && ctx.P.host.ix) { try { const P = ctx.P, pl = nvPlan(P, P.host.ix.meta, buildSteps(P, P.host.ix.meta), 5, id); if (pl && pl.slides.length) return pl.slides.map(s => s.planTitle); } catch (e) { /* segue com a sequência padrão */ } }
   if (id === '') return [R.ctx, R.main, R.evid, R.explore, R.impl];
   const arc = NV_STORIES[id] && NV_STORIES[id].arc && NV_STORIES[id].arc[5]; if (!arc) return [R.ctx, R.q1, R.q2];
   return arc.map(([kind, key]) => (kind === 'ctx' ? R.ctx : kind === 'over' ? R.over : kind === 'fact' ? TT[key] : kind === 'limits' ? TT[key || 'limits'] : kind === 'synth' ? R.synth : R.impl)).filter(Boolean);
@@ -152,6 +172,7 @@ function mgSeq(id, ctx) {
 function mgFitText(id, ctx) {
   const e = ctx.rk.all[id] || {};
   if (id === 'versus' && e.ok) { const pk = nvVsPack(ctx.ds); if (pk && pk.score) return T('mg_vs_fit', pk.ents.length, pk.score.items.length, pk.periods.length); }
+  if (id === 'season' && e.ok) { const pk = nvVsPack(ctx.ds), ss = pk && nvSsEligible(pk); if (ss) return T('mg_vs_fit', ss.E, ss.M, ss.K); }
   return e.why || '';
 }
 function mgCard(id, ctx, sel, kind) { // kind: 'fit' (recomendado), 'poss' (possível) ou 'no' (indisponível)
@@ -159,7 +180,7 @@ function mgCard(id, ctx, sel, kind) { // kind: 'fit' (recomendado), 'poss' (poss
   const why = id === '' ? '' : kind === 'no' ? (e.why || '') : mgFitText(id, ctx), tag = id === '' ? T('mg_always') : kind === 'fit' ? T('mg_fit') : kind === 'poss' ? T('mg_poss') : T('mg_no');
   let thumb = ''; if (ctx.thumbs) { let t = null; try { t = kind === 'no' ? null : mgThumb(id, ctx); } catch (err) { t = null; console.error(err); } thumb = `<span class="mg-thumb${t ? '' : ' none'}" aria-hidden="true">${t ? t.svg : (kind === 'no' ? '' : `<span class="mg-na">${esc(T('mg_empty'))}</span>`)}</span>${t && t.line ? `<span class="mg-sr">${esc(T('mg_thumb', i.name))}: ${esc(t.line)}</span>` : ''}`; }
   const seq = ctx.thumbs && kind !== 'no' ? `<span class="mg-seq" aria-label="${esc(T('mg_seq'))}">${mgSeq(id, ctx).map((s, k) => `<i><em>${k + 1}</em>${esc(s)}</i>`).join('')}</span>` : '';
-  const fit = `<small class="mg-fit"><b>${esc(tag)}</b>${why ? ': ' + esc(why) : ''}${kind !== 'no' && id !== 'versus' && n != null ? ' · ' + esc(T('tell_facts', n)) : ''}</small>`;
+  const fit = `<small class="mg-fit"><b>${esc(tag)}</b>${why ? ': ' + esc(why) : ''}${kind !== 'no' && !NV_OWN.includes(id) && n != null ? ' · ' + esc(T('tell_facts', n)) : ''}</small>`;
   const inner = `${thumb}<b>${esc(i.name)}</b><span class="mg-ask">${esc(i.ask)}</span>${fit}${seq}`;
   return kind === 'no' ? `<div class="tell-c mg-card off" aria-disabled="true">${inner}</div>` : `<button type="button" class="tell-c mg-card ${kind}" data-id="${esc(id)}" aria-pressed="${sel === id}">${inner}</button>`;
 }

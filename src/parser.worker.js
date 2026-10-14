@@ -161,6 +161,7 @@ function buildColumn(name, vals, hint) {
       let ms = NaN;
       if (v instanceof Date) ms = Date.UTC(v.getFullYear(), v.getMonth(), v.getDate());
       else if (typeof v === 'number') ms = hint.yearOnly ? Date.UTC(v, 0, 1) : excelSerialToMs(v);
+      else if (hint.yearOnly) { const t = String(v).trim(); if (/^(19|20|21)\d\d$/.test(t)) ms = Date.UTC(+t, 0, 1); } // CSV: o ano vem como texto ("2022")
       else {
         const p = dateParts(v);
         if (p) {

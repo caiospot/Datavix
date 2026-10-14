@@ -363,15 +363,16 @@ function pxVsRows(s, viz, th, acc) {
     return;
   }
   if (viz.kind === 'table') { // corrida a corrida: tabela em texto
-    const hd = viz.head || [], nc = Math.max(1, hd.length), ws = hd.map((_, i) => (i === 0 ? 150 : i === nc - 1 ? 70 : (628 - 220) / Math.max(1, nc - 2))), xs = ws.map((_, i) => 596 + ws.slice(0, i).reduce((a, b) => a + b, 0));
+    const hd = viz.head || [], nc = Math.max(1, hd.length), wsum = (viz.wts || []).reduce((a, b) => a + b, 0), ws = hd.map((_, i) => (viz.wts && viz.wts.length === nc ? 628 * viz.wts[i] / wsum : i === 0 ? 150 : viz.plain ? (628 - 150) / Math.max(1, nc - 1) : i === nc - 1 ? 70 : (628 - 220) / Math.max(1, nc - 2))), xs = ws.map((_, i) => 596 + ws.slice(0, i).reduce((a, b) => a + b, 0));
     s.text(596, 90, 628, 22, s.para(String(viz.title || '').toUpperCase(), { sz: 10, b: true, col: th.muted, font: 'Courier New' }), { name: 'Título do gráfico' });
     hd.forEach((h, i) => s.text(xs[i], 120, ws[i], 20, s.para(String(h), { sz: 9, b: true, col: th.muted, font: 'Courier New' }), { name: 'Cabeçalho' }));
-    const rh = Math.min(60, 500 / Math.max(1, viz.rows.length)); viz.rows.forEach((r, k) => r.forEach((c, i) => s.text(xs[i], 146 + k * rh, ws[i] - 4, rh - 4, s.para(String(c), { sz: i === 0 ? 10 : 9, b: i === 0 || i === nc - 1, col: th.fg, font: th.fontBody }), { name: 'Célula' })));
+    const rh = Math.min(60, 500 / Math.max(1, viz.rows.length)); viz.rows.forEach((r, k) => r.forEach((c, i) => { const o = c && typeof c === 'object' ? c : { t: c }; if (o.hi) s.rect(xs[i] - 2, 146 + k * rh - 2, ws[i] - 2, Math.min(rh - 4, 22), acc, { name: 'Destaque' }); s.text(xs[i], 146 + k * rh, ws[i] - 4, rh - 4, s.para(String(o.t), { sz: i === 0 ? 10 : 9, b: i === 0 || (i === nc - 1 && !viz.plain) || !!o.hi, col: o.hi ? '#0b0d0a' : th.fg, font: th.fontBody }), { name: 'Célula' }); }));
+    if (viz.note) s.text(596, Math.min(668, 150 + viz.rows.length * rh + 6), 628, 20, s.para(String(viz.note), { sz: 10, col: th.muted, i: true, font: th.fontBody }), { name: 'Nota do gráfico' });
     return;
   }
   if (viz.kind === 'text') { // aba de fontes: o texto das células sem alteração, em duas colunas
-    const it = viz.items || [], half = Math.ceil(it.length / 2); s.text(596, 90, 628, 22, s.para(String(viz.title || '').toUpperCase(), { sz: 10, b: true, col: th.muted, font: 'Courier New' }), { name: 'Título do gráfico' });
-    [it.slice(0, half), it.slice(half)].forEach((col, ci) => { if (col.length) s.text(596 + ci * 318, 120, 306, 540, col.map(r => s.para([{ t: r.k ? r.k + ' ' : '', b: true }, { t: r.t, b: false }], { sz: 8, col: th.fg, font: th.fontBody, after: 4 })), { name: ci ? 'Fontes (2)' : 'Fontes' }); });
+    const it = viz.items || [], half = viz.big ? it.length : Math.ceil(it.length / 2); s.text(596, 90, 628, 22, s.para(String(viz.title || '').toUpperCase(), { sz: 10, b: true, col: th.muted, font: 'Courier New' }), { name: 'Título do gráfico' });
+    [it.slice(0, half), it.slice(half)].forEach((col, ci) => { if (col.length) s.text(596 + ci * 318, 120, viz.big ? 628 : 306, 540, col.map(r => s.para([{ t: r.k ? r.k + ' ' : '', b: true }, { t: r.t, b: false }], { sz: viz.big ? 14 : 8, col: th.fg, font: th.fontBody, after: viz.big ? 10 : 4 })), { name: ci ? 'Fontes (2)' : 'Fontes' }); });
     return;
   }
   const rows = (viz.rows || []).slice(0, 12), x0 = 596, n = Math.max(1, rows.length), rh = Math.min(48, 500 / n);

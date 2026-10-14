@@ -63,6 +63,7 @@ function uProfileColumn(c, nRows, area) {
     const consecutive = isInt && sorted && n2 >= 20 && seen.size === n2 && (c.max - c.min + 1) === n2; // 20000, 20001, 20002...: é um índice, qualquer que seja o nome
     if (isInt && uq >= 0.95 && n2 >= 8 && !U_MEASURE_NAME.test(name) && (consecutive || U_NAME_ID.test(name) || areaHit(area, 'id', name) || digits >= 9 || (sorted && c.min <= 1) || /^(id|#)$/i.test(name.trim()))) { c.role = 'id'; c.why = 'identificador'; return c; }
     if (isInt && digits >= 10 && uq >= 0.9 && U_NAME_PHONE.test(name)) { c.role = 'pii'; c.hide = true; c.why = 'telefone'; return c; }
+    if (isInt && n2 >= 3 && c.min >= 1900 && c.max <= 2100 && /^(temporada|season|safra|per[ií]odo|periodo|ano|year|exerc[ií]cio)$/i.test(name.trim())) { c.role = 'id'; c.why = 'período'; return c; } // ano ou temporada como número: é o eixo do tempo, nunca uma medida que soma
     c.role = 'measure'; const uniq = seen.size;
     const smallInt = (isInt && c.min >= 0 && c.max <= 10 && uniq <= 11) || (isInt && c.min >= 1 && c.max <= 5), at = areaMeasureType(area, name);
     if (at) c.mtype = at; // o nome casa com o vocabulário da área
@@ -149,6 +150,8 @@ function understandSheet(ds) {
   ds.columns.forEach(c => uProfileColumn(c, ds.rowCount, area));
   // face a face reorganizado em linhas por métrica: a coluna Valor mistura unidades, nunca entra em soma ou média genérica
   if (ds.fixes && ds.fixes.versus && ds.fixes.versus.form === 'metric-long') ds.columns.forEach(c => { if (c.name === 'Valor' && c.kind === 'number') { c.role = 'mixed'; c.mtype = null; c.why = 'métricas diferentes'; } });
+  // ficha de uma entidade: cada linha é um indicador diferente, então a coluna de valores nunca entra em soma, média ou ranking genérico
+  try { const fc = typeof nvFichaPack === 'function' ? nvFichaPack(ds) : null; if (fc && fc.mode === 'num') { const c = ds.columns[fc.valueIdx]; if (c && c.kind === 'number') { c.role = 'mixed'; c.mtype = null; c.why = 'indicadores diferentes'; } } } catch (e) { console.error(e); }
   const sh = uShape(ds.columns, ds.rowCount, area);
   return { shape: sh.shape, conf: sh.conf, why: sh.why, auto: sh.shape };
 }

@@ -881,5 +881,5 @@ details.rd-grp > summary .rd-gh { position: relative; padding: 10px 12px; border
 .mg-tr { fill: color-mix(in srgb, var(--fg) 9%, transparent); } .mg-mt { fill: color-mix(in srgb, var(--fg) 32%, transparent); }
 .mg-ac { fill: var(--mg-a, #d4ff00); } .mg-fd { opacity: .72; } .mg-o { opacity: .75; }
 .mg-no { fill: none; stroke: color-mix(in srgb, var(--fg) 38%, transparent); stroke-dasharray: 3 2; }
-.mg-ar { fill: color-mix(in srgb, var(--mg-a, #d4ff00) 22%, transparent); } .mg-ln { fill: none; stroke: var(--mg-a, #d4ff00); stroke-width: 2; stroke-linejoin: round; } .mg-dot { fill: var(--mg-a, #d4ff00); }
+.mg-ar { fill: color-mix(in srgb, var(--mg-a, #d4ff00) 22%, transparent); } .mg-ln { fill: none; stroke: var(--mg-a, #d4ff00); stroke-width: 2; stroke-linejoin: round; } .mg-dot { fill: var(--mg-a, #d4ff00); } .mg-ln2 { fill: none; stroke: currentColor; opacity: .55; stroke-width: 2; stroke-linejoin: round; } .mg-dot2 { fill: currentColor; opacity: .75; }
 @media (max-width: 760px) { .mg-grid { grid-template-columns: 1fr; } }

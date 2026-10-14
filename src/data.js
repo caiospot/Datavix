@@ -413,7 +413,7 @@ function buildSeriesBase(ds, m, opts) {
   const period = isTime ? `${bucketLabel(xc.min, grain, lang)} – ${bucketLabel(xc.max, grain, lang)}` : null;
   const cal = isTime ? buildCalendar(ds, m, policy, aggKind) : null;
   return {
-    kind: m.kind, vz: { series }, names, unit, aggKind, grain, period, cal, rowsAreMetrics: !!(ds.fixes && ds.fixes.versus && ds.fixes.versus.form === 'metric-long'), vs: (typeof nvVsPack === 'function' ? nvVsPack(ds) : null),
+    kind: m.kind, vz: { series }, names, unit, aggKind, grain, period, cal, rowsAreMetrics: !!(ds.fixes && ds.fixes.versus && ds.fixes.versus.form === 'metric-long') || !!(typeof nvFichaPack === 'function' && nvFichaPack(ds)), vs: (typeof nvVsPack === 'function' ? nvVsPack(ds) : null), fc: (typeof nvFichaPack === 'function' ? nvFichaPack(ds) : null),
     stats: { rowsUsed: g.used, rowsTotal: ds.rowCount, points: yRec.length, xCount: xs.length, sCount: sc ? ss.length : 0, topN: !!othersX, topNs: !!othersS },
     totX, totS, xIsTime: isTime, rowStats: aggKind === 'count' ? null : nvRowStats(ds, yc),
     goal: typeof nvGoalStats === 'function' ? nvGoalStats(ds) : null, step: typeof nvStepStats === 'function' ? nvStepStats(ds, opts && opts.cut) : null, // metas e marco "antes e depois" (src/stories.js)

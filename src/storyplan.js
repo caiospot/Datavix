@@ -157,6 +157,7 @@ function nvPlan(P, meta, steps, N, storyId) {
   return nvFinishPlan(P, slides.filter(Boolean), N, pool, main);
 }
 function nvFinishPlan(P, slides, N, pool, main) {
+  if (typeof nvWbInsert === 'function') slides = nvWbInsert(P, slides, N); // pasta com aba de fontes: o slide Fontes e método é o penúltimo
   slides.forEach((s, i) => { s.kick = { n: String(i + 1).padStart(2, '0'), label: s.planTitle || (s.kick && s.kick.label) || '' }; });
   const report = nvValidatePlan(slides, N, pool);
   const out = { slides, N, report, storyline: { main: main && main.id, order: slides.map(s => s.role + ':' + s.id) } }; slides.isPlan = true; slides.report = report;

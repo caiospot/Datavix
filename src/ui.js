@@ -49,7 +49,9 @@ function onWorker(e) {
   if (m.type === 'progress') {
     if (S.loading) { S.loading.stage = m.stage; S.loading.pct = m.pct; const i = $('.meter i'); if (i) i.style.width = Math.round(m.pct * 100) + '%'; const st = $('#stage'); if (st) st.textContent = T(m.stage === 'types' ? 'stage_types' : 'stage_read'); }
   } else if (m.type === 'sheets') {
-    S.loading = null; S.sheets = m.names; S.fileName = m.fileName; go('sheet');
+    S.loading = null; S.sheets = m.names; S.fileName = m.fileName; S.wbv = null;
+    if (m.infos && !wbStart(m.infos, m.fileName)) { const live = m.infos.filter(s => s.rows > 0 && !s.hidden); if (live.length === 1) { S.loading = { stage: 'read', pct: 0.5, t0: Date.now(), size: 0, got: true }; render(); getWorker().postMessage({ type: 'sheet', name: live[0].name }); startLoadTicker(); return; } } // uma única aba útil: segue direto com ela
+    go('sheet');
   } else if (m.type === 'dataset') {
     if (S.replace) return finishReplace(m);
     if (m.restructure && S.ds) { S.loading = null; S.ds = m; S.fileName = m.fileName; S._rt = new Set(); rdStart(S.ds, true); rdRetype(); S.mapping = defaultMapping(); render(); return; } // desfazer ou refazer uma arrumação da estrutura: continua na tela de leitura
@@ -74,6 +76,7 @@ const STORY_OF_KIND = { time: 'time', category: 'compare', relation: 'relation',
 function defaultMapping() { return suggestMapping(S.br.story || inferStory(S.ds.columns), S.ds.columns); }
 
 function loadBuffer(name, buffer, sheet) {
+  S.wb = null; S.wbv = null;
   S.error = null; S.loading = { stage: 'read', pct: 0.02, t0: Date.now(), size: buffer.byteLength, got: false }; S.fileName = name; render();
   try { getWorker().postMessage({ type: 'load', name, buffer, sheet }, [buffer]); }
   catch (e) { S.loading = null; S.error = T('up_noworker', (e && e.message) || e); render(); return; }
@@ -262,6 +265,7 @@ function wireDrop(z) {
 
 /* ---- aba ---- */
 function sheetPick() {
+  if (S.wbv) return wbScreen(); // pasta com várias abas úteis: papel de cada aba (src/workbook.js)
   return `<div class="wrap-narrow"><h2>${title2(T('shp_h'))}</h2><p class="sub">${T('sheet_p')}</p>
     <div class="opts">${S.sheets.map(n => `<button class="opt" data-a="sheet" data-v="${esc(n)}"><strong>${esc(n)}</strong></button>`).join('')}</div>
     <button class="btn ghost" data-a="back-to" data-v="upload">← ${T('back')}</button></div>`;
@@ -517,6 +521,7 @@ function autoTitle(b, type) {
 }
 function makePiece() {
   const built = buildSeries(S.ds, S.mapping, { lang: LANG, nullPolicy: S.nullPolicy, cut: S.br.cut });
+  if (S.wb) built.wbx = wbPack(S.wb); // papéis das abas e textos de fontes e perfil
   const narrow = S.br.place === 'mobile' || innerWidth < 640;
   const choice = chooseChart({ ...S.br, story: S.br.story || S.mapping.story, narrow }, S.mapping, built);
   const reg = CHART_REG[choice.primary], csD = reg && built.cs && built.cs[choice.primary];
@@ -565,7 +570,7 @@ async function guard(kind) {
   if (r.v === 'save') await saveNow(r.text);
   return true;
 }
-function closeProject() { teardownChart(); S.piece = null; S.ds = null; S.mapping = null; S.dirty = false; S.br = { area: null, audience: null, decision: null, time: null, message: '', story: null, tone: null, place: null, other: {} }; }
+function closeProject() { teardownChart(); S.wb = null; S.wbv = null; S.piece = null; S.ds = null; S.mapping = null; S.dirty = false; S.br = { area: null, audience: null, decision: null, time: null, message: '', story: null, tone: null, place: null, other: {} }; }
 window.addEventListener('beforeunload', e => { if (S.step === 'editor' && S.piece && S.dirty) { e.preventDefault(); e.returnValue = ''; } });
 function refreshBar() { refreshSaveChip(); $$('[data-a=undo]').forEach(b => (b.disabled = !canUndo())); $$('[data-a=redo]').forEach(b => (b.disabled = !canRedo())); }
 
@@ -591,7 +596,7 @@ function panel() {
   const fontPicker = `<div class="fp" id="fp"><button type="button" class="fp-btn" data-a="fp-toggle" aria-haspopup="listbox" aria-expanded="${!!S.fpOpen}" aria-controls="fp-list"><span class="fp-aa" style="font-family:${fpCur.title};font-weight:${fpCur.tw}">Aa</span><span class="fp-nm"><b>${esc(fpCur.sample)}</b><small>${T('fc_' + fpCur.cat)}</small></span><i aria-hidden="true">▾</i></button>
     <div class="fp-list" id="fp-list" role="listbox" aria-label="${T('font_h')}"${S.fpOpen ? '' : ' hidden'}>${FONT_CATS.map(c => `<div class="fp-g" role="presentation">${T('fc_' + c)}</div>` + Object.keys(FONT_PAIRS).filter(k => FONT_PAIRS[k].cat === c).map(k => { const f = FONT_PAIRS[k]; return `<button type="button" role="option" class="fp-o" data-a="font" data-v="${k}" aria-selected="${P.fontPair === k}"><span class="fp-t" style="font-family:${f.title};font-weight:${f.tw}">${esc(T('fp_sample'))}</span><span class="fp-b" style="font-family:${f.body}">${esc(f.sample)}</span></button>`; }).join('')).join('')}</div></div>`;
   return `<div class="ptabs" role="tablist" aria-label="${T('sheet_h')}">${tabs.map(([k, l]) => `<button type="button" role="tab" id="ptab-${k}" data-a="ptab" data-v="${k}" aria-selected="${S.ptab === k}" tabindex="${S.ptab === k ? 0 : -1}">${T(l)}</button>`).join('')}</div>
-  ${storyPanelHtml(P)}<section class="s1" data-t="chart"><h3>[ ${T('tg_h')} · ${T('tg_all', ALL_CHARTS.length)} ]</h3><h4 class="tg-sub first">${T('tg_rec')}</h4>${types}</section>
+  ${storyPanelHtml(P)}${wbPanelHtml(P)}<section class="s1" data-t="chart"><h3>[ ${T('tg_h')} · ${T('tg_all', ALL_CHARTS.length)} ]</h3><h4 class="tg-sub first">${T('tg_rec')}</h4>${types}</section>
   <section class="s1" data-t="style"><h3>[ ${T('style_h')} ]</h3><div class="pals">${Object.keys(TONE_DEFAULT).map(k => { const tn = TONE_DEFAULT[k], on = P.palId === tn.pal && P.fontPair === tn.pair; return `<button class="pal" data-a="tone" data-v="${k}" aria-pressed="${on}"><span>${esc(I18N[LANG].o.tone[k][0])}</span><span class="sw">${PALETTES[tn.pal].slice(0, 4).map(c => `<i style="background:${c}"></i>`).join('')}</span></button>`; }).join('')}</div></section>
   <section data-t="style"><h3>[ ${T('pal_h')} ]</h3><div class="pals">${Object.keys(PALETTES).map(id => `<button class="pal" data-a="pal" data-v="${id}" aria-pressed="${P.palId === id}"><span>${T('pal')[id]}</span><span class="sw">${PALETTES[id].slice(0, 5).map(c => `<i style="background:${c}"></i>`).join('')}</span></button>`).join('')}</div>
     <div class="picker"><input type="color" id="accent" value="${P.colors[0]}" aria-label="${T('pal_accent')}"><span class="note">${T('pal_accent')}</span></div>
@@ -698,6 +703,7 @@ document.addEventListener('click', e => {
     case 'ob-back': if (S.ob === 0) go('entry'); else { S.ob--; render(); } break;
     case 'pick-file': $('#file') && $('#file').click(); break;
     case 'sample': S.isSample = true; loadBuffer('exemplo-vendas.csv', sampleCsv()); break;
+    case 'wb-go': wbGo(); break;
     case 'sheet': S.loading = { stage: 'read', pct: 0.5, t0: Date.now(), size: 0, got: true }; S.step = 'upload'; render(); getWorker().postMessage({ type: 'sheet', name: v }); startLoadTicker(); break;
     case 'cancel-load': cancelLoad(); break;
     case 'panel': S.panelOpen = !S.panelOpen; lsSet('dv-panel', S.panelOpen ? '1' : '0'); { const ed = $('#editor'); if (ed) ed.classList.toggle('nopanel', !S.panelOpen); t.setAttribute('aria-pressed', S.panelOpen); } break;

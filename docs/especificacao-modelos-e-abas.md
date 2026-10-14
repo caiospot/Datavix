@@ -147,7 +147,7 @@ Depois da leitura, em vez da janela de texto "Que história contar?" (portão 44
 | 48 ✅ (local) | **Higiene** (§3): sem achados sobre contagem de linhas quando não há número; roteiros "até N" sem slides vazios; nota de limites; atualiza os testes de arco. |
 | 49 ✅ (local) | **Leitura do face a face** (§4): valores mistos (número + unidade, dois números, texto), "não participou", desdobramento largo e com sufixo, forma `versus`; direção da métrica (neutra por padrão). |
 | 50 ✅ (local) | **Modelo Face a face** (§5): roteiro de até 8 slides, placar com regra "ambos têm registro", gráficos pareados, linguagem sem veredito; teste com as duas planilhas e a tabela de aceite. |
-| 51 | **Várias abas** (§6.1 a 6.3, 6.5): projeto com abas, papéis, tela "O que há nesta planilha", slides de Fontes e de Perfil. |
+| 51 ✅ (local) | **Várias abas** (§6.1 a 6.3, 6.5): projeto com abas, papéis, tela "O que há nesta planilha", slides de Fontes e de Perfil. |
 | 52 | **Conciliação** (§6.4) e slides de detalhe por aba. |
 | 53 | **Galeria de modelos** (§7) com miniaturas reais; a janela atual vira a versão em lista. |
 | 54 | Modelos extras: **Ficha / perfil** (uma entidade, muitas métricas) e **Resumo por temporada** (a aba `Comparativo` como história de evolução por piloto). |

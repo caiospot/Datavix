@@ -326,7 +326,7 @@ function pxDeck(P) {
   // 3) a história
   story.forEach(st => {
     const s = new PxSlide(bgS); logo(s);
-    const list = st.type === 'impl' || st.type === 'plan' ? (st.lines || (st.rows || []).map(r => r.a)) : null, spec = list || st.synthetic ? null : (st.viz && /^vs_/.test(st.act || '') ? null : st.viz ? { type: 'bar', dir: 'bar', grouping: 'clustered', cats: st.viz.rows.map(r => r.ks || r.k), series: [{ name: st.viz.title, vals: st.viz.rows.map(r => pxNum(r.p)), color: acc }], labels: true, legend: false, fmt: '0.0"%"' } : pxSpec(P, st.state));
+    const list = st.type === 'impl' || st.type === 'plan' ? (st.lines || (st.rows || []).map(r => r.a)) : null, spec = list || st.synthetic ? null : (st.viz && /^(vs|wb)_/.test(st.act || '') ? null : st.viz ? { type: 'bar', dir: 'bar', grouping: 'clustered', cats: st.viz.rows.map(r => r.ks || r.k), series: [{ name: st.viz.title, vals: st.viz.rows.map(r => pxNum(r.p)), color: acc }], labels: true, legend: false, fmt: '0.0"%"' } : pxSpec(P, st.state));
     const kick = `${st.kick.n} · ${String(st.kick.label).toUpperCase()}`;
     s.text(56, 76, 520, 24, s.para(kick, { sz: 12, b: true, col: acc, font: 'Courier New' }), { name: 'Rótulo' });
     if (list) {
@@ -341,7 +341,7 @@ function pxDeck(P) {
       if (rows.length) { s.text(56, Math.min(y, 676 - 28 * rows.length - 40), 500, 20, s.para(`${TT.calc}: ${st.calc.title}`, { sz: 10, col: th.muted, b: true, font: th.fontBody }), { name: 'Título do cálculo' }); s.table(56, Math.min(y + 22, 676 - 28 * rows.length - 18), 500, rows, { line: th.grid, col: th.fg, font: th.fontBody, sz: 11, rowH: 26, name: 'Cálculo' }); }
     }
     if (spec) place(s, spec, 596, 84, 628, spec.note ? 560 : 590, 'Gráfico do slide');
-    else if (st.viz && /^vs_/.test(st.act || '')) pxVsRows(s, st.viz, th, acc); // face a face: barras pareadas desenhadas como formas (cada métrica na escala do seu maior valor)
+    else if (st.viz && /^(vs|wb)_/.test(st.act || '')) pxVsRows(s, st.viz, th, acc); // face a face: barras pareadas desenhadas como formas (cada métrica na escala do seu maior valor)
     foot(s, total() + 1); slides.push(s);
   });
   // 4) resumo
@@ -353,6 +353,11 @@ function pxDeck(P) {
 }
 
 function pxVsRows(s, viz, th, acc) {
+  if (viz.kind === 'text') { // aba de fontes: o texto das células sem alteração, em duas colunas
+    const it = viz.items || [], half = Math.ceil(it.length / 2); s.text(596, 90, 628, 22, s.para(String(viz.title || '').toUpperCase(), { sz: 10, b: true, col: th.muted, font: 'Courier New' }), { name: 'Título do gráfico' });
+    [it.slice(0, half), it.slice(half)].forEach((col, ci) => { if (col.length) s.text(596 + ci * 318, 120, 306, 540, col.map(r => s.para([{ t: r.k ? r.k + ' ' : '', b: true }, { t: r.t, b: false }], { sz: 8, col: th.fg, font: th.fontBody, after: 4 })), { name: ci ? 'Fontes (2)' : 'Fontes' }); });
+    return;
+  }
   const rows = (viz.rows || []).slice(0, 12), x0 = 596, n = Math.max(1, rows.length), rh = Math.min(48, 500 / n);
   s.text(x0, 90, 628, 22, s.para(String(viz.title || '').toUpperCase(), { sz: 10, b: true, col: th.muted, font: 'Courier New' }), { name: 'Título do gráfico' });
   rows.forEach((r, k) => {

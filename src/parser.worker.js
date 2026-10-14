@@ -453,6 +453,32 @@ function loadSheet(name) {
   analyze();
 }
 
+/* ---------------- pasta de trabalho com várias abas (gate 51) ----------------
+ * Lê todas as abas uma vez e devolve, por aba, só o que a tela "O que há nesta planilha" precisa: tamanho, cabeçalho, proporção de texto, números e links,
+ * valores distintos das colunas de poucas categorias (para achar chaves em comum) e, nas abas de texto, as linhas na íntegra (Fontes e Perfil). */
+const WB_URL = /https?:\/\/|www\./i;
+const wbStr = v => (v instanceof Date ? v.toISOString().slice(0, 10) : v === null || v === undefined ? '' : String(v));
+function wbSheetInfo(name, m, hidden) {
+  const R = m.length, C = m.reduce((a, r) => Math.max(a, r.length), 0), info = { name, hidden: !!hidden, rows: Math.max(0, R - 1), cols: C, header: (m[0] || []).map(wbStr).slice(0, 40) };
+  let num = 0, str = 0, url = 0, dat = 0; const colNum = new Array(C).fill(0), colN = new Array(C).fill(0), vals = Array.from({ length: C }, () => new Set());
+  for (let r = 1; r < R; r++) for (let c = 0; c < C; c++) {
+    const v = m[r][c]; if (v === null || v === undefined || (typeof v === 'string' && !v.trim())) continue;
+    colN[c]++; if (v instanceof Date) dat++; else if (typeof v === 'number' || typeof v === 'boolean') { num++; colNum[c]++; } else { str++; if (WB_URL.test(String(v))) url++; }
+    if (vals[c].size <= 40) vals[c].add(wbStr(v));
+  }
+  const filled = num + str + dat;
+  info.strShare = filled ? str / filled : 0; info.urlShare = filled ? url / filled : 0; info.numCols = colNum.filter((k, c) => colN[c] && k / colN[c] >= 0.6).length;
+  info.keys = []; for (let c = 0; c < C; c++) if (colN[c] && vals[c].size <= 40) info.keys.push({ name: info.header[c] || '', vals: [...vals[c]] });
+  if (R && R <= 201 && (C <= 3 || info.strShare >= 0.6)) info.text = m.map(r => { const o = []; for (let c = 0; c < C; c++) o.push(wbStr(r[c])); return o; });
+  return info;
+}
+function wbInfos() {
+  if (!BUF || BUF.byteLength > 12e6) return null; // pasta muito grande: segue só com a escolha de aba
+  const wb = XLSX.read(new Uint8Array(BUF), { type: 'array', cellDates: true, dense: true, cellFormula: false, cellHTML: false, cellText: false, cellNF: false, sheetStubs: false });
+  const hid = (wb.Workbook && wb.Workbook.Sheets) || [];
+  return wb.SheetNames.map((name, i) => wbSheetInfo(name, XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, raw: true, defval: null, blankrows: false }), hid[i] && hid[i].Hidden));
+}
+
 self.onmessage = e => {
   const m = e.data;
   try {
@@ -464,7 +490,7 @@ self.onmessage = e => {
         // 1) só os nomes das abas (rápido, não lê as células)
         SHEETS = XLSX.read(new Uint8Array(BUF), { type: 'array', bookSheets: true }).SheetNames;
         progress('read', 0.15);
-        if (SHEETS.length > 1 && !m.sheet) { post({ type: 'sheets', names: SHEETS, fileName: m.name }); return; }
+        if (SHEETS.length > 1 && !m.sheet) { let infos = null; try { infos = wbInfos(); } catch (err) { infos = null; } post({ type: 'sheets', names: SHEETS, fileName: m.name, infos }); return; }
         // 2) as células, só da aba escolhida
         loadSheet(m.sheet || SHEETS[0]);
       } else {

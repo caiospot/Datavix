@@ -221,15 +221,17 @@ function nvPlanVersus(P, N) {
     }
   }
   // perfil: textos da planilha, na íntegra
-  if (pk.profile && pk.profile.length) {
+  const profItems = nvWbProfile(P, ents) || pk.profile; // a aba de perfil da pasta tem prioridade
+  if (profItems && profItems.length) {
     const lines = []; let chars = 0;
-    for (const o of pk.profile) { const ln = `${o.name}${o.p ? ` (${o.p})` : ''}: ${o.t.map((t, i) => (t === null ? null : `${ents[i]}: ${t}`)).filter(Boolean).join(' · ')}`; if (lines.length && chars + ln.length > 760) break; lines.push(ln); chars += ln.length; if (lines.length >= 4) break; }
+    for (const o of profItems) { const ln = `${o.name}${o.p ? ` (${o.p})` : ''}: ${o.t.map((t, i) => (t === null ? null : `${ents[i]}: ${t}`)).filter(Boolean).join(' · ')}`; if (lines.length && chars + ln.length > 760) break; lines.push(ln); chars += ln.length; if (lines.length >= 4) break; }
     if (lines.length) { slides.prof = nvpSynth('vs-profile', 'vs_profile', X.t.prof, lines); slides.prof.verbatim = true; slides.prof.lintText = ''; slides.prof.noChart = true; }
   }
   // limites e síntese
   { const n = pk.notes || {}, L = [];
     const byEnt = ents.map((_, e) => pk.absent.filter(a => a.e === e).map(a => a.p)); byEnt.forEach((ps, e) => { if (ps.length) { const u = [...new Set(ps)]; L.push(X.limAbsent(ents[e], X.list(u), u.length)); } });
     (n.expoGap || []).slice(0, 2).forEach(g => L.push(X.limGap(g.p, g.name, g.v.map((x, i) => `${ents[i]} ${nvvNum(x)}`).join(', '))));
+    nvWbDerive(P.built.wbx).caveats.forEach(c => L.push(c.k ? `${c.k}: ${c.t}` : c.t)); // ressalvas da aba de método, na íntegra
     if (n.ord && n.ord.length) L.push(X.limOrd(n.ord.join(', '))); if (n.lower && n.lower.length) L.push(X.limLower(n.lower.join(', ')));
     if (n.noUnit && n.noUnit.length) L.push(X.limUnit(n.noUnit.join(', '))); if (n.leftOut && n.leftOut.length) L.push(X.limLeft(n.leftOut.join(', '))); if (n.dropped && n.dropped.length) L.push(X.limDrop(n.dropped.join(', ')));
     L.push(X.limWho, X.limRange);
@@ -241,7 +243,7 @@ function nvPlanVersus(P, N) {
   const pick = (...k) => k.map(x => slides[x]).filter(Boolean);
   let plan;
   if (N <= 2) plan = [slides.score, slides.synthLim];
-  else if (N <= 5) { const mid = pick('seasons', 'totals', 'eff', 'prof').slice(0, 2); plan = [slides.cover, slides.score, ...mid, slides.synthLim]; }
+  else if (N <= 5) { const room = nvWbSourcesSlide(P) ? 1 : 0, mid = pick('seasons', 'totals', 'eff', 'prof').slice(0, 2 - room); plan = [slides.cover, slides.score, ...mid, slides.synthLim]; }
   else plan = [slides.cover, ...pick('score', 'seasons', 'totals', 'eff', 'prof'), slides.lim, slides.synth];
   const out = nvFinishPlan(P, plan.filter(Boolean).slice(0, Math.max(1, N)), N, { items: [] }, null); out.story = 'versus'; return out;
 }

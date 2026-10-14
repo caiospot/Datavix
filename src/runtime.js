@@ -195,6 +195,7 @@ function presCountUp(el, text, ms, isActive) {
 
 // visual próprio dos atos de casos e pesquisas: barras de taxa ou contagem, com linha de referência opcional
 function vizHtml(v) {
+  if (v.kind === 'text') return `<div class="vz vz-text"><div class="vz-t">${esc(v.title)}</div><ul>${v.items.map(r => `<li>${r.k ? `<b>${esc(r.k)}</b>` : ''}<span>${esc(r.t)}</span></li>`).join('')}</ul></div>`; // texto da planilha, na íntegra (aba de fontes)
   const mark = v.ref ? `<s style="left:${Math.max(0, Math.min(100, v.ref.p))}%"></s>` : '';
   return `<div class="vz${v.rows.length > 6 ? ' dense' : ''}"><div class="vz-t">${esc(v.title)}</div>${v.rows.map((r, k) => `<div class="vz-r${r.hi ? ' hi' : ''}" style="--d:${k * 70}ms"><span class="vz-k" title="${esc(r.k)}">${esc(r.ks || r.k)}</span><span class="vz-b"><i style="--w:${Math.max(1.5, Math.min(100, r.p))}%"></i>${mark}</span><b>${esc(r.t)}</b>${r.sub ? `<em>${esc(r.sub)}</em>` : ''}</div>`).join('')}${v.ref ? `<div class="vz-n"><span class="vz-key"></span>${esc(v.ref.label)}</div>` : ''}${v.note ? `<div class="vz-n">${esc(v.note)}</div>` : ''}</div>`;
 }
@@ -252,7 +253,7 @@ function startPresentation(o) {
   }
   const rail = s => {
     root.classList.toggle('pviz-on', !!(s.viz || s.noChart)); pviz.innerHTML = s.viz ? vizHtml(s.viz) : ''; // noChart: slide de texto de um modelo próprio (Face a face): o gráfico geral da peça não conta esta história
-    root.classList.toggle('pnoctx', !!(s.type || (s.calc && s.calc.rows && (s.calc.rows.length > 3 || s.calc.rows.some(r => String(r.k).length > 38))) || String(s.head || '').length > 110));
+    root.classList.toggle('pnoctx', !!(s.type || s.noChart || (s.viz && s.viz.kind === 'text') || (s.calc && s.calc.rows && (s.calc.rows.length > 3 || s.calc.rows.some(r => String(r.k).length > 38))) || String(s.head || '').length > 110));
     if (s.kick) { // slide de história: ato, frase com o número em destaque, o número que a prova e o cálculo
       const SL = STORY_TXT[LANG] || STORY_TXT.pt, no = s.type === 'impl' || s.type === 'plan';
       let extra = '';

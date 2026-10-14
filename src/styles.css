@@ -848,3 +848,5 @@ details.rd-grp > summary .rd-gh { position: relative; padding: 10px 12px; border
 .tell-c.off { opacity: .55; cursor: default; }
 .tell-p { margin: 0; } .tell-more { margin-top: 14px; } .tell-more summary { cursor: pointer; color: var(--muted); font-size: 13px; }
 .cut { display: grid; gap: 6px; margin-top: 12px; }
+
+.wbp { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 6px 0; font-size: 13px; } .wbp span { overflow-wrap: anywhere; min-width: 0; } .wbp .sel { max-width: 150px; }

@@ -172,7 +172,7 @@ function nvValidatePlan(slides, N, pool) {
   slides.forEach((s, i) => {
     const id = s.id || 'slide-' + i;
     if (!s.role || !s.planTitle) errors.push({ id, code: 'no-role', msg: 'slide sem papel ou título' });
-    if (!String(s.head || '').trim()) errors.push({ id, code: 'empty', msg: 'slide sem texto' });
+    if (!String(s.head || '').trim() && !s.blank) errors.push({ id, code: 'empty', msg: 'slide sem texto' }); // blank: slide de conclusão em branco, escrito pela pessoa
     if (!s.synthetic && !ids.has(s.id) && !(s.refs || []).length) errors.push({ id, code: 'unknown-insight', msg: 'achado inexistente no conjunto validado' });
     const lint = s.lintText != null ? s.lintText : [s.head, ...(s.lines || []), s.note].filter(Boolean).join(' '); // texto copiado da planilha (nomes, perfis) não é afirmação do Datavix
     if (NV_CFG.causal.test(lint) && !(s.ev && NV_CAUSAL_OK.has(s.ev.kind)) && !((s.ev && s.ev.allow) || []).includes('causal') && !(s.allow || []).includes('causal')) errors.push({ id, code: 'causal', msg: 'linguagem de causa no slide' });

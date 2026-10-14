@@ -469,6 +469,7 @@ function wbSheetInfo(name, m, hidden) {
   const filled = num + str + dat;
   info.strShare = filled ? str / filled : 0; info.urlShare = filled ? url / filled : 0; info.numCols = colNum.filter((k, c) => colN[c] && k / colN[c] >= 0.6).length;
   info.keys = []; for (let c = 0; c < C; c++) if (colN[c] && vals[c].size <= 40) info.keys.push({ name: info.header[c] || '', vals: [...vals[c]] });
+  if (R > 1 && R <= 1501 && C <= 40 && R * C <= 60000) info.matrix = m.map(r => { const o = []; for (let c = 0; c < C; c++) { const v = r[c]; o.push(v instanceof Date ? v.toISOString().slice(0, 10) : v === undefined ? null : v); } return o; }); // aba de detalhe: valores por linha (corrida a corrida)
   if (R && R <= 201 && (C <= 3 || info.strShare >= 0.6)) info.text = m.map(r => { const o = []; for (let c = 0; c < C; c++) o.push(wbStr(r[c])); return o; });
   return info;
 }

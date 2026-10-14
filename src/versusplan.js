@@ -68,6 +68,7 @@ function nvVsBuildPack(ds, v) {
   if (v.form === 'entity-long') {
     const absP = new Set(absent.map(a => a.p)), incl = periods.filter(p => !absP.has(p) && comparable.some(m => complete(m, p)));
     const add = comparable.filter(m => !m.rate && [...m.cells.values()].every(x => x >= 0)), use = add.filter(m => incl.length && incl.every(p => complete(m, p)));
+    try { const ph = nvVsPhasePack(ds, v, all, periods, ents, absent, expo); pack.pd = ph.pd; pack.phases = ph.phases; pack.cols = ph.cols; } catch (e) { console.error(e); }
     pack.incl = incl; pack.notes.leftOut = add.filter(m => !use.includes(m)).map(m => m.name);
     if (!incl.length || !use.length) return pack.score ? pack : null;
     pack.score = { range: nvVsRange(incl), block: null, how: 'sum', items: use.map(m => ({ name: m.name, unit: m.unit, rate: false, hint: m.hint, v: ents.map((_, e) => incl.reduce((a, p) => a + val(m, p, e), 0)) })) };
@@ -145,7 +146,7 @@ const NVV = {
     effH: (name, den, parts) => `${name} ÷ ${den}: ${parts}.`, effS: (name, parts) => `${name}: ${parts} (values from the sheet).`, effT: 'Rates', effCT: 'Computed rates', effCF: 'Metric total ÷ exposure total, in the same cut. “From the sheet” rates are the values typed in it.', calc: 'computed', sheet: 'from the sheet',
     profH: 'Each one’s profile, in the sheet’s own words.', profT: 'Texts from the sheet',
     limAbsent: (ent, ps, k) => `${ent} has no record in ${ps}: ${k === 1 ? 'that period was' : 'those periods were'} left out of the scoreboard`, limGap: (p, name, vals) => `${p}: ${name} differs between the entities (${vals}), so the comparison has different exposure`,
-    limOrd: names => `Left out of the scoreboard because they are an order, not a quantity: ${names}`, limLower: names => `In ${names}, the highest value may be the less desirable result; Datavix does not make that judgment`, limDrop: names => `Derived columns were left out (Datavix recomputes): ${names}`,
+    limOrd: names => `Left out of the scoreboard (an order, not a quantity): ${names}`, limLower: names => `In ${names}, the highest value may be the less desirable result; Datavix does not make that judgment`, limDrop: names => `Derived columns were left out (Datavix recomputes): ${names}`,
     limUnit: names => `No common unit between the entities, not compared: ${names}`, limLeft: names => `Values are missing in some period, left out: ${names}`, limRange: 'The numbers describe this spreadsheet and do not prove relationships between variables', limWho: 'Comparing totals does not explain the difference between the entities',
     synthH: (ents, ks, T, tie) => `Summary: ${ents.map((e, i) => `${e} ${ks[i]}`).join(' · ')}${tie ? ` · ties ${tie}` : ''}, across ${T} comparable ${T === 1 ? 'metric' : 'metrics'}`,
   },
@@ -171,6 +172,7 @@ function nvvPairs(items, ents, maxRows, fmtItem) {
 
 function nvPlanVersus(P, N) {
   const b = P && P.built, pk = b && b.vs; if (!pk || !pk.score) return null;
+  if (pk.pd && pk.phases && pk.phases.some(f => f.cls !== 'comparable')) { const ph = nvPlanVersusPhases(P, N, pk); if (ph) return ph; } // períodos só de um lado ou incompletos: roteiro por fases (src/versusphases.js)
   const X = nvvT(), R = nvpT().r, ents = pk.ents, E = ents.length, sc = pk.score, T = sc.items.length; if (!T) return null;
   const tally = nvVsTally(sc.items, E), seasonal = NV_VS_SEASON.test(pk.periodName || '');
   const fmtItem = (it, x) => nvvNum(x, it.unit);

@@ -24,7 +24,8 @@
   q('[data-a=wb-go]').click(); await gen();
   const P = S.piece, wbx = P.built.wbx; ok('F1: a peça guarda os papéis e os textos (built.wbx)', !!wbx && wbx.sheets.map(s => s.role).join() === 'profile,main,sources,detail' && wbx.sheets[2].text.length >= 17 && !wbx.sheets[1].text); out.nText = wbx.sheets[2].text.length;
   ok('F1: Principal é o Comparativo (12 linhas) e vira face a face', S.ds.rowCount === 12 && !!P.built.vs && P.built.vs.form === 'entity-long');
-  const meta = P.host.ix.meta, steps = buildSteps(P, meta), plans = {}; for (const N of [2, 5, 10]) plans[N] = nvPlan(P, meta, steps, N, 'versus');
+  const meta = P.host.ix.meta, steps = buildSteps(P, meta), plans = {}, Pc = { ...P, built: { ...P.built, vs: { ...P.built.vs, pd: null, phases: null } } }; // roteiro clássico: o roteiro por fases tem o seu teste (versus-phases-run)
+  for (const N of [2, 5, 10]) plans[N] = nvPlan(Pc, meta, steps, N, 'versus');
   const src = plans[10].slides.find(s => s.id === 'wb-sources'), srcRows = nvWbRows(wbx.sheets[2]);
   ok('Fontes: penúltimo slide do roteiro de 10', !!src && plans[10].slides.length - 2 === plans[10].slides.indexOf(src) && plans[10].report.ok); out.len10 = plans[10].slides.map(s => s.id).join(' > ');
   ok('Fontes: todos os itens e links idênticos aos da aba', srcRows.length === wbx.sheets[2].text.length - 1 && src.viz.items.length === srcRows.length && src.viz.items.every((it, i) => it.k === srcRows[i].k && it.t === srcRows[i].t) && src.viz.items.some(it => /https:\/\/www\.formula1\.com\/en\/results\/1989\/drivers/.test(it.t)));
@@ -38,9 +39,9 @@
   // painel: trocar o papel de Fontes para Ignorar refaz o roteiro
   const pn = document.querySelector('#panel'); ok('Painel mostra as abas e o papel de cada uma', !!pn && /Abas da planilha/i.test(pn.textContent) && pn.querySelectorAll('[data-a=wb-panel-role]').length === 4);
   { const sel = pn.querySelector('[data-a=wb-panel-role][data-i="2"]'); sel.value = 'ignore'; sel.dispatchEvent(new Event('change', { bubbles: true })); await sl(300);
-    const p2 = nvPlan(P, meta, steps, 10, 'versus'); ok('Fontes para Ignorar: o slide some e a Comparabilidade também', p2.slides.every(s => s.id !== 'wb-sources') && !p2.slides.find(s => s.id === 'vs-limits').lines.some(l => /^Comparabilidade/.test(l)) && p2.report.ok);
+    const p2 = nvPlan(Pc, meta, steps, 10, 'versus'); ok('Fontes para Ignorar: o slide some e a Comparabilidade também', p2.slides.every(s => s.id !== 'wb-sources') && !p2.slides.find(s => s.id === 'vs-limits').lines.some(l => /^Comparabilidade/.test(l)) && p2.report.ok);
     const sel2 = document.querySelector('#panel').querySelector('[data-a=wb-panel-role][data-i="2"]'); sel2.value = 'sources'; sel2.dispatchEvent(new Event('change', { bubbles: true })); await sl(300);
-    ok('Fontes de volta: o slide volta', nvPlan(P, meta, steps, 10, 'versus').slides.some(s => s.id === 'wb-sources')); }
+    ok('Fontes de volta: o slide volta', nvPlan(Pc, meta, steps, 10, 'versus').slides.some(s => s.id === 'wb-sources')); }
   P.br = P.br || {}; P.br.storyKind = 'versus'; S.br.storyKind = 'versus'; const deck = pxDeck(P), xml = deck.slides.map(s => s.sh.join('')).join('');
   ok('PPTX: slide Fontes e método com o texto das fontes', /name="Fontes"/.test(xml) && /formula1\.com\/en\/results\/1992\/drivers/.test(xml)); out.pptx = deck.slides.length;
   // ---- pasta com aba oculta, aba vazia e notas

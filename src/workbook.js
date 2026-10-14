@@ -58,7 +58,7 @@ function wbSummary(s) {
   return bits.join(' · ');
 }
 // o que a apresentação precisa guardar da pasta: papéis e, nas abas de texto, as linhas na íntegra (built.wbx)
-function wbPack(wb) { return { file: wb.file, sheets: wb.sheets.map(s => ({ name: s.name, role: s.role, rows: s.rows, cols: s.cols, text: s.role === 'sources' || s.role === 'profile' || s.role === 'ignore' ? s.text || null : null })) }; }
+function wbPack(wb) { return { file: wb.file, sheets: wb.sheets.map(s => ({ name: s.name, role: s.role, rows: s.rows, cols: s.cols, text: s.role === 'sources' || s.role === 'profile' || s.role === 'ignore' ? s.text || null : null, matrix: s.role === 'detail' ? s.matrix || null : null })) }; }
 
 function wbScreen() {
   const v = S.wbv; if (!v) return '';

@@ -70,7 +70,8 @@ function nvCheckItem(item, lang) {
       }
     }
   }
-  if (!NV_CAUSAL_OK.has(ev.kind) && !(ev.allow || []).includes('causal') && NV_CFG.causal.test(text)) bad('causal', 'afirmação com linguagem de causa');
+  const lintT = item.lintText != null ? item.lintText : text; // texto copiado da planilha não é afirmação do Datavix
+  if (!NV_CAUSAL_OK.has(ev.kind) && !(ev.allow || []).includes('causal') && NV_CFG.causal.test(lintT)) bad('causal', 'afirmação com linguagem de causa');
   if (['corr', 'assoc', 'outlier', 'outrows', 'dist'].includes(ev.kind) && NV_CFG.accuse.test(text)) bad('accusation', 'anomalia ou associação descrita como erro ou fraude');
   if (ev.kind === 'trend' && v.S != null) { const z = NV_CALC.trend(v).z; if (z === null || Math.abs(z) < NV_CFG.trendZ - 1e-9) bad('insignificant', 'tendência dentro da variação normal dos períodos'); }
   if ((ev.kind === 'peak' || ev.kind === 'low') && v.sd != null && v.n >= 8) { const z = ((ev.kind === 'peak' ? 1 : -1) * (v.top - v.sum / v.n)) / v.sd; if (!(z >= NV_CFG.peakZ - 1e-9)) bad('insignificant', 'valor extremo dentro da variação normal dos períodos'); }

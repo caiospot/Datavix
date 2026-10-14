@@ -24,7 +24,8 @@
   ok('Comparativo: tabela de aceite por temporada (1991 5×0, 1992 2×3, 1993 3×2, 1994 0×5)', per === '1991:5x0 1992:2x3 1993:3x2 1994:0x5'); out.per = per;
   const s94 = pk.seasons.find(s => s.p === '1994'); ok('Comparativo: 1994 Poles 6 × 3 a favor de Schumacher', s94.items.find(i => i.name === 'Poles').v.join('/') === '3/6');
   ok('Comparativo: nota de exposição 1991 (16 × 6)', (pk.notes.expoGap || []).some(g => g.p === '1991' && g.v.join('/') === '16/6'));
-  const plans = {}; for (const N of [2, 5, 10]) plans[N] = nvPlan(P, meta, steps, N, 'versus');
+  const Pc = { ...P, built: { ...P.built, vs: { ...pk, pd: null, phases: null } } }; // roteiro clássico (sem fases): as fases têm o seu próprio teste (versus-phases-run)
+  const plans = {}; for (const N of [2, 5, 10]) plans[N] = nvPlan(Pc, meta, steps, N, 'versus');
   ok('Comparativo: planos 2, 5 e 10 válidos, "até N" e história face a face', [2, 5, 10].every(N => plans[N].report.ok && plans[N].slides.length <= N && plans[N].story === 'versus')); out.len = [2, 5, 10].map(N => plans[N].slides.length).join(','); out.plan10 = plans[10].slides.map(s => s.id).join(' > ');
   ok('Comparativo: roteiro de 10 tem capa, placar, períodos, totais, eficiência, limites e síntese', ['vs-cover', 'vs-score', 'vs-seasons', 'vs-totals', 'vs-eff', 'vs-limits', 'vs-synth'].every(id => plans[10].slides.some(s => s.id === id)));
   const all10 = txtOf(plans[10]) + ' | ' + txtOf(plans[5]) + ' | ' + txtOf(plans[2]);

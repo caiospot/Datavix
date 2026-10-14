@@ -851,3 +851,35 @@ details.rd-grp > summary .rd-gh { position: relative; padding: 10px 12px; border
 
 .wbp { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 6px 0; font-size: 13px; } .wbp span { overflow-wrap: anywhere; min-width: 0; } .wbp .sel { max-width: 150px; }
 .wb-rc.diff b { color: #ffb347; }
+
+/* galeria de modelos (portão 54): miniaturas com os dados da planilha, em grupos; a mesma janela vira lista em telas pequenas */
+.mg { display: grid; gap: 22px; margin-top: 8px; }
+.mg-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; } .mg-top .note { margin: 0; max-width: 64ch; }
+.mg-view { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; flex: none; }
+.mg-view button { background: none; border: 0; color: var(--muted); padding: 6px 14px; font: 500 12.5px var(--sans); cursor: pointer; } .mg-view button[aria-pressed='true'] { background: var(--fg); color: var(--bg); }
+.mg-gh { margin: 0 0 10px; font: 500 11.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.mg .tell { margin-top: 0; }
+.mg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+.mg-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 24px 14px; align-items: start; margin-top: 12px; } .mg-groups .mg-grid { grid-template-columns: 1fr; }
+.mg-card.off .mg-thumb.none { aspect-ratio: 16 / 3.2; }
+.mg-card { padding: 10px 10px 12px; gap: 6px; align-content: start; }
+.mg-card > b, .mg-ask, .mg-fit, .mg-seq { padding: 0 4px; }
+.mg-card.fit { border-color: color-mix(in srgb, var(--lime) 50%, var(--line)); }
+.mg-thumb { display: block; border-radius: 10px; overflow: hidden; aspect-ratio: 16 / 9; }
+.mg-thumb.none { display: grid; place-items: center; border: 1px dashed var(--line); background: repeating-linear-gradient(135deg, transparent 0 8px, color-mix(in srgb, var(--fg) 5%, transparent) 8px 16px); }
+.mg-na { padding: 10px 14px; text-align: center; font-size: 12px; line-height: 1.35; color: var(--muted); }
+.mg-fit b { color: var(--fg); font: 600 11.5px var(--mono); }
+.mg-seq { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-top: 2px; }
+.mg-seq i { font-style: normal; font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px 2px 3px; display: inline-flex; align-items: center; gap: 5px; line-height: 1.2; }
+.mg-seq em { font: 600 9.5px var(--mono); font-style: normal; display: grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: color-mix(in srgb, var(--fg) 12%, transparent); color: var(--fg); }
+.mg-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.mg[data-view='list'] .mg-thumb, .mg[data-view='list'] .mg-seq { display: none; } .mg[data-view='list'] .mg-grid { grid-template-columns: 1fr; gap: 10px; } .mg[data-view='list'] .mg-groups { grid-template-columns: 1fr; gap: 18px; } .mg[data-view='list'] .mg-card { padding: 14px 16px; gap: 4px; }
+.mg-svg { width: 100%; height: auto; display: block; }
+.mg-bg { fill: color-mix(in srgb, var(--fg) 5%, var(--bg)); stroke: var(--line); }
+.mg-k { font: 500 9px var(--mono); letter-spacing: .08em; fill: var(--muted); } .mg-t { font: 600 14px var(--sans); fill: var(--fg); }
+.mg-l { font: 400 10px var(--sans); fill: var(--muted); } .mg-v { font: 600 10.5px var(--sans); fill: var(--fg); }
+.mg-tr { fill: color-mix(in srgb, var(--fg) 9%, transparent); } .mg-mt { fill: color-mix(in srgb, var(--fg) 32%, transparent); }
+.mg-ac { fill: var(--mg-a, #d4ff00); } .mg-fd { opacity: .72; } .mg-o { opacity: .75; }
+.mg-no { fill: none; stroke: color-mix(in srgb, var(--fg) 38%, transparent); stroke-dasharray: 3 2; }
+.mg-ar { fill: color-mix(in srgb, var(--mg-a, #d4ff00) 22%, transparent); } .mg-ln { fill: none; stroke: var(--mg-a, #d4ff00); stroke-width: 2; stroke-linejoin: round; } .mg-dot { fill: var(--mg-a, #d4ff00); }
+@media (max-width: 760px) { .mg-grid { grid-template-columns: 1fr; } }

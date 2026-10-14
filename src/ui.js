@@ -704,6 +704,7 @@ document.addEventListener('click', e => {
     case 'pick-file': $('#file') && $('#file').click(); break;
     case 'sample': S.isSample = true; loadBuffer('exemplo-vendas.csv', sampleCsv()); break;
     case 'wb-go': wbGo(); break;
+    case 'mg-open': showTell({ force: true }); break; // galeria de modelos pelo painel (o prefixo story- é do construtor de roteiro)
     case 'sheet': S.loading = { stage: 'read', pct: 0.5, t0: Date.now(), size: 0, got: true }; S.step = 'upload'; render(); getWorker().postMessage({ type: 'sheet', name: v }); startLoadTicker(); break;
     case 'cancel-load': cancelLoad(); break;
     case 'panel': S.panelOpen = !S.panelOpen; lsSet('dv-panel', S.panelOpen ? '1' : '0'); { const ed = $('#editor'); if (ed) ed.classList.toggle('nopanel', !S.panelOpen); t.setAttribute('aria-pressed', S.panelOpen); } break;

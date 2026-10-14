@@ -137,7 +137,7 @@ function nvStoryEligibility(ds, opt = {}) {
   { let sg = null; try { sg = CHART_REG.bubmap && CHART_REG.bubmap.suggest(ds.columns); } catch (e) { sg = null; }
     let si = null; try { si = CHART_REG.isomap && CHART_REG.isomap.suggest(ds.columns); } catch (e) { si = null; }
     if (si) { const la = ds.columns[si.lat], pts = ds.rowCount; out.geo = pts >= 20 ? { ok: true, score: Math.min(1, 0.6 + (pts >= 100 ? 0.25 : 0.1) + (F.mainCol ? 0.1 : 0)), why: `${ds.columns[si.lat].name} + ${ds.columns[si.lon].name}: ${fmtInt(pts, lang)} ${lang === 'en' ? 'points' : 'pontos'}`, cols: { lat: si.lat, lon: si.lon, measure: si.val } } : no(X.fewPts); }
-    else if (sg) { const c = ds.columns[sg.geo !== undefined ? sg.geo : sg.cat]; const k = c && c.dict ? c.dict.length : 0; out.geo = c && k >= 2 ? { ok: true, score: Math.min(1, 0.6 + (k >= 5 ? 0.25 : 0.1) + (F.mainCol ? 0.1 : 0)), why: `${c.name}: ${k} ${X.vals} · ${mname}`, cols: { geo: sg.geo, measure: F.main } } : no(X.noGeo); }
+    else if (sg) { const c = ds.columns[sg.geo !== undefined ? sg.geo : sg.cat]; const k = c && c.dict ? c.dict.length : 0; out.geo = c && k >= 2 ? { ok: true, score: Math.min(1, 0.6 + (k >= 5 ? 0.25 : 0.1) + (F.mainCol ? 0.1 : 0)), why: `${c.name}: ${k} ${X.vals} · ${mname}`, cols: { geo: sg.geo !== undefined ? sg.geo : sg.cat, measure: F.main } } : no(X.noGeo); }
     else out.geo = no(X.noGeo); }
   // funnel (Fase 2): 2 a 5 colunas de etapa reconhecidas pelo gráfico de funil
   { let fl = null; try { fl = CHART_REG.flow && CHART_REG.flow.suggest(ds.columns); } catch (e) { fl = null; }

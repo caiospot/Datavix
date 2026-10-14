@@ -43,7 +43,8 @@ async function showTell() {
   const rk = env.rk, list = rk.list;
   if (list.length < 2) { storyApply(list[0] || null, { silent: true }); if (!list.length) toast(T('tell_none')); return; } // 0 ou 1 história possível: não há o que escolher
   let sel = list[0];
-  const rest = NV_ST_ORDER.filter(id => !list.includes(id)), restRow = id => { const ok = rk.all[id] && rk.all[id].ok; return ok ? storyCard(id, rk, sel) : `<div class="tell-c off"><b>${esc(nvStoryInfo(id, LANG).name)}</b><small>${esc(NV_STORIES[id].phase > 1 && rk.all[id] && rk.all[id].planned ? T('tell_soon') : T('tell_blocked') + ': ' + ((rk.all[id] && rk.all[id].why) || ''))}</small></div>`; };
+  const rest = NV_ST_ORDER.filter(id => !list.includes(id) && (id !== 'versus' || (rk.all.versus && rk.all.versus.ok))), // o Face a face só aparece quando a planilha é uma comparação
+     restRow = id => { const ok = rk.all[id] && rk.all[id].ok; return ok ? storyCard(id, rk, sel) : `<div class="tell-c off"><b>${esc(nvStoryInfo(id, LANG).name)}</b><small>${esc(NV_STORIES[id].phase > 1 && rk.all[id] && rk.all[id].planned ? T('tell_soon') : T('tell_blocked') + ': ' + ((rk.all[id] && rk.all[id].why) || ''))}</small></div>`; };
   const body = `<p class="note tell-p">${esc(T('tell_p'))}</p><div class="tell">${list.map(id => storyCard(id, rk, sel)).join('')}</div>
     <details class="tell-more"><summary>${esc(T('tell_all'))}</summary><div class="tell">${rest.map(restRow).join('')}<button type="button" class="tell-c" data-id="" aria-pressed="false"><b>${esc(T('story_pan'))}</b><span>${esc(T('tell_pan_ask'))}</span></button></div></details>`;
   const r = await modal({ title: `${esc(T('tell_t')[0])} <b>${esc(T('tell_t')[1])}</b>`, body, wide: true, actions: [{ label: T('tell_go'), v: 'ok', kind: 'primary' }, { label: T('tell_pan'), v: 'pan', kind: 'ghost' }],

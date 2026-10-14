@@ -495,6 +495,7 @@ function dotsAnimate(canvas, { duration = 0, loop = false } = {}) {
 // título sugerido pelos dados, enquanto a pessoa não escreveu a mensagem: ela edita no próprio título
 function autoTitle(b, type) {
   const A = T('auto_title'), n = b.names || {}, cs = b.cs && b.cs[type];
+  if (b.vs && b.vs.ents && b.vs.ents.length >= 2 && b.vs.score) return b.vs.ents.join(' × '); // planilha lida como face a face: o título são as entidades comparadas
   // o título segue o gráfico escolhido: cada um olha os dados de um jeito
   if (cs && type === 'fan') return A.by(cs.valName, cs.catName || cs.labName);
   if (cs && type === 'rays') return A.by(cs.valName, cs.grpName || cs.entName);

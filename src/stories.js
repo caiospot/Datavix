@@ -3,9 +3,11 @@
  * quais histórias são POSSÍVEIS (regra dura), quão bem cada uma se ajusta (score) e por quê (frase com os números da própria planilha).
  * Nada aqui inventa dado: tudo é contagem ou cálculo sobre as colunas lidas. */
 
-const NV_ST_ORDER = ['compare', 'time', 'rank', 'composition', 'distribution', 'relation', 'geo', 'funnel', 'goal', 'before_after'];
+const NV_ST_ORDER = ['versus', 'compare', 'time', 'rank', 'composition', 'distribution', 'relation', 'geo', 'funnel', 'goal', 'before_after'];
 const NV_ST_MIN_SCORE = 0.45; // abaixo disso a história é possível, mas não é sugerida
 const NV_STORIES = {
+  versus: { phase: 2, name: { pt: 'Face a face', en: 'Head to head' }, ask: { pt: 'Como A se compara a B, métrica a métrica?', en: 'How does A compare to B, metric by metric?' },
+    allow: [], charts: { primary: null, alts: [] } },
   compare: { phase: 1, name: { pt: 'Comparativo', en: 'Comparison' }, ask: { pt: 'Quem é maior, menor, melhor? Como A se compara a B?', en: 'Who is bigger, smaller, better? How does A compare to B?' },
     allow: ['top', 'bottom', 'spread', 'gap', 'ratio', 'dimgap', 'shift', 'overview'], charts: { primary: 'hbars', alts: ['cols', 'fan', 'rays', 'race'] } },
   time: { phase: 1, name: { pt: 'Evolução no tempo', en: 'Change over time' }, ask: { pt: 'Como mudou? Cresceu, caiu, oscilou?', en: 'How did it change? Did it grow, fall, fluctuate?' },
@@ -30,7 +32,7 @@ const NV_STORIES = {
 
 /* ---- migração: ids antigos do S.br.story (7 valores) ↔ ids novos. Projetos salvos continuam abrindo; o resto do app ainda lê os ids antigos ---- */
 const NV_STORY_FROM_OLD = { time: 'time', compare: 'compare', composition: 'composition', distribution: 'distribution', relation: 'relation', flow: 'funnel', geo: 'geo' };
-const NV_STORY_TO_OLD = { compare: 'compare', rank: 'compare', time: 'time', before_after: 'time', composition: 'composition', distribution: 'distribution', relation: 'relation', funnel: 'flow', geo: 'geo', goal: 'compare' };
+const NV_STORY_TO_OLD = { versus: 'compare', compare: 'compare', rank: 'compare', time: 'time', before_after: 'time', composition: 'composition', distribution: 'distribution', relation: 'relation', funnel: 'flow', geo: 'geo', goal: 'compare' };
 // id novo a partir de qualquer id (antigo ou novo); null se não existir
 const nvStoryNorm = s => (!s ? null : NV_STORIES[s] ? s : NV_STORY_FROM_OLD[s] || null);
 // id no vocabulário antigo, que é o que o mapeamento, a escolha de gráfico e a tela de mapeamento ainda entendem
@@ -148,6 +150,9 @@ function nvStoryEligibility(ds, opt = {}) {
     out.funnel = idx.length >= 2 ? { ok: true, score: Math.min(1, 0.5 + 0.12 * idx.length + (fl.value >= 0 ? 0.1 : 0)), why: idx.map(i => ds.columns[i].name).join(' → '), cols: { stages: idx, measure: fl.value } } : no(X.noFlow); }
 
   Object.assign(out, nvStoryEligibility3(ds, lang, F)); // Fase 3: meta e antes e depois
+  // face a face: a planilha foi lida como comparação entre 2 a 4 entidades, com pelo menos uma métrica comparável
+  { let pk = null; try { pk = typeof nvVsPack === 'function' ? nvVsPack(ds) : null; } catch (e) { pk = null; }
+    out.versus = pk && pk.score && pk.score.items.length ? { ok: true, score: 1, why: `${pk.ents.join(' × ')} · ${pk.score.items.length} ${lang === 'en' ? 'comparable metrics' : 'métricas comparáveis'}`, cols: {}, metrics: pk.score.items.length } : no(lang === 'en' ? 'needs 2 to 4 entities with metrics in common' : 'precisa de 2 a 4 entidades com métricas em comum'); }
   // fases seguintes: o catálogo já existe, a elegibilidade chega nos próximos portões
   for (const id of NV_ST_ORDER) if (!out[id]) out[id] = no(X.soon, { planned: true, phase: NV_STORIES[id].phase });
   for (const id of NV_ST_ORDER) { out[id].id = id; out[id].phase = NV_STORIES[id].phase; }
@@ -287,6 +292,7 @@ function nvStoryRank(ds, P, pool, opt = {}) {
   const base = nvStorySuggest(ds, { ...opt, n: 99 }), all = base.all, area = P && P.br && P.br.area || opt.area || null, N = opt.n || 3, facts = {}, score = {};
   for (const id of NV_ST_ORDER) {
     if (!all[id].ok) continue;
+    if (id === 'versus') { facts[id] = all[id].metrics; score[id] = Math.min(1.5, all[id].score + 0.2 + (typeof nvStoryAreaBoost === 'function' ? nvStoryAreaBoost(area, id) : 0)); continue; } // o roteiro vem do próprio face a face, não do conjunto de achados
     const items = nvStoryPool(pool, id).items, firm = items.filter(f => f.confidenceLabel !== 'exploratory').length;
     if (NV_STORIES[id].phase > 1 && nvStoryLegacy(id) !== (P && P.mstory)) { facts[id] = null; score[id] = Math.min(1, all[id].score + (typeof nvStoryAreaBoost === 'function' ? nvStoryAreaBoost(area, id) : 0)); continue; } // história que pede outro mapeamento: os achados só existem depois de remontar a peça
     facts[id] = items.length; let sc = all[id].score;

@@ -109,6 +109,7 @@ function nvpEvidence(pool, used, main) {
 
 /* ---- planos ---- */
 function nvPlan(P, meta, steps, N, storyId) {
+  if (storyId === 'versus' && typeof nvPlanVersus === 'function') { const vp = nvPlanVersus(P, N); if (vp) return vp; } // modelo Face a face (src/versusplan.js)
   if (storyId && typeof nvPlanStory === 'function') { const sp = nvPlanStory(P, meta, steps, N, storyId); if (sp) return sp; } // história escolhida (src/stories.js); sem arco para ela, segue o Panorama abaixo
   const X = nvpT(), pool = nvpPool(P, meta, steps), used = new Set(), slides = [], b = P.built, br = P.br || {};
   const main = nvpMain(pool); if (main) used.add(main.id);
@@ -172,7 +173,7 @@ function nvValidatePlan(slides, N, pool) {
     if (!s.role || !s.planTitle) errors.push({ id, code: 'no-role', msg: 'slide sem papel ou título' });
     if (!String(s.head || '').trim()) errors.push({ id, code: 'empty', msg: 'slide sem texto' });
     if (!s.synthetic && !ids.has(s.id) && !(s.refs || []).length) errors.push({ id, code: 'unknown-insight', msg: 'achado inexistente no conjunto validado' });
-    const lint = [s.head, ...(s.lines || []), s.note].filter(Boolean).join(' ');
+    const lint = s.lintText != null ? s.lintText : [s.head, ...(s.lines || []), s.note].filter(Boolean).join(' '); // texto copiado da planilha (nomes, perfis) não é afirmação do Datavix
     if (NV_CFG.causal.test(lint) && !(s.ev && NV_CAUSAL_OK.has(s.ev.kind)) && !((s.ev && s.ev.allow) || []).includes('causal') && !(s.allow || []).includes('causal')) errors.push({ id, code: 'causal', msg: 'linguagem de causa no slide' });
     if (NV_CFG.accuse.test(lint)) errors.push({ id, code: 'accusation', msg: 'acusação (erro/fraude) no slide' });
     if ((s.confidenceLabel === 'exploratory') && !String(s.note || '').trim()) errors.push({ id, code: 'no-caveat', msg: 'achado exploratório sem ressalva visível' });

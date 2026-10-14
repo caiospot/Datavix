@@ -326,7 +326,7 @@ function pxDeck(P) {
   // 3) a história
   story.forEach(st => {
     const s = new PxSlide(bgS); logo(s);
-    const list = st.type === 'impl' || st.type === 'plan' ? (st.lines || (st.rows || []).map(r => r.a)) : null, spec = list || st.synthetic ? null : (st.viz ? { type: 'bar', dir: 'bar', grouping: 'clustered', cats: st.viz.rows.map(r => r.ks || r.k), series: [{ name: st.viz.title, vals: st.viz.rows.map(r => pxNum(r.p)), color: acc }], labels: true, legend: false, fmt: '0.0"%"' } : pxSpec(P, st.state));
+    const list = st.type === 'impl' || st.type === 'plan' ? (st.lines || (st.rows || []).map(r => r.a)) : null, spec = list || st.synthetic ? null : (st.viz && /^vs_/.test(st.act || '') ? null : st.viz ? { type: 'bar', dir: 'bar', grouping: 'clustered', cats: st.viz.rows.map(r => r.ks || r.k), series: [{ name: st.viz.title, vals: st.viz.rows.map(r => pxNum(r.p)), color: acc }], labels: true, legend: false, fmt: '0.0"%"' } : pxSpec(P, st.state));
     const kick = `${st.kick.n} · ${String(st.kick.label).toUpperCase()}`;
     s.text(56, 76, 520, 24, s.para(kick, { sz: 12, b: true, col: acc, font: 'Courier New' }), { name: 'Rótulo' });
     if (list) {
@@ -341,6 +341,7 @@ function pxDeck(P) {
       if (rows.length) { s.text(56, Math.min(y, 676 - 28 * rows.length - 40), 500, 20, s.para(`${TT.calc}: ${st.calc.title}`, { sz: 10, col: th.muted, b: true, font: th.fontBody }), { name: 'Título do cálculo' }); s.table(56, Math.min(y + 22, 676 - 28 * rows.length - 18), 500, rows, { line: th.grid, col: th.fg, font: th.fontBody, sz: 11, rowH: 26, name: 'Cálculo' }); }
     }
     if (spec) place(s, spec, 596, 84, 628, spec.note ? 560 : 590, 'Gráfico do slide');
+    else if (st.viz && /^vs_/.test(st.act || '')) pxVsRows(s, st.viz, th, acc); // face a face: barras pareadas desenhadas como formas (cada métrica na escala do seu maior valor)
     foot(s, total() + 1); slides.push(s);
   });
   // 4) resumo
@@ -349,6 +350,19 @@ function pxDeck(P) {
     s.text(56, 130, 1100, 460, (ph ? [TT.ph] : lines).map(l => s.para(l, { sz: 22, col: ph ? th.muted : th.fg, i: ph, font: th.fontBody, bullet: true, bulletCol: acc, after: 14 })), { name: 'Resumo' });
     s.text(56, 620, 600, 36, s.para(DV_SITE, { sz: 18, b: true, col: acc, font: th.fontTitle }), { name: 'Site' }); foot(s, total() + 1); slides.push(s); }
   return { slides, charts, th, P };
+}
+
+function pxVsRows(s, viz, th, acc) {
+  const rows = (viz.rows || []).slice(0, 12), x0 = 596, n = Math.max(1, rows.length), rh = Math.min(48, 500 / n);
+  s.text(x0, 90, 628, 22, s.para(String(viz.title || '').toUpperCase(), { sz: 10, b: true, col: th.muted, font: 'Courier New' }), { name: 'Título do gráfico' });
+  rows.forEach((r, k) => {
+    const y = 124 + k * rh, ky = String(r.ks || r.k);
+    s.text(x0, y, 250, rh - 4, s.para(ky.length > 60 ? ky.slice(0, 58) + '…' : ky, { sz: ky.length > 34 ? 10 : 12, col: th.fg, font: th.fontBody }), { name: 'Rótulo da barra' });
+    s.rect(858, y + rh * 0.2, 270, rh * 0.5, th.grid, { name: 'Trilho' });
+    s.rect(858, y + rh * 0.2, Math.max(3, 270 * Math.max(0, Math.min(100, r.p)) / 100), rh * 0.5, r.hi === false ? th.muted : acc, { name: 'Barra' });
+    s.text(1134, y, 90, rh - 4, s.para(String(r.t), { sz: 14, b: true, col: th.fg, font: th.fontBody, algn: 'r' }), { name: 'Valor' });
+  });
+  if (viz.note) s.text(x0, Math.min(668, 124 + n * rh + 6), 628, 20, s.para(String(viz.note), { sz: 10, col: th.muted, i: true, font: th.fontBody }), { name: 'Nota do gráfico' });
 }
 
 function pxPackage(deck) {

@@ -48,7 +48,7 @@ function videoPlan(P, fmt) {
   const listOf = s => (s.type === 'prio' ? s.rank.map(r => `${r.n}. ${r.k}, ${r.v}${r.s ? ' (' + r.s + ')' : ''}`) : s.type === 'impl' ? s.lines : s.type === 'plan' ? s.rows.map(r => [r.a, r.o, r.d].filter(Boolean).join(' · ')) : s.type === 'diag' ? (s.chips || []).map(c => `${c.text} ${c.label}`) : null);
   // roteiro guiado: o vídeo mostra até 5 atos; ficam o panorama, o centro, o diagnóstico, as prioridades e a decisão, e o resto preenche pela ordem
   const pickV = arr => { if (arr.length <= 5) return arr; const must = new Set([0, 1]); arr.forEach((s, i) => { if (s.type === 'diag' || s.type === 'prio' || s.type === 'ask') must.add(i); }); const keep = new Set([...must].slice(0, 5)); for (let i = 0; i < arr.length && keep.size < 5; i++) keep.add(i); return arr.filter((s, i) => keep.has(i)); };
-  if (story.length >= 3) (P.sb ? pickV(story) : story.slice(0, 4)).forEach(s => { const ls = listOf(s); scenes.push({ kind: 'step', ms: s.calc || ls ? 3600 : 2800, kick: s.kick.label, head: s.type === 'impl' || s.type === 'plan' ? s.kick.label : s.head, sub: s.note || '', calc: ls ? null : s.calc, list: ls, state: s.state, viz: s.viz || null }); });
+  if (story.length >= 3) (P.sb ? pickV(story) : story.slice(0, 4)).forEach(s => { const ls = listOf(s); scenes.push({ kind: 'step', ms: s.calc || ls ? 3600 : 2800, kick: s.kick.label, head: s.type === 'impl' || s.type === 'plan' ? s.kick.label : s.head, sub: s.note || '', calc: ls ? null : s.calc, list: ls, state: s.state, viz: s.viz || null, noChart: !!s.noChart }); });
   else {
     const cut = c => { const p = c.split(' · '); return [p[0], p.slice(1).join(' · ')]; };
     const seg = base.filter(s => s.id !== 'overview' && s.id !== 'end' && !isIns(s) && s.caption).slice(0, 2), ins = base.filter(isIns).slice(0, 2);
@@ -172,7 +172,7 @@ function videoRender(P, fmt, plan, th, prep) {
   const sceneAt = t => { for (let i = 0; i < plan.scenes.length; i++) if (t < plan.scenes[i].t1) return i; return plan.scenes.length - 1; };
   // barras dos atos de casos, desenhadas no lugar do gráfico
   const drawViz = (v, lt, alpha) => {
-    const c = F.chart, rows = v.rows.slice(0, 7), fs = fmt === 'square' ? 24 : 34, rh = Math.min(fmt === 'square' ? 62 : 124, (c.h - 90) / Math.max(1, rows.length)), kw = c.w * 0.34, vw = 180, bx = c.x + kw + 14, bw = c.w - kw - vw - 28;
+    const c = F.chart, rows = v.rows.slice(0, 12), fs = (fmt === 'square' ? 24 : 34) - (rows.length > 6 ? 8 : 0), rh = Math.min(fmt === 'square' ? 62 : 124, (c.h - 90) / Math.max(1, rows.length)), kw = c.w * 0.34, vw = 180, bx = c.x + kw + 14, bw = c.w - kw - vw - 28;
     ctx.save(); ctx.textBaseline = 'middle';
     ctx.globalAlpha = alpha; ctx.font = `500 ${fs - 6}px 'Geist Mono', ui-monospace, monospace`; ctx.fillStyle = th.muted; ctx.fillText(String(v.title).toUpperCase().slice(0, 44), c.x, c.y + 14);
     rows.forEach((r, k) => {
@@ -191,6 +191,7 @@ function videoRender(P, fmt, plan, th, prep) {
     else if (sc.kind === 'summary') a = 0.12;
     if (a <= 0.01) return;
     if (sc.kind === 'step' && sc.viz) { drawViz(sc.viz, lt, a); return; }
+    if (sc.kind === 'step' && sc.noChart) return; // slide de texto de um modelo próprio: sem o gráfico geral da peça
     ctx.save(); ctx.globalAlpha = a; ctx.drawImage(prep.layer.cnv, F.chart.x, F.chart.y, F.chart.w, F.chart.h); ctx.restore();
   };
   const textBlock = (sc, lt, alpha) => {

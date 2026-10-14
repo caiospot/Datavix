@@ -234,12 +234,14 @@ function nvPlanVersus(P, N) {
     const byEnt = ents.map((_, e) => pk.absent.filter(a => a.e === e).map(a => a.p)); byEnt.forEach((ps, e) => { if (ps.length) { const u = [...new Set(ps)]; L.push(X.limAbsent(ents[e], X.list(u), u.length)); } });
     (n.expoGap || []).slice(0, 2).forEach(g => L.push(X.limGap(g.p, g.name, g.v.map((x, i) => `${ents[i]} ${nvvNum(x)}`).join(', '))));
     nvWbDerive(P.built.wbx).caveats.forEach(c => L.push(c.k ? `${c.k}: ${c.t}` : c.t)); // ressalvas da aba de método, na íntegra
+    const rcx = nvWbReconText(nvWbReconcile(P.built.wbx, pk)); if (rcx) L.push(...rcx.lines); // conciliação entre a aba Principal e a Detalhe
     if (n.ord && n.ord.length) L.push(X.limOrd(n.ord.join(', '))); if (n.lower && n.lower.length) L.push(X.limLower(n.lower.join(', ')));
     if (n.noUnit && n.noUnit.length) L.push(X.limUnit(n.noUnit.join(', '))); if (n.leftOut && n.leftOut.length) L.push(X.limLeft(n.leftOut.join(', '))); if (n.dropped && n.dropped.length) L.push(X.limDrop(n.dropped.join(', ')));
     L.push(X.limWho, X.limRange);
     const synth = X.synthH(ents, tally.wins, T, tally.tie);
     const mk = (id, role, title, lines) => { const s = nvpSynth(id, role, title, lines); s.verbatim = true; s.lintText = ''; s.noChart = true; return s; };
     slides.lim = mk('vs-limits', 'limits', X.t.lim, L); slides.synth = mk('vs-synth', 'synthesis', X.t.synth, [synth]); slides.synthLim = mk('vs-synthlim', 'synthesis', X.t.synthLim, [synth, ...L]);
+    if (rcx) { slides.lim.calc = rcx.calc; slides.synthLim.calc = rcx.calc; }
     slides.synth.ev = nvEv('vsscore', { wins: tally.wins.slice(), tie: tally.tie, total: T }, [{ k: 'tot', value: T, text: String(T) }], { n: T, method: 'count', refs: ents.slice() }); slides.synthLim.ev = slides.synth.ev;
   }
   const pick = (...k) => k.map(x => slides[x]).filter(Boolean);

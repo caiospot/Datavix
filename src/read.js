@@ -125,7 +125,7 @@ function readScreen() {
   const merge = sug.length ? `<div class="rd-merge"><div class="lbl">[ ${esc(t.mergeH)} ]</div><p class="note" style="margin:6px 0 12px">${esc(t.mergeP)}</p>${sug.map((m, k) => `<label class="rd-mi"><input type="checkbox" data-c="rd-merge" data-k="${k}" ${m.on ? 'checked' : ''}><span><b>${esc(cols[m.col].name.replace(/[:\s]+$/, ""))}</b>: ${m.from.map(f => `“${esc(f)}”`).join(', ')} → “${esc(m.keep)}” <i>${esc(t.rows(fmtInt(m.rows, LANG)))} · ${esc(m.kind === 'same' ? t.mergeSame : t.mergeFlag)}</i></span></label>`).join('')}</div>` : '';
   return `<div class="wrap-narrow" style="max-width:860px">
     <div class="lbl">[ ${T('step')} // ${String(OB.length + 3).padStart(2, '0')} ]</div><h2 style="margin-top:12px">${title2(t.h)}</h2><p class="sub">${esc(t.p)}</p>
-    ${rdFixes()}
+    ${rdFixes()}${wbReconHtml()}
     <div class="rd-shapes"><div class="lbl">[ ${esc(t.shapeH)} ]</div><div class="rd-shl" role="group">${sh}</div>${why}</div>
     <div class="rd-cols"><div class="lbl" style="margin-bottom:10px">[ ${esc(t.secH)} ] <span class="note">${esc(t.sum(cols.length, used))}</span></div>${groups}</div>
     ${merge}

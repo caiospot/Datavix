@@ -41,16 +41,23 @@ function nvVsPhasePack(ds, v, all, periods, ents, absent, expo) {
 
 // ---------------------------------------------------------------- corrida a corrida (aba Detalhe)
 // colunas por entidade: "Prefixo Entidade" (Pontos Senna, Equipe Senna…); só entram corridas em que todas têm pontos
-function nvWbRaces(P, pk, periods) {
-  const wbx = P && P.built && P.built.wbx, det = wbx && wbx.sheets.find(s => s.role === 'detail' && s.matrix && s.matrix.length > 1); if (!det) return null;
+// aba Detalhe: coluna do período e colunas por entidade ("Prefixo Entidade": Pontos Senna, Equipe Senna…); null quando não dá para ligar à principal
+function nvWbDetail(wbx, pk) {
+  const det = wbx && wbx.sheets.find(s => s.role === 'detail' && s.matrix && s.matrix.length > 1); if (!det || !pk) return null;
   const M = det.matrix, head = M[0].map(h => String(h == null ? '' : h)), nh = head.map(nvwNorm), ents = pk.ents;
   const pcol = nh.findIndex(h => h && h === nvwNorm(pk.periodName)); if (pcol < 0) return null;
   const toks = ents.map(e => { const w = nvwNorm(e).split(' '); return [nvwNorm(e), w[w.length - 1], w[0]]; }), uniq = a => new Set(a).size === a.length;
   const ti = [0, 1, 2].find(k => toks.every(t => t[k]) && uniq(toks.map(t => t[k])) && toks.every(t => nh.some((h, c) => c !== pcol && h.endsWith(' ' + t[k])))); if (ti === undefined) return null; // o sufixo de cada entidade precisa ser único
   const cols = ents.map(() => ({})); // prefixo normalizado → { c, label }
   ents.forEach((_, e) => { const tk = toks[e][ti]; nh.forEach((h, c) => { if (c !== pcol && h.endsWith(' ' + tk)) cols[e][h.slice(0, -tk.length - 1).trim()] = { c, label: head[c].slice(0, head[c].length - tk.length - 1).trim() }; }); });
-  const RE = { pts: /^(pontos|points|pts)$/, res: /^(resultado|result|posicao|position|colocacao)$/, team: /^(equipe|team|time|clube|escuderia)$/ };
   const find = (e, re) => { const k = Object.keys(cols[e]).find(x => re.test(x)); return k === undefined ? null : cols[e][k]; };
+  return { det, M, head, nh, pcol, cols, find, ents };
+}
+function nvWbRaces(P, pk, periods) {
+  const dt = nvWbDetail(P && P.built && P.built.wbx, pk); if (!dt) return null;
+  const { M, head, nh, pcol, cols, ents } = dt;
+  const RE = { pts: /^(pontos|points|pts)$/, res: /^(resultado|result|posicao|position|colocacao)$/, team: /^(equipe|team|time|clube|escuderia)$/ };
+  const find = dt.find;
   const ci = ents.map((_, e) => ({ pts: find(e, RE.pts), res: find(e, RE.res), team: find(e, RE.team) })); if (ci.some(c => !c.pts)) return null;
   const used = new Set([pcol]); cols.forEach(o => Object.values(o).forEach(x => used.add(x.c)));
   const nameCol = nh.findIndex((h, c) => !used.has(c) && /(grande premio|gp|corrida|jogo|partida|evento|prova|race|match|nome)/.test(h)), roundCol = nh.findIndex((h, c) => !used.has(c) && /(etapa|round|rodada)/.test(h));
@@ -161,12 +168,13 @@ function nvPlanVersusPhases(P, N, pk) {
   // 5) síntese e limites
   { const n = pk.notes || {}, L = [], it = compPs.length ? sums(compPs, ents.map((_, e) => e)) : [], t = it.length ? nvVsTally(it, E) : null;
     L.push(it.length ? F.sumLine(ents, t.wins, it.length, t.tie) : F.sumNone);
+    const rcx = nvWbReconText(nvWbReconcile(P.built.wbx, pk)); if (rcx) L.push(...rcx.lines); // conciliação entre a aba Principal e a Detalhe
     const hasPart = phases.some(f => f.cls === 'partial'); if (hasPart && expo) L.push(F.defPart(expo));
     nvWbDerive(P.built.wbx).caveats.forEach(c => L.push(c.k ? `${c.k}: ${c.t}` : c.t));
     if (n.ord && n.ord.length) L.push(X.limOrd(n.ord.join(', '))); if (n.lower && n.lower.length) L.push(X.limLower(n.lower.join(', ')));
     if (n.noUnit && n.noUnit.length) L.push(X.limUnit(n.noUnit.join(', '))); if (n.leftOut && n.leftOut.length) L.push(X.limLeft(n.leftOut.join(', '))); if (n.dropped && n.dropped.length) L.push(X.limDrop(n.dropped.join(', ')));
     L.push(X.limWho, X.limRange);
-    const s = nvpSynth('vs-synthlim', 'synthesis', F.t.limits, L); s.verbatim = true; s.lintText = ''; s.noChart = true;
+    const s = nvpSynth('vs-synthlim', 'synthesis', F.t.limits, L); s.verbatim = true; s.lintText = ''; s.noChart = true; if (rcx) s.calc = rcx.calc;
     if (it.length) s.ev = nvEv('vsscore', { wins: t.wins.slice(), tie: t.tie, total: it.length }, [{ k: 'tot', value: it.length, text: String(it.length) }], { n: it.length, method: 'count', refs: ents.slice() });
     push('limits', s, -1); }
   // 6) a conclusão é da pessoa: slide em branco, editável na apresentação

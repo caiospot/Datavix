@@ -7,14 +7,14 @@ Object.assign(I18N.pt, {
   wb_role: { main: 'Principal', detail: 'Detalhe', profile: 'Perfil', sources: 'Fontes e método', ignore: 'Ignorar' },
   wb_note: { main: 'sustenta a apresentação', detail: 'guardada para os slides de detalhe (ainda não entra na apresentação)', profile: 'textos de perfil de cada entidade', sources: 'vira o slide Fontes e método, com o texto sem alteração', ignore: 'fica de fora' },
   wb_sum: { rows: n => `${n} ${n === 1 ? 'linha' : 'linhas'}`, cols: n => `${n} ${n === 1 ? 'coluna' : 'colunas'}`, nums: n => `${n} ${n === 1 ? 'coluna numérica' : 'colunas numéricas'}`, text: 'só texto', hidden: 'aba oculta', empty: 'aba vazia' },
-  wb_panel_h: 'Abas da planilha', wb_panel_p: 'Perfil e fontes entram na apresentação com o texto da planilha, sem alteração.',
+  wb_rc_h: 'Conferência entre abas', wb_panel_h: 'Abas da planilha', wb_panel_p: 'Perfil e fontes entram na apresentação com o texto da planilha, sem alteração.',
 });
 Object.assign(I18N.en, {
   wb_t: ['WHAT IS IN', 'this workbook'], wb_p: 'This workbook has several sheets. I gave each one a role; you can change it. The main sheet carries the presentation.', wb_go: 'Continue', wb_none: 'Pick a Main sheet to continue.',
   wb_role: { main: 'Main', detail: 'Detail', profile: 'Profile', sources: 'Sources and method', ignore: 'Ignore' },
   wb_note: { main: 'carries the presentation', detail: 'kept for the detail slides (not in the presentation yet)', profile: 'profile texts for each entity', sources: 'becomes the Sources and method slide, text unchanged', ignore: 'left out' },
   wb_sum: { rows: n => `${n} ${n === 1 ? 'row' : 'rows'}`, cols: n => `${n} ${n === 1 ? 'column' : 'columns'}`, nums: n => `${n} ${n === 1 ? 'numeric column' : 'numeric columns'}`, text: 'text only', hidden: 'hidden sheet', empty: 'empty sheet' },
-  wb_panel_h: 'Workbook sheets', wb_panel_p: 'Profile and sources enter the presentation with the sheet’s own text, unchanged.',
+  wb_rc_h: 'Cross-check between sheets', wb_panel_h: 'Workbook sheets', wb_panel_p: 'Profile and sources enter the presentation with the sheet’s own text, unchanged.',
 });
 
 const WB_ROLES = ['main', 'detail', 'profile', 'sources', 'ignore'];
@@ -86,7 +86,9 @@ function wbPanelHtml(P) {
   const w = P && P.built && P.built.wbx; if (!w || !w.sheets || w.sheets.length < 2) return '';
   const rows = w.sheets.map((s, i) => { const fixed = s.role === 'main' || s.role === 'detail', canText = !!s.text, opts = (fixed ? [s.role] : ['profile', 'sources', 'ignore'].filter(r => canText || r === 'ignore' || r === s.role)).map(r => `<option value="${r}"${s.role === r ? ' selected' : ''}>${esc(T('wb_role')[r])}</option>`).join('');
     return `<div class="wbp"><span>${esc(s.name)}</span><select class="sel" data-a="wb-panel-role" data-i="${i}" aria-label="${esc(s.name)}"${fixed ? ' disabled' : ''}>${opts}</select></div>`; }).join('');
-  return `<section class="s1" data-t="chart"><h3>[ ${esc(T('wb_panel_h'))} ]</h3>${rows}<p class="note" style="margin:8px 0 0">${esc(T('wb_panel_p'))}</p></section>`;
+  let rc = null; try { rc = nvWbReconText(nvWbReconcile(w, P.built.vs)); } catch (e) { rc = null; }
+  const rcHtml = rc ? `<p class="note wb-rc ${rc.status}" style="margin:8px 0 0"><b>${esc(rc.lines[0])}</b>${rc.lines.slice(1).map(l => `<br>${esc(l)}`).join('')}</p>` : '';
+  return `<section class="s1" data-t="chart"><h3>[ ${esc(T('wb_panel_h'))} ]</h3>${rows}${rcHtml}<p class="note" style="margin:8px 0 0">${esc(T('wb_panel_p'))}</p></section>`;
 }
 document.addEventListener('change', e => {
   const t = e.target; if (!t || !t.matches) return;
@@ -98,3 +100,9 @@ document.addEventListener('change', e => {
     const s = S.piece.built.wbx.sheets[+t.dataset.i]; if (s) { s.role = t.value; markDirty(); const pn = $('#panel'); if (pn) pn.innerHTML = panel(); }
   }
 });
+
+// tela de leitura: a conferência entre a aba Principal e a Detalhe, antes de gerar a apresentação
+function wbReconHtml() {
+  if (!S.wb || !S.ds) return ''; let rc = null; try { rc = nvWbReconText(nvWbReconcile(wbPack(S.wb), nvVsPack(S.ds))); } catch (e) { rc = null; } if (!rc) return '';
+  return `<div class="rd-fix wb-rc ${rc.status}"><div class="lbl">[ ${esc(T('wb_rc_h'))} ]</div><p class="note" style="margin:6px 0 0"><b>${esc(rc.lines[0])}</b>${rc.lines.slice(1).map(l => `<br>${esc(l)}`).join('')}</p></div>`;
+}

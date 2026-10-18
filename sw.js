@@ -1,6 +1,6 @@
 /* Datavix: service worker. Guarda o app (um HTML só, com tudo embutido) para abrir offline.
  * Não toca em nada que não seja do mesmo domínio: o envio do NPS e qualquer outro pedido externo passam direto. */
-const BUILD = '37371ddbbf', CACHE = 'datavix-' + BUILD;
+const BUILD = 'c7d625005d', CACHE = 'datavix-' + BUILD;
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); }); // não ativa sozinho: o app avisa e a pessoa escolhe quando atualizar
 self.addEventListener('message', e => { if (e.data === 'SKIP_WAITING') self.skipWaiting(); });

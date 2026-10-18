@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#0b0d0a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d0a'/%3E%3Ccircle cx='16' cy='16' r='3.2' fill='none' stroke='%23d4ff00' stroke-width='1.6'/%3E%3Cg fill='%23d4ff00'%3E%3Ccircle cx='16' cy='6' r='2.2'/%3E%3Ccircle cx='25' cy='20' r='2.2'/%3E%3Ccircle cx='7' cy='20' r='2.2'/%3E%3C/g%3E%3C/svg%3E">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'wasm-unsafe-eval' blob: https://www.clarity.ms https://scripts.clarity.ms; worker-src 'self' blob:; connect-src blob: data: https://script.google.com https://script.googleusercontent.com https://*.clarity.ms https://c.bing.com; manifest-src 'self'; media-src blob:; style-src 'unsafe-inline'; font-src data:; img-src 'self' data: blob: https://*.clarity.ms https://c.bing.com">
-<script>window.__DV={"build":"37371ddbbf","nps":{"url":"https://script.google.com/macros/s/AKfycbxM_PkgYIMOmS7X8qaDJ53necV_VGg6M1E13kFMQZ1CgyYff7dO-qdCOQqhpLQq1uLoQg/exec","token":"f7b26746dbe1e5d4a2fa564cc2748310"},"contact":"","site":"datavix.app","host":"hostinger","clarity":{"id":"yun6nstisc","host":"datavix.app"}};</script>
+<script>window.__DV={"build":"c7d625005d","nps":{"url":"https://script.google.com/macros/s/AKfycbxM_PkgYIMOmS7X8qaDJ53necV_VGg6M1E13kFMQZ1CgyYff7dO-qdCOQqhpLQq1uLoQg/exec","token":"f7b26746dbe1e5d4a2fa564cc2748310"},"contact":"","site":"datavix.app","host":"hostinger","clarity":{"id":"yun6nstisc","host":"datavix.app"}};</script>
 <style>#dvs{position:fixed;inset:0;z-index:99999;background:#0b0d0a;color:#eef0eb;display:grid;place-items:center;font:400 14px/1.4 'Geist',system-ui,-apple-system,'Segoe UI',sans-serif;transition:opacity .45s ease,visibility .45s}
 #dvs.out{opacity:0;visibility:hidden;pointer-events:none}
 #dvs .in{display:grid;justify-items:center;gap:22px;padding:24px;text-align:center}
@@ -12304,8 +12304,11 @@ function pwaInit() {
   window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); pwaPrompt = e; pwaRefreshBtn(); });
   window.addEventListener('appinstalled', () => { pwaPrompt = null; pwaRefreshBtn(); toast(T('pwa_done')); });
   if (!('serviceWorker' in navigator)) return;
-  let reloading = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => { if (reloading) return; reloading = true; location.reload(); });
+  let reloading = false, hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController) { hadController = true; return; } // primeira instalação: o service worker só assumiu esta página, não há versão nova para carregar (recarregar aqui podia apagar o que a pessoa já digitou)
+    if (reloading) return; reloading = true; location.reload(); // atualização escolhida pela pessoa: troca para a versão nova
+  });
   navigator.serviceWorker.register('sw.js').then(reg => {
     const offer = w => toast(T('pwa_update'), { label: T('pwa_update_cta'), fn: async () => { if (!(await guard('new'))) return; w.postMessage('SKIP_WAITING'); } });
     if (reg.waiting && navigator.serviceWorker.controller) offer(reg.waiting);

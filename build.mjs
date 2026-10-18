@@ -68,7 +68,7 @@ let html = r('src/index.template.html')
   .replace('__JS__', () => js.replace(/<\/script/gi, '<\\/script').replace(/<!--/g, '<\\!--'));
 import crypto from 'node:crypto';
 const BUILD = crypto.createHash('sha1').update(html.replace('__DVCFG__', '')).digest('hex').slice(0, 10);
-html = html.replace('__DVCFG__', () => JSON.stringify({ build: BUILD, nps: NPS_URL ? { url: NPS_URL, token: NPS_TOKEN } : null, contact: process.env.DATAVIX_CONTACT_EMAIL || '', site: process.env.DATAVIX_SITE || '', clarity: CLARITY_ID ? { id: CLARITY_ID, host: CLARITY_HOST } : null }));
+html = html.replace('__DVCFG__', () => JSON.stringify({ build: BUILD, nps: NPS_URL ? { url: NPS_URL, token: NPS_TOKEN } : null, contact: process.env.DATAVIX_CONTACT_EMAIL || '', site: process.env.DATAVIX_SITE || '', host: process.env.DATAVIX_HOST === 'hostinger' ? 'hostinger' : 'github', clarity: CLARITY_ID ? { id: CLARITY_ID, host: CLARITY_HOST } : null }));
 fs.writeFileSync(new URL('index.html', import.meta.url), html);
 fs.mkdirSync(new URL('test/', import.meta.url), { recursive: true });
 fs.writeFileSync(new URL('test/dev.html', import.meta.url), html.replace("connect-src blob: data:", "connect-src blob: data: 'self'").replace('<script>window.__DV=', '<script>window.__DV_NPS={url:"/nps",token:"dev-token"};window.__DV_NOFIND=true;window.__DV='));
@@ -78,6 +78,25 @@ fs.writeFileSync(new URL('index.html', dist), html);
 fs.writeFileSync(new URL('sw.js', dist), r('pwa/sw.js').replace('__BUILD__', BUILD));
 fs.copyFileSync(new URL('pwa/manifest.webmanifest', import.meta.url), new URL('manifest.webmanifest', dist));
 for (const f of fs.readdirSync(new URL('pwa/icons/', import.meta.url))) fs.copyFileSync(new URL('pwa/icons/' + f, import.meta.url), new URL('icons/' + f, dist));
-fs.writeFileSync(new URL('_headers', dist), `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: no-referrer\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n  Content-Security-Policy: ${CSP}\n/sw.js\n  Cache-Control: no-cache\n/index.html\n  Cache-Control: no-cache\n/manifest.webmanifest\n  Cache-Control: no-cache\n/icons/*\n  Cache-Control: public, max-age=31536000, immutable\n`);
+// a CSP vale só para o HTML ('/' e '/index.html'): no /sw.js ela impede o service worker de buscar os arquivos do app (conferido em test/hostinger-check.mjs --csp-all)
+fs.writeFileSync(new URL('_headers', dist), `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: no-referrer\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n/\n  Content-Security-Policy: ${CSP}\n  Cache-Control: no-cache\n/index.html\n  Content-Security-Policy: ${CSP}\n  Cache-Control: no-cache\n/sw.js\n  Cache-Control: no-cache\n/manifest.webmanifest\n  Cache-Control: no-cache\n/icons/*\n  Cache-Control: public, max-age=31536000, immutable\n`);
 fs.writeFileSync(new URL('.nojekyll', dist), '');
+// Hostinger (Apache/LiteSpeed): o .htaccess faz o que o _headers faz na Netlify e na Cloudflare, que a Hostinger não lê.
+// A CSP vale só para o HTML: no sw.js ela bloquearia as buscas do service worker (connect-src sem 'self'). DATAVIX_SITE (ex.: datavix.app) liga o redirecionamento de www para o endereço sem www.
+const SITE_HOST = (process.env.DATAVIX_SITE || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+const wwwRule = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(SITE_HOST) && !SITE_HOST.startsWith('www.') ? [`# www vira ${SITE_HOST}`, `RewriteCond %{HTTP_HOST} ^www\\.${SITE_HOST.replace(/\./g, '\\.')}$ [NC]`, `RewriteRule ^ https://${SITE_HOST}%{REQUEST_URI} [L,R=301]`] : [];
+const TEXTS = 'text/html text/css text/javascript application/javascript application/json application/manifest+json image/svg+xml';
+fs.writeFileSync(new URL('.htaccess', dist), [
+  '# Datavix: gerado por build.mjs (não edite aqui). Servidor Apache/LiteSpeed, como a hospedagem da Hostinger.',
+  'DirectoryIndex index.html', 'Options -Indexes', 'AddDefaultCharset UTF-8', 'AddType application/manifest+json .webmanifest', '',
+  '<IfModule mod_rewrite.c>', 'RewriteEngine On', ...wwwRule,
+  '# HTTPS sempre (atrás de proxy, vale o X-Forwarded-Proto)', 'RewriteCond %{HTTPS} !=on', 'RewriteCond %{HTTP:X-Forwarded-Proto} !=https', 'RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]', '</IfModule>', '',
+  '<IfModule mod_headers.c>',
+  'Header set X-Content-Type-Options "nosniff"', 'Header set Referrer-Policy "no-referrer"', 'Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"', 'Header set Strict-Transport-Security "max-age=31536000" env=HTTPS',
+  '<FilesMatch "^index\\.html$">', `Header set Content-Security-Policy "${CSP}"`, '</FilesMatch>',
+  '<FilesMatch "^(index\\.html|sw\\.js|manifest\\.webmanifest)$">', 'Header set Cache-Control "no-cache"', '</FilesMatch>',
+  '</IfModule>', '',
+  '<IfModule mod_deflate.c>', `AddOutputFilterByType DEFLATE ${TEXTS}`, '</IfModule>',
+  '<IfModule mod_brotli.c>', `AddOutputFilterByType BROTLI_COMPRESS ${TEXTS}`, '</IfModule>', ''].join('\n'));
+fs.writeFileSync(new URL('icons/.htaccess', dist), '<IfModule mod_headers.c>\nHeader set Cache-Control "public, max-age=31536000, immutable"\n</IfModule>\n');
 console.log('index.html', (html.length / 1024).toFixed(0), 'KB · build', BUILD, NPS_URL ? '· NPS ligado' : '· NPS desligado', '· dist/ pronto');

@@ -1,13 +1,14 @@
 /* Datavix: política de privacidade (PT/EN), aberta em modal pelo rodapé e pela pesquisa de satisfação.
    O texto descreve o que o código faz hoje: se mudar o que é guardado ou enviado, atualize aqui e PRIV_DATE. */
-const PRIV_DATE = '2026-10-08';
+const PRIV_DATE = '2026-10-17';
 const PRIV_ISSUES = 'https://github.com/caiospot/Datavix/issues';
 const PRIV = {
   pt: {
     title: 'Política de Privacidade',
-    upd: 'Atualizada em 10 de outubro de 2026',
+    upd: 'Atualizada em 17 de outubro de 2026',
     close: 'Fechar',
     link: 'Privacidade',
+    hosts: { github: 'O site é servido pelo GitHub Pages. Ao acessar o site, o GitHub pode registrar dados da requisição, como o endereço IP, segundo a política de privacidade dele.', hostinger: 'O site é servido pela Hostinger. Ao acessar o site, a Hostinger pode registrar dados da requisição, como o endereço IP, segundo a política de privacidade dela.' },
     sec: [
       ['Em resumo', [
         ['ul', [
@@ -79,7 +80,7 @@ const PRIV = {
         ['p', 'A Microsoft trata esses dados na infraestrutura dela, que pode ficar fora do Brasil (transferência internacional, art. 33 da LGPD), e os mantém pelo prazo definido na política dela. Não usamos os dados para publicidade nem os vendemos. Base legal: o seu consentimento (art. 7º, I da LGPD). Ao recusar depois de ter aceitado, o Clarity para de ser usado e os cookies dele são apagados. Política de privacidade da Microsoft: privacy.microsoft.com.'],
       ]],
       ['Hospedagem e conexões', [
-        ['p', 'O site é servido pelo GitHub Pages. Ao acessar o site, o GitHub pode registrar dados da requisição, como o endereço IP, segundo a política de privacidade dele. Depois de carregado, o Datavix não faz outras conexões além da resposta à pesquisa de satisfação (Google) e, se você aceitar, da análise de uso (Microsoft Clarity). As fontes e as bibliotecas vêm embutidas no app, sem CDN de terceiros.'],
+        ['p', '{hosting} Depois de carregado, o Datavix não faz outras conexões além da resposta à pesquisa de satisfação (Google) e, se você aceitar, da análise de uso (Microsoft Clarity). As fontes e as bibliotecas vêm embutidas no app, sem CDN de terceiros.'],
       ]],
       ['Seus direitos', [
         ['p', 'Pela LGPD (art. 18) você pode pedir: confirmação de que tratamos seus dados, acesso, correção, anonimização, bloqueio ou eliminação, portabilidade, informação sobre com quem compartilhamos e a revogação do consentimento.'],
@@ -103,9 +104,10 @@ const PRIV = {
   },
   en: {
     title: 'Privacy Policy',
-    upd: 'Updated on October 10, 2026',
+    upd: 'Updated on October 17, 2026',
     close: 'Close',
     link: 'Privacy',
+    hosts: { github: 'The site is served by GitHub Pages. When you visit the site, GitHub may log request data such as the IP address, under its own privacy policy.', hostinger: 'The site is served by Hostinger. When you visit the site, Hostinger may log request data such as the IP address, under its own privacy policy.' },
     sec: [
       ['In short', [
         ['ul', [
@@ -177,7 +179,7 @@ const PRIV = {
         ['p', 'Microsoft processes this data on its own infrastructure, which may be outside Brazil (international transfer, art. 33 of the LGPD), and keeps it for the period set in its own policy. We do not use the data for advertising or sell it. Legal basis: your consent (art. 7, I of the LGPD). If you decline after having accepted, Clarity stops being used and its cookies are deleted. Microsoft privacy policy: privacy.microsoft.com.'],
       ]],
       ['Hosting and connections', [
-        ['p', 'The site is served by GitHub Pages. When you visit the site, GitHub may log request data such as the IP address, under its own privacy policy. Once loaded, Datavix makes no other connections besides the satisfaction survey answer (Google) and, if you accept, usage analytics (Microsoft Clarity). Fonts and libraries are embedded in the app, with no third-party CDN.'],
+        ['p', '{hosting} Once loaded, Datavix makes no other connections besides the satisfaction survey answer (Google) and, if you accept, usage analytics (Microsoft Clarity). Fonts and libraries are embedded in the app, with no third-party CDN.'],
       ]],
       ['Your rights', [
         ['p', 'Under the LGPD (art. 18) you may ask for: confirmation that we process your data, access, correction, anonymization, blocking or deletion, portability, information about who we share data with, and withdrawal of consent.'],
@@ -203,7 +205,8 @@ const PRIV = {
 const privT = () => PRIV[LANG] || PRIV.pt;
 function privBody() {
   const p = privT(), mail = window.__DV && window.__DV.contact;
-  const blocks = p.sec.map(([h, items]) => `<h4 class="pv-h">${esc(h)}</h4>` + items.map(([k, v]) => k === 'ul' ? `<ul class="nc-list">${v.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : k === 'h' ? `<h5 class="pv-s">${esc(v)}</h5>` : `<p class="pv-p">${esc(v)}</p>`).join('')).join('');
+  const host = (window.__DV && window.__DV.host) === 'hostinger' ? 'hostinger' : 'github', fill = t => t.replace('{hosting}', p.hosts[host]); // o texto da hospedagem segue o host do build (DATAVIX_HOST)
+  const blocks = p.sec.map(([h, items]) => `<h4 class="pv-h">${esc(h)}</h4>` + items.map(([k, v]) => k === 'ul' ? `<ul class="nc-list">${v.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : k === 'h' ? `<h5 class="pv-s">${esc(v)}</h5>` : `<p class="pv-p">${esc(fill(v))}</p>`).join('')).join('');
   const contact = mail ? `<p class="pv-p">${esc(p.ct_mail[0])}<a href="mailto:${esc(mail)}">${esc(mail)}</a>${esc(p.ct_mail[1])}</p>` : `<p class="pv-p">${esc(p.ct_gh)} <a href="${PRIV_ISSUES}" target="_blank" rel="noopener noreferrer">${PRIV_ISSUES.replace('https://', '')}</a> ${esc(p.ct_gh2)}</p>`;
   return `<p class="note" style="margin:0 0 4px">${esc(p.upd)}</p>${blocks}<h4 class="pv-h">${esc(p.ct_h)}</h4>${contact}`;
 }

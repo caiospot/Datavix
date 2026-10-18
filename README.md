@@ -15,7 +15,9 @@ Sem dependências de npm. Bibliotecas embutidas em `vendor/` (Vizzu, PapaParse, 
 
 ## Publicação
 
-Cada push na `main` roda `.github/workflows/pages.yml`, que faz o build e publica `dist/` no GitHub Pages.
+Cada push na `main` roda dois fluxos em `.github/workflows/`:
+- `pages.yml`: build e publicação de `dist/` no GitHub Pages (o endereço de hoje).
+- `hostinger.yml`: build para a Hostinger (`DATAVIX_HOST=hostinger`, `DATAVIX_SITE=datavix.app`) e atualização da branch `hostinger`, que o Git da Hostinger copia para `public_html`. Passo a passo da migração e decisões: `docs/migracao-hostinger.md`. Conferência local do build (Apache + Chrome): `node test/hostinger-check.mjs`.
 
 NPS opcional: veja `nps/LEIA-ME.md`. Para ligá-lo, crie os secrets `DATAVIX_NPS_URL` e `DATAVIX_NPS_TOKEN` no repositório. Sem eles o app funciona normalmente, sem o NPS.
 

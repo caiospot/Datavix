@@ -1,0 +1,36 @@
+# Datavix: gerado por build.mjs (não edite aqui). Servidor Apache/LiteSpeed, como a hospedagem da Hostinger.
+DirectoryIndex index.html
+Options -Indexes
+AddDefaultCharset UTF-8
+AddType application/manifest+json .webmanifest
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+# www vira datavix.app
+RewriteCond %{HTTP_HOST} ^www\.datavix\.app$ [NC]
+RewriteRule ^ https://datavix.app%{REQUEST_URI} [L,R=301]
+# HTTPS sempre (atrás de proxy, vale o X-Forwarded-Proto)
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+<IfModule mod_headers.c>
+Header set X-Content-Type-Options "nosniff"
+Header set Referrer-Policy "no-referrer"
+Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+Header set Strict-Transport-Security "max-age=31536000" env=HTTPS
+<FilesMatch "^index\.html$">
+Header set Content-Security-Policy "default-src 'none'; script-src 'unsafe-inline' 'wasm-unsafe-eval' blob: https://www.clarity.ms https://scripts.clarity.ms; worker-src 'self' blob:; connect-src blob: data: https://script.google.com https://script.googleusercontent.com https://*.clarity.ms https://c.bing.com; manifest-src 'self'; media-src blob:; style-src 'unsafe-inline'; font-src data:; img-src 'self' data: blob: https://*.clarity.ms https://c.bing.com"
+</FilesMatch>
+<FilesMatch "^(index\.html|sw\.js|manifest\.webmanifest)$">
+Header set Cache-Control "no-cache"
+</FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json application/manifest+json image/svg+xml
+</IfModule>
+<IfModule mod_brotli.c>
+AddOutputFilterByType BROTLI_COMPRESS text/html text/css text/javascript application/javascript application/json application/manifest+json image/svg+xml
+</IfModule>

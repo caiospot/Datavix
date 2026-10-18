@@ -1,6 +1,19 @@
 # Migração do Datavix do GitHub Pages para a Hostinger
 
-Status: **preparo pronto e testado localmente; nada publicado.** O código continua no GitHub. O que muda é onde o site mora: hoje https://caiospot.github.io/Datavix/, depois https://datavix.app.
+Status: **no ar em https://datavix.app desde 18/out/2026** (Hostinger, Git conectado à branch `hostinger`). O código continua no GitHub. O endereço antigo, https://caiospot.github.io/Datavix/, segue funcionando enquanto você não decidir o que fazer com ele (ver "O endereço antigo").
+
+## Resultado da conferência no ar (18/out/2026)
+
+`node test/hostinger-check.mjs --url=https://datavix.app` (só leitura): 19 verificações, todas verdes.
+- `/` responde 200 com os cabeçalhos do `.htaccess` (nosniff, no-referrer, permissions-policy, HSTS, CSP igual à da meta tag, `no-cache`); o `.htaccess` funciona no LiteSpeed da Hostinger.
+- `sw.js` sem CSP restritiva, manifesto com o tipo certo, ícones com cache de 1 ano, HTML comprimido (br).
+- `http://` e `www.` redirecionam (301) para `https://datavix.app`.
+- Nenhum arquivo do repositório sobrou no servidor (README, código, docs, `.github`, protótipo antigo).
+- No Chrome: service worker ativo na raiz, cache do app com 7 arquivos, sem violação de CSP, política de privacidade dizendo Hostinger.
+
+**O que deu errado no primeiro deploy (e o jeito de evitar):** o Git do hPanel foi conectado à branch `claude/zen-dirac-d58gyo`, um protótipo antigo que aparece primeiro na lista de branches. Resultado: 403 em `/` (sem `index.html` na raiz) e o protótipo público em `/Product/`. A branch certa é sempre **`hostinger`**, nunca `main` (a `main` não tem o `index.html`: o app é montado pelo GitHub Actions). Reconectar com a branch certa e apagar as sobras resolveu.
+
+**Um detalhe da CDN da Hostinger:** para Chrome automatizado (meus testes) ela mostra uma tela "Checking your browser… Just a moment" por uns 3 segundos antes do app. Em um navegador comum o app abriu direto (conferido). Por isso o modo `--url` aceita até 2 navegações na primeira visita. Se algum dia aparecer para pessoas de verdade, o ajuste é no nível de segurança da CDN no hPanel.
 
 ## Como funciona
 
@@ -36,7 +49,7 @@ O `.htaccess` gerado faz o que o `_headers` faz na Netlify e na Cloudflare:
 
 **Correção achada no caminho:** o `_headers` aplicava a CSP a todos os arquivos, inclusive ao `sw.js`. Com isso o service worker não ativa (a CSP não deixa ele buscar os arquivos do app): testado, o cache do app fica vazio e o app deixa de abrir offline. Na GitHub Pages isso nunca apareceu porque ela ignora o `_headers`. Agora a CSP vale só para `/` e `/index.html`, no `_headers` e no `.htaccess`.
 
-**Segunda correção, achada pelo mesmo teste:** na primeira visita o app **recarregava a própria página** poucos instantes depois de abrir (o service worker assume o controle e o app tratava isso como "versão nova"). Com a migração, todo mundo faria uma primeira visita no endereço novo. Se a pessoa já tivesse começado a digitar (o cadastro, por exemplo), perdia o texto. Agora só recarrega quando ela escolhe **Atualizar** no aviso de versão nova; a atualização continua funcionando e foi testada (aviso, espera, clique, recarga, cache novo e cache antigo apagado). Este item ainda **não está publicado**: vai no próximo push.
+**Segunda correção, achada pelo mesmo teste:** na primeira visita o app **recarregava a própria página** poucos instantes depois de abrir (o service worker assume o controle e o app tratava isso como "versão nova"). Com a migração, todo mundo faria uma primeira visita no endereço novo. Se a pessoa já tivesse começado a digitar (o cadastro, por exemplo), perdia o texto. Agora só recarrega quando ela escolhe **Atualizar** no aviso de versão nova; a atualização continua funcionando e foi testada (aviso, espera, clique, recarga, cache novo e cache antigo apagado). Publicado em 18/out/2026 (commit `c90b28a`).
 
 ## O que você precisa fazer na Hostinger
 
@@ -78,6 +91,7 @@ O app guarda os **projetos salvos** no navegador (IndexedDB) e o aceite do cadas
 ```bash
 node test/hostinger-check.mjs                       # Apache local + Chrome headless, 33 verificações
 node test/hostinger-check.mjs --dist=PASTA             # o mesmo, sobre um site já montado (ex.: a branch hostinger clonada)
+node test/hostinger-check.mjs --url=https://datavix.app   # o site NO AR, só leitura (19 verificações)
 node test/hostinger-check.mjs --csp-all                # experimento: mostra o service worker quebrando com a CSP em todos os arquivos
 node test/pwa-update.mjs                               # primeira visita sem recarregar + fluxo de atualização
 ```

@@ -72,7 +72,7 @@ async function live(base) {
   ok('GET /: a CSP do cabeçalho é a mesma da meta tag', !!meta && r.h['content-security-policy'] === meta, r.h['content-security-policy'] ? 'cabeçalho presente' : 'sem cabeçalho');
   ok('GET /: cache-control no-cache (a versão nova chega na próxima visita)', /(^|,\s*)no-cache/.test(r.h['cache-control'] || ''), r.h['cache-control'] || '');
   const gz = await safe(apex, '/', { headers: { 'accept-encoding': 'gzip, br' } }); ok('o HTML sai comprimido (gzip ou br)', /^(gzip|br|zstd)$/.test(gz.h['content-encoding'] || ''), gz.h['content-encoding'] || 'sem compressão');
-  r = await safe(apex, '/sw.js'); ok('GET /sw.js: 200, JavaScript, no-cache e SEM CSP', r.status === 200 && /javascript/.test(r.h['content-type'] || '') && /no-cache/.test(r.h['cache-control'] || '') && !r.h['content-security-policy'], `${r.status} ${r.h['content-type'] || ''} ${r.h['cache-control'] || ''}`);
+  r = await safe(apex, '/sw.js'); { const csp = (r.h['content-security-policy'] || '').trim(); ok('GET /sw.js: 200, JavaScript, no-cache e sem CSP restritiva (a CDN da Hostinger só soma upgrade-insecure-requests, que é inofensivo)', r.status === 200 && /javascript/.test(r.h['content-type'] || '') && /no-cache/.test(r.h['cache-control'] || '') && (!csp || /^upgrade-insecure-requests;?$/.test(csp)), `${r.status} ${r.h['content-type'] || ''} ${r.h['cache-control'] || ''}${csp ? ' · CSP: ' + csp.slice(0, 40) : ''}`); }
   r = await safe(apex, '/manifest.webmanifest'); { let m = null; try { m = JSON.parse(r.body.toString('utf8')); } catch (e) { /* segue */ } ok('GET /manifest.webmanifest: application/manifest+json, start_url e scope relativos', r.status === 200 && /^application\/manifest\+json/.test(r.h['content-type'] || '') && !!m && m.start_url === './?source=pwa' && m.scope === './', `${r.status} ${r.h['content-type'] || ''}`); }
   r = await safe(apex, '/icons/icon-192.png'); ok('GET /icons/icon-192.png: cache de 1 ano, immutable', r.status === 200 && /max-age=31536000/.test(r.h['cache-control'] || '') && /immutable/.test(r.h['cache-control'] || ''), `${r.status} ${r.h['cache-control'] || ''}`);
   r = await safe(apex, '/', { proto: 'http:' }); ok('http:// redireciona para https:// (301/302/307/308)', [301, 302, 307, 308].includes(r.status) && /^https:\/\//.test(r.h.location || ''), `${r.status} ${r.h.location || r.err || ''}`);
@@ -87,7 +87,7 @@ async function live(base) {
   ok('service worker ativo na raiz', !!pg && pg.sw && pg.swState === 'activated', pg ? `${pg.swState} ${pg.scope}` : '');
   ok('cache do app com os 7 arquivos', !!pg && /^datavix-/.test(pg.cache || '') && pg.items === 7, pg ? `${pg.cache} · ${pg.items}` : '');
   ok('política de privacidade diz Hostinger (PT e EN)', !!pg && !!pg.priv && pg.priv.ptHostinger && pg.priv.enHostinger && !pg.priv.ptGithub && !pg.priv.enGithub, pg ? JSON.stringify(pg.priv) : '');
-  ok('primeira visita (informativo: antes da correção do PWA o app recarrega uma vez)', cr.navs <= 2, `${cr.navs} navegação(ões)`);
+  ok('primeira visita (informativo: a 2ª navegação é a tela "Checking your browser" que a CDN da Hostinger mostra a Chrome automatizado; um navegador comum abre direto)', cr.navs <= 2, `${cr.navs} navegação(ões)`);
 }
 
 try {

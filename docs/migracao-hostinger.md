@@ -24,7 +24,9 @@ push na main ──► GitHub Actions (hostinger.yml) ──► branch "hostinge
 | `.github/workflows/hostinger.yml` | Monta o site para a Hostinger e atualiza a branch `hostinger` |
 | `build.mjs` | Gera `dist/.htaccess` e `dist/icons/.htaccess` (a Hostinger ignora o `_headers`); grava `host` no app; corrige a CSP do `_headers` (ver abaixo) |
 | `src/privacy.js` | O texto da hospedagem segue o host do build (GitHub Pages ou Hostinger); data da política: 17/out/2026 |
-| `test/hostinger-check.mjs` | Confere tudo isso num Apache local e no Chrome (32 verificações) |
+| `src/pwa.js` | A primeira visita não recarrega mais a página (ver abaixo) |
+| `test/hostinger-check.mjs` | Confere tudo isso num Apache local e no Chrome (33 verificações); também confere um site já montado: `--dist=PASTA` |
+| `test/pwa-update.mjs` | Primeira visita e fluxo de atualização do app, em Chrome de perfil novo (9 verificações) |
 
 O `.htaccess` gerado faz o que o `_headers` faz na Netlify e na Cloudflare:
 - `X-Content-Type-Options`, `Referrer-Policy: no-referrer`, `Permissions-Policy`, HSTS (só em HTTPS) e a mesma CSP da meta tag, **só para o HTML**;
@@ -33,6 +35,8 @@ O `.htaccess` gerado faz o que o `_headers` faz na Netlify e na Cloudflare:
 - HTTP vira HTTPS (301) e `www.datavix.app` vira `datavix.app` (301).
 
 **Correção achada no caminho:** o `_headers` aplicava a CSP a todos os arquivos, inclusive ao `sw.js`. Com isso o service worker não ativa (a CSP não deixa ele buscar os arquivos do app): testado, o cache do app fica vazio e o app deixa de abrir offline. Na GitHub Pages isso nunca apareceu porque ela ignora o `_headers`. Agora a CSP vale só para `/` e `/index.html`, no `_headers` e no `.htaccess`.
+
+**Segunda correção, achada pelo mesmo teste:** na primeira visita o app **recarregava a própria página** poucos instantes depois de abrir (o service worker assume o controle e o app tratava isso como "versão nova"). Com a migração, todo mundo faria uma primeira visita no endereço novo. Se a pessoa já tivesse começado a digitar (o cadastro, por exemplo), perdia o texto. Agora só recarrega quando ela escolhe **Atualizar** no aviso de versão nova; a atualização continua funcionando e foi testada (aviso, espera, clique, recarga, cache novo e cache antigo apagado). Este item ainda **não está publicado**: vai no próximo push.
 
 ## O que você precisa fazer na Hostinger
 
@@ -72,8 +76,10 @@ O app guarda os **projetos salvos** no navegador (IndexedDB) e o aceite do cadas
 ## Como conferir de novo
 
 ```bash
-node test/hostinger-check.mjs        # Apache local + Chrome headless, 32 verificações
-node test/hostinger-check.mjs --csp-all   # experimento: mostra o service worker quebrando com a CSP em todos os arquivos
+node test/hostinger-check.mjs                       # Apache local + Chrome headless, 33 verificações
+node test/hostinger-check.mjs --dist=PASTA             # o mesmo, sobre um site já montado (ex.: a branch hostinger clonada)
+node test/hostinger-check.mjs --csp-all                # experimento: mostra o service worker quebrando com a CSP em todos os arquivos
+node test/pwa-update.mjs                               # primeira visita sem recarregar + fluxo de atualização
 ```
 
 Fontes (documentação da Hostinger consultada em 17/out/2026): [Git no hPanel](https://docs.hostinger.com/websites/git), [FTP e SSH](https://docs.hostinger.com/websites/ftp-ssh), [domínio temporário](https://www.hostinger.com/support/2489693-how-to-access-your-website-content-without-a-domain-in-hostinger/), [apontar o domínio](https://www.hostinger.com/support/1863967-how-to-point-a-domain-to-hostinger/).

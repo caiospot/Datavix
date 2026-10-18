@@ -18,8 +18,11 @@ function pwaInit() {
   window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); pwaPrompt = e; pwaRefreshBtn(); });
   window.addEventListener('appinstalled', () => { pwaPrompt = null; pwaRefreshBtn(); toast(T('pwa_done')); });
   if (!('serviceWorker' in navigator)) return;
-  let reloading = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => { if (reloading) return; reloading = true; location.reload(); });
+  let reloading = false, hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController) { hadController = true; return; } // primeira instalação: o service worker só assumiu esta página, não há versão nova para carregar (recarregar aqui podia apagar o que a pessoa já digitou)
+    if (reloading) return; reloading = true; location.reload(); // atualização escolhida pela pessoa: troca para a versão nova
+  });
   navigator.serviceWorker.register('sw.js').then(reg => {
     const offer = w => toast(T('pwa_update'), { label: T('pwa_update_cta'), fn: async () => { if (!(await guard('new'))) return; w.postMessage('SKIP_WAITING'); } });
     if (reg.waiting && navigator.serviceWorker.controller) offer(reg.waiting);

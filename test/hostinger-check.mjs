@@ -1,4 +1,5 @@
-// Migração para a Hostinger: confere o build para Apache/LiteSpeed antes de subir. Uso: node test/hostinger-check.mjs
+// Migração para a Hostinger: confere o build para Apache/LiteSpeed antes de subir. Uso: node test/hostinger-check.mjs [--dist=PASTA] [--csp-all]
+// --dist=PASTA confere um site já montado (por exemplo, a branch hostinger clonada) em vez de fazer o build.
 // 1) copia as fontes para uma pasta temporária e faz o build como o GitHub Actions faz (DATAVIX_HOST=hostinger, DATAVIX_SITE=datavix.app, sem .env.local);
 // 2) sobe um Apache 2.4 local (o do macOS) lendo o .htaccess gerado e confere cabeçalhos, cache, compressão e redirecionamentos;
 // 3) abre o app no Chrome headless atrás de um proxy que simula o HTTPS da Hostinger e confere: sem violação de CSP, service worker ativo, cache do app,
@@ -15,8 +16,6 @@ const ok = (k, v, extra) => { out.push(`${v ? 'ok    ' : 'FALHOU'} ${k}${extra ?
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 let apache = false, proxy = null;
 const sh = (cmd, args, opt = {}) => spawnSync(cmd, args, { encoding: 'utf8', ...opt });
-// assíncrono: o proxy roda neste mesmo processo e não pode ficar parado enquanto o Chrome carrega a página
-const arun = (cmd, args, opt = {}) => new Promise(res => { const c = spawn(cmd, args, opt); let o = '', e = ''; c.stdout.on('data', d => (o += d)); c.stderr.on('data', d => (e += d)); const t = setTimeout(() => c.kill('SIGKILL'), opt.timeout || 90000); c.on('close', st => { clearTimeout(t); res({ status: st, stdout: o, stderr: e }); }); });
 
 function req(p, headers = {}, port = APORT) {
   return new Promise((res, rej) => {
@@ -25,12 +24,41 @@ function req(p, headers = {}, port = APORT) {
   });
 }
 
+const CH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+// abre a página num Chrome headless de perfil novo (primeira visita), espera o service worker assumir e a página assentar, e roda a sonda uma vez
+async function chromeProbe(url, expr) {
+  const dport = 9400 + Math.floor(Math.random() * 300), proc = spawn(CH, ['--headless=new', '--disable-gpu', '--no-first-run', `--remote-debugging-port=${dport}`, `--user-data-dir=${path.join(TMP, 'chrome-' + dport)}`, 'about:blank'], { stdio: 'ignore' });
+  let ws; const viol = [], res = { pg: null, viol, navs: 0, err: '' };
+  try {
+    let targets; for (let i = 0; i < 40; i++) { try { targets = await (await fetch(`http://127.0.0.1:${dport}/json`)).json(); if (targets.length) break; } catch (e) { /* subindo */ } await sleep(250); }
+    ws = new WebSocket(targets.find(t => t.type === 'page').webSocketDebuggerUrl); await new Promise(r => (ws.onopen = r));
+    let id = 0; const pend = new Map(), CSP_RE = /Content Security Policy|Refused to|violates the following/i;
+    ws.onmessage = m => { const d = JSON.parse(m.data); if (d.id && pend.has(d.id)) { pend.get(d.id)(d); pend.delete(d.id); return; }
+      if (d.method === 'Page.frameNavigated' && !d.params.frame.parentId) res.navs++;
+      else if (d.method === 'Log.entryAdded' && CSP_RE.test(d.params.entry.text || '')) viol.push(d.params.entry.text.slice(0, 200));
+      else if (d.method === 'Runtime.consoleAPICalled' && d.params.type === 'error') { const t = d.params.args.map(a => a.value ?? a.description ?? '').join(' '); if (CSP_RE.test(t)) viol.push(t.slice(0, 200)); } };
+    const send = (method, params = {}) => new Promise(r => { const i = ++id; pend.set(i, r); ws.send(JSON.stringify({ id: i, method, params })); });
+    const ev = async e => { for (let k = 0; k < 8; k++) { const r = await send('Runtime.evaluate', { expression: e, returnByValue: true, awaitPromise: true }); if (r.result && r.result.result && !r.result.exceptionDetails && r.result.result.value !== undefined) return r.result.result.value; await sleep(600); } return undefined; }; // tenta de novo se a página estiver trocando
+    await send('Page.enable'); await send('Log.enable'); await send('Runtime.enable'); await send('Page.navigate', { url });
+    const t0 = Date.now(); while (Date.now() - t0 < 30000) { if (await ev('!!navigator.serviceWorker && !!navigator.serviceWorker.controller')) break; await sleep(400); }
+    await sleep(4000); // a página assenta (sites montados antes da correção recarregam uma vez ao assumir o service worker)
+    const v = await ev(expr); res.pg = v ? JSON.parse(v) : null; if (!res.pg) res.err = 'a sonda não respondeu';
+  } catch (e) { res.err = String(e && e.stack || e); }
+  finally { try { ws && ws.close(); } catch (e) { /* segue */ } proc.kill('SIGKILL'); }
+  return res;
+}
+
 try {
   // ---- 1) build como no GitHub Actions
+  for (const port of [APORT, PPORT]) { const l = sh('lsof', ['-ti', `tcp:${port}`]); (l.stdout || '').split('\n').filter(Boolean).forEach(pid => { try { process.kill(+pid, 'SIGKILL'); } catch (e) { /* já saiu */ } }); } // sobra de uma execução interrompida
   fs.mkdirSync(SRC, { recursive: true });
-  sh('rsync', ['-a', '--exclude=.git', '--exclude=test', '--exclude=dados-teste', '--exclude=dist', '--exclude=index.html', '--exclude=.env.local', '--exclude=node_modules', `${ROOT}/`, `${SRC}/`]);
-  const b = sh('node', ['build.mjs'], { cwd: SRC, env: { ...process.env, DATAVIX_HOST: 'hostinger', DATAVIX_SITE: 'datavix.app', DATAVIX_CLARITY_HOST: 'datavix.app', DATAVIX_NPS_URL: '', DATAVIX_NPS_TOKEN: '' } });
-  ok('build para a Hostinger', b.status === 0 && fs.existsSync(path.join(DIST, 'index.html')), (b.stdout || b.stderr || '').trim().split('\n').pop());
+  const distArg = (process.argv.find(a => a.startsWith('--dist=')) || '').slice(7);
+  if (distArg) { fs.mkdirSync(DIST, { recursive: true }); sh('rsync', ['-a', '--exclude=.git', `${path.resolve(distArg)}/`, `${DIST}/`]); ok('site já montado em ' + distArg, fs.existsSync(path.join(DIST, 'index.html'))); }
+  else {
+    sh('rsync', ['-a', '--exclude=.git', '--exclude=test', '--exclude=dados-teste', '--exclude=dist', '--exclude=index.html', '--exclude=.env.local', '--exclude=node_modules', `${ROOT}/`, `${SRC}/`]);
+    const b = sh('node', ['build.mjs'], { cwd: SRC, env: { ...process.env, DATAVIX_HOST: 'hostinger', DATAVIX_SITE: 'datavix.app', DATAVIX_CLARITY_HOST: 'datavix.app', DATAVIX_NPS_URL: '', DATAVIX_NPS_TOKEN: '' } });
+    ok('build para a Hostinger', b.status === 0 && fs.existsSync(path.join(DIST, 'index.html')), (b.stdout || b.stderr || '').trim().split('\n').pop());
+  }
   const files = fs.readdirSync(DIST, { withFileTypes: true }).map(d => d.name).sort().join(' ');
   ok('dist tem .htaccess, index.html, sw.js, manifest e ícones', ['.htaccess', 'index.html', 'sw.js', 'manifest.webmanifest', 'icons'].every(f => files.includes(f)), files);
   ok('icons/.htaccess existe (cache longo só nos ícones)', fs.existsSync(path.join(DIST, 'icons/.htaccess')));
@@ -43,15 +71,15 @@ try {
   ok('o .htaccess tem os mesmos cabeçalhos do _headers (nosniff, no-referrer, permissions-policy)', ['X-Content-Type-Options: nosniff', 'Referrer-Policy: no-referrer', 'Permissions-Policy: camera=(), microphone=(), geolocation=()'].every(l => hs.includes(l)) && ht.includes('X-Content-Type-Options "nosniff"') && ht.includes('Referrer-Policy "no-referrer"') && ht.includes('Permissions-Policy "camera=(), microphone=(), geolocation=()"'));
   { const blocks = hs.split(/\n(?=\/)/).map(b => b.split('\n')[0].trim() + ' => ' + b); const withCsp = blocks.filter(b => /Content-Security-Policy/.test(b)).map(b => b.split(' => ')[0]).sort().join(' ');
     ok('_headers (Netlify/Cloudflare): a CSP vale só para / e /index.html, não para /sw.js', withCsp === '/ /index.html', withCsp); }
-  ok('sem NPS no build de teste: nenhum host do Google na CSP', !/script\.google\.com/.test(meta));
   const cfg = JSON.parse((/window\.__DV=(\{.*?\});?<\/script>/s.exec(html) || /window\.__DV=(\{[^<]*\})/.exec(html) || [])[1] || 'null');
+  ok('a CSP só libera o Google (script.google.com) quando o NPS está ligado', !!cfg && !!cfg.nps === /script\.google\.com/.test(meta), cfg && cfg.nps ? 'NPS ligado' : 'NPS desligado');
   ok('config do app: host hostinger, site datavix.app, Clarity só em datavix.app', !!cfg && cfg.host === 'hostinger' && cfg.site === 'datavix.app' && cfg.clarity && cfg.clarity.host === 'datavix.app'); const www = /RewriteCond %\{HTTP_HOST\} \^www\\\.datavix\\\.app\$ \[NC\]/.test(ht);
   ok('redirecionamento de www para datavix.app', www);
 
   // ---- 2) Apache local com o .htaccess
   fs.mkdirSync(AP, { recursive: true });
   const mods = ['mpm_prefork', 'unixd', 'authz_core', 'authz_host', 'mime', 'log_config', 'dir', 'filter', 'headers', 'rewrite', 'deflate', 'env', 'setenvif'];
-  fs.writeFileSync(path.join(AP, 'httpd.conf'), [`ServerRoot "/usr"`, `Listen 127.0.0.1:${APORT}`, `PidFile "${AP}/httpd.pid"`, `ErrorLog "${AP}/error.log"`, 'LogLevel warn', ...mods.map(m => `LoadModule ${m}_module libexec/apache2/mod_${m}.so`), 'ServerName 127.0.0.1', `DocumentRoot "${DIST}"`, 'TypesConfig "/private/etc/apache2/mime.types"',
+  fs.writeFileSync(path.join(AP, 'httpd.conf'), [`ServerRoot "/usr"`, `Listen 127.0.0.1:${APORT}`, `PidFile "${AP}/httpd.pid"`, `ErrorLog "${AP}/error.log"`, 'LogLevel warn', 'LogFormat "%>s %r" dv', `CustomLog "${AP}/access.log" dv`, ...mods.map(m => `LoadModule ${m}_module libexec/apache2/mod_${m}.so`), 'ServerName 127.0.0.1', `DocumentRoot "${DIST}"`, 'TypesConfig "/private/etc/apache2/mime.types"',
     `<Directory "${DIST}">`, '  AllowOverride All', '  Require all granted', '</Directory>', '<Files ".ht*">', '  Require all denied', '</Files>'].join('\n') + '\n');
   const syn = sh('/usr/sbin/httpd', ['-f', path.join(AP, 'httpd.conf'), '-t']); ok('o Apache aceita a configuração', syn.status === 0, (syn.stderr || '').trim().split('\n').pop());
   const st = sh('/usr/sbin/httpd', ['-f', path.join(AP, 'httpd.conf'), '-k', 'start']); apache = st.status === 0; await sleep(1200);
@@ -77,21 +105,20 @@ try {
 
   // ---- 3) Chrome headless, atrás de um proxy que simula o HTTPS da Hostinger (X-Forwarded-Proto)
   proxy = http.createServer((q, s) => { const p = http.request({ host: '127.0.0.1', port: APORT, path: q.url, method: q.method, headers: { ...q.headers, 'x-forwarded-proto': 'https' } }, rr => { s.writeHead(rr.statusCode, rr.headers); rr.pipe(s); }); q.pipe(p); p.on('error', () => { s.statusCode = 502; s.end(); }); }).listen(PPORT, '127.0.0.1');
-  const pageJs = path.join(TMP, 'page.js');
-  fs.writeFileSync(pageJs, `(async () => { try { const sl = ms => new Promise(r => setTimeout(r, ms)); await sl(2500);
+  const probe = `(async () => { const sl = ms => new Promise(r => setTimeout(r, ms)), d = {}; const step = async (n, f) => { try { d[n] = await f(); } catch (e) { d[n] = 'ERRO ' + String(e && (e.stack || e.message || e)); } };
     if (!navigator.serviceWorker) return JSON.stringify({ title: document.title, nosw: true, url: location.href, secure: window.isSecureContext, body: document.body ? document.body.innerText.slice(0, 120) : '' });
-    const reg = await Promise.race([navigator.serviceWorker.ready, sl(15000).then(() => null)]); const keys = await caches.keys(), ck = keys.find(k => /^datavix-/.test(k)), items = ck ? (await (await caches.open(ck)).keys()).length : 0;
-    LANG = 'pt'; const pt = privBody(); LANG = 'en'; const en = privBody(); LANG = 'pt';
-    return JSON.stringify({ title: document.title, landing: document.body.innerText.length > 200, sw: !!(reg && reg.active), swState: reg && reg.active && reg.active.state, cache: ck || null, items, scope: reg && reg.scope,
-      priv: { ptHostinger: /servido pela Hostinger/.test(pt), ptGithub: /GitHub Pages/.test(pt), enHostinger: /served by Hostinger/.test(en), enGithub: /GitHub Pages/.test(en) }, scripts: document.scripts.length }); } catch (e) { return 'ERRO ' + e.stack; } })()`);
-  const cdp = await arun('node', [path.join(ROOT, 'test/cdp.mjs'), `http://127.0.0.1:${PPORT}/`, '4', pageJs], { cwd: ROOT, timeout: 90000 });
-  const txt = (cdp.stdout || '') + (cdp.stderr || ''), js = /\{"title".*\}/.exec(txt), pg = js ? JSON.parse(js[0]) : null;
-  const viol = txt.split('\n').filter(l => /Content Security Policy|Refused to|violat/i.test(l));
-  ok('Chrome abriu o app (título e landing)', !!pg && pg.title === 'Datavix' && pg.landing, pg ? (pg.nosw ? JSON.stringify(pg) : '') : txt.slice(0, 160));
+    let reg = null; await step('ready', async () => { reg = await Promise.race([navigator.serviceWorker.ready, sl(30000).then(() => null)]); return !!reg; });
+    await step('cache', async () => { const keys = await caches.keys(), ck = keys.find(k => /^datavix-/.test(k)); return { ck: ck || null, items: ck ? (await (await caches.open(ck)).keys()).length : 0 }; });
+    await step('priv', async () => { LANG = 'pt'; const pt = privBody(); LANG = 'en'; const en = privBody(); LANG = 'pt'; return { ptHostinger: /servido pela Hostinger/.test(pt), ptGithub: /GitHub Pages/.test(pt), enHostinger: /served by Hostinger/.test(en), enGithub: /GitHub Pages/.test(en) }; });
+    const c = d.cache && d.cache.ck !== undefined ? d.cache : { ck: null, items: 0 };
+    return JSON.stringify({ title: document.title, landing: document.body.innerText.length > 200, sw: !!(reg && reg.active), swState: reg && reg.active && reg.active.state, cache: c.ck, items: c.items, scope: reg && reg.scope, priv: d.priv, err: Object.fromEntries(Object.entries(d).filter(([k, v]) => typeof v === 'string' && v.startsWith('ERRO'))) }); })()`;
+  const cr = await chromeProbe(`http://127.0.0.1:${PPORT}/`, probe), pg = cr.pg, viol = cr.viol;
+  ok('Chrome abriu o app (título e landing)', !!pg && pg.title === 'Datavix' && pg.landing, pg ? (pg.nosw ? JSON.stringify(pg) : '') : cr.err);
   ok('nenhuma violação de CSP no console (cabeçalho + meta valendo juntos)', viol.length === 0, viol[0] || '');
-  ok('service worker ativo no endereço raiz', !!pg && pg.sw && pg.swState === 'activated', pg ? `${pg.swState} ${pg.scope}` : '');
+  ok('service worker ativo no endereço raiz', !!pg && pg.sw && pg.swState === 'activated', pg && pg.sw ? `${pg.swState} ${pg.scope}` : JSON.stringify(pg && pg.err) + ' · apache: ' + (fs.existsSync(path.join(AP, 'access.log')) ? fs.readFileSync(path.join(AP, 'access.log'), 'utf8').split('\n').filter(l => /sw\.js|manifest|icons/.test(l)).join(' | ') : 'sem log'));
   ok('cache do app com os 7 arquivos (index, manifesto, 4 ícones e a raiz)', !!pg && /^datavix-/.test(pg.cache || '') && pg.items === 7, pg ? `${pg.cache} · ${pg.items}` : '');
-  ok('política de privacidade diz Hostinger (PT e EN) e não diz GitHub Pages', !!pg && pg.priv.ptHostinger && pg.priv.enHostinger && !pg.priv.ptGithub && !pg.priv.enGithub, pg ? JSON.stringify(pg.priv) : '');
+  ok('política de privacidade diz Hostinger (PT e EN) e não diz GitHub Pages', !!pg && !!pg.priv && pg.priv.ptHostinger && pg.priv.enHostinger && !pg.priv.ptGithub && !pg.priv.enGithub, pg ? JSON.stringify(pg.priv) : '');
+  ok(distArg ? 'primeira visita (informativo: sites montados antes da correção recarregam uma vez)' : 'a primeira visita não recarrega a página (1 navegação)', distArg ? cr.navs <= 2 : cr.navs === 1, `${cr.navs} navegação(ões)`);
 } catch (e) {
   ok('execução sem erro', false, e.stack);
 } finally {

@@ -152,7 +152,7 @@ export default {
         { t: 'h2', x: 'Step by step', id: 'step-by-step' },
         { t: 'steps', items: [
           { h: 'Answer the opening questions', x: 'Four quick questions (area, audience, decision and time) help suggest the right chart and story.' },
-          { h: 'Add the file', x: 'Drag the spreadsheet (.xlsx, .xls, .csv or .tsv) or pick the file. If it has several sheets, you choose which one to use.' },
+          { h: 'Add the file', x: 'Drag the spreadsheet (.xlsx, .xls, .csv or .tsv) or pick the file. If it has several sheets, Datavix gives each one a role and you can change it.' },
           { h: 'Check how the columns were read', x: 'Each column gets a role: date, category, number, free text, identifier or yes/no. You confirm or correct it before generating.' },
           { h: 'See the chart and edit', x: 'Datavix suggests a chart and shows the alternatives. Change chart, palette, background and fonts. Highlights come with “see calculation”.' },
           { h: 'Export', x: 'Interactive HTML, PNG, a ZIP with one PNG per step, PowerPoint (.pptx) or MP4 video.' },
@@ -447,7 +447,7 @@ export default {
         ] },
         { t: 'h2', x: 'Files and limits', id: 'files' },
         { t: 'faq', items: [
-          { q: 'Which file formats are supported?', a: 'XLSX, XLS, CSV and TSV, with dates and numbers written in Portuguese or English. If the file has several sheets, you choose which one to use.' },
+          { q: 'Which file formats are supported?', a: 'XLSX, XLS, CSV and TSV, with dates and numbers written in Portuguese or English. If the file has several sheets, Datavix gives each one a role and you can change it.' },
           { q: 'How many rows can the spreadsheet have?', a: 'Tens of thousands. Above 3,000 rows, the radial tree groups records by period, entity and category. Very large spreadsheets (tens of MB) can take about a minute to open.' },
           { q: 'Does it work on a phone?', a: 'Yes. The app has a phone layout.' },
           { q: 'Does it work offline?', a: 'The exported HTML opens without internet. The app also opens offline after the first visit and can be installed as an app in browsers that offer installation.' },

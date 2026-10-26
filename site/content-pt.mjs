@@ -152,7 +152,7 @@ export default {
         { t: 'h2', x: 'Passo a passo', id: 'passo-a-passo' },
         { t: 'steps', items: [
           { h: 'Responda as perguntas iniciais', x: 'Quatro perguntas rápidas (área, público, decisão e tempo) ajudam a sugerir o gráfico e a história certa.' },
-          { h: 'Suba o arquivo', x: 'Arraste a planilha (.xlsx, .xls, .csv ou .tsv) ou escolha o arquivo. Se ela tiver várias abas, você escolhe qual usar.' },
+          { h: 'Suba o arquivo', x: 'Arraste a planilha (.xlsx, .xls, .csv ou .tsv) ou escolha o arquivo. Se ela tiver várias abas, o Datavix dá um papel a cada uma e você pode trocar.' },
           { h: 'Confira a leitura das colunas', x: 'Cada coluna ganha um papel: data, categoria, número, texto livre, identificador ou sim/não. Você confirma ou corrige antes de gerar.' },
           { h: 'Veja o gráfico e edite', x: 'O Datavix sugere um gráfico e mostra as alternativas. Troque gráfico, paleta, fundo e fontes. Os destaques trazem o “ver cálculo”.' },
           { h: 'Exporte', x: 'HTML interativo, PNG, ZIP com um PNG por etapa, PowerPoint (.pptx) ou vídeo MP4.' },
@@ -446,7 +446,7 @@ export default {
         ] },
         { t: 'h2', x: 'Arquivos e limites', id: 'arquivos' },
         { t: 'faq', items: [
-          { q: 'Quais formatos de arquivo são aceitos?', a: 'XLSX, XLS, CSV e TSV, com datas e números escritos em português ou inglês. Se o arquivo tiver várias abas, você escolhe qual usar.' },
+          { q: 'Quais formatos de arquivo são aceitos?', a: 'XLSX, XLS, CSV e TSV, com datas e números escritos em português ou inglês. Se o arquivo tiver várias abas, o Datavix dá um papel a cada uma e você pode trocar.' },
           { q: 'Quantas linhas a planilha pode ter?', a: 'Dezenas de milhares. Acima de 3.000 linhas, a árvore radial reúne os registros por período, entidade e categoria. Planilhas muito grandes (dezenas de MB) podem levar cerca de um minuto para abrir.' },
           { q: 'Funciona no celular?', a: 'Sim. O app tem layout para celular.' },
           { q: 'Funciona sem internet?', a: 'O HTML exportado abre sem internet. O app também abre sem internet depois da primeira visita e pode ser instalado como aplicativo nos navegadores que oferecem a instalação.' },

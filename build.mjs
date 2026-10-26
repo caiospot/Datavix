@@ -125,6 +125,7 @@ if (LEGACY) {
     '<IfModule mod_brotli.c>', `AddOutputFilterByType BROTLI_COMPRESS ${TEXTS}`, '</IfModule>', ''].join('\n'));
   const appHdr = `  Content-Security-Policy: ${CSP}\n  Cache-Control: no-cache\n  X-Robots-Tag: noindex\n`;
   put('_headers', `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: no-referrer\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n/app/\n${appHdr}/app/index.html\n${appHdr}/app/sw.js\n  Cache-Control: no-cache\n/app/manifest.webmanifest\n  Cache-Control: no-cache\n/app/icons/*\n  Cache-Control: public, max-age=31536000, immutable\n/icons/*\n  Cache-Control: public, max-age=31536000, immutable\n/assets/*\n  Cache-Control: public, max-age=31536000, immutable\n/og/*\n  Cache-Control: public, max-age=86400\n/sw.js\n  Cache-Control: no-cache\n`);
+  const INDEXNOW = (process.env.DATAVIX_INDEXNOW_KEY || '').trim(); if (/^[a-zA-Z0-9-]{8,128}$/.test(INDEXNOW)) put(INDEXNOW + '.txt', INDEXNOW); // IndexNow (Bing e outros): o arquivo-chave na raiz; o aviso das mudanças é manual (scripts/indexnow.mjs)
   put('.nojekyll', '');
   summary = `· site: ${site.pages.length} páginas (${site.pages.filter(p => p.lang === 'pt-BR').length} PT + ${site.pages.filter(p => p.lang === 'en').length} EN), CSS ${(site.cssBytes / 1024).toFixed(1)} KB`;
 }

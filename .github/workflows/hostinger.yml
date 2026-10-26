@@ -31,6 +31,7 @@ jobs:
           DATAVIX_GSC_TOKEN: ${{ vars.DATAVIX_GSC_TOKEN }}
           DATAVIX_BING_TOKEN: ${{ vars.DATAVIX_BING_TOKEN }}
           DATAVIX_SAMEAS: ${{ vars.DATAVIX_SAMEAS }}
+          DATAVIX_INDEXNOW_KEY: ${{ vars.DATAVIX_INDEXNOW_KEY }}
         run: node build.mjs
       - uses: actions/upload-artifact@v4
         with:

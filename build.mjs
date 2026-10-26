@@ -1,5 +1,8 @@
-// Monta o protótipo em um único HTML (dist/ e index.html). Uso: node build.mjs
+// Monta o app em um único HTML (index.html) e o site pronto para publicar em dist/: landing e páginas de conteúdo (PT e EN) na raiz, o app em /app/. Uso: node build.mjs
+// DATAVIX_LEGACY=1 monta, em vez disso, só a página de aviso do endereço antigo (GitHub Pages).
 import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { buildSite } from './site/generate.mjs';
 const r = p => fs.readFileSync(new URL(p, import.meta.url), 'utf8');
 const b64 = s => Buffer.from(s, 'utf8').toString('base64');
 const b64f = p => fs.readFileSync(new URL(p, import.meta.url)).toString('base64');
@@ -72,31 +75,57 @@ html = html.replace('__DVCFG__', () => JSON.stringify({ build: BUILD, nps: NPS_U
 fs.writeFileSync(new URL('index.html', import.meta.url), html);
 fs.mkdirSync(new URL('test/', import.meta.url), { recursive: true });
 fs.writeFileSync(new URL('test/dev.html', import.meta.url), html.replace("connect-src blob: data:", "connect-src blob: data: 'self'").replace('<script>window.__DV=', '<script>window.__DV_NPS={url:"/nps",token:"dev-token"};window.__DV_NOFIND=true;window.__DV='));
-// pasta pronta para publicar (Netlify, Cloudflare Pages, GitHub Pages...): app + manifesto + service worker + ícones
-const dist = new URL('dist/', import.meta.url); fs.mkdirSync(new URL('icons/', dist), { recursive: true });
-fs.writeFileSync(new URL('index.html', dist), html);
-fs.writeFileSync(new URL('sw.js', dist), r('pwa/sw.js').replace('__BUILD__', BUILD));
-fs.copyFileSync(new URL('pwa/manifest.webmanifest', import.meta.url), new URL('manifest.webmanifest', dist));
-for (const f of fs.readdirSync(new URL('pwa/icons/', import.meta.url))) fs.copyFileSync(new URL('pwa/icons/' + f, import.meta.url), new URL('icons/' + f, dist));
-// a CSP vale só para o HTML ('/' e '/index.html'): no /sw.js ela impede o service worker de buscar os arquivos do app (conferido em test/hostinger-check.mjs --csp-all)
-fs.writeFileSync(new URL('_headers', dist), `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: no-referrer\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n/\n  Content-Security-Policy: ${CSP}\n  Cache-Control: no-cache\n/index.html\n  Content-Security-Policy: ${CSP}\n  Cache-Control: no-cache\n/sw.js\n  Cache-Control: no-cache\n/manifest.webmanifest\n  Cache-Control: no-cache\n/icons/*\n  Cache-Control: public, max-age=31536000, immutable\n`);
-fs.writeFileSync(new URL('.nojekyll', dist), '');
-// Hostinger (Apache/LiteSpeed): o .htaccess faz o que o _headers faz na Netlify e na Cloudflare, que a Hostinger não lê.
-// A CSP vale só para o HTML: no sw.js ela bloquearia as buscas do service worker (connect-src sem 'self'). DATAVIX_SITE (ex.: datavix.app) liga o redirecionamento de www para o endereço sem www.
+// ---------------------------------------------------------------- dist/: o site pronto para publicar
+// Layout: / (PT) e /en/ (EN) com as páginas de conteúdo, /app/ com o app (HTML único, service worker, manifesto e ícones próprios), robots.txt, sitemap.xml, llms.txt.
+// A CSP do app vale só para /app/index.html (no sw.js ela bloquearia as buscas do service worker: ver test/hostinger-check.mjs --csp-all); as páginas do site levam a própria CSP (sem scripts) na meta tag.
+const LEGACY = process.env.DATAVIX_LEGACY === '1';
 const SITE_HOST = (process.env.DATAVIX_SITE || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+const ORIGIN = 'https://' + (/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(SITE_HOST) ? SITE_HOST.replace(/^www\./, '') : 'datavix.app');
+const distUrl = new URL('dist/', import.meta.url), distDir = fileURLToPath(distUrl);
+fs.rmSync(distDir, { recursive: true, force: true }); fs.mkdirSync(distDir, { recursive: true });
+const put = (rel, data) => { const f = new URL(rel, distUrl); fs.mkdirSync(new URL('./', f), { recursive: true }); fs.writeFileSync(f, data); };
+const TEXTS = 'text/html text/css text/javascript application/javascript application/json application/manifest+json image/svg+xml text/plain application/xml image/x-icon';
 const wwwRule = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(SITE_HOST) && !SITE_HOST.startsWith('www.') ? [`# www vira ${SITE_HOST}`, `RewriteCond %{HTTP_HOST} ^www\\.${SITE_HOST.replace(/\./g, '\\.')}$ [NC]`, `RewriteRule ^ https://${SITE_HOST}%{REQUEST_URI} [L,R=301]`] : [];
-const TEXTS = 'text/html text/css text/javascript application/javascript application/json application/manifest+json image/svg+xml';
-fs.writeFileSync(new URL('.htaccess', dist), [
-  '# Datavix: gerado por build.mjs (não edite aqui). Servidor Apache/LiteSpeed, como a hospedagem da Hostinger.',
-  'DirectoryIndex index.html', 'Options -Indexes', 'AddDefaultCharset UTF-8', 'AddType application/manifest+json .webmanifest', '',
-  '<IfModule mod_rewrite.c>', 'RewriteEngine On', ...wwwRule,
-  '# HTTPS sempre (atrás de proxy, vale o X-Forwarded-Proto)', 'RewriteCond %{HTTPS} !=on', 'RewriteCond %{HTTP:X-Forwarded-Proto} !=https', 'RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]', '</IfModule>', '',
-  '<IfModule mod_headers.c>',
-  'Header set X-Content-Type-Options "nosniff"', 'Header set Referrer-Policy "no-referrer"', 'Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"', 'Header set Strict-Transport-Security "max-age=31536000" env=HTTPS',
-  '<FilesMatch "^index\\.html$">', `Header set Content-Security-Policy "${CSP}"`, '</FilesMatch>',
-  '<FilesMatch "^(index\\.html|sw\\.js|manifest\\.webmanifest)$">', 'Header set Cache-Control "no-cache"', '</FilesMatch>',
-  '</IfModule>', '',
-  '<IfModule mod_deflate.c>', `AddOutputFilterByType DEFLATE ${TEXTS}`, '</IfModule>',
-  '<IfModule mod_brotli.c>', `AddOutputFilterByType BROTLI_COMPRESS ${TEXTS}`, '</IfModule>', ''].join('\n'));
-fs.writeFileSync(new URL('icons/.htaccess', dist), '<IfModule mod_headers.c>\nHeader set Cache-Control "public, max-age=31536000, immutable"\n</IfModule>\n');
-console.log('index.html', (html.length / 1024).toFixed(0), 'KB · build', BUILD, NPS_URL ? '· NPS ligado' : '· NPS desligado', '· dist/ pronto');
+const IMMUTABLE = '<IfModule mod_headers.c>\nHeader set Cache-Control "public, max-age=31536000, immutable"\n</IfModule>\n';
+let summary = '';
+if (LEGACY) {
+  // endereço antigo (GitHub Pages): só um aviso que leva para o endereço novo, mais o service worker de limpeza para quem tinha o app instalado aqui
+  const css = fs.readFileSync(new URL('site/site.css', import.meta.url), 'utf8').replace(/@font-face\{[^}]*\}/g, '').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').replace(/\s*([{};,>])\s*/g, '$1').replace(/:\s+/g, ':').replace(/;}/g, '}').trim();
+  const cspL = `default-src 'none'; style-src 'sha256-${crypto.createHash('sha256').update(css).digest('base64')}'; base-uri 'none'; form-action 'none'`;
+  const notice = `<!doctype html>\n<html lang="pt-BR">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>O Datavix mudou de endereço · Datavix has moved</title>\n<meta name="description" content="O Datavix agora está em ${SITE_HOST || 'datavix.app'}. Datavix is now at ${SITE_HOST || 'datavix.app'}.">\n<link rel="canonical" href="${ORIGIN}/">\n<meta http-equiv="refresh" content="8;url=${ORIGIN}/">\n<meta http-equiv="Content-Security-Policy" content="${cspL}">\n<meta name="color-scheme" content="dark light">\n<style>${css}</style>\n</head>\n<body>\n<main class="notice"><div class="box">\n<p class="brand"><i></i>DATAVIX</p>\n<h1 lang="pt-BR">O Datavix mudou de endereço</h1>\n<p lang="pt-BR">Agora o Datavix está em <a href="${ORIGIN}/">${ORIGIN.replace('https://', '')}</a>. Este endereço antigo não abre mais o app, e você será levado ao novo em alguns segundos.</p>\n<div class="cta"><a class="btn" href="${ORIGIN}/">Ir para ${ORIGIN.replace('https://', '')}</a><a class="btn ghost" href="${ORIGIN}/app/">Abrir o app</a></div>\n<p lang="pt-BR"><small>Projetos que você salvou neste endereço ficam guardados só neste navegador e não aparecem no endereço novo.</small></p>\n<hr>\n<h1 lang="en">Datavix has moved</h1>\n<p lang="en">Datavix is now at <a href="${ORIGIN}/en/">${ORIGIN.replace('https://', '')}</a>. This old address no longer opens the app, and you will be taken to the new one in a few seconds.</p>\n<div class="cta"><a class="btn" href="${ORIGIN}/en/">Go to ${ORIGIN.replace('https://', '')}</a><a class="btn ghost" href="${ORIGIN}/app/?lang=en">Open the app</a></div>\n<p lang="en"><small>Projects you saved at this address stay in this browser only and do not appear at the new address.</small></p>\n</div></main>\n</body>\n</html>\n`;
+  put('index.html', notice); put('404.html', notice); put('sw.js', r('pwa/legacy-sw.js')); put('.nojekyll', '');
+  summary = `· endereço antigo: página de aviso para ${ORIGIN}`;
+} else {
+  // ---- o app em /app/ (index.html, sw.js, manifesto e ícones dele, todos com caminho relativo: o escopo do service worker é /app/)
+  put('app/index.html', html);
+  put('app/sw.js', r('pwa/sw.js').replace('__BUILD__', BUILD));
+  put('app/manifest.webmanifest', r('pwa/manifest.webmanifest'));
+  for (const f of fs.readdirSync(new URL('pwa/icons/', import.meta.url))) { const b = fs.readFileSync(new URL('pwa/icons/' + f, import.meta.url)); put('app/icons/' + f, b); put('icons/' + f, b); }
+  put('app/.htaccess', ['# Datavix: gerado por build.mjs (não edite aqui). O app: CSP própria só no HTML, fora dos buscadores, sempre revalidado.', '<IfModule mod_headers.c>', '<FilesMatch "^index\\.html$">', `Header set Content-Security-Policy "${CSP}"`, 'Header set X-Robots-Tag "noindex"', '</FilesMatch>', '<FilesMatch "^(index\\.html|sw\\.js|manifest\\.webmanifest)$">', 'Header set Cache-Control "no-cache"', '</FilesMatch>', '</IfModule>', ''].join('\n'));
+  put('app/icons/.htaccess', IMMUTABLE);
+  // ---- o site estático: landing e páginas de conteúdo em PT (/) e EN (/en/), robots.txt, sitemap.xml, llms.txt, 404, imagens e cartões de compartilhamento
+  const site = buildSite({ root: new URL('./', import.meta.url), out: distDir, origin: ORIGIN, host: process.env.DATAVIX_HOST === 'hostinger' ? 'hostinger' : 'github', contactEmail: process.env.DATAVIX_CONTACT_EMAIL || '', gsc: process.env.DATAVIX_GSC_TOKEN || '', bing: process.env.DATAVIX_BING_TOKEN || '', sameAs: (process.env.DATAVIX_SAMEAS || '').split(',').map(x => x.trim()).filter(Boolean) });
+  put('assets/.htaccess', IMMUTABLE); put('icons/.htaccess', IMMUTABLE); put('og/.htaccess', '<IfModule mod_headers.c>\nHeader set Cache-Control "public, max-age=86400"\n</IfModule>\n');
+  // ---- raiz: service worker de limpeza e manifesto antigo (quem instalou o app quando ele morava na raiz passa a abrir /app/)
+  put('sw.js', r('pwa/legacy-sw.js'));
+  const man = JSON.parse(r('pwa/manifest.webmanifest')); man.start_url = '/app/?source=pwa'; man.scope = '/'; man.id = './';
+  put('manifest.webmanifest', JSON.stringify(man, null, 2) + '\n');
+  // ---- servidores: Apache/LiteSpeed (Hostinger) lê o .htaccess; Netlify e Cloudflare Pages leem o _headers
+  put('.htaccess', [
+    '# Datavix: gerado por build.mjs (não edite aqui). Servidor Apache/LiteSpeed, como a hospedagem da Hostinger.',
+    'DirectoryIndex index.html', 'Options -Indexes', 'AddDefaultCharset UTF-8', 'AddType application/manifest+json .webmanifest', 'AddType image/webp .webp', 'AddType font/woff2 .woff2', 'ErrorDocument 404 /404.html', '',
+    '<IfModule mod_rewrite.c>', 'RewriteEngine On', ...wwwRule,
+    '# HTTPS sempre (atrás de proxy, vale o X-Forwarded-Proto)', 'RewriteCond %{HTTPS} !=on', 'RewriteCond %{HTTP:X-Forwarded-Proto} !=https', 'RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]',
+    '# uma URL por página: /pasta/index.html vira /pasta/ (o app, em /app/, fica de fora: o service worker guarda ./index.html)', 'RewriteCond %{REQUEST_URI} !^/app/', 'RewriteCond %{THE_REQUEST} \\s/(.*/)?index\\.html[?\\s]', 'RewriteRule ^(.*/)?index\\.html$ /$1 [L,R=301]', '</IfModule>', '',
+    '<IfModule mod_headers.c>',
+    'Header set X-Content-Type-Options "nosniff"', 'Header set Referrer-Policy "no-referrer"', 'Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"', 'Header set Strict-Transport-Security "max-age=31536000" env=HTTPS',
+    '<FilesMatch "\\.(html|txt|xml|webmanifest)$">', 'Header set Cache-Control "no-cache"', '</FilesMatch>', '<FilesMatch "^sw\\.js$">', 'Header set Cache-Control "no-cache"', '</FilesMatch>',
+    '</IfModule>', '',
+    '<IfModule mod_deflate.c>', `AddOutputFilterByType DEFLATE ${TEXTS}`, '</IfModule>',
+    '<IfModule mod_brotli.c>', `AddOutputFilterByType BROTLI_COMPRESS ${TEXTS}`, '</IfModule>', ''].join('\n'));
+  const appHdr = `  Content-Security-Policy: ${CSP}\n  Cache-Control: no-cache\n  X-Robots-Tag: noindex\n`;
+  put('_headers', `/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: no-referrer\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n/app/\n${appHdr}/app/index.html\n${appHdr}/app/sw.js\n  Cache-Control: no-cache\n/app/manifest.webmanifest\n  Cache-Control: no-cache\n/app/icons/*\n  Cache-Control: public, max-age=31536000, immutable\n/icons/*\n  Cache-Control: public, max-age=31536000, immutable\n/assets/*\n  Cache-Control: public, max-age=31536000, immutable\n/og/*\n  Cache-Control: public, max-age=86400\n/sw.js\n  Cache-Control: no-cache\n`);
+  put('.nojekyll', '');
+  summary = `· site: ${site.pages.length} páginas (${site.pages.filter(p => p.lang === 'pt-BR').length} PT + ${site.pages.filter(p => p.lang === 'en').length} EN), CSS ${(site.cssBytes / 1024).toFixed(1)} KB`;
+}
+console.log('index.html', (html.length / 1024).toFixed(0), 'KB · build', BUILD, NPS_URL ? '· NPS ligado' : '· NPS desligado', '· dist/ pronto', summary);

@@ -836,7 +836,7 @@ document.addEventListener('keydown', e => {
 });
 
 /* ---------------- início ---------------- */
-setLang(navigator.language && navigator.language.toLowerCase().startsWith('pt') ? 'pt' : 'en');
+{ const ql = (new URLSearchParams(location.search).get('lang') || '').toLowerCase(); setLang(ql === 'pt' || ql === 'en' ? ql : navigator.language && navigator.language.toLowerCase().startsWith('pt') ? 'pt' : 'en'); } // ?lang=pt|en vale sobre o idioma do navegador (as páginas do site em inglês abrem o app em inglês)
 if (window.dvSplash) window.dvSplash.set(T('splash_ui'));
 render();
 // a tela de carregamento sai quando a interface e as fontes estão prontas (no máximo 2,5 s de espera pelas fontes)

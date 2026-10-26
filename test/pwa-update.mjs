@@ -1,13 +1,13 @@
 // PWA em Chrome headless, com perfil novo do Chrome: (1) a primeira visita NÃO recarrega a página quando o service worker assume o controle;
 // (2) uma versão nova do app aparece como aviso "Há uma versão nova", e só ao clicar em Atualizar a página recarrega e troca o cache.
-// Uso: node test/pwa-update.mjs [pasta-do-site]   (padrão: dist/)
+// Uso: node test/pwa-update.mjs [pasta-do-app]   (padrão: dist/app, o app com o service worker dele; ele se serve na raiz porque os caminhos são relativos)
 import { spawn } from 'node:child_process';
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
-const ROOT = path.resolve(new URL('..', import.meta.url).pathname), SRC = path.resolve(process.argv[2] || path.join(ROOT, 'dist'));
+const ROOT = path.resolve(new URL('..', import.meta.url).pathname), SRC = path.resolve(process.argv[2] || path.join(ROOT, 'dist', 'app'));
 const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'dv-pwa-')), SITE = path.join(TMP, 'site'), PORT = 8793, CH = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const out = [], bad = [], sleep = ms => new Promise(r => setTimeout(r, ms));
 const ok = (k, v, extra) => { out.push(`${v ? 'ok    ' : 'FALHOU'} ${k}${extra ? ' · ' + extra : ''}`); if (!v) bad.push(k); };

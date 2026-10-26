@@ -1,0 +1,254 @@
+{
+  "calculo": {
+    "variants": [
+      {
+        "w": 720,
+        "h": 450,
+        "file": "calculo-720.webp"
+      },
+      {
+        "w": 1440,
+        "h": 900,
+        "file": "calculo-1440.webp"
+      }
+    ]
+  },
+  "calculo-en": {
+    "variants": [
+      {
+        "w": 720,
+        "h": 450,
+        "file": "calculo-en-720.webp"
+      },
+      {
+        "w": 1440,
+        "h": 900,
+        "file": "calculo-en-1440.webp"
+      }
+    ]
+  },
+  "exportar": {
+    "variants": [
+      {
+        "w": 720,
+        "h": 450,
+        "file": "exportar-720.webp"
+      },
+      {
+        "w": 1440,
+        "h": 900,
+        "file": "exportar-1440.webp"
+      }
+    ]
+  },
+  "exportar-en": {
+    "variants": [
+      {
+        "w": 720,
+        "h": 450,
+        "file": "exportar-en-720.webp"
+      },
+      {
+        "w": 1440,
+        "h": 900,
+        "file": "exportar-en-1440.webp"
+      }
+    ]
+  },
+  "graficos": {
+    "variants": [
+      {
+        "w": 720,
+        "h": 620,
+        "file": "graficos-720.webp"
+      },
+      {
+        "w": 1440,
+        "h": 1240,
+        "file": "graficos-1440.webp"
+      }
+    ]
+  },
+  "graficos-en": {
+    "variants": [
+      {
+        "w": 720,
+        "h": 620,
+        "file": "graficos-en-720.webp"
+      },
+      {
+        "w": 1440,
+        "h": 1240,
+        "file": "graficos-en-1440.webp"
+      }
+    ]
+  },
+  "hero": {
+    "variants": [
+      {
+        "w": 800,
+        "h": 450,
+        "file": "hero-800.webp"
+      },
+      {
+        "w": 1600,
+        "h": 900,
+        "file": "hero-1600.webp"
+      }
+    ]
+  },
+  "hero-en": {
+    "variants": [
+      {
+        "w": 800,
+        "h": 450,
+        "file": "hero-en-800.webp"
+      },
+      {
+        "w": 1600,
+        "h": 900,
+        "file": "hero-en-1600.webp"
+      }
+    ]
+  },
+  "leitura": {
+    "variants": [
+      {
+        "w": 640,
+        "h": 400,
+        "file": "leitura-640.webp"
+      },
+      {
+        "w": 1280,
+        "h": 800,
+        "file": "leitura-1280.webp"
+      }
+    ]
+  },
+  "leitura-en": {
+    "variants": [
+      {
+        "w": 640,
+        "h": 400,
+        "file": "leitura-en-640.webp"
+      },
+      {
+        "w": 1280,
+        "h": 800,
+        "file": "leitura-en-1280.webp"
+      }
+    ]
+  },
+  "modelos": {
+    "variants": [
+      {
+        "w": 720,
+        "h": 450,
+        "file": "modelos-720.webp"
+      },
+      {
+        "w": 1440,
+        "h": 900,
+        "file": "modelos-1440.webp"
+      }
+    ]
+  },
+  "modelos-en": {
+    "variants": [
+      {
+        "w": 720,
+        "h": 450,
+        "file": "modelos-en-720.webp"
+      },
+      {
+        "w": 1440,
+        "h": 900,
+        "file": "modelos-en-1440.webp"
+      }
+    ]
+  },
+  "painel-exportar": {
+    "variants": [
+      {
+        "w": 320,
+        "h": 760,
+        "file": "painel-exportar-320.webp"
+      },
+      {
+        "w": 640,
+        "h": 1520,
+        "file": "painel-exportar-640.webp"
+      }
+    ]
+  },
+  "painel-exportar-en": {
+    "variants": [
+      {
+        "w": 320,
+        "h": 760,
+        "file": "painel-exportar-en-320.webp"
+      },
+      {
+        "w": 640,
+        "h": 1520,
+        "file": "painel-exportar-en-640.webp"
+      }
+    ]
+  },
+  "painel-graficos": {
+    "variants": [
+      {
+        "w": 320,
+        "h": 1000,
+        "file": "painel-graficos-320.webp"
+      },
+      {
+        "w": 640,
+        "h": 2000,
+        "file": "painel-graficos-640.webp"
+      }
+    ]
+  },
+  "painel-graficos-en": {
+    "variants": [
+      {
+        "w": 320,
+        "h": 1000,
+        "file": "painel-graficos-en-320.webp"
+      },
+      {
+        "w": 640,
+        "h": 2000,
+        "file": "painel-graficos-en-640.webp"
+      }
+    ]
+  },
+  "race": {
+    "variants": [
+      {
+        "w": 720,
+        "h": 405,
+        "file": "race-720.webp"
+      },
+      {
+        "w": 1440,
+        "h": 810,
+        "file": "race-1440.webp"
+      }
+    ]
+  },
+  "race-en": {
+    "variants": [
+      {
+        "w": 720,
+        "h": 405,
+        "file": "race-en-720.webp"
+      },
+      {
+        "w": 1440,
+        "h": 810,
+        "file": "race-en-1440.webp"
+      }
+    ]
+  }
+}

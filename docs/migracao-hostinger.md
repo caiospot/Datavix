@@ -2,6 +2,10 @@
 
 Status: **no ar em https://datavix.app desde 18/out/2026** (Hostinger, Git conectado à branch `hostinger`). O código continua no GitHub. O endereço antigo, https://caiospot.github.io/Datavix/, segue funcionando enquanto você não decidir o que fazer com ele (ver "O endereço antigo").
 
+## Atualização (26/out/2026): site com SEO, app em `/app/`
+
+A raiz de `datavix.app` deixou de ser o app: agora é a landing (`/` em português, `/en/` em inglês) com as páginas de conteúdo, e o app mora em **`/app/`** (noindex, com service worker, manifesto e ícones próprios). O `hostinger.yml` continua igual no resto (mesma branch `hostinger`, mesmo `public_html`); o que mudou é o que o `build.mjs` coloca em `dist/`. Quem já tinha o app instalado na raiz passa para `/app/` por um service worker de limpeza (veja `docs/seo.md`). A conferência abaixo ("Resultado da conferência no ar") descreve o layout antigo e fica como registro; o teste atual do site no ar é `node test/hostinger-check.mjs --url=https://datavix.app`.
+
 ## Resultado da conferência no ar (18/out/2026)
 
 `node test/hostinger-check.mjs --url=https://datavix.app` (só leitura): 19 verificações, todas verdes.
@@ -38,7 +42,7 @@ push na main ──► GitHub Actions (hostinger.yml) ──► branch "hostinge
 | `build.mjs` | Gera `dist/.htaccess` e `dist/icons/.htaccess` (a Hostinger ignora o `_headers`); grava `host` no app; corrige a CSP do `_headers` (ver abaixo) |
 | `src/privacy.js` | O texto da hospedagem segue o host do build (GitHub Pages ou Hostinger); data da política: 17/out/2026 |
 | `src/pwa.js` | A primeira visita não recarrega mais a página (ver abaixo) |
-| `test/hostinger-check.mjs` | Confere tudo isso num Apache local e no Chrome (33 verificações); também confere um site já montado: `--dist=PASTA` |
+| `test/hostinger-check.mjs` | Confere tudo isso num Apache local e no Chrome (60 verificações, com a landing e o app em `/app/`); também confere um site já montado: `--dist=PASTA` |
 | `test/pwa-update.mjs` | Primeira visita e fluxo de atualização do app, em Chrome de perfil novo (9 verificações) |
 
 O `.htaccess` gerado faz o que o `_headers` faz na Netlify e na Cloudflare:
@@ -89,11 +93,12 @@ O app guarda os **projetos salvos** no navegador (IndexedDB) e o aceite do cadas
 ## Como conferir de novo
 
 ```bash
-node test/hostinger-check.mjs                       # Apache local + Chrome headless, 33 verificações
+node test/hostinger-check.mjs                       # Apache local + Chrome headless, 60 verificações
 node test/hostinger-check.mjs --dist=PASTA             # o mesmo, sobre um site já montado (ex.: a branch hostinger clonada)
-node test/hostinger-check.mjs --url=https://datavix.app   # o site NO AR, só leitura (19 verificações)
+node test/hostinger-check.mjs --url=https://datavix.app   # o site NO AR, só leitura
 node test/hostinger-check.mjs --csp-all                # experimento: mostra o service worker quebrando com a CSP em todos os arquivos
-node test/pwa-update.mjs                               # primeira visita sem recarregar + fluxo de atualização
+node test/pwa-update.mjs                               # primeira visita sem recarregar + fluxo de atualização (do app, em dist/app)
+node test/migration-sw.mjs                             # o site antigo (app na raiz) trocado pelo novo
 ```
 
 Fontes (documentação da Hostinger consultada em 17/out/2026): [Git no hPanel](https://docs.hostinger.com/websites/git), [FTP e SSH](https://docs.hostinger.com/websites/ftp-ssh), [domínio temporário](https://www.hostinger.com/support/2489693-how-to-access-your-website-content-without-a-domain-in-hostinger/), [apontar o domínio](https://www.hostinger.com/support/1863967-how-to-point-a-domain-to-hostinger/).

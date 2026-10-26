@@ -1,11 +1,11 @@
 /* Datavix: política de privacidade (PT/EN), aberta em modal pelo rodapé e pela pesquisa de satisfação.
    O texto descreve o que o código faz hoje: se mudar o que é guardado ou enviado, atualize aqui e PRIV_DATE. */
-const PRIV_DATE = '2026-10-17';
+const PRIV_DATE = '2026-10-26';
 const PRIV_ISSUES = 'https://github.com/caiospot/Datavix/issues';
 const PRIV = {
   pt: {
     title: 'Política de Privacidade',
-    upd: 'Atualizada em 17 de outubro de 2026',
+    upd: 'Atualizada em 26 de outubro de 2026',
     close: 'Fechar',
     link: 'Privacidade',
     hosts: { github: 'O site é servido pelo GitHub Pages. Ao acessar o site, o GitHub pode registrar dados da requisição, como o endereço IP, segundo a política de privacidade dele.', hostinger: 'O site é servido pela Hostinger. Ao acessar o site, a Hostinger pode registrar dados da requisição, como o endereço IP, segundo a política de privacidade dela.' },
@@ -30,7 +30,7 @@ const PRIV = {
         ]],
       ]],
       ['Cadastro (e-mail para começar)', [
-        ['p', 'Para começar a usar o Datavix de graça, pedimos o seu e-mail na página inicial. Ele é obrigatório para começar.'],
+        ['p', 'Para começar a usar o Datavix de graça, pedimos o seu e-mail na tela inicial do app. Ele é obrigatório para começar.'],
         ['h', 'O que é enviado'],
         ['ul', [
           'O e-mail que você digitou, o idioma, a data do envio e um código anônimo gerado neste navegador.',
@@ -63,7 +63,7 @@ const PRIV = {
         ['p', 'Base legal: o seu consentimento (art. 7º, I da LGPD). Responder é voluntário e você pode retirar o consentimento a qualquer momento, pedindo a exclusão.'],
       ]],
       ['Análise de uso (Microsoft Clarity)', [
-        ['p', 'No site publicado, a página inicial pergunta se você aceita que o Microsoft Clarity, serviço da Microsoft, meça como o site é usado. Se você recusar ou não responder, nada é carregado. Você muda a escolha quando quiser, no link "Análise de uso" do rodapé da página inicial.'],
+        ['p', 'No site publicado, a tela inicial do app pergunta se você aceita que o Microsoft Clarity, serviço da Microsoft, meça como o site é usado. Se você recusar ou não responder, nada é carregado. Você muda a escolha quando quiser, no link "Análise de uso" do rodapé da tela inicial do app.'],
         ['h', 'O que o Clarity pode registrar, se você aceitar'],
         ['ul', [
           'Cliques, movimentos do mouse, rolagem e toques, e as páginas e telas visitadas.',
@@ -73,14 +73,14 @@ const PRIV = {
         ]],
         ['h', 'O que não é registrado'],
         ['ul', [
-          'Os textos e números das telas do app (perguntas, leitura da planilha, editor, apresentação): essas telas ficam marcadas como mascaradas para o Clarity. Na página inicial, a lista de projetos salvos também fica mascarada.',
+          'Os textos e números das telas do app (perguntas, leitura da planilha, editor, apresentação): essas telas ficam marcadas como mascaradas para o Clarity. Na tela inicial do app, a lista de projetos salvos também fica mascarada.',
           'O arquivo da planilha e o seu conteúdo, que nunca saem do navegador.',
           'O HTML exportado, que não carrega nenhum rastreador.',
         ]],
         ['p', 'A Microsoft trata esses dados na infraestrutura dela, que pode ficar fora do Brasil (transferência internacional, art. 33 da LGPD), e os mantém pelo prazo definido na política dela. Não usamos os dados para publicidade nem os vendemos. Base legal: o seu consentimento (art. 7º, I da LGPD). Ao recusar depois de ter aceitado, o Clarity para de ser usado e os cookies dele são apagados. Política de privacidade da Microsoft: privacy.microsoft.com.'],
       ]],
       ['Hospedagem e conexões', [
-        ['p', '{hosting} Depois de carregado, o Datavix não faz outras conexões além da resposta à pesquisa de satisfação (Google) e, se você aceitar, da análise de uso (Microsoft Clarity). As fontes e as bibliotecas vêm embutidas no app, sem CDN de terceiros.'],
+        ['p', '{hosting} Depois de carregado, o Datavix não faz outras conexões além da resposta à pesquisa de satisfação (Google) e, se você aceitar, da análise de uso (Microsoft Clarity). As fontes e as bibliotecas vêm embutidas no app, sem CDN de terceiros. As páginas do site (landing e conteúdo) não carregam rastreadores nem recursos de terceiros.'],
       ]],
       ['Seus direitos', [
         ['p', 'Pela LGPD (art. 18) você pode pedir: confirmação de que tratamos seus dados, acesso, correção, anonimização, bloqueio ou eliminação, portabilidade, informação sobre com quem compartilhamos e a revogação do consentimento.'],
@@ -104,7 +104,7 @@ const PRIV = {
   },
   en: {
     title: 'Privacy Policy',
-    upd: 'Updated on October 17, 2026',
+    upd: 'Updated on October 26, 2026',
     close: 'Close',
     link: 'Privacy',
     hosts: { github: 'The site is served by GitHub Pages. When you visit the site, GitHub may log request data such as the IP address, under its own privacy policy.', hostinger: 'The site is served by Hostinger. When you visit the site, Hostinger may log request data such as the IP address, under its own privacy policy.' },
@@ -129,7 +129,7 @@ const PRIV = {
         ]],
       ]],
       ['Sign-up (email to get started)', [
-        ['p', 'To start using Datavix for free, we ask for your email on the home page. It is required to get started.'],
+        ['p', 'To start using Datavix for free, we ask for your email on the app\'s start screen. It is required to get started.'],
         ['h', 'What is sent'],
         ['ul', [
           'The email you typed, the language, the date it was sent and an anonymous code generated in this browser.',
@@ -162,7 +162,7 @@ const PRIV = {
         ['p', 'Legal basis: your consent (art. 7, I of the LGPD). Answering is voluntary and you can withdraw consent at any time by asking for deletion.'],
       ]],
       ['Usage analytics (Microsoft Clarity)', [
-        ['p', 'On the published site, the home page asks whether you accept Microsoft Clarity, a Microsoft service, measuring how the site is used. If you decline or do not answer, nothing is loaded. You can change the choice any time with the "Usage analytics" link in the footer of the home page.'],
+        ['p', 'On the published site, the app\'s start screen asks whether you accept Microsoft Clarity, a Microsoft service, measuring how the site is used. If you decline or do not answer, nothing is loaded. You can change the choice any time with the "Usage analytics" link in the footer of the app\'s start screen.'],
         ['h', 'What Clarity may record, if you accept'],
         ['ul', [
           'Clicks, mouse movement, scrolling and taps, and the pages and screens visited.',
@@ -172,14 +172,14 @@ const PRIV = {
         ]],
         ['h', 'What is not recorded'],
         ['ul', [
-          'The texts and numbers on the app screens (questions, spreadsheet reading, editor, presentation): these screens are marked as masked for Clarity. On the home page, the saved projects list is masked too.',
+          'The texts and numbers on the app screens (questions, spreadsheet reading, editor, presentation): these screens are marked as masked for Clarity. On the app\'s start screen, the saved projects list is masked too.',
           'The spreadsheet file and its contents, which never leave the browser.',
           'The exported HTML, which loads no tracker at all.',
         ]],
         ['p', 'Microsoft processes this data on its own infrastructure, which may be outside Brazil (international transfer, art. 33 of the LGPD), and keeps it for the period set in its own policy. We do not use the data for advertising or sell it. Legal basis: your consent (art. 7, I of the LGPD). If you decline after having accepted, Clarity stops being used and its cookies are deleted. Microsoft privacy policy: privacy.microsoft.com.'],
       ]],
       ['Hosting and connections', [
-        ['p', '{hosting} Once loaded, Datavix makes no other connections besides the satisfaction survey answer (Google) and, if you accept, usage analytics (Microsoft Clarity). Fonts and libraries are embedded in the app, with no third-party CDN.'],
+        ['p', '{hosting} Once loaded, Datavix makes no other connections besides the satisfaction survey answer (Google) and, if you accept, usage analytics (Microsoft Clarity). Fonts and libraries are embedded in the app, with no third-party CDN. The website pages (landing and content) load no trackers and no third-party resources.'],
       ]],
       ['Your rights', [
         ['p', 'Under the LGPD (art. 18) you may ask for: confirmation that we process your data, access, correction, anonymization, blocking or deletion, portability, information about who we share data with, and withdrawal of consent.'],

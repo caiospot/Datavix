@@ -1,4 +1,5 @@
 name: Publicar no GitHub Pages
+# O site mora em https://datavix.app (Hostinger, ver hostinger.yml). Aqui, no endereço antigo, vai só uma página de aviso que leva para lá (DATAVIX_LEGACY=1).
 on:
   push:
     branches: [main]
@@ -20,10 +21,8 @@ jobs:
           node-version: 22
       - name: Build
         env:
-          DATAVIX_NPS_URL: ${{ secrets.DATAVIX_NPS_URL }}
-          DATAVIX_NPS_TOKEN: ${{ secrets.DATAVIX_NPS_TOKEN }}
-          DATAVIX_CONTACT_EMAIL: ${{ vars.DATAVIX_CONTACT_EMAIL }}
-          DATAVIX_SITE: ${{ vars.DATAVIX_SITE }}
+          DATAVIX_LEGACY: '1'
+          DATAVIX_SITE: datavix.app
         run: node build.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

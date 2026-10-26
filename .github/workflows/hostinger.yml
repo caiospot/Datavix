@@ -1,5 +1,5 @@
 name: Publicar na Hostinger
-# Monta o site como a Hostinger precisa (DATAVIX_HOST=hostinger, endereço datavix.app, .htaccess) e guarda o resultado na branch "hostinger".
+# Monta o site como a Hostinger precisa (DATAVIX_HOST=hostinger, endereço datavix.app, .htaccess): landing e páginas de conteúdo na raiz, o app em /app/. Guarda o resultado na branch "hostinger".
 # A Hostinger (hPanel > Avançado > Git, conectada ao GitHub) publica sozinha cada push nessa branch na pasta public_html.
 # O mesmo site também fica como arquivo (artefato "datavix-hostinger") para quem prefere enviar pelo Gerenciador de Arquivos do hPanel.
 # Passo a passo: docs/migracao-hostinger.md
@@ -28,6 +28,9 @@ jobs:
           DATAVIX_SITE: datavix.app
           DATAVIX_HOST: hostinger
           DATAVIX_CLARITY_HOST: datavix.app
+          DATAVIX_GSC_TOKEN: ${{ vars.DATAVIX_GSC_TOKEN }}
+          DATAVIX_BING_TOKEN: ${{ vars.DATAVIX_BING_TOKEN }}
+          DATAVIX_SAMEAS: ${{ vars.DATAVIX_SAMEAS }}
         run: node build.mjs
       - uses: actions/upload-artifact@v4
         with:
@@ -39,7 +42,7 @@ jobs:
         run: |
           set -euo pipefail
           SRC=$(git rev-parse --short HEAD)
-          BUILD=$(grep -o 'window.__DV={"build":"[0-9a-f]*"' dist/index.html | grep -o '[0-9a-f]\{10\}' | head -1)
+          BUILD=$(grep -o 'window.__DV={"build":"[0-9a-f]*"' dist/app/index.html | grep -o '[0-9a-f]\{10\}' | head -1)
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if git ls-remote --exit-code --heads origin hostinger >/dev/null 2>&1; then

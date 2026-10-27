@@ -4,6 +4,15 @@ import fs from 'node:fs';
 import { openChrome, sleep } from './cdp-lib.mjs';
 
 const OUT = new URL('../site/assets/img/', import.meta.url), MAN = new URL('manifest.json', OUT);
+// largura e altura reais de um WebP (VP8, VP8L ou VP8X)
+function webpSize(b) {
+  if (b.toString('ascii', 0, 4) !== 'RIFF' || b.toString('ascii', 8, 12) !== 'WEBP') throw new Error('não é WebP');
+  const t = b.toString('ascii', 12, 16);
+  if (t === 'VP8 ') return { w: b.readUInt16LE(26) & 0x3fff, h: b.readUInt16LE(28) & 0x3fff };
+  if (t === 'VP8L') { const v = b.readUInt32LE(21); return { w: (v & 0x3fff) + 1, h: ((v >> 14) & 0x3fff) + 1 }; }
+  if (t === 'VP8X') return { w: b.readUIntLE(24, 3) + 1, h: b.readUIntLE(27, 3) + 1 };
+  throw new Error('WebP desconhecido');
+}
 const manifest = fs.existsSync(MAN) ? JSON.parse(fs.readFileSync(MAN, 'utf8')) : {};
 const want = process.argv.slice(2).filter(a => !a.startsWith('--')), langArg = (process.argv.find(a => a.startsWith('--lang=')) || '').slice(7);
 const BASE = 'http://localhost:8768/test/dev.html';
@@ -19,7 +28,9 @@ window.__h.type = async v => { const b = __h.q('#panel .type[data-v=' + v + ']')
 
 // cada captura: { w, h } do navegador; run(c, L) leva o app até a tela; variantes de largura em out
 const SHOTS = {
-  hero: { w: 1600, h: 900, tell: false, run: async (c, L) => { await c.ev(`__h.gen()`); await c.ev(`__h.type('organism')`); await sleep(7000); } },
+  hero: { w: 1280, h: 800, dpr: 2, variants: [0.3125, 0.5, 1], tell: false, run: async (c, L) => { await c.ev(`__h.gen()`); await c.ev(`__h.type('organism')`); await sleep(7000); } },
+  // o gráfico do cartão "Veja a animação" da landing do app, capturado do próprio cartão (sem texto, vale para os dois idiomas)
+  passo3: { app: { card: '.lph-card.c3', el: '.lph-card.c3 .v3', wait: 7000 }, w: 1440, h: 900, dpr: 2, variants: [0.5, 1], once: true },
   race: { w: 1440, h: 810, tell: false, file: { pt: 'exemplo-corrida.csv', en: 'race-example.csv' }, run: async (c, L) => { await c.ev(`__h.gen()`); console.log('  tipo:', await c.ev(`__h.type('race')`)); for (const t of [3, 6, 10, 16]) { await sleep(t === 3 ? 3000 : (t - (t === 6 ? 3 : t === 10 ? 6 : 10)) * 1000); if (process.env.RACE_DEBUG) fs.writeFileSync(`/tmp/race-${L}-${t}.png`, await c.shot()); } } },
   leitura: { w: 1280, h: 800, tell: false, up: true, run: async (c, L) => { await c.ev(`(async () => { window.__datavix.go('read'); await __h.sl(1500); })()`); await sleep(800); } },
   calculo: { w: 1440, h: 900, tell: false, run: async (c, L) => { await c.ev(`__h.gen()`); await sleep(5000); await c.ev(`(async () => { const s = __h.q('details summary'); if (s) s.click(); await __h.sl(600); })()`); await sleep(500); } },
@@ -35,21 +46,30 @@ for (const L of ['pt', 'en']) {
   if (langArg && langArg !== L) continue;
   for (const [name, def] of Object.entries(SHOTS)) {
     if (want.length && !want.includes(name)) continue;
+    if (def.once && L !== 'pt') continue;
     const file = def.file ? def.file[L] : (L === 'pt' ? 'exemplo-vendas.csv' : 'sales-example.csv');
-    const key = L === 'pt' ? name : name + '-en'; process.stdout.write(`${key} ...\n`);
-    const c = await openChrome({ width: def.w, height: def.h, scale: 1 });
+    const key = L === 'pt' || def.once ? name : name + '-en'; process.stdout.write(`${key} ...\n`);
+    const c = await openChrome({ width: def.w, height: def.h, scale: def.dpr || 1 });
     try {
-      await c.goto(BASE + (def.tell ? '?tell' : '')); await sleep(2500);
-      await c.ev(PRE); await c.ev(`__h.lang('${L.toUpperCase()}')`); await sleep(400);
-      await c.ev(`__h.up(${JSON.stringify(file)})`);
-      await def.run(c, L);
-      const variants = [];
-      const clip = def.clip || { x: 0, y: 0, width: def.w, height: def.h };
-      for (const [w, s] of def.variants || [[Math.round(clip.width / 2), 0.5], [clip.width, 1]]) {
-        const buf = await c.shot({ format: 'webp', quality: 82, clip, scale: s });
-        const f = `${key}-${w}.webp`; fs.writeFileSync(new URL(f, OUT), buf); variants.push({ w, h: Math.round(clip.height * s), file: f }); console.log(`  ${f} ${(buf.length / 1024).toFixed(0)} KB`);
+      let clip = def.clip || { x: 0, y: 0, width: def.w, height: def.h }, beyond = false;
+      if (def.app) { // elemento da landing do app (servida pelo site local em 8780): o carrossel fica sem encaixe para o cartão parar onde medimos
+        await c.goto(`http://localhost:8780/app/?lang=${L}`); await sleep(2500);
+        await c.ev(`(() => { document.querySelectorAll('.lph-track').forEach(t => { t.style.scrollSnapType = 'none'; t.style.scrollBehavior = 'auto'; }); document.querySelector(${JSON.stringify(def.app.card)}).scrollIntoView({ block: 'center', inline: 'center' }); })()`); await sleep(def.app.wait || 5000);
+        const r = JSON.parse(await c.ev(`(() => { const r = document.querySelector(${JSON.stringify(def.app.el)}).getBoundingClientRect(); return JSON.stringify({ x: r.left + scrollX, y: r.top + scrollY, width: r.width, height: r.height, vw: innerWidth }); })()`));
+        console.log('  elemento:', JSON.stringify(r)); clip = { x: r.x, y: r.y, width: r.width, height: r.height };
+      } else {
+        await c.goto(BASE + (def.tell ? '?tell' : '')); await sleep(2500);
+        await c.ev(PRE); await c.ev(`__h.lang('${L.toUpperCase()}')`); await sleep(400);
+        await c.ev(`__h.up(${JSON.stringify(file)})`);
+        await def.run(c, L);
       }
-      manifest[key] = { variants };
+      const variants = [];
+      for (const v of def.variants || [[Math.round(clip.width / 2), 0.5], [clip.width, 1]]) {
+        const s = Array.isArray(v) ? v[1] : v;
+        const buf = await c.shot({ format: 'webp', quality: 82, clip, scale: s, beyond });
+        const d = webpSize(buf), f = `${key}-${d.w}.webp`; fs.writeFileSync(new URL(f, OUT), buf); variants.push({ w: d.w, h: d.h, file: f }); console.log(`  ${f} ${d.w}×${d.h} ${(buf.length / 1024).toFixed(0)} KB`);
+      }
+      manifest[key] = { variants: variants.sort((a, b) => a.w - b.w) };
       if (c.logs.length) console.log('  erros no console:', c.logs.slice(0, 3));
     } finally { await c.close(); }
   }

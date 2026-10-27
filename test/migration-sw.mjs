@@ -70,7 +70,7 @@ try {
 
   // 6) o link da landing leva a /app/: o app novo abre, instala o service worker com escopo /app/ e o cache novo
   await send('Page.navigate', { url: `http://127.0.0.1:${PORT}/` }); await sleep(1500);
-  const href = await ev(`document.querySelector('.act .btn').getAttribute('href')`); ok('o botão do topo da landing aponta para /app/', href === '/app/', href);
+  const href = await ev(`document.querySelector('.gn-act .btn').getAttribute('href')`); ok('o botão do topo da landing aponta para /app/', href === '/app/', href);
   const n2 = navs; await send('Page.navigate', { url: `http://127.0.0.1:${PORT}/app/` });
   ok('/app/ abre o app (título Datavix e a landing do produto)', !!(await until(`document.title === 'Datavix' && document.body.innerText.length > 300 && !!document.querySelector('.lp')`, 30000)));
   ok('/app/: o service worker novo assume o escopo /app/', !!(await until(`navigator.serviceWorker.getRegistration().then(r => !!(r && r.active && r.scope.endsWith('/app/') && navigator.serviceWorker.controller))`, 30000)), await ev(`navigator.serviceWorker.getRegistrations().then(r => r.map(x => x.scope).join())`));

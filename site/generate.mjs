@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import vm from 'node:vm';
-import { loadCatalog } from './catalog.mjs';
+import { loadCatalog, loadLanding } from './catalog.mjs';
 import { renderPage, esc, md, plain } from './layout.mjs';
 import PT from './content-pt.mjs';
 import EN from './content-en.mjs';
@@ -19,7 +19,7 @@ const AI_BOTS = [
 
 export function buildSite({ root, out, origin, host, contactEmail = '', gsc = '', bing = '', sameAs = [] }) {
   const R = f => new URL(f, root), rd = f => fs.readFileSync(R(f), 'utf8');
-  const catalog = loadCatalog(root), langs = [PT, EN];
+  const catalog = loadCatalog(root), landing = loadLanding(root), langs = [PT, EN];
   const put = (rel, data) => { const f = path.join(out, rel); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, data); };
   const assetMap = {};
   const addAsset = (src, rel) => { const buf = fs.readFileSync(R(src)), ext = path.extname(rel), base = rel.slice(0, -ext.length), name = `assets/${base}.${sha(buf)}${ext}`; put(name, buf); assetMap[rel] = '/' + name; return '/' + name; };
@@ -33,7 +33,7 @@ export function buildSite({ root, out, origin, host, contactEmail = '', gsc = ''
   // imagens (WebP) com variantes por largura, e as imagens de compartilhamento (PNG 1200×630, nome estável)
   const imgManifest = JSON.parse(rd('site/assets/img/manifest.json')), images = {};
   // só entram no site as imagens que alguma página usa (as demais capturas só servem de base para os cartões de compartilhamento)
-  const usedImg = new Set(); const scan = bs => (bs || []).forEach(b => { if (b && b.t === 'fig' && b.img) usedImg.add(b.img); });
+  const usedImg = new Set(); const scan = bs => (bs || []).forEach(b => { if (b && (b.t === 'fig' || b.t === 'howcards') && b.img) usedImg.add(b.img); });
   for (const c of langs) for (const p of c.pages) { scan(p.blocks); if (p.hero) scan([p.hero]); (p.sections || []).forEach(sec => scan(sec.body)); }
   for (const name of usedImg) if (!imgManifest[name]) throw new Error(`imagem "${name}" não existe em site/assets/img/manifest.json (rode scripts/make-shots.mjs)`);
   for (const [name, m] of Object.entries(imgManifest)) { if (!usedImg.has(name)) continue; for (const v of m.variants) addAsset('site/assets/img/' + v.file, 'img/' + v.file); images[name] = m; }
@@ -60,7 +60,7 @@ export function buildSite({ root, out, origin, host, contactEmail = '', gsc = ''
     for (const page of c.pages) {
       const faqItems = pg => pg.id === 'home' ? pg.sections.flatMap(s => (s.body || []).filter(b => b.t === 'faq' && b.home).flatMap(b => b.items)) : (pg.blocks || []).filter(b => b.t === 'faq').flatMap(b => b.items);
       const ctx = {
-        page, lang: c.lang, L: c.L, ui: c.ui, origin, csp, css, fontUrl, images, catalog, gsc, bing, sameAs, contactEmail, appDesc: c.appDesc, featureList: c.featureList, chartText: c.chartText, storyText: c.storyText, faqItems,
+        page, lang: c.lang, L: c.L, ui: c.ui, origin, csp, css, fontUrl, images, catalog, landing, gsc, bing, sameAs, contactEmail, appDesc: c.appDesc, featureList: c.featureList, chartText: c.chartText, storyText: c.storyText, faqItems,
         appUrl: c.L === 'en' ? '/app/?lang=en' : '/app/', url: id => urlOf(c, id), asset: rel => { const a = assetMap[rel]; if (!a) throw new Error('asset desconhecido: ' + rel); return a; },
         alt: id => ({ path: urlOf(other, id), hreflang: other.lang, ogLocale: other.ui.ogLocale }), hreflangs,
         pageLabel: id => c.pages.find(x => x.id === id).label, pageSummary: id => c.pages.find(x => x.id === id).summary, dateText: iso => dateFmt[c.lang].format(new Date(iso + 'T00:00:00Z')),

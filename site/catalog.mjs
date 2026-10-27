@@ -3,6 +3,19 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 
+// textos e dados dos mini-visuais dos cartões (os mesmos da landing do app): LP (src/landing.js), I18N (src/i18n*.js) e PALETTES (src/piece.js)
+export function loadLanding(root) {
+  const rd = f => fs.readFileSync(new URL(f, root), 'utf8');
+  const ctx = vm.createContext({ window: {}, console });
+  vm.runInContext(`${rd('src/i18n.js')}\n${rd('src/i18n-charts.js')}\nthis.I18N = I18N;`.replace(/^const /gm, 'var ').replace(/^let /gm, 'var '), ctx);
+  const cut = (src, from, to) => { const a = src.indexOf(from), b = src.indexOf(to, a); if (a < 0 || b < 0) throw new Error(`trecho "${from}" não encontrado`); return src.slice(a, b); };
+  const lc = vm.createContext({});
+  vm.runInContext(cut(rd('src/landing.js'), 'const LP = {', 'const LPT').replace(/^const /gm, 'var ') + '\nthis.LP = LP;', lc);
+  const pc = vm.createContext({});
+  vm.runInContext(cut(rd('src/piece.js'), 'const PALETTES = {', '};').replace(/^const /gm, 'var ') + '};\nthis.PALETTES = PALETTES;', pc);
+  return { I18N: ctx.I18N, LP: lc.LP, PALETTES: pc.PALETTES };
+}
+
 export function loadCatalog(root) {
   const rd = f => fs.readFileSync(new URL(f, root), 'utf8');
   // textos da interface: i18n.js e i18n-charts.js definem const I18N e o completam (Object.assign)

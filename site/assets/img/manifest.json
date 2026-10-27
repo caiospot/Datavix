@@ -87,13 +87,18 @@
     "variants": [
       {
         "w": 800,
-        "h": 450,
+        "h": 500,
         "file": "hero-800.webp"
       },
       {
-        "w": 1600,
-        "h": 900,
-        "file": "hero-1600.webp"
+        "w": 1280,
+        "h": 800,
+        "file": "hero-1280.webp"
+      },
+      {
+        "w": 2560,
+        "h": 1600,
+        "file": "hero-2560.webp"
       }
     ]
   },
@@ -101,13 +106,18 @@
     "variants": [
       {
         "w": 800,
-        "h": 450,
+        "h": 500,
         "file": "hero-en-800.webp"
       },
       {
-        "w": 1600,
-        "h": 900,
-        "file": "hero-en-1600.webp"
+        "w": 1280,
+        "h": 800,
+        "file": "hero-en-1280.webp"
+      },
+      {
+        "w": 2560,
+        "h": 1600,
+        "file": "hero-en-2560.webp"
       }
     ]
   },
@@ -220,6 +230,20 @@
         "w": 640,
         "h": 2000,
         "file": "painel-graficos-en-640.webp"
+      }
+    ]
+  },
+  "passo3": {
+    "variants": [
+      {
+        "w": 444,
+        "h": 379,
+        "file": "passo3-444.webp"
+      },
+      {
+        "w": 888,
+        "h": 759,
+        "file": "passo3-888.webp"
       }
     ]
   },

@@ -88,7 +88,7 @@ for (const p of pages) {
   ok(`${tag} fontes pré-carregadas existem`, p.links.filter(l => l.rel === 'preload').length >= 1 && p.links.filter(l => l.rel === 'preload').every(l => exists(l.href.replace(/^\//, ''))));
   ok(`${tag} lastmod do sitemap = data de atualização mostrada na página (quando há)`, !/<time datetime="/.test(p.body) || (/<time datetime="([^"]+)"/.exec(p.body) || [])[1] === p.lastmod);
 }
-ok('o CSS é o mesmo em todas as páginas (um hash de CSP vale para o site inteiro)', pages.every(p => (/<style>([\s\S]*?)<\/style>/.exec(p.head) || [])[1] === css) && css.length > 4000 && css.length < 16000, `${(css.length / 1024).toFixed(1)} KB`);
+ok('o CSS é o mesmo em todas as páginas (um hash de CSP vale para o site inteiro)', pages.every(p => (/<style>([\s\S]*?)<\/style>/.exec(p.head) || [])[1] === css) && css.length > 4000 && css.length < 28000, `${(css.length / 1024).toFixed(1)} KB`);
 
 
 // ------------------------------------------------------------ contraste das cores do CSS (WCAG AA: 4,5:1 para texto), no tema escuro e no claro

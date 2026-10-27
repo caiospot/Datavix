@@ -6,7 +6,7 @@ export default {
   lang: 'en', L: 'en', root: '/en',
   ui: {
     ogLocale: 'en_US', skip: 'Skip to content', navLabel: 'Main', crumbsLabel: 'You are here', homeCrumb: 'Home',
-    cta: 'Start for free', langShort: 'PT', langName: 'Ler em português', langTitle: 'Ler esta página em português',
+    menu: 'Menu', cta: 'Start for free', langShort: 'PT', langName: 'Ler em português', langTitle: 'Ler esta página em português',
     updated: 'Updated', related: 'Keep reading', readMore: 'Read also', mainChart: 'Main chart', altCharts: 'Alternatives',
     nav: [['charts', 'Charts'], ['models', 'Templates'], ['pptx', 'PowerPoint'], ['privacy', 'Privacy', 'opt'], ['faq', 'FAQ', 'opt']],
     footer: {
@@ -78,15 +78,15 @@ export default {
       lead: 'Datavix reads your Excel or CSV file and builds interactive charts, presentations and videos from the numbers in your own spreadsheet. Everything runs in your browser: the file never leaves your computer.',
       secondary: 'See how it works',
       chips: ['XLSX · XLS · CSV', 'Exports HTML, PNG, PowerPoint and video', 'Portuguese and English'],
-      hero: { t: 'fig', hero: true, img: 'hero-en', eager: true, sizes: '(min-width: 1120px) 1080px, calc(100vw - 40px)', alt: 'Datavix screen with an animated radial tree, the insights panel with its calculation in plain sight and the chart options', cap: 'The Datavix editor with fictional sales data by channel and region.' },
+      hero: { t: 'fig', hero: true, img: 'hero-en', eager: true, alt: 'Datavix screen with an animated radial tree, the insights panel with its calculation in plain sight and the chart options', cap: 'The Datavix editor with fictional sales data by channel and region.' },
       sections: [
-        { id: 'how', k: 'How it works', h2: 'Four steps from spreadsheet to story', body: [{ t: 'steps', items: [
+        { id: 'how', k: 'How it works', h2: 'Four steps from spreadsheet to **story**', body: [{ t: 'howcards', label: 'How it works', img: 'passo3', imgAlt: 'Radial spokes chart with fictional data: one spoke per state, length set by the value and color by category', items: [
           { h: 'Answer 4 questions', x: 'Area, audience, decision and time. After you add the spreadsheet, Datavix shows what it found and picks the chart.' },
           { h: 'Add your spreadsheet', x: 'Excel or CSV with tens of thousands of rows. Datavix recognizes columns, dates and number formats.' },
           { h: 'Watch it animate', x: 'The chart comes in animated. Every insight comes with its calculation: “see calculation” shows the math.' },
           { h: 'Edit and export', x: 'Change chart, palette, background and fonts. Export offline HTML, PNG, PowerPoint or video.' },
         ] }], more: { page: 'planilha', label: 'See the full step-by-step' } },
-        { id: 'why', k: 'Why Datavix', h2: 'Built for people who have to prove the number', body: [{ t: 'cards', items: [
+        { id: 'why', alt: true, k: 'Why Datavix', h2: 'Built for people who have to prove the number', body: [{ t: 'cards', items: [
           { h: 'Your spreadsheet stays in the browser', x: 'Reading, calculating and drawing happen on your computer. No spreadsheet upload and no server processing your data.' },
           { h: 'Insights with the math in plain sight', x: 'Every highlight shows the calculation behind it. If the data does not support a sentence, it does not appear.' },
           { h: 'Only numbers from your spreadsheet', x: 'No invented or estimated values: everything in the chart comes from the cells you provided.' },
@@ -102,7 +102,7 @@ export default {
           { k: 'Series', h: 'Isometric ridgeline', x: 'Series compared in relief, side by side.', href: 'page:charts' },
           { k: 'Map', h: 'Bubble map of Brazil', x: 'One bubble per state, with the area set by the value. IBGE outlines are built into the app.', href: 'page:charts' },
         ] }], more: { page: 'charts', label: 'See all 30 chart types and what each one needs from your data' } },
-        { id: 'stories', k: 'Storytelling', h2: 'Every story is a question your spreadsheet answers', intro: 'Instead of dumping charts, Datavix picks a question (“How did it change?”, “Who drives the result?”, “What is the total made of?”) and builds a 2, 5 or 10-slide script with the findings that answer it. See the [data storytelling method](page:story).', body: [{ t: 'cards', items: [
+        { id: 'stories', alt: true, k: 'Storytelling', h2: 'Every story is a question your spreadsheet answers', intro: 'Instead of dumping charts, Datavix picks a question (“How did it change?”, “Who drives the result?”, “What is the total made of?”) and builds a 2, 5 or 10-slide script with the findings that answer it. See the [data storytelling method](page:story).', body: [{ t: 'cards', items: [
           { h: 'Change over time', x: 'How did it change? Did it grow, fall, fluctuate?' },
           { h: 'Ranking and concentration', x: 'Who drives the result? Do a few do most?' },
           { h: 'Composition', x: 'What is the total made of?' },
@@ -116,7 +116,7 @@ export default {
           { t: '[PowerPoint (.pptx)](page:pptx)', x: 'Editable text and native PowerPoint charts, each with its spreadsheet embedded.' },
           { t: '[MP4 video](page:video)', x: 'About 20 seconds, vertical 9:16 or square 1:1, no audio, recorded in your browser.' },
         ] }] },
-        { id: 'privacy', k: 'Privacy', h2: 'Your data stays with you', body: [{ t: 'ul', items: [
+        { id: 'privacy', alt: true, k: 'Privacy', h2: 'Your data stays with you', body: [{ t: 'ul', items: [
           'The spreadsheet is read, calculated and drawn in your browser. It is not sent to any server.',
           'To get started we only ask for your email. The satisfaction survey is optional.',
           'No ads. Usage analytics (Microsoft Clarity) only turn on if you accept, and never record the content of your spreadsheet.',
@@ -127,7 +127,7 @@ export default {
           { h: 'Executives and leadership', x: 'A clear story with a verifiable number behind it.' },
           { h: 'Consultancies and agencies', x: 'One HTML file per client, with the project’s visual identity.' },
         ] }] },
-        { id: 'faq', k: 'FAQ', h2: 'What people ask first', body: [{ t: 'faq', home: true, items: [
+        { id: 'faq', alt: true, k: 'FAQ', h2: 'What people ask first', body: [{ t: 'faq', home: true, items: [
           { q: 'Is my spreadsheet sent to a server?', a: 'No. The file is read and processed in your browser and is never uploaded. The only things that leave your browser are the email you enter to get started, your answer to the satisfaction survey (optional) and, if you accept, anonymous site usage data. See the [privacy policy](page:privacy).' },
           { q: 'Which file formats are supported?', a: 'XLSX, XLS, CSV and TSV, with dates and numbers written in Portuguese or English.' },
           { q: 'Can I use the result offline?', a: 'Yes. The exported HTML is a single file and opens without internet. The app also opens offline after the first visit.' },

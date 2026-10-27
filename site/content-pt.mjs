@@ -6,7 +6,7 @@ export default {
   lang: 'pt-BR', L: 'pt', root: '',
   ui: {
     ogLocale: 'pt_BR', skip: 'Ir para o conteúdo', navLabel: 'Principal', crumbsLabel: 'Você está aqui', homeCrumb: 'Início',
-    cta: 'Começar de graça', langShort: 'EN', langName: 'Read in English', langTitle: 'Read this page in English',
+    menu: 'Menu', cta: 'Começar de graça', langShort: 'EN', langName: 'Read in English', langTitle: 'Read this page in English',
     updated: 'Atualizado em', related: 'Continue lendo', readMore: 'Leia também', mainChart: 'Gráfico principal', altCharts: 'Alternativas',
     nav: [['charts', 'Gráficos'], ['models', 'Modelos'], ['pptx', 'PowerPoint'], ['privacy', 'Privacidade', 'opt'], ['faq', 'Perguntas', 'opt']],
     footer: {
@@ -78,15 +78,15 @@ export default {
       lead: 'O Datavix lê o seu Excel ou CSV e monta gráficos interativos, apresentações e vídeos com os números da própria planilha. Tudo roda no navegador: o arquivo não sai do seu computador.',
       secondary: 'Ver como funciona',
       chips: ['XLSX · XLS · CSV', 'Exporta HTML, PNG, PowerPoint e vídeo', 'Português e inglês'],
-      hero: { t: 'fig', hero: true, img: 'hero', eager: true, sizes: '(min-width: 1120px) 1080px, calc(100vw - 40px)', alt: 'Tela do Datavix com uma árvore radial animada, o painel de insights com o cálculo à vista e as opções de gráfico', cap: 'O editor do Datavix com dados fictícios de vendas por canal e região.' },
+      hero: { t: 'fig', hero: true, img: 'hero', eager: true, alt: 'Tela do Datavix com uma árvore radial animada, o painel de insights com o cálculo à vista e as opções de gráfico', cap: 'O editor do Datavix com dados fictícios de vendas por canal e região.' },
       sections: [
-        { id: 'como', k: 'Como funciona', h2: 'Quatro passos da planilha à história', body: [{ t: 'steps', items: [
+        { id: 'como', k: 'Como funciona', h2: 'Quatro passos da planilha **à história**', body: [{ t: 'howcards', label: 'Como funciona', img: 'passo3', imgAlt: 'Gráfico de raios radiais com dados fictícios: um raio por estado, o comprimento pelo valor e a cor por categoria', items: [
           { h: 'Responda 4 perguntas', x: 'Área, público, decisão e tempo. Depois da planilha, o Datavix mostra o que achou e escolhe o gráfico.' },
           { h: 'Suba a planilha', x: 'Excel ou CSV com dezenas de milhares de linhas. O Datavix reconhece colunas, datas e formatos brasileiros.' },
           { h: 'Veja a animação', x: 'O gráfico entra animado. Cada insight vem com o cálculo: o “ver cálculo” mostra a conta.' },
           { h: 'Edite e exporte', x: 'Troque gráfico, paleta, fundo e fontes. Exporte HTML offline, PNG, PowerPoint ou vídeo.' },
         ] }], more: { page: 'planilha', label: 'Veja o passo a passo completo' } },
-        { id: 'diferenciais', k: 'Diferenciais', h2: 'Feito para quem precisa provar o número', body: [{ t: 'cards', items: [
+        { id: 'diferenciais', alt: true, k: 'Diferenciais', h2: 'Feito para quem precisa provar o número', body: [{ t: 'cards', items: [
           { h: 'A planilha não sai do navegador', x: 'Leitura, cálculo e desenho acontecem no seu computador. Sem upload da planilha e sem servidor processando os seus dados.' },
           { h: 'Insight com a conta à vista', x: 'Cada destaque mostra o cálculo por trás. Se os dados não sustentam a frase, ela não aparece.' },
           { h: 'Só números da sua planilha', x: 'Nada de valor inventado ou estimado: tudo o que aparece no gráfico vem das células que você enviou.' },
@@ -102,7 +102,7 @@ export default {
           { k: 'Séries', h: 'Cordilheira isométrica', x: 'Séries comparadas em relevo, lado a lado.', href: 'page:charts' },
           { k: 'Mapa', h: 'Mapa de bolhas do Brasil', x: 'Uma bolha por estado, com a área pelo valor. Contornos do IBGE embutidos no app.', href: 'page:charts' },
         ] }], more: { page: 'charts', label: 'Ver os 30 tipos de gráfico e o que cada um pede da planilha' } },
-        { id: 'historias', k: 'Storytelling', h2: 'Cada história é uma pergunta que a planilha responde', intro: 'Em vez de despejar gráficos, o Datavix escolhe uma pergunta (“Como mudou?”, “Quem puxa o resultado?”, “Do que o total é feito?”) e monta um roteiro de 2, 5 ou 10 slides com os achados que respondem a ela. Entenda o [método de storytelling com dados](page:story).', body: [{ t: 'cards', items: [
+        { id: 'historias', alt: true, k: 'Storytelling', h2: 'Cada história é uma pergunta que a planilha responde', intro: 'Em vez de despejar gráficos, o Datavix escolhe uma pergunta (“Como mudou?”, “Quem puxa o resultado?”, “Do que o total é feito?”) e monta um roteiro de 2, 5 ou 10 slides com os achados que respondem a ela. Entenda o [método de storytelling com dados](page:story).', body: [{ t: 'cards', items: [
           { h: 'Evolução no tempo', x: 'Como mudou? Cresceu, caiu, oscilou?' },
           { h: 'Ranking e concentração', x: 'Quem puxa o resultado? Poucos fazem muito?' },
           { h: 'Composição', x: 'Do que o total é feito?' },
@@ -116,7 +116,7 @@ export default {
           { t: '[PowerPoint (.pptx)](page:pptx)', x: 'Textos editáveis e gráficos nativos do PowerPoint, cada um com a planilha embutida.' },
           { t: '[Vídeo MP4](page:video)', x: 'Cerca de 20 segundos, vertical 9:16 ou quadrado 1:1, sem áudio, gravado no navegador.' },
         ] }] },
-        { id: 'privacidade', k: 'Privacidade', h2: 'Os seus dados ficam com você', body: [{ t: 'ul', items: [
+        { id: 'privacidade', alt: true, k: 'Privacidade', h2: 'Os seus dados ficam com você', body: [{ t: 'ul', items: [
           'A planilha é lida, calculada e desenhada no seu navegador. Ela não é enviada para nenhum servidor.',
           'Para começar, pedimos só o seu e-mail. A pesquisa de satisfação é opcional.',
           'Não usamos anúncios. A análise de uso (Microsoft Clarity) só liga se você aceitar e nunca registra o conteúdo da planilha.',
@@ -127,7 +127,7 @@ export default {
           { h: 'Diretoria e liderança', x: 'Uma história clara, com o número verificável por trás.' },
           { h: 'Consultorias e agências', x: 'Um HTML por cliente, com a identidade visual do projeto.' },
         ] }] },
-        { id: 'faq', k: 'Perguntas frequentes', h2: 'O que as pessoas perguntam primeiro', body: [{ t: 'faq', home: true, items: [
+        { id: 'faq', alt: true, k: 'Perguntas frequentes', h2: 'O que as pessoas perguntam primeiro', body: [{ t: 'faq', home: true, items: [
           { q: 'Minha planilha é enviada para algum servidor?', a: 'Não. O arquivo é lido e processado no seu navegador e nunca é enviado. Só saem do navegador o e-mail que você informa para começar, a resposta à pesquisa de satisfação (opcional) e, se você aceitar, dados anônimos de uso do site. Veja a [política de privacidade](page:privacy).' },
           { q: 'Quais formatos de arquivo são aceitos?', a: 'XLSX, XLS, CSV e TSV, com datas e números escritos em português ou inglês.' },
           { q: 'Posso usar o resultado sem internet?', a: 'Sim. O HTML exportado é um único arquivo e abre sem internet. O app também abre sem internet depois da primeira visita.' },

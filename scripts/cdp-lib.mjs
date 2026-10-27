@@ -20,7 +20,7 @@ export async function openChrome({ width = 1440, height = 900, scale = 1, mobile
   await view(width, height, scale, mobile);
   const ev = async (expr) => { const r = await send('Runtime.evaluate', { expression: expr, returnByValue: true, awaitPromise: true }); if (r.result && r.result.exceptionDetails) throw new Error('JS: ' + (r.result.exceptionDetails.exception && r.result.exceptionDetails.exception.description || r.result.exceptionDetails.text)); return r.result && r.result.result ? r.result.result.value : undefined; };
   const goto = async url => { await send('Page.navigate', { url }); await sleep(1500); };
-  const shot = async ({ format = 'png', quality = 85, clip, scale: cs } = {}) => { const p = { format, ...(format !== 'png' ? { quality } : {}), captureBeyondViewport: false }; if (clip) p.clip = { ...clip, scale: cs || 1 }; const r = await send('Page.captureScreenshot', p); return Buffer.from(r.result.data, 'base64'); };
+  const shot = async ({ format = 'png', quality = 85, clip, scale: cs, beyond = false } = {}) => { const p = { format, ...(format !== 'png' ? { quality } : {}), captureBeyondViewport: beyond }; if (clip) p.clip = { ...clip, scale: cs || 1 }; const r = await send('Page.captureScreenshot', p); return Buffer.from(r.result.data, 'base64'); };
   const close = async () => { try { ws.close(); } catch (e) { /* segue */ } proc.kill('SIGKILL'); await sleep(200); try { fs.rmSync(dir, { recursive: true, force: true }); } catch (e) { /* segue */ } };
   return { send, ev, goto, shot, view, close, logs };
 }

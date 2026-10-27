@@ -196,11 +196,25 @@ export function renderPage(ctx) {
 ${page.sections.map(s => renderSection(s, ctx)).join('\n')}
 <section class="band"><div class="wrap"><h2>${md(page.cta.h, ctx)}</h2><p>${md(page.cta.x, ctx)}</p><div class="cta"><a class="btn" href="${ctx.appUrl}">${esc(page.cta.btn || ui.cta)}</a></div></div></section></main>`;
   } else {
-    const rel = (page.related || []).map(id => `<a class="card" href="${ctx.url(id)}"><span class="k">${esc(ui.readMore)}</span><h3>${esc(ctx.pageLabel(id))}</h3><p>${esc(ctx.pageSummary(id))}</p></a>`).join('');
-    body = `<main id="main" class="page"><div class="wrap">${crumbs(ctx)}<h1>${esc(page.h1)}</h1><p class="lead">${md(page.lead, ctx)}</p>${page.noDate ? '' : `<p class="upd">${esc(ui.updated)} <time datetime="${page.updated}">${esc(ctx.dateText(page.updated))}</time></p>`}
+    if (['faq', 'privacy'].includes(page.id)) {
+      const rel = (page.related || []).map(id => `<a class="card" href="${ctx.url(id)}"><span class="k">${esc(ui.readMore)}</span><h3>${esc(ctx.pageLabel(id))}</h3><p>${esc(ctx.pageSummary(id))}</p></a>`).join('');
+      body = `<main id="main" class="page"><div class="wrap">${crumbs(ctx)}<h1>${esc(page.h1)}</h1><p class="lead">${md(page.lead, ctx)}</p>${page.noDate ? '' : `<p class="upd">${esc(ui.updated)} <time datetime="${page.updated}">${esc(ctx.dateText(page.updated))}</time></p>`}
 <div class="prose">${renderBlocks(page.blocks, ctx)}</div>
 ${rel ? `<aside class="rel" aria-labelledby="rel-h"><h2 id="rel-h">${esc(ui.related)}</h2><div class="grid">${rel}</div></aside>` : ''}</div>
 ${page.cta ? `<section class="band"><div class="wrap"><h2>${md(page.cta.h, ctx)}</h2><p>${md(page.cta.x, ctx)}</p><div class="cta"><a class="btn" href="${ctx.appUrl}">${esc(page.cta.btn || ui.cta)}</a></div></div></section>` : ''}</main>`;
+    } else {
+      // página de produto: os blocos viram capítulos (um por h2), em faixas que se alternam, com sub-navegação fixa
+      const intro = [], chs = []; for (const b of page.blocks) { if (b.t === 'h2') chs.push({ id: b.id, h: b.x, blocks: [] }); else (chs.length ? chs[chs.length - 1].blocks : intro).push(b); }
+      const sub = `<nav class="sub" aria-label="${esc(ui.onPage)}"><div class="wide sub-in"><span class="sub-t">${esc(ctx.pageLabel(page.id))}</span><ul>${chs.filter(c => c.id).map(c => `<li><a href="#${esc(c.id)}">${md(c.h.replace(/^\d+\.\s*/, ''), ctx)}</a></li>`).join('')}</ul><a class="btn sm" href="${ctx.appUrl}">${esc(ui.cta)}</a></div></nav>`;
+      const chap = (c, k) => `<section class="sec pc${k % 2 ? ' alt' : ''}"${c.id ? ` id="${esc(c.id)}"` : ''}><div class="wide pc-in"><div class="pc-h"><p class="k">${String(k + 1).padStart(2, '0')}</p><h2>${md(c.h, ctx)}</h2></div><div class="prose">${renderBlocks(c.blocks, ctx)}</div></div></section>`;
+      const rel = (page.related || []).map((id, k) => `<li class="qtile t${k + 1} rc"><span class="k">${esc(ui.readMore)}</span><div><p><a href="${ctx.url(id)}">${esc(ctx.pageLabel(id))}</a></p><small>${esc(ctx.pageSummary(id))}</small></div></li>`).join('');
+      body = `<main id="main" class="pp"><section class="phero"><div class="wide">${crumbs(ctx)}<h1>${esc(page.h1)}</h1><p class="lead">${md(page.lead, ctx)}</p><div class="cta"><a class="btn" href="${ctx.appUrl}">${esc(ui.cta)}</a></div>${page.noDate ? '' : `<p class="upd">${esc(ui.updated)} <time datetime="${page.updated}">${esc(ctx.dateText(page.updated))}</time></p>`}</div></section>
+${sub}
+${intro.length ? `<section class="sec"><div class="wide"><div class="prose">${renderBlocks(intro, ctx)}</div></div></section>` : ''}
+${chs.map(chap).join('\n')}
+${rel ? `<section class="sec${chs.length % 2 ? ' alt' : ''}" aria-labelledby="rel-h"><div class="wide"><h2 id="rel-h" class="rel-h">${esc(ui.related)}</h2><ul class="qt rq">${rel}</ul></div></section>` : ''}
+${page.cta ? `<section class="band"><div class="wrap"><h2>${md(page.cta.h, ctx)}</h2><p>${md(page.cta.x, ctx)}</p><div class="cta"><a class="btn" href="${ctx.appUrl}">${esc(page.cta.btn || ui.cta)}</a></div></div></section>` : ''}</main>`;
+    }
   }
   return `<!doctype html>\n<html lang="${ctx.lang}">\n<head>\n${head}\n</head>\n<body>\n<a class="skip" href="#main">${esc(ui.skip)}</a>\n${ctx.state.icons ? ctx.icons.defs() + '\n' : ''}${header(ctx)}\n${body}\n${footer(ctx)}\n</body>\n</html>\n`;
 }

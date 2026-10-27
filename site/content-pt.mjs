@@ -6,7 +6,7 @@ export default {
   lang: 'pt-BR', L: 'pt', root: '',
   ui: {
     ogLocale: 'pt_BR', skip: 'Ir para o conteúdo', navLabel: 'Principal', crumbsLabel: 'Você está aqui', homeCrumb: 'Início',
-    menu: 'Menu', also: 'Também', chartAlt: 'animação com dados fictícios', cta: 'Começar de graça', langShort: 'EN', langName: 'Read in English', langTitle: 'Read this page in English',
+    menu: 'Menu', onPage: 'Nesta página', also: 'Também', chartAlt: 'animação com dados fictícios', cta: 'Começar de graça', langShort: 'EN', langName: 'Read in English', langTitle: 'Read this page in English',
     updated: 'Atualizado em', related: 'Continue lendo', readMore: 'Leia também', mainChart: 'Gráfico principal', altCharts: 'Alternativas',
     nav: [['charts', 'Gráficos'], ['models', 'Modelos'], ['pptx', 'PowerPoint'], ['privacy', 'Privacidade', 'opt'], ['faq', 'Perguntas', 'opt']],
     footer: {

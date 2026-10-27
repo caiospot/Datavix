@@ -13,7 +13,7 @@ const srv = http.createServer((q, s) => { const u = new URL(q.url, 'http://x'); 
 const sm = fs.readFileSync(path.join(DIST, 'sitemap.xml'), 'utf8'), paths = [...sm.matchAll(/<loc>https:\/\/[^/]+(\/[^<]*)<\/loc>/g)].map(m => m[1]);
 const WIDTHS = [320, 390, 768, 1280];
 const MEASURE = `(() => { const de = document.documentElement, cw = de.clientWidth, off = [];
-  for (const e of document.body.querySelectorAll('*')) { if (e.closest('.tbl') || e.closest('.tiles') || e.closest('details:not([open])') || e.closest('.sr') || e.closest('.skip')) continue; const r = e.getBoundingClientRect(); if (r.width > 0 && (r.right > cw + 1 || r.left < -1)) off.push(e.tagName.toLowerCase() + (e.className ? '.' + String(e.className).split(' ')[0] : '') + ':' + Math.round(r.right)); }
+  for (const e of document.body.querySelectorAll('*')) { if (e.closest('.tbl') || e.closest('.tiles') || e.closest('.sub ul') || e.closest('details:not([open])') || e.closest('.sr') || e.closest('.skip')) continue; const r = e.getBoundingClientRect(); if (r.width > 0 && (r.right > cw + 1 || r.left < -1)) off.push(e.tagName.toLowerCase() + (e.className ? '.' + String(e.className).split(' ')[0] : '') + ':' + Math.round(r.right)); }
   return JSON.stringify({ sw: de.scrollWidth, cw, off: off.slice(0, 4) }); })()`;
 const c = await openChrome({ width: 390, height: 844, scale: 2, mobile: true });
 const errs = []; await c.send('Log.enable');

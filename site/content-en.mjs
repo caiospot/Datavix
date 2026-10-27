@@ -6,7 +6,7 @@ export default {
   lang: 'en', L: 'en', root: '/en',
   ui: {
     ogLocale: 'en_US', skip: 'Skip to content', navLabel: 'Main', crumbsLabel: 'You are here', homeCrumb: 'Home',
-    menu: 'Menu', also: 'Also', chartAlt: 'animation with fictional data', cta: 'Start for free', langShort: 'PT', langName: 'Ler em português', langTitle: 'Ler esta página em português',
+    menu: 'Menu', onPage: 'On this page', also: 'Also', chartAlt: 'animation with fictional data', cta: 'Start for free', langShort: 'PT', langName: 'Ler em português', langTitle: 'Ler esta página em português',
     updated: 'Updated', related: 'Keep reading', readMore: 'Read also', mainChart: 'Main chart', altCharts: 'Alternatives',
     nav: [['charts', 'Charts'], ['models', 'Templates'], ['pptx', 'PowerPoint'], ['privacy', 'Privacy', 'opt'], ['faq', 'FAQ', 'opt']],
     footer: {

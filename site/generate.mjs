@@ -73,7 +73,7 @@ export function buildSite({ root, out, origin, host, contactEmail = '', gsc = ''
       const faqItems = pg => pg.id === 'home' ? pg.sections.flatMap(s => (s.body || []).filter(b => b.t === 'faq' && b.home).flatMap(b => b.items)) : (pg.blocks || []).filter(b => b.t === 'faq').flatMap(b => b.items);
       const ctx = {
         page, lang: c.lang, L: c.L, ui: c.ui, origin, csp, css, fontUrl, images, catalog, landing, icons, clips, gsc, bing, sameAs, contactEmail, appDesc: c.appDesc, featureList: c.featureList, chartText: c.chartText, storyText: c.storyText, faqItems, state: {},
-        appUrl: c.L === 'en' ? '/app/?lang=en' : '/app/', url: id => urlOf(c, id), asset: rel => { const a = assetMap[rel]; if (!a) throw new Error('asset desconhecido: ' + rel); return a; },
+        appUrl: c.L === 'en' ? '/app/?lang=en' : '/app/?lang=pt', url: id => urlOf(c, id), asset: rel => { const a = assetMap[rel]; if (!a) throw new Error('asset desconhecido: ' + rel); return a; },
         alt: id => ({ path: urlOf(other, id), hreflang: other.lang, ogLocale: other.ui.ogLocale }), hreflangs,
         pageLabel: id => c.pages.find(x => x.id === id).label, pageSummary: id => c.pages.find(x => x.id === id).summary, dateText: iso => dateFmt[c.lang].format(new Date(iso + 'T00:00:00Z')),
         privacyHtml: privacyHtml(c),

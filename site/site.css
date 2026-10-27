@@ -199,7 +199,7 @@ td:first-child{font-weight:600}
 .faq details[open] summary::after{transform:rotate(45deg)}
 .faq details p{margin:12px 0 0;color:var(--muted);max-width:66ch}
 .faq details p+p{margin-top:.7em}
-.sec .faq{max-width:var(--w-copy)}
+.sec .faq{max-width:var(--w-copy);margin-inline:auto}
 .band{margin-top:clamp(56px,8vw,96px);border-top:1px solid var(--line);padding:var(--sec-l) 0;text-align:center}
 .sec+.band{margin-top:0}
 .band h2{max-width:16em;margin:0 auto}
@@ -366,3 +366,6 @@ td:first-child{font-weight:600}
 .rq .rc small{display:block;margin-top:.6rem;color:var(--muted);font-size:.9375rem;line-height:1.45}
 .rq .rc:hover{border-color:var(--line2)}
 .pp .band{margin-top:0}
+
+.sec>.wide>.sec-more{display:flex;justify-content:center}
+#faq .sec-h{text-align:center}#faq .sec-h h2{margin-inline:auto}

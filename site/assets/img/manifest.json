@@ -274,5 +274,153 @@
         "file": "race-en-1440.webp"
       }
     ]
+  },
+  "slide-calc": {
+    "variants": [
+      {
+        "w": 800,
+        "h": 450,
+        "file": "slide-calc-800.webp"
+      },
+      {
+        "w": 1280,
+        "h": 720,
+        "file": "slide-calc-1280.webp"
+      },
+      {
+        "w": 2560,
+        "h": 1440,
+        "file": "slide-calc-2560.webp"
+      }
+    ]
+  },
+  "slide-calc-en": {
+    "variants": [
+      {
+        "w": 800,
+        "h": 450,
+        "file": "slide-calc-en-800.webp"
+      },
+      {
+        "w": 1280,
+        "h": 720,
+        "file": "slide-calc-en-1280.webp"
+      },
+      {
+        "w": 2560,
+        "h": 1440,
+        "file": "slide-calc-en-2560.webp"
+      }
+    ]
+  },
+  "slide-over": {
+    "variants": [
+      {
+        "w": 800,
+        "h": 450,
+        "file": "slide-over-800.webp"
+      },
+      {
+        "w": 1280,
+        "h": 720,
+        "file": "slide-over-1280.webp"
+      },
+      {
+        "w": 2560,
+        "h": 1440,
+        "file": "slide-over-2560.webp"
+      }
+    ]
+  },
+  "slide-over-en": {
+    "variants": [
+      {
+        "w": 800,
+        "h": 450,
+        "file": "slide-over-en-800.webp"
+      },
+      {
+        "w": 1280,
+        "h": 720,
+        "file": "slide-over-en-1280.webp"
+      },
+      {
+        "w": 2560,
+        "h": 1440,
+        "file": "slide-over-en-2560.webp"
+      }
+    ]
+  },
+  "video-1": {
+    "variants": [
+      {
+        "w": 540,
+        "h": 960,
+        "file": "video-1.webp"
+      }
+    ]
+  },
+  "video-2": {
+    "variants": [
+      {
+        "w": 540,
+        "h": 960,
+        "file": "video-2.webp"
+      }
+    ]
+  },
+  "video-3": {
+    "variants": [
+      {
+        "w": 540,
+        "h": 960,
+        "file": "video-3.webp"
+      }
+    ]
+  },
+  "video-4": {
+    "variants": [
+      {
+        "w": 540,
+        "h": 960,
+        "file": "video-4.webp"
+      }
+    ]
+  },
+  "video-en-1": {
+    "variants": [
+      {
+        "w": 540,
+        "h": 960,
+        "file": "video-en-1.webp"
+      }
+    ]
+  },
+  "video-en-2": {
+    "variants": [
+      {
+        "w": 540,
+        "h": 960,
+        "file": "video-en-2.webp"
+      }
+    ]
+  },
+  "video-en-3": {
+    "variants": [
+      {
+        "w": 540,
+        "h": 960,
+        "file": "video-en-3.webp"
+      }
+    ]
+  },
+  "video-en-4": {
+    "variants": [
+      {
+        "w": 540,
+        "h": 960,
+        "file": "video-en-4.webp"
+      }
+    ]
   }
 }

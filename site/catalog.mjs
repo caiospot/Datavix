@@ -16,6 +16,22 @@ export function loadLanding(root) {
   return { I18N: ctx.I18N, LP: lc.LP, PALETTES: pc.PALETTES };
 }
 
+// ícones dos 30 gráficos (src/icons.js): o style="stop-color:var(--x)" dos degradês vira classe (a CSP das páginas não aceita style inline) e os seis degradês
+// de cada ícone viram um bloco único por página (defs()), em vez de seis por ícone: o HTML da home fica com 20 KB a menos
+export function loadIcons(root) {
+  const src = fs.readFileSync(new URL('src/icons.js', root), 'utf8'), ctx = vm.createContext({});
+  vm.runInContext(src.replace(/^const /gm, 'var ').replace(/^let /gm, 'var ') + '\nthis.chartIcon = chartIcon;', ctx);
+  let shared = null;
+  const icon = id => {
+    let svg = ctx.chartIcon(id).replace(/style="stop-color:var\(--([a-z0-9]+)\)"/g, 'class="sc-$1"');
+    if (/style=/.test(svg)) throw new Error(`ícone "${id}" ainda tem style inline`);
+    const m = /<defs>[\s\S]*?<\/defs>/.exec(svg); if (!m) throw new Error(`ícone "${id}" sem degradês`);
+    if (!shared) shared = m[0].replace(/id="ig\d+([A-Z]{2})"/g, 'id="ig$1"');
+    return svg.replace(m[0], '').replace(/url\(#ig\d+([A-Z]{2})\)/g, 'url(#ig$1)');
+  };
+  return { icon, defs: () => `<svg class="dfs" width="0" height="0" aria-hidden="true" focusable="false">${shared}</svg>` };
+}
+
 export function loadCatalog(root) {
   const rd = f => fs.readFileSync(new URL(f, root), 'utf8');
   // textos da interface: i18n.js e i18n-charts.js definem const I18N e o completam (Object.assign)

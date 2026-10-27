@@ -6,7 +6,7 @@ export default {
   lang: 'en', L: 'en', root: '/en',
   ui: {
     ogLocale: 'en_US', skip: 'Skip to content', navLabel: 'Main', crumbsLabel: 'You are here', homeCrumb: 'Home',
-    menu: 'Menu', cta: 'Start for free', langShort: 'PT', langName: 'Ler em português', langTitle: 'Ler esta página em português',
+    menu: 'Menu', also: 'Also', chartAlt: 'animation with fictional data', cta: 'Start for free', langShort: 'PT', langName: 'Ler em português', langTitle: 'Ler esta página em português',
     updated: 'Updated', related: 'Keep reading', readMore: 'Read also', mainChart: 'Main chart', altCharts: 'Alternatives',
     nav: [['charts', 'Charts'], ['models', 'Templates'], ['pptx', 'PowerPoint'], ['privacy', 'Privacy', 'opt'], ['faq', 'FAQ', 'opt']],
     footer: {
@@ -80,29 +80,28 @@ export default {
       chips: ['XLSX · XLS · CSV', 'Exports HTML, PNG, PowerPoint and video', 'Portuguese and English'],
       hero: { t: 'fig', hero: true, img: 'hero-en', eager: true, alt: 'Datavix screen with an animated radial tree, the insights panel with its calculation in plain sight and the chart options', cap: 'The Datavix editor with fictional sales data by channel and region.' },
       sections: [
-        { id: 'how', k: 'How it works', h2: 'Four steps from spreadsheet to **story**', body: [{ t: 'howcards', label: 'How it works', img: 'passo3', imgAlt: 'Radial spokes chart with fictional data: one spoke per state, length set by the value and color by category', items: [
+        { id: 'how', k: 'How it works', h2: 'Four steps from spreadsheet to **story**', body: [{ t: 'howcards', label: 'How it works', clip: 'passo3', imgAlt: 'Animated radial spokes with fictional data: one spoke per state, length set by the value and color by category', items: [
           { h: 'Answer 4 questions', x: 'Area, audience, decision and time. After you add the spreadsheet, Datavix shows what it found and picks the chart.' },
           { h: 'Add your spreadsheet', x: 'Excel or CSV with tens of thousands of rows. Datavix recognizes columns, dates and number formats.' },
           { h: 'Watch it animate', x: 'The chart comes in animated. Every insight comes with its calculation: “see calculation” shows the math.' },
           { h: 'Edit and export', x: 'Change chart, palette, background and fonts. Export offline HTML, PNG, PowerPoint or video.' },
         ] }], more: { page: 'planilha', label: 'See the full step-by-step' } },
-        { id: 'why', alt: true, k: 'Why Datavix', h2: 'Built for people who have to prove the number', body: [{ t: 'cards', items: [
-          { h: 'Your spreadsheet stays in the browser', x: 'Reading, calculating and drawing happen on your computer. No spreadsheet upload and no server processing your data.' },
-          { h: 'Insights with the math in plain sight', x: 'Every highlight shows the calculation behind it. If the data does not support a sentence, it does not appear.' },
-          { h: 'Only numbers from your spreadsheet', x: 'No invented or estimated values: everything in the chart comes from the cells you provided.' },
-          { h: 'Personal data stays out', x: 'Emails, ID numbers, phone numbers and people’s names are recognized and kept out of the charts by default, with a warning. You decide whether to include them.' },
-          { h: 'HTML that opens offline', x: 'A single file, no internet and no dependencies. Ready to attach to an email and open in the meeting room.' },
-          { h: 'Editable PowerPoint', x: 'Native PowerPoint charts with the spreadsheet embedded: your numbers are in “Edit Data”.' },
-        ] }] },
-        { id: 'charts', k: 'Charts', h2: '30 chart types, one for every story', intro: 'Datavix suggests the chart that fits the shape of your data and shows the alternatives. The ones your spreadsheet cannot support appear dimmed, with the reason.', body: [{ t: 'cards', items: [
-          { k: 'Period and entities', h: 'Radial tree', x: 'Period, entities and every record in the same chart. Hover to read the row from your spreadsheet.', href: 'page:charts' },
-          { k: 'Animated', h: 'Bar chart race', x: 'The ranking changes over time, one frame per period, with Play and Pause.', href: 'page:race' },
-          { k: 'Over time', h: 'Vertical stream', x: 'How categories grow and shrink over time.', href: 'page:charts' },
-          { k: 'Many items', h: 'Bar fan', x: 'Hundreds of ranked items, read at a glance.', href: 'page:charts' },
-          { k: 'Series', h: 'Isometric ridgeline', x: 'Series compared in relief, side by side.', href: 'page:charts' },
-          { k: 'Map', h: 'Bubble map of Brazil', x: 'One bubble per state, with the area set by the value. IBGE outlines are built into the app.', href: 'page:charts' },
+        { id: 'charts', alt: true, k: 'Charts', h2: '30 chart types, one for every **story**', intro: 'Datavix suggests the chart that fits the shape of your data and shows the alternatives. The ones your spreadsheet cannot support appear dimmed, with the reason. Want to see a ranking change over time? Try the [bar chart race](page:race).', body: [{ t: 'chartcards', label: 'Charts', items: [
+          { id: 'organism', k: 'Period and entities' }, { id: 'rays', k: 'Items and groups' }, { id: 'river', k: 'Over time' }, { id: 'fan', k: 'Many items' }, { id: 'ridge', k: 'Series' }, { id: 'flow', k: 'Stages' },
         ] }], more: { page: 'charts', label: 'See all 30 chart types and what each one needs from your data' } },
-        { id: 'stories', alt: true, k: 'Storytelling', h2: 'Every story is a question your spreadsheet answers', intro: 'Instead of dumping charts, Datavix picks a question (“How did it change?”, “Who drives the result?”, “What is the total made of?”) and builds a 2, 5 or 10-slide script with the findings that answer it. See the [data storytelling method](page:story).', body: [{ t: 'cards', items: [
+        { id: 'proof', chapter: true, layout: 'center', k: 'Verifiable insights', h2: 'The math is always **in sight**.', lead: 'Every highlight comes with “see calculation” and the numbers behind it. If the data does not support a sentence, it does not appear.',
+          facts: ['The validator recalculates each piece of evidence independently before it enters the presentation.', 'Only numbers from your spreadsheet: nothing invented or estimated.', 'The text describes what is in the data. It does not claim causes and does not accuse.'], more: { page: 'story', label: 'How to tell a story with data' },
+          visual: { kind: 'slide', img: 'slide-calc-en', alt: 'Datavix presentation slide with the main finding, +80% highlighted and the “see calculation” panel open, next to the Vertical stream chart', cap: 'A Datavix slide with a finding and its calculation in plain sight (fictional data).' } },
+        { id: 'privacy', chapter: true, layout: 'split', alt: true, k: 'Privacy', h2: 'Your spreadsheet stays in **your browser**.', lead: 'Reading, calculating and drawing happen on your computer, with no spreadsheet upload. Only the signup email and, if you accept, anonymous usage data leave the browser.',
+          facts: ['No ads, and the pages of this website load no trackers and no third-party resources.', 'Emails, ID numbers, phone numbers and people’s names are recognized and kept out of the charts by default, with a warning.', 'The exported HTML opens offline and loads no trackers.'], more: { page: 'privacy', label: 'Read the privacy policy' },
+          visual: { kind: 'diagram', label: 'Diagram: the spreadsheet enters the browser, where it is read, calculated and drawn, and leaves as HTML, PNG, PowerPoint or video files. The Datavix server does not receive the spreadsheet.', a: { t: 'Spreadsheet', s: '.xlsx · .xls · .csv' }, b: { t: 'Your browser', items: ['Reads', 'Calculates', 'Draws'] }, c: { t: 'Files', s: 'HTML · PNG · PowerPoint · video' }, srv: { t: 'Datavix server', s: 'does not receive the spreadsheet' } } },
+        { id: 'powerpoint', chapter: true, layout: 'split rev', k: 'Export', h2: 'From Excel to **PowerPoint**, editable.', lead: 'Slides come out with the text in real text boxes and the charts as native PowerPoint charts, each with its spreadsheet embedded. Your numbers are in “Edit Data”.',
+          facts: ['The same script as the presentation, in 2, 5 or 10 slides.', 'Charts with no PowerPoint equivalent come out as the closest native chart, with a note on the slide.', 'Also: interactive HTML that opens offline, 4K PNG and a ZIP with one PNG per step.'], more: { page: 'pptx', label: 'Export to PowerPoint' },
+          visual: { kind: 'deck', label: 'Two Datavix slides, with the chips “Edit Data” and “Native chart”', imgs: ['slide-calc-en', 'slide-over-en'], alts: ['Slide with the main finding and the “see calculation” panel', 'Overview slide with the total, the median and the Vertical stream chart'], chips: ['Edit Data', 'Native chart'] } },
+        { id: 'video', chapter: true, layout: 'center', alt: true, k: 'Video', h2: 'Video ready for **social media**.', lead: 'An MP4 of about 20 seconds, vertical (9:16) or square (1:1), recorded in your browser, with the animated chart and the calculation of each insight.',
+          facts: ['No audio, 30 frames per second, H.264.', 'Chrome and Edge record MP4; Firefox records WebM, which some networks reject.', 'The video shows the numbers and texts of the piece. When you post it, you make them public.'], more: { page: 'video', label: 'Video for social media' },
+          visual: { kind: 'phones', imgs: ['video-en-1', 'video-en-2', 'video-en-3', 'video-en-4'], alts: ['Video frame with the main finding and its calculation', 'Video frame with the evidence and the Vertical stream chart', 'Video frame with the implications and next steps', 'Closing video frame, with the DATAVIX logo and the site address'], cap: 'Frames of the vertical video Datavix generates, with fictional data.' } },
+        { id: 'stories', k: 'Storytelling', h2: 'Every story is a **question** your spreadsheet answers', intro: 'Instead of dumping charts, Datavix picks a question (“How did it change?”, “Who drives the result?”, “What is the total made of?”) and builds a 2, 5 or 10-slide script with the findings that answer it. See the [data storytelling method](page:story).', body: [{ t: 'qtiles', items: [
           { h: 'Change over time', x: 'How did it change? Did it grow, fall, fluctuate?' },
           { h: 'Ranking and concentration', x: 'Who drives the result? Do a few do most?' },
           { h: 'Composition', x: 'What is the total made of?' },
@@ -110,19 +109,13 @@ export default {
           { h: 'Funnel and conversion', x: 'Where do we lose items along the stages?' },
           { h: 'Goal and performance', x: 'Did we hit the plan?' },
         ] }], more: { page: 'models', label: 'See the 13 story templates' } },
-        { id: 'export', k: 'Export', h2: 'Take the result to where the conversation happens', body: [{ t: 'dl', items: [
-          { t: 'Interactive HTML', x: 'A single file that opens offline and keeps the chart interactive.' },
-          { t: 'PNG', x: '1920×1080 or 3840×2160 (4K), plus one PNG per presentation step in a ZIP.' },
-          { t: '[PowerPoint (.pptx)](page:pptx)', x: 'Editable text and native PowerPoint charts, each with its spreadsheet embedded.' },
-          { t: '[MP4 video](page:video)', x: 'About 20 seconds, vertical 9:16 or square 1:1, no audio, recorded in your browser.' },
+        { id: 'numbers', alt: true, k: 'By the numbers', h2: 'Datavix by the **numbers**', body: [{ t: 'numbers', items: [
+          { n: '30', l: 'chart types', s: 'from bars to maps and the radial tree' },
+          { n: '13', l: 'story templates', s: 'with 2, 5 or 10-slide scripts' },
+          { n: '5', l: 'ways to export', s: 'HTML, PNG, ZIP, PowerPoint and video' },
+          { n: '0', l: 'spreadsheets sent to servers', s: 'everything runs in your browser' },
         ] }] },
-        { id: 'privacy', alt: true, k: 'Privacy', h2: 'Your data stays with you', body: [{ t: 'ul', items: [
-          'The spreadsheet is read, calculated and drawn in your browser. It is not sent to any server.',
-          'To get started we only ask for your email. The satisfaction survey is optional.',
-          'No ads. Usage analytics (Microsoft Clarity) only turn on if you accept, and never record the content of your spreadsheet.',
-          'The pages of this website load no trackers and no third-party resources.',
-        ] }], more: { page: 'privacy', label: 'Read the privacy policy' } },
-        { id: 'who', k: 'Who it is for', h2: 'Who uses Datavix', body: [{ t: 'cards', items: [
+        { id: 'who', k: 'Who it is for', h2: 'Who uses Datavix', body: [{ t: 'whocards', items: [
           { h: 'Analysts and data scientists', x: 'Deliver in minutes the visualization that would take days of design.' },
           { h: 'Executives and leadership', x: 'A clear story with a verifiable number behind it.' },
           { h: 'Consultancies and agencies', x: 'One HTML file per client, with the project’s visual identity.' },

@@ -1,0 +1,93 @@
+{
+  "fan": {
+    "w": 788,
+    "h": 606,
+    "secs": 5,
+    "mp4": "fan.mp4",
+    "poster": "fan-poster.webp"
+  },
+  "fan-en": {
+    "w": 788,
+    "h": 606,
+    "secs": 5,
+    "mp4": "fan-en.mp4",
+    "poster": "fan-en-poster.webp"
+  },
+  "flow": {
+    "w": 788,
+    "h": 606,
+    "secs": 5,
+    "mp4": "flow.mp4",
+    "poster": "flow-poster.webp"
+  },
+  "flow-en": {
+    "w": 788,
+    "h": 606,
+    "secs": 5,
+    "mp4": "flow-en.mp4",
+    "poster": "flow-en-poster.webp"
+  },
+  "organism": {
+    "w": 788,
+    "h": 606,
+    "secs": 5,
+    "mp4": "organism.mp4",
+    "poster": "organism-poster.webp"
+  },
+  "organism-en": {
+    "w": 788,
+    "h": 606,
+    "secs": 5,
+    "mp4": "organism-en.mp4",
+    "poster": "organism-en-poster.webp"
+  },
+  "passo3": {
+    "w": 888,
+    "h": 758,
+    "secs": 5,
+    "mp4": "passo3.mp4",
+    "poster": "passo3-poster.webp"
+  },
+  "rays": {
+    "w": 788,
+    "h": 606,
+    "secs": 5,
+    "mp4": "rays.mp4",
+    "poster": "rays-poster.webp"
+  },
+  "rays-en": {
+    "w": 788,
+    "h": 606,
+    "secs": 5,
+    "mp4": "rays-en.mp4",
+    "poster": "rays-en-poster.webp"
+  },
+  "ridge": {
+    "w": 788,
+    "h": 606,
+    "secs": 5,
+    "mp4": "ridge.mp4",
+    "poster": "ridge-poster.webp"
+  },
+  "ridge-en": {
+    "w": 788,
+    "h": 606,
+    "secs": 5,
+    "mp4": "ridge-en.mp4",
+    "poster": "ridge-en-poster.webp"
+  },
+  "river": {
+    "w": 788,
+    "h": 606,
+    "secs": 5,
+    "mp4": "river.mp4",
+    "poster": "river-poster.webp"
+  },
+  "river-en": {
+    "w": 788,
+    "h": 606,
+    "secs": 5,
+    "mp4": "river-en.mp4",
+    "poster": "river-en-poster.webp"
+  }
+}

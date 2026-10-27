@@ -6,7 +6,7 @@ export default {
   lang: 'pt-BR', L: 'pt', root: '',
   ui: {
     ogLocale: 'pt_BR', skip: 'Ir para o conteúdo', navLabel: 'Principal', crumbsLabel: 'Você está aqui', homeCrumb: 'Início',
-    menu: 'Menu', cta: 'Começar de graça', langShort: 'EN', langName: 'Read in English', langTitle: 'Read this page in English',
+    menu: 'Menu', also: 'Também', chartAlt: 'animação com dados fictícios', cta: 'Começar de graça', langShort: 'EN', langName: 'Read in English', langTitle: 'Read this page in English',
     updated: 'Atualizado em', related: 'Continue lendo', readMore: 'Leia também', mainChart: 'Gráfico principal', altCharts: 'Alternativas',
     nav: [['charts', 'Gráficos'], ['models', 'Modelos'], ['pptx', 'PowerPoint'], ['privacy', 'Privacidade', 'opt'], ['faq', 'Perguntas', 'opt']],
     footer: {
@@ -80,29 +80,28 @@ export default {
       chips: ['XLSX · XLS · CSV', 'Exporta HTML, PNG, PowerPoint e vídeo', 'Português e inglês'],
       hero: { t: 'fig', hero: true, img: 'hero', eager: true, alt: 'Tela do Datavix com uma árvore radial animada, o painel de insights com o cálculo à vista e as opções de gráfico', cap: 'O editor do Datavix com dados fictícios de vendas por canal e região.' },
       sections: [
-        { id: 'como', k: 'Como funciona', h2: 'Quatro passos da planilha **à história**', body: [{ t: 'howcards', label: 'Como funciona', img: 'passo3', imgAlt: 'Gráfico de raios radiais com dados fictícios: um raio por estado, o comprimento pelo valor e a cor por categoria', items: [
+        { id: 'como', k: 'Como funciona', h2: 'Quatro passos da planilha **à história**', body: [{ t: 'howcards', label: 'Como funciona', clip: 'passo3', imgAlt: 'Raios radiais animados com dados fictícios: um raio por estado, o comprimento pelo valor e a cor por categoria', items: [
           { h: 'Responda 4 perguntas', x: 'Área, público, decisão e tempo. Depois da planilha, o Datavix mostra o que achou e escolhe o gráfico.' },
           { h: 'Suba a planilha', x: 'Excel ou CSV com dezenas de milhares de linhas. O Datavix reconhece colunas, datas e formatos brasileiros.' },
           { h: 'Veja a animação', x: 'O gráfico entra animado. Cada insight vem com o cálculo: o “ver cálculo” mostra a conta.' },
           { h: 'Edite e exporte', x: 'Troque gráfico, paleta, fundo e fontes. Exporte HTML offline, PNG, PowerPoint ou vídeo.' },
         ] }], more: { page: 'planilha', label: 'Veja o passo a passo completo' } },
-        { id: 'diferenciais', alt: true, k: 'Diferenciais', h2: 'Feito para quem precisa provar o número', body: [{ t: 'cards', items: [
-          { h: 'A planilha não sai do navegador', x: 'Leitura, cálculo e desenho acontecem no seu computador. Sem upload da planilha e sem servidor processando os seus dados.' },
-          { h: 'Insight com a conta à vista', x: 'Cada destaque mostra o cálculo por trás. Se os dados não sustentam a frase, ela não aparece.' },
-          { h: 'Só números da sua planilha', x: 'Nada de valor inventado ou estimado: tudo o que aparece no gráfico vem das células que você enviou.' },
-          { h: 'Dado pessoal fica de fora', x: 'E-mail, CPF, telefone e nomes de pessoas são reconhecidos e saem dos gráficos por padrão, com aviso. Você decide se libera.' },
-          { h: 'HTML que abre offline', x: 'Um único arquivo, sem internet e sem dependências. Pronto para anexar ao e-mail e abrir na sala de reunião.' },
-          { h: 'PowerPoint editável', x: 'Gráficos nativos do PowerPoint com a planilha embutida: em “Editar dados” estão os seus números.' },
-        ] }] },
-        { id: 'graficos', k: 'Gráficos', h2: '30 tipos de gráfico, um para cada história', intro: 'O Datavix sugere o gráfico que combina com o formato dos seus dados e mostra as alternativas. Os que a planilha não sustenta aparecem apagados, com o motivo.', body: [{ t: 'cards', items: [
-          { k: 'Período e entidades', h: 'Árvore radial', x: 'Período, entidades e cada registro no mesmo gráfico. Passe o mouse e leia a linha da planilha.', href: 'page:charts' },
-          { k: 'Animado', h: 'Corrida de barras', x: 'O ranking muda ao longo do tempo, um quadro por período, com Reproduzir e Pausar.', href: 'page:race' },
-          { k: 'Ao longo do tempo', h: 'Rio vertical', x: 'Como as categorias crescem e encolhem ao longo do tempo.', href: 'page:charts' },
-          { k: 'Muitos itens', h: 'Leque de barras', x: 'Centenas de itens ordenados, lidos de uma vez.', href: 'page:charts' },
-          { k: 'Séries', h: 'Cordilheira isométrica', x: 'Séries comparadas em relevo, lado a lado.', href: 'page:charts' },
-          { k: 'Mapa', h: 'Mapa de bolhas do Brasil', x: 'Uma bolha por estado, com a área pelo valor. Contornos do IBGE embutidos no app.', href: 'page:charts' },
+        { id: 'graficos', alt: true, k: 'Gráficos', h2: '30 tipos de gráfico, um para cada **história**', intro: 'O Datavix sugere o gráfico que combina com o formato dos seus dados e mostra as alternativas. Os que a planilha não sustenta aparecem apagados, com o motivo. Quer ver um ranking mudar ao longo do tempo? Veja a [corrida de barras](page:race).', body: [{ t: 'chartcards', label: 'Gráficos', items: [
+          { id: 'organism', k: 'Período e entidades' }, { id: 'rays', k: 'Itens e grupos' }, { id: 'river', k: 'Ao longo do tempo' }, { id: 'fan', k: 'Muitos itens' }, { id: 'ridge', k: 'Séries' }, { id: 'flow', k: 'Etapas' },
         ] }], more: { page: 'charts', label: 'Ver os 30 tipos de gráfico e o que cada um pede da planilha' } },
-        { id: 'historias', alt: true, k: 'Storytelling', h2: 'Cada história é uma pergunta que a planilha responde', intro: 'Em vez de despejar gráficos, o Datavix escolhe uma pergunta (“Como mudou?”, “Quem puxa o resultado?”, “Do que o total é feito?”) e monta um roteiro de 2, 5 ou 10 slides com os achados que respondem a ela. Entenda o [método de storytelling com dados](page:story).', body: [{ t: 'cards', items: [
+        { id: 'conta', chapter: true, layout: 'center', k: 'Insights verificáveis', h2: 'A conta sempre **à vista**.', lead: 'Cada destaque traz o “ver cálculo”, com os números usados. Se os dados não sustentam a frase, ela não aparece.',
+          facts: ['O validador recalcula cada evidência de forma independente antes de ela entrar na apresentação.', 'Só números da sua planilha: nada de valor inventado ou estimado.', 'O texto descreve o que está nos dados. Ele não afirma causas e não acusa.'], more: { page: 'story', label: 'Como contar uma história com dados' },
+          visual: { kind: 'slide', img: 'slide-calc', alt: 'Slide de apresentação do Datavix com a descoberta principal, o número +80% em destaque e o painel “ver cálculo” aberto, ao lado do gráfico Rio vertical', cap: 'Um slide do Datavix com uma descoberta e o cálculo à vista (dados fictícios).' } },
+        { id: 'privacidade', chapter: true, layout: 'split', alt: true, k: 'Privacidade', h2: 'A planilha fica no **seu navegador**.', lead: 'Leitura, cálculo e desenho acontecem no seu computador, sem upload da planilha. Só saem do navegador o e-mail do cadastro e, se você aceitar, dados anônimos de uso.',
+          facts: ['Não usamos anúncios, e as páginas do site não carregam rastreadores nem recursos de terceiros.', 'E-mail, CPF, telefone e nomes de pessoas são reconhecidos e saem dos gráficos por padrão, com aviso.', 'O HTML exportado abre sem internet e não carrega rastreadores.'], more: { page: 'privacy', label: 'Ler a política de privacidade' },
+          visual: { kind: 'diagram', label: 'Diagrama: a planilha entra no navegador, onde é lida, calculada e desenhada, e sai como arquivos HTML, PNG, PowerPoint ou vídeo. O servidor do Datavix não recebe a planilha.', a: { t: 'Planilha', s: '.xlsx · .xls · .csv' }, b: { t: 'Seu navegador', items: ['Lê', 'Calcula', 'Desenha'] }, c: { t: 'Arquivos', s: 'HTML · PNG · PowerPoint · vídeo' }, srv: { t: 'Servidor do Datavix', s: 'não recebe a planilha' } } },
+        { id: 'powerpoint', chapter: true, layout: 'split rev', k: 'Exportar', h2: 'Do Excel ao **PowerPoint**, editável.', lead: 'Os slides saem com os textos em caixas de texto reais e os gráficos como gráficos nativos do PowerPoint, cada um com a planilha embutida. Em “Editar dados” estão os seus números.',
+          facts: ['O mesmo roteiro da apresentação, em 2, 5 ou 10 slides.', 'Gráficos sem equivalente no PowerPoint saem como o gráfico nativo mais próximo, com uma nota no slide.', 'Também: HTML interativo que abre offline, PNG em 4K e um ZIP com um PNG por etapa.'], more: { page: 'pptx', label: 'Exportar para PowerPoint' },
+          visual: { kind: 'deck', label: 'Dois slides do Datavix, com os chips “Editar dados” e “Gráfico nativo”', imgs: ['slide-calc', 'slide-over'], alts: ['Slide com a descoberta principal e o painel “ver cálculo”', 'Slide de visão geral com o total, a mediana e o gráfico Rio vertical'], chips: ['Editar dados', 'Gráfico nativo'] } },
+        { id: 'video', chapter: true, layout: 'center', alt: true, k: 'Vídeo', h2: 'Vídeo pronto para as **redes**.', lead: 'Um MP4 de cerca de 20 segundos, vertical (9:16) ou quadrado (1:1), gravado no seu navegador, com o gráfico animado e o cálculo de cada insight.',
+          facts: ['Sem áudio, 30 quadros por segundo, em H.264.', 'O Chrome e o Edge gravam MP4; o Firefox grava WebM, que algumas redes recusam.', 'O vídeo mostra os números e textos da peça. Ao postar, você os torna públicos.'], more: { page: 'video', label: 'Vídeo para redes sociais' },
+          visual: { kind: 'phones', imgs: ['video-1', 'video-2', 'video-3', 'video-4'], alts: ['Quadro do vídeo com a descoberta principal e o cálculo', 'Quadro do vídeo com a evidência e o gráfico Rio vertical', 'Quadro do vídeo com as implicações e os próximos passos', 'Quadro final do vídeo, com o logotipo DATAVIX e o endereço do site'], cap: 'Quadros do vídeo vertical que o Datavix gera, com dados fictícios.' } },
+        { id: 'historias', k: 'Storytelling', h2: 'Cada história é uma **pergunta** que a planilha responde', intro: 'Em vez de despejar gráficos, o Datavix escolhe uma pergunta (“Como mudou?”, “Quem puxa o resultado?”, “Do que o total é feito?”) e monta um roteiro de 2, 5 ou 10 slides com os achados que respondem a ela. Entenda o [método de storytelling com dados](page:story).', body: [{ t: 'qtiles', items: [
           { h: 'Evolução no tempo', x: 'Como mudou? Cresceu, caiu, oscilou?' },
           { h: 'Ranking e concentração', x: 'Quem puxa o resultado? Poucos fazem muito?' },
           { h: 'Composição', x: 'Do que o total é feito?' },
@@ -110,19 +109,13 @@ export default {
           { h: 'Funil e conversão', x: 'Onde perdemos itens ao longo das etapas?' },
           { h: 'Meta e desempenho', x: 'Atingimos o planejado?' },
         ] }], more: { page: 'models', label: 'Ver os 13 modelos de história' } },
-        { id: 'exportar', k: 'Exportar', h2: 'Leve o resultado para onde a conversa acontece', body: [{ t: 'dl', items: [
-          { t: 'HTML interativo', x: 'Um arquivo só, que abre sem internet e mantém o gráfico interativo.' },
-          { t: 'PNG', x: '1920×1080 ou 3840×2160 (4K), e um PNG por etapa da apresentação em um ZIP.' },
-          { t: '[PowerPoint (.pptx)](page:pptx)', x: 'Textos editáveis e gráficos nativos do PowerPoint, cada um com a planilha embutida.' },
-          { t: '[Vídeo MP4](page:video)', x: 'Cerca de 20 segundos, vertical 9:16 ou quadrado 1:1, sem áudio, gravado no navegador.' },
+        { id: 'numeros', alt: true, k: 'Em números', h2: 'O Datavix em **números**', body: [{ t: 'numbers', items: [
+          { n: '30', l: 'tipos de gráfico', s: 'das barras aos mapas e à árvore radial' },
+          { n: '13', l: 'modelos de história', s: 'com roteiro de 2, 5 ou 10 slides' },
+          { n: '5', l: 'formas de exportar', s: 'HTML, PNG, ZIP, PowerPoint e vídeo' },
+          { n: '0', l: 'planilhas enviadas a servidores', s: 'tudo roda no seu navegador' },
         ] }] },
-        { id: 'privacidade', alt: true, k: 'Privacidade', h2: 'Os seus dados ficam com você', body: [{ t: 'ul', items: [
-          'A planilha é lida, calculada e desenhada no seu navegador. Ela não é enviada para nenhum servidor.',
-          'Para começar, pedimos só o seu e-mail. A pesquisa de satisfação é opcional.',
-          'Não usamos anúncios. A análise de uso (Microsoft Clarity) só liga se você aceitar e nunca registra o conteúdo da planilha.',
-          'As páginas deste site não carregam rastreadores nem recursos de terceiros.',
-        ] }], more: { page: 'privacy', label: 'Ler a política de privacidade' } },
-        { id: 'quem', k: 'Para quem', h2: 'Quem usa o Datavix', body: [{ t: 'cards', items: [
+        { id: 'quem', k: 'Para quem', h2: 'Quem usa o Datavix', body: [{ t: 'whocards', items: [
           { h: 'Analistas e cientistas de dados', x: 'Entregue em minutos a visualização que levaria dias de design.' },
           { h: 'Diretoria e liderança', x: 'Uma história clara, com o número verificável por trás.' },
           { h: 'Consultorias e agências', x: 'Um HTML por cliente, com a identidade visual do projeto.' },

@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import vm from 'node:vm';
-import { loadCatalog, loadLanding } from './catalog.mjs';
+import { loadCatalog, loadLanding, loadIcons } from './catalog.mjs';
 import { renderPage, esc, md, plain } from './layout.mjs';
 import PT from './content-pt.mjs';
 import EN from './content-en.mjs';
@@ -19,7 +19,7 @@ const AI_BOTS = [
 
 export function buildSite({ root, out, origin, host, contactEmail = '', gsc = '', bing = '', sameAs = [] }) {
   const R = f => new URL(f, root), rd = f => fs.readFileSync(R(f), 'utf8');
-  const catalog = loadCatalog(root), landing = loadLanding(root), langs = [PT, EN];
+  const catalog = loadCatalog(root), landing = loadLanding(root), icons = loadIcons(root), langs = [PT, EN];
   const put = (rel, data) => { const f = path.join(out, rel); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, data); };
   const assetMap = {};
   const addAsset = (src, rel) => { const buf = fs.readFileSync(R(src)), ext = path.extname(rel), base = rel.slice(0, -ext.length), name = `assets/${base}.${sha(buf)}${ext}`; put(name, buf); assetMap[rel] = '/' + name; return '/' + name; };
@@ -28,15 +28,27 @@ export function buildSite({ root, out, origin, host, contactEmail = '', gsc = ''
   const fontUrl = { geist: addAsset('site/assets/fonts/geist.woff2', 'geist.woff2'), mono: addAsset('site/assets/fonts/geist-mono.woff2', 'geist-mono.woff2'), doto: addAsset('site/assets/fonts/doto.woff2', 'doto.woff2') };
   const css = minCss(rd('site/site.css').replace('__FONT_GEIST__', fontUrl.geist).replace('__FONT_MONO__', fontUrl.mono).replace('__FONT_DOTO__', fontUrl.doto));
   const cssHash = crypto.createHash('sha256').update(css).digest('base64');
-  const csp = `default-src 'none'; style-src 'sha256-${cssHash}'; font-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'`;
+  const csp = `default-src 'none'; style-src 'sha256-${cssHash}'; font-src 'self'; img-src 'self' data:; frame-src 'self'; base-uri 'none'; form-action 'none'`;
 
   // imagens (WebP) com variantes por largura, e as imagens de compartilhamento (PNG 1200×630, nome estável)
   const imgManifest = JSON.parse(rd('site/assets/img/manifest.json')), images = {};
   // só entram no site as imagens que alguma página usa (as demais capturas só servem de base para os cartões de compartilhamento)
   const usedImg = new Set(); const scan = bs => (bs || []).forEach(b => { if (b && (b.t === 'fig' || b.t === 'howcards') && b.img) usedImg.add(b.img); });
-  for (const c of langs) for (const p of c.pages) { scan(p.blocks); if (p.hero) scan([p.hero]); (p.sections || []).forEach(sec => scan(sec.body)); }
+  const scanVis = v => { if (!v) return; if (v.img) usedImg.add(v.img); (v.imgs || []).forEach(i => usedImg.add(i)); };
+  for (const c of langs) for (const p of c.pages) { scan(p.blocks); if (p.hero) scan([p.hero]); (p.sections || []).forEach(sec => { scan(sec.body); scanVis(sec.visual); }); }
   for (const name of usedImg) if (!imgManifest[name]) throw new Error(`imagem "${name}" não existe em site/assets/img/manifest.json (rode scripts/make-shots.mjs)`);
   for (const [name, m] of Object.entries(imgManifest)) { if (!usedImg.has(name)) continue; for (const v of m.variants) addAsset('site/assets/img/' + v.file, 'img/' + v.file); images[name] = m; }
+  const clipMan = fs.existsSync(R('site/assets/clips/manifest.json')) ? JSON.parse(rd('site/assets/clips/manifest.json')) : {}, usedClip = new Set(), clips = {};
+  const scanClips = bs => (bs || []).forEach(b => { if (b && b.t === 'chartcards') b.items.forEach(i => { usedClip.add(i.id); usedClip.add(i.id + '-en'); }); if (b && b.t === 'howcards' && b.clip) { usedClip.add(b.clip); } });
+  for (const c of langs) for (const p of c.pages) (p.sections || []).forEach(sec => scanClips(sec.body));
+  const clipCss = 'html,body{margin:0;height:100%;overflow:hidden;background:#000}video{display:block;width:100%;height:100%;object-fit:cover}', clipHash = crypto.createHash('sha256').update(clipCss).digest('base64');
+  for (const [key, m] of Object.entries(clipMan)) {
+    if (!usedClip.has(key)) continue;
+    const mp4 = addAsset('site/assets/clips/' + m.mp4, 'clips/' + m.mp4), poster = addAsset('site/assets/clips/' + m.poster, 'clips/' + m.poster);
+    const doc = `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(key)}</title><meta http-equiv="Content-Security-Policy" content="default-src 'none'; media-src 'self'; style-src 'sha256-${clipHash}'"><style>${clipCss}</style></head><body><video src="${path.basename(mp4)}" autoplay muted loop playsinline preload="auto" disablepictureinpicture disableremoteplayback tabindex="-1" aria-hidden="true"></video></body></html>\n`;
+    const dh = sha(doc), dpath = `assets/clips/${key}.${dh}.html`; put(dpath, doc);
+    clips[key] = { doc: '/' + dpath, poster, w: m.w, h: m.h };
+  }
   const ogDir = R('site/assets/og/'); if (fs.existsSync(ogDir)) for (const f of fs.readdirSync(ogDir)) if (f.endsWith('.png')) put('og/' + f, fs.readFileSync(new URL(f, ogDir)));
   for (const f of ['favicon.ico', 'favicon.svg']) put(f, fs.readFileSync(R('site/assets/' + f)));
 
@@ -60,7 +72,7 @@ export function buildSite({ root, out, origin, host, contactEmail = '', gsc = ''
     for (const page of c.pages) {
       const faqItems = pg => pg.id === 'home' ? pg.sections.flatMap(s => (s.body || []).filter(b => b.t === 'faq' && b.home).flatMap(b => b.items)) : (pg.blocks || []).filter(b => b.t === 'faq').flatMap(b => b.items);
       const ctx = {
-        page, lang: c.lang, L: c.L, ui: c.ui, origin, csp, css, fontUrl, images, catalog, landing, gsc, bing, sameAs, contactEmail, appDesc: c.appDesc, featureList: c.featureList, chartText: c.chartText, storyText: c.storyText, faqItems,
+        page, lang: c.lang, L: c.L, ui: c.ui, origin, csp, css, fontUrl, images, catalog, landing, icons, clips, gsc, bing, sameAs, contactEmail, appDesc: c.appDesc, featureList: c.featureList, chartText: c.chartText, storyText: c.storyText, faqItems, state: {},
         appUrl: c.L === 'en' ? '/app/?lang=en' : '/app/', url: id => urlOf(c, id), asset: rel => { const a = assetMap[rel]; if (!a) throw new Error('asset desconhecido: ' + rel); return a; },
         alt: id => ({ path: urlOf(other, id), hreflang: other.lang, ogLocale: other.ui.ogLocale }), hreflangs,
         pageLabel: id => c.pages.find(x => x.id === id).label, pageSummary: id => c.pages.find(x => x.id === id).summary, dateText: iso => dateFmt[c.lang].format(new Date(iso + 'T00:00:00Z')),

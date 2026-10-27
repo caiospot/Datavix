@@ -25,7 +25,10 @@ try {
       if (theme === 'light' && !['/', '/en/', '/tipos-de-grafico/', '/en/faq/'].includes(p)) continue;
       await c.view(390, 844, 2, true); await c.goto(`http://127.0.0.1:${PORT}${p}`); await sleep(500);
       // rola a página inteira para as imagens preguiçosas carregarem
-      const h = await c.ev('document.documentElement.scrollHeight'); for (let y = 0; y < h; y += 700) { await c.ev(`window.scrollTo(0, ${y})`); await sleep(60); } await sleep(400); await c.ev('window.scrollTo(0, 0)');
+      const h = await c.ev('document.documentElement.scrollHeight'); for (let y = 0; y < h; y += 700) { await c.ev(`window.scrollTo(0, ${y})`); await sleep(60); } // no celular os cartões ficam num carrossel horizontal: as imagens preguiçosas dos últimos só carregam quando ele é rolado até lá
+      await c.ev(`(async () => { for (const t of document.querySelectorAll('.tiles')) { t.scrollIntoView({ block: 'center' }); for (let x = 0; x <= t.scrollWidth; x += 300) { t.scrollLeft = x; await new Promise(r => setTimeout(r, 60)); } await new Promise(r => setTimeout(r, 300)); t.scrollLeft = 0; } })()`);
+      for (let k = 0; k < 40 && !(await c.ev('[...document.images].every(i => i.complete)')); k++) await sleep(100);
+      await c.ev('window.scrollTo(0, 0)');
       const probs = [];
       const info = JSON.parse(await c.ev(`(async () => { await document.fonts.ready; const h1 = document.querySelector('h1').getBoundingClientRect(); return JSON.stringify({ imgs: [...document.images].filter(i => !(i.complete && i.naturalWidth > 0)).map(i => i.getAttribute('src')), geist: document.fonts.check('16px Geist'), mono: document.fonts.check('16px "Geist Mono"'), h1top: Math.round(h1.top), h1bottom: Math.round(h1.bottom), scripts: [...document.scripts].filter(s => s.type !== 'application/ld+json').length, ext: [...document.querySelectorAll('img[src],script[src],iframe[src],link[rel~=stylesheet],link[rel~=preload]')].filter(e => /^https?:/.test(e.src || e.href) && !(e.src || e.href).startsWith(location.origin)).length, bg: getComputedStyle(document.body).backgroundColor }); })()`));
       if (info.imgs.length) probs.push('imagens sem carregar: ' + info.imgs.join(','));

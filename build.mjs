@@ -87,6 +87,8 @@ const put = (rel, data) => { const f = new URL(rel, distUrl); fs.mkdirSync(new U
 const TEXTS = 'text/html text/css text/javascript application/javascript application/json application/manifest+json image/svg+xml text/plain application/xml image/x-icon';
 const wwwRule = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(SITE_HOST) && !SITE_HOST.startsWith('www.') ? [`# www vira ${SITE_HOST}`, `RewriteCond %{HTTP_HOST} ^www\\.${SITE_HOST.replace(/\./g, '\\.')}$ [NC]`, `RewriteRule ^ https://${SITE_HOST}%{REQUEST_URI} [L,R=301]`] : [];
 const IMMUTABLE = '<IfModule mod_headers.c>\nHeader set Cache-Control "public, max-age=31536000, immutable"\n</IfModule>\n';
+// os documentos HTML dos clipes (assets/clips/*.html) têm hash no nome, como o resto de assets/: a regra de "no-cache" para .html da raiz não vale para eles
+const IMMUTABLE_ASSETS = '<IfModule mod_headers.c>\nHeader set Cache-Control "public, max-age=31536000, immutable"\n<FilesMatch "\\.html$">\nHeader set Cache-Control "public, max-age=31536000, immutable"\n</FilesMatch>\n</IfModule>\n';
 let summary = '';
 if (LEGACY) {
   // endereço antigo (GitHub Pages): só um aviso que leva para o endereço novo, mais o service worker de limpeza para quem tinha o app instalado aqui
@@ -105,7 +107,7 @@ if (LEGACY) {
   put('app/icons/.htaccess', IMMUTABLE);
   // ---- o site estático: landing e páginas de conteúdo em PT (/) e EN (/en/), robots.txt, sitemap.xml, llms.txt, 404, imagens e cartões de compartilhamento
   const site = buildSite({ root: new URL('./', import.meta.url), out: distDir, origin: ORIGIN, host: process.env.DATAVIX_HOST === 'hostinger' ? 'hostinger' : 'github', contactEmail: process.env.DATAVIX_CONTACT_EMAIL || '', gsc: process.env.DATAVIX_GSC_TOKEN || '', bing: process.env.DATAVIX_BING_TOKEN || '', sameAs: (process.env.DATAVIX_SAMEAS || '').split(',').map(x => x.trim()).filter(Boolean) });
-  put('assets/.htaccess', IMMUTABLE); put('icons/.htaccess', IMMUTABLE); put('og/.htaccess', '<IfModule mod_headers.c>\nHeader set Cache-Control "public, max-age=86400"\n</IfModule>\n');
+  put('assets/.htaccess', IMMUTABLE_ASSETS); put('icons/.htaccess', IMMUTABLE); put('og/.htaccess', '<IfModule mod_headers.c>\nHeader set Cache-Control "public, max-age=86400"\n</IfModule>\n');
   // ---- raiz: service worker de limpeza e manifesto antigo (quem instalou o app quando ele morava na raiz passa a abrir /app/)
   put('sw.js', r('pwa/legacy-sw.js'));
   const man = JSON.parse(r('pwa/manifest.webmanifest')); man.start_url = '/app/?source=pwa'; man.scope = '/'; man.id = './';

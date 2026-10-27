@@ -88,7 +88,7 @@ for (const p of pages) {
   ok(`${tag} fontes pré-carregadas existem`, p.links.filter(l => l.rel === 'preload').length >= 1 && p.links.filter(l => l.rel === 'preload').every(l => exists(l.href.replace(/^\//, ''))));
   ok(`${tag} lastmod do sitemap = data de atualização mostrada na página (quando há)`, !/<time datetime="/.test(p.body) || (/<time datetime="([^"]+)"/.exec(p.body) || [])[1] === p.lastmod);
 }
-ok('o CSS é o mesmo em todas as páginas (um hash de CSP vale para o site inteiro)', pages.every(p => (/<style>([\s\S]*?)<\/style>/.exec(p.head) || [])[1] === css) && css.length > 4000 && css.length < 28000, `${(css.length / 1024).toFixed(1)} KB`);
+ok('o CSS é o mesmo em todas as páginas (um hash de CSP vale para o site inteiro)', pages.every(p => (/<style>([\s\S]*?)<\/style>/.exec(p.head) || [])[1] === css) && css.length > 4000 && css.length < 36000, `${(css.length / 1024).toFixed(1)} KB`);
 
 
 // ------------------------------------------------------------ contraste das cores do CSS (WCAG AA: 4,5:1 para texto), no tema escuro e no claro
@@ -117,7 +117,20 @@ ok('sw.js da raiz é o de limpeza (só apaga o cache antigo e se desliga, sem fe
 ok('favicon.ico (16, 32 e 48 px) e favicon.svg existem', exists('favicon.ico') && read('favicon.ico').readUInt16LE(4) === 3 && exists('favicon.svg') && /<svg/.test(read('favicon.svg').toString()));
 ok('arquivos de cache longo (assets e ícones) têm .htaccess com immutable; og com 1 dia', ['assets/.htaccess', 'icons/.htaccess', 'app/icons/.htaccess'].every(f => exists(f) && /max-age=31536000, immutable/.test(read(f).toString())) && /max-age=86400/.test(exists('og/.htaccess') ? read('og/.htaccess').toString() : ''));
 ok('nada de sobra no site (.DS_Store, .tmp, mapas, README, fontes do repositório)', (() => { const all = []; (function walk(d) { for (const e of fs.readdirSync(d, { withFileTypes: true })) e.isDirectory() ? walk(path.join(d, e.name)) : all.push(path.relative(DIST, path.join(d, e.name))); })(DIST); const stray = all.filter(f => /(^|\/)(\.DS_Store|README|build\.mjs|package\.json)|\.(tmp|map|md|mjs)$/.test(f)); stray.length && note('arquivos estranhos', stray.join(' ')); return stray.length === 0; })());
-ok('arquivos com hash no nome (assets) são todos usados por alguma página', (() => { const used = new Set(); for (const p of pages) for (const m of p.html.matchAll(/\/assets\/[^"' ,)]+/g)) used.add(m[0].replace(/^\//, '')); const files = []; (function walk(d) { for (const e of fs.readdirSync(d, { withFileTypes: true })) e.isDirectory() ? walk(path.join(d, e.name)) : files.push(path.relative(DIST, path.join(d, e.name))); })(path.join(DIST, 'assets')); const un = files.filter(f => !f.endsWith('.htaccess') && !used.has(f)); un.length && note('assets sem uso', un.join(' ')); return un.length === 0; })());
+ok('arquivos com hash no nome (assets) são todos usados por alguma página', (() => { const used = new Set(); for (const p of pages) for (const m of p.html.matchAll(/\/assets\/[^"' ,)]+/g)) used.add(m[0].replace(/^\//, '')); const files = []; (function walk(d) { for (const e of fs.readdirSync(d, { withFileTypes: true })) e.isDirectory() ? walk(path.join(d, e.name)) : files.push(path.relative(DIST, path.join(d, e.name))); })(path.join(DIST, 'assets')); for (const f of [...used].filter(x => x.endsWith('.html'))) for (const m of read(f).toString().matchAll(/src="([^"/]+)"/g)) used.add(path.posix.join(path.posix.dirname(f), m[1])); // os clipes (mp4) são chamados pelos documentos do iframe, não pelas páginas
+  const un = files.filter(f => !f.endsWith('.htaccess') && !used.has(f)); un.length && note('assets sem uso', un.join(' ')); return un.length === 0; })());
+
+
+// ------------------------------------------------------------ clipes dos cartões (iframe preguiçoso com vídeo mudo em laço, sem JavaScript)
+{
+  const frames = p => [...p.html.matchAll(/<iframe\s+([^>]*)>/g)].map(m => attrs(m[1])), withClips = pages.filter(p => /<iframe class="clip"/.test(p.html));
+  ok('a landing (PT e EN) usa os clipes nos cartões', ['/', '/en/'].every(u => withClips.some(p => p.path === u)));
+  ok('os clipes são iframes preguiçosos do mesmo site, com título, dimensões e fora da ordem de foco', withClips.every(p => frames(p).every(f => f.loading === 'lazy' && /^\/assets\/clips\/[\w.-]+\.html$/.test(f.src || '') && f.title && f.width && f.height && f.tabindex === '-1' && exists(f.src.slice(1)))));
+  ok('cada documento de clipe: noindex, CSP própria (só mídia do próprio site, sem script) e um <video> mudo, em laço, com MP4 existente', withClips.every(p => frames(p).every(f => { const d = read(f.src.slice(1)).toString('utf8'), v = /<video\s+([^>]*)>/.exec(d), va = v ? attrs(v[1]) : {}; return /name="robots" content="noindex"/.test(d) && /Content-Security-Policy" content="default-src 'none'; media-src 'self'; style-src 'sha256-[^']+'"/.test(d) && !/<script/i.test(d) && ['muted', 'loop', 'autoplay', 'playsinline'].every(k => k in va) && exists('assets/clips/' + va.src); })));
+  ok('cada clipe tem o pôster (imagem) por baixo, com texto alternativo, e nenhum MP4 passa de 250 KB', withClips.every(p => { const posters = [...p.html.matchAll(/<img class="poster"\s+([^>]*)>/g)].map(m => attrs(m[1])); return posters.length === frames(p).length && posters.every(a => a.alt && a.loading === 'lazy' && exists((a.src || '').slice(1))); }) && fs.readdirSync(path.join(DIST, 'assets/clips')).filter(f => f.endsWith('.mp4')).every(f => fs.statSync(path.join(DIST, 'assets/clips', f)).size <= 250 * 1024));
+  ok('quem prefere menos movimento não baixa vídeo (o CSS esconde os iframes)', /prefers-reduced-motion:reduce\)\{\.art iframe\{display:none\}/.test(css));
+  ok('a CSP das páginas só abre iframe do próprio site (frame-src \'self\')', pages.every(p => /frame-src 'self'/.test(p.head)));
+}
 
 console.log(out.join('\n')); if (warn.length) console.log('\n' + warn.join('\n'));
 const total = out.length; console.log(bad.length ? `\nFALHOU: ${bad.length} de ${total} verificações` : `\ntudo certo (${total} verificações, ${pages.length} páginas)`);

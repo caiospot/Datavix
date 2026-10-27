@@ -1,0 +1,10 @@
+# Datavix: gerado por build.mjs (não edite aqui). O app: CSP própria só no HTML, fora dos buscadores, sempre revalidado.
+<IfModule mod_headers.c>
+<FilesMatch "^index\.html$">
+Header set Content-Security-Policy "default-src 'none'; script-src 'unsafe-inline' 'wasm-unsafe-eval' blob: https://www.clarity.ms https://scripts.clarity.ms; worker-src 'self' blob:; connect-src blob: data: https://script.google.com https://script.googleusercontent.com https://*.clarity.ms https://c.bing.com; manifest-src 'self'; media-src blob:; style-src 'unsafe-inline'; font-src data:; img-src 'self' data: blob: https://*.clarity.ms https://c.bing.com"
+Header set X-Robots-Tag "noindex"
+</FilesMatch>
+<FilesMatch "^(index\.html|sw\.js|manifest\.webmanifest)$">
+Header set Cache-Control "no-cache"
+</FilesMatch>
+</IfModule>

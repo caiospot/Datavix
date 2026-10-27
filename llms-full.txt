@@ -1,0 +1,1101 @@
+# Datavix: full text
+
+> Complete text of the Datavix website (Portuguese and English), for language models and agents.
+
+# Datavix: planilha em gráficos animados e storytelling
+
+URL: https://datavix.app/
+Language: pt-BR
+
+O Datavix lê o seu Excel ou CSV e monta gráficos interativos, apresentações e vídeos com os números da própria planilha. Tudo roda no navegador: o arquivo não sai do seu computador.
+
+## Quatro passos da planilha à história
+
+
+
+## 30 tipos de gráfico, um para cada história
+
+O Datavix sugere o gráfico que combina com o formato dos seus dados e mostra as alternativas. Os que a planilha não sustenta aparecem apagados, com o motivo. Quer ver um ranking mudar ao longo do tempo? Veja a corrida de barras.
+
+
+
+## A conta sempre à vista.
+
+
+
+## A planilha fica no seu navegador.
+
+
+
+## Do Excel ao PowerPoint, editável.
+
+
+
+## Vídeo pronto para as redes.
+
+
+
+## Cada história é uma pergunta que a planilha responde
+
+Em vez de despejar gráficos, o Datavix escolhe uma pergunta (“Como mudou?”, “Quem puxa o resultado?”, “Do que o total é feito?”) e monta um roteiro de 2, 5 ou 10 slides com os achados que respondem a ela. Entenda o método de storytelling com dados.
+
+
+
+## O Datavix em números
+
+
+
+## Quem usa o Datavix
+
+
+
+## O que as pessoas perguntam primeiro
+
+### Minha planilha é enviada para algum servidor?
+
+Não. O arquivo é lido e processado no seu navegador e nunca é enviado. Só saem do navegador o e-mail que você informa para começar, a resposta à pesquisa de satisfação (opcional) e, se você aceitar, dados anônimos de uso do site. Veja a política de privacidade.
+
+### Quais formatos de arquivo são aceitos?
+
+XLSX, XLS, CSV e TSV, com datas e números escritos em português ou inglês.
+
+### Posso usar o resultado sem internet?
+
+Sim. O HTML exportado é um único arquivo e abre sem internet. O app também abre sem internet depois da primeira visita.
+
+### O Datavix inventa insights?
+
+Não. Só mostramos o que sai de um cálculo sobre os seus dados, e você pode ver a conta. Se a planilha não sustenta uma frase, ela não aparece.
+
+### Quantas linhas a planilha pode ter?
+
+Dezenas de milhares. Acima de 3.000 linhas, a árvore radial reúne os registros por período, entidade e categoria.
+
+### O Datavix é gratuito?
+
+Você começa de graça: basta informar o seu e-mail.
+
+---
+
+# Como transformar uma planilha em gráfico animado
+
+URL: https://datavix.app/planilha-em-grafico-animado/
+Language: pt-BR
+
+No Datavix você sobe um arquivo .xlsx, .xls ou .csv, confere as colunas que ele reconheceu e escolhe o gráfico. A animação roda no próprio navegador: a planilha não é enviada para nenhum servidor.
+
+## Passo a passo
+
+1. **Responda as perguntas iniciais**: Quatro perguntas rápidas (área, público, decisão e tempo) ajudam a sugerir o gráfico e a história certa.
+2. **Suba o arquivo**: Arraste a planilha (.xlsx, .xls, .csv ou .tsv) ou escolha o arquivo. Se ela tiver várias abas, o Datavix dá um papel a cada uma e você pode trocar.
+3. **Confira a leitura das colunas**: Cada coluna ganha um papel: data, categoria, número, texto livre, identificador ou sim/não. Você confirma ou corrige antes de gerar.
+4. **Veja o gráfico e edite**: O Datavix sugere um gráfico e mostra as alternativas. Troque gráfico, paleta, fundo e fontes. Os destaques trazem o “ver cálculo”.
+5. **Exporte**: HTML interativo, PNG, ZIP com um PNG por etapa, PowerPoint (.pptx) ou vídeo MP4.
+
+## Que planilha funciona melhor
+
+Qualquer tabela serve: o Datavix decide o caminho pelo tipo de informação de cada coluna, e não pelo nome do arquivo. O formato dos dados define quais gráficos ficam disponíveis.
+
+| Se a planilha tem… | O Datavix oferece… |
+| --- | --- |
+| Uma data e um valor | Linha e área |
+| Uma categoria e um valor | Barras, barras horizontais e treemap |
+| Data, 3 ou mais séries e 4 ou mais períodos | Corrida de barras |
+| Duas colunas de número | Dispersão (e bolhas, com uma terceira) |
+| Uma coluna de estados (UF ou nome) | Mapa de bolhas do Brasil |
+| Latitude, longitude e um valor | Mapa de isolinhas |
+| Uma coluna de texto livre (10 linhas ou mais) | Nuvem de palavras |
+
+A lista completa, com o que cada um dos 30 gráficos pede da planilha, está em tipos de gráfico.
+
+## O que o Datavix reconhece sozinho
+
+- Datas e números escritos em português ou inglês.
+- Colunas de identificador, texto livre e sim/não, que não viram eixo por engano.
+- Dados pessoais (e-mail, CPF, CNPJ, telefone, nomes de pessoas): ficam fora dos gráficos e da apresentação por padrão, com aviso. Você pode liberar a coluna.
+- Colunas vazias ou com um único valor saem sozinhas.
+- Rótulos parecidos (“Purple” e “PURPLE”) são sugeridos para unificação. Você decide, e a planilha original não muda.
+
+## Limites e cuidados
+
+- Planilhas grandes (dezenas de MB) podem levar cerca de um minuto para abrir. Se for muito grande, salve só a aba e as colunas que importam, ou exporte como .csv.
+- Acima de 3.000 linhas, a árvore radial reúne os registros por período, entidade e categoria.
+- Os números do gráfico vêm só da planilha. Se os dados não sustentam uma frase, ela não aparece.
+- O Datavix mostra os gráficos que os seus dados sustentam. Os outros aparecem apagados, com o motivo.
+
+## Perguntas rápidas
+
+### Preciso instalar algum programa?
+
+Não. O Datavix roda no navegador. Se o navegador oferecer, dá para instalá-lo como aplicativo.
+
+### A planilha vai para algum servidor?
+
+Não. Ela é lida e processada no seu navegador. Veja a política de privacidade.
+
+### Funciona com Excel e CSV?
+
+Sim: .xlsx, .xls, .csv e .tsv.
+
+### Posso usar o resultado sem internet?
+
+Sim. O HTML exportado é um único arquivo e abre sem internet.
+
+---
+
+# Corrida de barras (bar chart race) a partir de uma planilha
+
+URL: https://datavix.app/corrida-de-barras/
+Language: pt-BR
+
+A corrida de barras mostra como o ranking de vários itens muda ao longo do tempo: cada período é um quadro e as barras trocam de posição conforme o valor. No Datavix ela sai de uma planilha com datas, itens e valores, sem enviar o arquivo para nenhum servidor.
+
+## O que a planilha precisa ter
+
+O Datavix oferece a corrida de barras quando encontra uma coluna de data, 3 ou mais itens (as séries que disputam o ranking), 4 ou mais períodos e uma coluna de valor. O formato mais simples é uma linha para cada item em cada período:
+
+| Data | Item | Valor |
+| --- | --- | --- |
+| 2022-01 | Loja A | 120 |
+| 2022-01 | Loja B | 95 |
+| 2022-01 | Loja C | 80 |
+| 2022-02 | Loja A | 130 |
+| 2022-02 | Loja B | 140 |
+| 2022-02 | Loja C | 85 |
+
+Os valores são fictícios, só para mostrar o formato. Se faltar algum requisito, a corrida aparece apagada na lista de gráficos, com o motivo.
+
+## Como criar
+
+1. **Suba a planilha**: Arraste o arquivo .xlsx, .xls ou .csv para o Datavix.
+2. **Confira as colunas**: A data, o item e o valor precisam estar com o papel certo na tela de leitura.
+3. **Escolha “Corrida de barras”**: Ela aparece na lista de gráficos quando os dados sustentam.
+4. **Reproduza**: A animação começa sozinha. Use Reproduzir e Pausar, ou escolha um período.
+5. **Exporte**: HTML interativo, PNG do quadro atual, PowerPoint ou vídeo MP4.
+
+## Por período ou acumulado
+
+Sem a opção Acumulado, cada quadro mostra o valor do próprio período. Com ela, os valores se somam ao longo do tempo, o que serve para totais como vendas acumuladas.
+
+## Dicas para uma boa corrida
+
+- Use os mesmos nomes de item em todos os períodos. Diferenças de maiúsculas ou acentos viram itens separados, e o Datavix sugere unificar rótulos parecidos.
+- Prefira períodos regulares (todo mês, todo ano), para que o ritmo da corrida faça sentido.
+- Escreva o título como uma afirmação do que a corrida mostra, e não só o nome da medida.
+
+## Exportar a corrida
+
+- HTML interativo: um arquivo que abre sem internet, com Reproduzir e Pausar.
+- PNG: o quadro atual em 1920×1080 ou 4K.
+- PowerPoint: a corrida sai como o gráfico nativo mais próximo dos mesmos dados (barras ordenadas), com uma nota no slide. A animação não vai para o arquivo. Veja exportar para PowerPoint.
+- Vídeo MP4: vertical ou quadrado, sem áudio. Veja vídeo para redes sociais.
+
+## Perguntas rápidas
+
+### Qual a diferença entre “bar chart race” e “corrida de barras”?
+
+São o mesmo gráfico. “Bar chart race” é o nome em inglês.
+
+### Quantos períodos e itens eu preciso?
+
+Pelo menos 4 períodos e 3 itens, com uma coluna de data e uma de valor.
+
+### A planilha vai para algum servidor?
+
+Não. Tudo acontece no seu navegador.
+
+---
+
+# Storytelling com dados: da planilha à história
+
+URL: https://datavix.app/storytelling-com-dados/
+Language: pt-BR
+
+Storytelling com dados é organizar números numa história que leva alguém a entender algo e a decidir. Em vez de mostrar todos os gráficos possíveis, você parte de uma pergunta, escolhe a evidência que a responde e fecha com o que fazer a respeito.
+
+## 1. Comece pela pergunta, não pelo gráfico
+
+Cada história responde a uma pergunta. “Como mudou?”, “Quem puxa o resultado?”, “Do que o total é feito?”, “Onde perdemos itens?”. Quando a pergunta está clara, a escolha do gráfico e dos destaques deixa de ser gosto e passa a ser consequência. Veja as perguntas que os modelos do Datavix respondem.
+
+## 2. Escolha poucas evidências
+
+Um slide, uma ideia. Escolha de três a cinco achados que respondem à pergunta e deixe o resto na planilha. Mais gráficos não deixam a história mais convincente, só mais cansativa.
+
+## 3. Mostre a conta
+
+Uma frase como “SC lidera com 16% da receita” só convence se quem lê pode conferir. No Datavix, cada insight tem um ver cálculo com os números usados, e o validador recalcula cada evidência de forma independente antes de ela entrar na apresentação. Se os dados não sustentam a frase, ela não aparece.
+
+## 4. Respeite o limite dos dados
+
+Números mostram o que aconteceu, não por que aconteceu. O texto que o Datavix escreve descreve o que está nos dados: não afirma causas e não acusa. Onde não há base, o slide diz “sem dados para esta análise”, em vez de preencher o espaço.
+
+## 5. Feche com a sua conclusão
+
+A decisão é de quem apresenta. Alguns modelos terminam com uma conclusão em branco para você escrever, e os textos podem ser editados antes de apresentar ou exportar.
+
+## Como o Datavix ajuda nesse caminho
+
+- Sugere, a partir da planilha, as histórias que os dados sustentam (e apaga as que não sustentam, com o motivo).
+- Monta o roteiro em 2, 5 ou 10 slides, com um achado por slide e o cálculo à vista.
+- Apresenta em tela cheia, uma etapa por vez, e exporta em PowerPoint editável, HTML, PNG e vídeo.
+
+## Erros comuns
+
+- Gráficos demais: cada um disputa a atenção com os outros.
+- Título que só descreve (“Vendas por mês”) em vez de afirmar o que o gráfico mostra.
+- Eixo que começa em um valor que exagera a diferença.
+- Cores sem significado: use cor para separar grupos ou destacar um ponto, não para enfeitar.
+- Número sem fonte: diga de onde vem e qual é o período.
+
+## Perguntas rápidas
+
+### O que é storytelling com dados?
+
+É apresentar números como uma história: parte de uma pergunta, apoia cada afirmação em evidência verificável e termina em uma conclusão ou decisão.
+
+### Qual a diferença entre um dashboard e uma história com dados?
+
+O dashboard deixa a pessoa explorar vários números. A história conduz por um caminho, com poucos achados e uma conclusão. Os dois se complementam.
+
+### Quantos slides uma história deve ter?
+
+Depende do tempo. O Datavix monta roteiros de 2, 5 ou 10 slides, e só entram os slides que têm dados.
+
+---
+
+# 13 modelos de história para apresentar os seus dados
+
+URL: https://datavix.app/modelos-de-apresentacao/
+Language: pt-BR
+
+Cada modelo do Datavix é uma pergunta que a planilha responde, com um roteiro pronto de 2, 5 ou 10 slides. O Datavix mostra os modelos que os seus dados sustentam e apaga os outros, com o motivo.
+
+## Como funcionam os modelos
+
+- Roteiro de 2, 5 ou 10 slides. É um “até”: só entra o slide que tem dados.
+- Cálculo à vista. Cada achado traz o “ver cálculo”, e as evidências são recalculadas pelo validador.
+- Texto da planilha como veio. O Datavix não reescreve os comentários e as descrições da sua planilha.
+- Uma conclusão sua. Alguns modelos (como Face a face, Resumo por temporada e Ficha) terminam com a conclusão em branco, para você escrever.
+- Apresentação, PowerPoint, PNG e vídeo seguem o mesmo roteiro.
+
+## Os 13 modelos
+
+- **Face a face** — Como A se compara a B, métrica a métrica? Compara de 2 a 4 entidades, métrica a métrica, sem dizer quem é “melhor”: mostra o maior valor de cada métrica e os limites da comparação.
+- **Resumo por temporada** — Como cada um evoluiu de uma temporada para a outra? Para entidades × períodos com várias medidas: um slide por entidade, com a tabela de métricas por temporada e o maior valor de cada métrica marcado.
+- **Ficha / perfil** — Quais são os números e os traços de uma só entidade? Para uma lista de indicadores de uma só entidade (uma linha por indicador): mostra os valores como a planilha traz, sem somar nem comparar unidades diferentes.
+- **Comparativo** — Quem é maior, menor, melhor? Como A se compara a B? Mostra o maior e o menor, a distância entre os grupos e a razão entre eles.
+- **Evolução no tempo** — Como mudou? Cresceu, caiu, oscilou? Mostra crescimento, queda, tendência e oscilação ao longo do período.
+- **Ranking e concentração** — Quem puxa o resultado? Poucos fazem muito? Mostra quem mais contribui para o resultado e quanto do total se concentra nos primeiros.
+- **Composição** — Do que o total é feito? Mostra as partes que formam o total: o que domina e o que pesa pouco.
+- **Distribuição e anomalias** — O que é normal? O que foge do padrão? Mostra o valor típico, a faixa normal e os pontos fora do padrão.
+- **Relação entre medidas** — Uma coisa varia junto com a outra? Mostra se duas medidas variam juntas e quais itens fogem da relação.
+- **Geografia** — Onde as coisas acontecem? Mostra onde os valores se concentram, por estado ou por coordenadas.
+- **Funil e conversão** — Onde perdemos itens ao longo das etapas? Mostra quanto passa de uma etapa para a seguinte e onde está a maior perda.
+- **Meta e desempenho** — Atingimos o planejado? Mostra quanto do planejado foi atingido e onde ficou a diferença.
+- **Antes e depois** — O que mudou depois do marco? Mostra o que mudou antes e depois de um marco.
+
+## Como o Datavix escolhe
+
+Depois de ler a planilha, o Datavix confere, para cada modelo, se há dados que o sustentam. Os que sustentam aparecem na frente (os três melhores com a pergunta e os números reais da planilha), e você pode ver todos. A área de atuação que você informa só reordena a sugestão: nunca esconde um modelo possível.
+
+## Perguntas rápidas
+
+### Posso trocar de modelo depois de gerar?
+
+Sim. O seletor de história no editor troca o roteiro e sugere o gráfico principal dele.
+
+### E se a minha planilha não servir para nenhum modelo?
+
+Você ainda tem o Panorama, o roteiro geral, e pode escolher qualquer gráfico disponível para os seus dados.
+
+---
+
+# Exportar a planilha para PowerPoint, com gráficos editáveis
+
+URL: https://datavix.app/exportar-para-powerpoint/
+Language: pt-BR
+
+O Datavix exporta a apresentação em .pptx com os textos em caixas de texto reais e os gráficos como gráficos nativos do PowerPoint, cada um com a planilha embutida. No PowerPoint, “Editar dados” abre os números, e formas, cores e eixos se editam como em qualquer gráfico seu.
+
+## O que vai no arquivo
+
+- Um slide de abertura com o indicador principal, um slide “O gráfico” com os insights e um slide para cada passo do roteiro (2, 5 ou 10 slides, o mesmo da apresentação).
+- Textos em caixas de texto reais e o “como foi calculado” em tabelas do PowerPoint.
+- Cores e fontes da peça: fundo, paleta e as famílias de título e de texto.
+- Gráficos nativos com a planilha embutida: barras, barras horizontais, empilhado, 100% empilhado, linha, área, pizza, rosca, dispersão, bolhas e radar.
+- A árvore radial como desenho vetorial: formas do PowerPoint agrupadas, no mesmo layout do gráfico.
+
+## Gráficos sem equivalente no PowerPoint
+
+Alguns gráficos não existem no PowerPoint. Eles saem como o gráfico nativo mais próximo dos mesmos dados, com uma nota no slide dizendo isso. Por exemplo: o treemap e a corrida de barras viram barras ordenadas, o calendário vira colunas por mês, o rio vertical vira áreas empilhadas, o funil vira colunas por etapa e o mapa de isolinhas vira uma dispersão dos pontos. Em todos os casos, os números são os da planilha.
+
+## Como exportar
+
+1. **Gere a peça**: Suba a planilha e escolha gráfico e história.
+2. **Revise os textos**: Edite títulos e frases se quiser. O arquivo leva os textos já editados.
+3. **Exporte**: Na aba Exportar, escolha PowerPoint (.pptx).
+4. **Abra no PowerPoint**: Clique no gráfico e em “Editar dados” para ver e alterar os números.
+
+## Limites
+
+- O PowerPoint usa a fonte instalada no computador. Se a fonte da peça não existir lá, ele a substitui.
+- As animações e transições da apresentação não vão para o arquivo.
+- Os gráficos aproximados mostram os mesmos dados, mas não o desenho original.
+
+> A exportação foi verificada no PowerPoint (o arquivo abre sem pedir reparo) e no Excel (a planilha embutida abre).
+
+## Perguntas rápidas
+
+### Os gráficos são imagens?
+
+Não. São gráficos nativos do PowerPoint, com os dados embutidos. A exceção é a árvore radial, que sai como desenho vetorial editável.
+
+### A planilha vai para algum servidor para gerar o arquivo?
+
+Não. O .pptx é montado no seu navegador.
+
+### Funciona em outros programas de apresentação?
+
+O arquivo segue o formato padrão do PowerPoint (OOXML). A verificação foi feita no PowerPoint e no Excel; outros programas podem mostrar diferenças.
+
+---
+
+# Vídeo de gráfico animado para redes sociais, a partir da planilha
+
+URL: https://datavix.app/video-para-redes-sociais/
+Language: pt-BR
+
+O Datavix grava um vídeo MP4 de cerca de 20 segundos com o gráfico animado e os insights, no formato vertical (9:16) usado em Reels, TikTok e Shorts ou quadrado (1:1) para o feed e o LinkedIn. A gravação acontece no seu navegador: nada é enviado.
+
+## O que tem no vídeo
+
+O roteiro do vídeo segue a peça: abertura com o título e o número principal, visão geral, insights com o cálculo à vista, resumo e um fecho com o logotipo DATAVIX e o endereço do site. Os números e textos são os da sua planilha.
+
+## Formatos
+
+| Formato | Tamanho | Uso comum |
+| --- | --- | --- |
+| Vertical 9:16 | 1080 × 1920 | Reels, TikTok, Shorts e Stories |
+| Quadrado 1:1 | 1080 × 1080 | Feed e LinkedIn |
+
+Os dois saem com 30 quadros por segundo, sem áudio, em MP4 (H.264).
+
+## Como gerar
+
+1. **Gere a peça**: Suba a planilha e escolha gráfico e história.
+2. **Abra a aba Exportar**: Escolha “Gerar vídeo (MP4)” e o formato.
+3. **Deixe a aba aberta**: A gravação acontece em tempo real, com prévia ao vivo e barra de progresso.
+4. **Baixe ou compartilhe**: O vídeo fica no seu computador. Em celulares, dá para usar a folha de compartilhamento.
+
+## Limites e cuidados
+
+- A aba precisa ficar aberta e visível durante a gravação. Em aparelhos mais fracos, podem ocorrer quadros perdidos, e a janela avisa.
+- Chrome e Edge gravam MP4. O Firefox grava WebM, que algumas redes recusam.
+- O arquivo é um MP4 (H.264) padrão, mas a aceitação final depende de cada rede social.
+- O vídeo mostra os números e textos da peça. Ao postar, você os torna públicos.
+
+## Perguntas rápidas
+
+### O vídeo tem áudio?
+
+Não. Esta versão grava vídeo sem áudio.
+
+### Os dados vão para algum servidor?
+
+Não. O vídeo é gerado no seu navegador.
+
+---
+
+# 30 tipos de gráfico e o que cada um pede da planilha
+
+URL: https://datavix.app/tipos-de-grafico/
+Language: pt-BR
+
+O Datavix oferece 30 tipos de gráfico. Qual deles aparece disponível depende do formato dos seus dados: ele sugere o que combina e mostra as alternativas, e os que a planilha não sustenta ficam apagados, com o motivo.
+
+## Como escolher o gráfico
+
+Comece pela pergunta (veja os modelos de história) e deixe o Datavix sugerir. Se quiser outro, a lista mostra tudo o que os dados sustentam. Cada linha abaixo diz o que o gráfico mostra e o que ele pede da planilha.
+
+## Os 30 gráficos
+
+- **Árvore radial**: Período, entidades e cada registro no mesmo gráfico. Passe o mouse e leia a linha da planilha. (Precisa de período e entidades)
+- **Raios radiais**: Um raio por item, com o comprimento pelo valor e a cor por grupo. (Precisa de uma entidade com 3+ itens e um valor)
+- **Rio vertical**: Como as categorias crescem e encolhem ao longo do tempo. (Precisa de data, 3+ categorias e um valor)
+- **Leque de barras**: Centenas de itens ordenados, lidos de uma vez. (Precisa de 8+ itens e um valor)
+- **Cordilheira isométrica**: Séries comparadas em relevo, lado a lado. (Precisa de data, entidades e um valor)
+- **Fluxo em funil**: Onde os itens entram, passam e saem em cada etapa. (Precisa de 2 a 5 colunas de categoria em sequência)
+- **Barras**: Compara o valor de cada categoria, lado a lado. (Precisa de uma categoria e um valor)
+- **Barras horizontais**: Compara categorias, com espaço para nomes longos. (Precisa de uma categoria e um valor)
+- **Empilhado 100%**: Mostra a participação de cada série no total de cada categoria. (Precisa de uma segunda categoria (série))
+- **Treemap**: Retângulos proporcionais ao valor mostram do que o total é feito. (Precisa de categoria e valor (com série))
+- **Pizza**: As partes de um todo, quando há poucas categorias. (Precisa de uma categoria com 2 a 8 itens e um valor que some)
+- **Rosca**: A pizza em formato de anel: as partes de um todo. (Precisa de uma categoria com 2 a 8 itens e um valor que some)
+- **Várias pizzas**: Uma pizza por painel, para comparar a composição entre grupos. (Precisa de duas categorias (partes e painéis) e um valor que some)
+- **Várias roscas**: Uma rosca por painel, para comparar a composição entre grupos. (Precisa de duas categorias (partes e painéis) e um valor que some)
+- **Bolhas agrupadas**: Bolhas agrupadas, com a área proporcional ao valor de cada item. (Precisa de 10+ itens e um valor)
+- **Várias colunas**: Colunas por período ou categoria, com um painel para cada grupo e a mesma escala em todos. (Precisa de um período ou categoria e, de preferência, um grupo)
+- **Várias linhas**: Uma linha por painel, um painel para cada grupo e a mesma escala em todos, para comparar tendências. (Precisa de uma data com 6+ períodos)
+- **Linha radial**: O ciclo do ano (ou das categorias) em volta do centro. (Precisa de uma data com mais de um ano ou de uma categoria com 5+ itens)
+- **Radar**: Vários indicadores por grupo, cada eixo na sua escala. (Precisa de um grupo com 2 a 8 itens e 3 ou mais colunas numéricas)
+- **Box & Whisker**: Quartis, bigodes e pontos fora da curva, por categoria. (Precisa de uma categoria com 2 a 12 itens (5+ valores cada) e uma coluna numérica)
+- **Nuvem de palavras**: As palavras que mais se repetem em uma coluna de texto livre. (Precisa de uma coluna de texto livre com 10+ linhas preenchidas)
+- **Mapa de bolhas**: Uma bolha por estado do Brasil, com a área pelo valor. (Precisa de uma coluna de estados (UF ou nome) com 3+ estados)
+- **Mapa de isolinhas**: Curvas de mesmo valor, desenhadas a partir de latitude e longitude. (Precisa de colunas de latitude e longitude e de um valor numérico)
+- **Corrida de barras**: O ranking de vários itens muda ao longo do tempo, um quadro por período. (Precisa de data, 3+ séries e 4+ períodos)
+- **Linha**: A evolução de um valor ao longo do tempo. (Precisa de uma coluna de data e um valor)
+- **Área**: Como a linha, com a área preenchida: o volume ao longo do tempo. (Precisa de uma coluna de data e um valor)
+- **Calendário**: Um mapa de calor com um quadrado por dia. (Precisa de datas por dia e um valor)
+- **Dispersão**: Cada ponto é um item: uma medida contra a outra. (Precisa de duas colunas de número)
+- **Bolhas**: Como a dispersão, com o tamanho da bolha dado por uma terceira medida. (Precisa de três colunas de número)
+- **Indicadores**: Cartões com os números principais. (Precisa de um valor)
+
+> A corrida de barras tem uma página própria, com o formato de planilha e as opções de reprodução.
+
+> Os contornos dos estados do mapa de bolhas vêm das malhas do IBGE (CC BY 4.0), simplificados e embutidos no app: nada é baixado na hora.
+
+---
+
+# Perguntas frequentes sobre o Datavix
+
+URL: https://datavix.app/perguntas-frequentes/
+Language: pt-BR
+
+Respostas diretas sobre o que o Datavix faz com a sua planilha, o que ele aceita e o que ele exporta. Não achou a sua dúvida? A política de privacidade detalha o tratamento de dados.
+
+## Privacidade
+
+### Minha planilha é enviada para algum servidor?
+
+Não. O arquivo é lido e processado no seu navegador e nunca é enviado. Só saem do navegador o e-mail que você informa para começar, a resposta à pesquisa de satisfação (opcional) e, se você aceitar, dados anônimos de uso do site.
+
+### Preciso informar o e-mail para usar?
+
+Sim. Para começar a usar o Datavix de graça, pedimos o seu e-mail. Ele serve para liberar o uso e para falar sobre novidades do produto. Nada da planilha é enviado junto.
+
+### O Datavix usa cookies ou rastreadores?
+
+Não usamos anúncios. A análise de uso (Microsoft Clarity) só liga se você aceitar, dentro do app, e nunca registra o conteúdo da planilha. O HTML exportado não carrega rastreadores, e as páginas deste site também não.
+
+### O que acontece com dados pessoais na planilha?
+
+E-mail, CPF, CNPJ, telefone e nomes de pessoas são reconhecidos e ficam fora dos gráficos e da apresentação por padrão, com aviso. Você pode liberar a coluna se quiser.
+
+### Quem mantém o Datavix?
+
+O Datavix é mantido por Caio (GitHub: caiospot). O código está em github.com/caiospot/Datavix.
+
+## Arquivos e limites
+
+### Quais formatos de arquivo são aceitos?
+
+XLSX, XLS, CSV e TSV, com datas e números escritos em português ou inglês. Se o arquivo tiver várias abas, o Datavix dá um papel a cada uma e você pode trocar.
+
+### Quantas linhas a planilha pode ter?
+
+Dezenas de milhares. Acima de 3.000 linhas, a árvore radial reúne os registros por período, entidade e categoria. Planilhas muito grandes (dezenas de MB) podem levar cerca de um minuto para abrir.
+
+### Funciona no celular?
+
+Sim. O app tem layout para celular.
+
+### Funciona sem internet?
+
+O HTML exportado abre sem internet. O app também abre sem internet depois da primeira visita e pode ser instalado como aplicativo nos navegadores que oferecem a instalação.
+
+### Em que idiomas funciona?
+
+A interface está em português e em inglês, e os rótulos dos gráficos e dos textos seguem o idioma escolhido.
+
+## Gráficos e insights
+
+### Quais gráficos o Datavix tem?
+
+30 tipos, de barras e linhas a árvore radial, treemap, radar, box & whisker e mapas. Veja a lista em tipos de gráfico.
+
+### O Datavix inventa insights?
+
+Não. Só mostramos o que sai de um cálculo sobre os seus dados, e você pode ver a conta em “ver cálculo”. Se a planilha não sustenta uma frase, ela não aparece.
+
+### O que são os modelos de história?
+
+São 13 perguntas que a planilha pode responder (evolução no tempo, comparativo, ranking, composição, funil e outras), cada uma com um roteiro de 2, 5 ou 10 slides. Veja em modelos de apresentação.
+
+## Exportação e custo
+
+### O Datavix exporta para PowerPoint?
+
+Sim. O .pptx tem textos editáveis e gráficos nativos do PowerPoint com a planilha embutida. Detalhes em exportar para PowerPoint.
+
+### Dá para gerar vídeo para redes sociais?
+
+Sim. É um MP4 de cerca de 20 segundos, vertical (9:16) ou quadrado (1:1), sem áudio, gravado no navegador. Chrome e Edge gravam MP4; o Firefox grava WebM. Veja vídeo para redes sociais.
+
+### Que outros formatos o Datavix exporta?
+
+HTML interativo (um arquivo que abre sem internet), PNG em 1920×1080 ou 3840×2160 e um ZIP com um PNG por etapa.
+
+### O Datavix é gratuito?
+
+Você começa de graça: basta informar o seu e-mail.
+
+---
+
+# Política de Privacidade
+
+URL: https://datavix.app/privacidade/
+
+A sua planilha é lida e processada no seu navegador e não é enviada para nenhum servidor. Esta página explica o que sai do navegador, para onde vai e quais são os seus direitos.
+
+See the page for the full policy text.
+
+---
+
+# Datavix: turn spreadsheets into animated charts and stories
+
+URL: https://datavix.app/en/
+Language: en
+
+Datavix reads your Excel or CSV file and builds interactive charts, presentations and videos from the numbers in your own spreadsheet. Everything runs in your browser: the file never leaves your computer.
+
+## Four steps from spreadsheet to story
+
+
+
+## 30 chart types, one for every story
+
+Datavix suggests the chart that fits the shape of your data and shows the alternatives. The ones your spreadsheet cannot support appear dimmed, with the reason. Want to see a ranking change over time? Try the bar chart race.
+
+
+
+## The math is always in sight.
+
+
+
+## Your spreadsheet stays in your browser.
+
+
+
+## From Excel to PowerPoint, editable.
+
+
+
+## Video ready for social media.
+
+
+
+## Every story is a question your spreadsheet answers
+
+Instead of dumping charts, Datavix picks a question (“How did it change?”, “Who drives the result?”, “What is the total made of?”) and builds a 2, 5 or 10-slide script with the findings that answer it. See the data storytelling method.
+
+
+
+## Datavix by the numbers
+
+
+
+## Who uses Datavix
+
+
+
+## What people ask first
+
+### Is my spreadsheet sent to a server?
+
+No. The file is read and processed in your browser and is never uploaded. The only things that leave your browser are the email you enter to get started, your answer to the satisfaction survey (optional) and, if you accept, anonymous site usage data. See the privacy policy.
+
+### Which file formats are supported?
+
+XLSX, XLS, CSV and TSV, with dates and numbers written in Portuguese or English.
+
+### Can I use the result offline?
+
+Yes. The exported HTML is a single file and opens without internet. The app also opens offline after the first visit.
+
+### Does Datavix make up insights?
+
+No. We only show what comes out of a calculation on your data, and you can see the math. If the spreadsheet does not support a sentence, it does not appear.
+
+### How many rows can the spreadsheet have?
+
+Tens of thousands. Above 3,000 rows, the radial tree groups records by period, entity and category.
+
+### Is Datavix free?
+
+You start for free: just enter your email.
+
+---
+
+# How to turn a spreadsheet into an animated chart
+
+URL: https://datavix.app/en/spreadsheet-to-animated-chart/
+Language: en
+
+In Datavix you add an .xlsx, .xls or .csv file, check the columns it recognized and pick the chart. The animation runs in your own browser: the spreadsheet is not sent to any server.
+
+## Step by step
+
+1. **Answer the opening questions**: Four quick questions (area, audience, decision and time) help suggest the right chart and story.
+2. **Add the file**: Drag the spreadsheet (.xlsx, .xls, .csv or .tsv) or pick the file. If it has several sheets, Datavix gives each one a role and you can change it.
+3. **Check how the columns were read**: Each column gets a role: date, category, number, free text, identifier or yes/no. You confirm or correct it before generating.
+4. **See the chart and edit**: Datavix suggests a chart and shows the alternatives. Change chart, palette, background and fonts. Highlights come with “see calculation”.
+5. **Export**: Interactive HTML, PNG, a ZIP with one PNG per step, PowerPoint (.pptx) or MP4 video.
+
+## Which spreadsheet works best
+
+Any table works: Datavix decides the path from the kind of information in each column, not from the file name. The shape of your data defines which charts are available.
+
+| If the spreadsheet has… | Datavix offers… |
+| --- | --- |
+| A date and a value | Line and area |
+| A category and a value | Bars, horizontal bars and treemap |
+| A date, 3 or more series and 4 or more periods | Bar chart race |
+| Two number columns | Scatter (and bubbles, with a third) |
+| A column of Brazilian states (abbreviation or name) | Bubble map of Brazil |
+| Latitude, longitude and a value | Isoline map |
+| A free-text column (10 rows or more) | Word cloud |
+
+The full list, with what each of the 30 charts needs from your spreadsheet, is in chart types.
+
+## What Datavix recognizes on its own
+
+- Dates and numbers written in Portuguese or English.
+- Identifier, free text and yes/no columns, which do not become an axis by mistake.
+- Personal data (email, ID numbers, phone, people’s names): kept out of the charts and the presentation by default, with a warning. You can include the column.
+- Empty columns, or columns with a single value, drop out on their own.
+- Similar labels (“Purple” and “PURPLE”) are suggested for merging. You decide, and the original spreadsheet does not change.
+
+## Limits and care
+
+- Large spreadsheets (tens of MB) can take about a minute to open. If it is very large, save only the sheet and the columns that matter, or export it as .csv.
+- Above 3,000 rows, the radial tree groups records by period, entity and category.
+- The numbers in the chart come only from the spreadsheet. If the data does not support a sentence, it does not appear.
+- Datavix shows the charts your data supports. The others appear dimmed, with the reason.
+
+## Quick questions
+
+### Do I need to install anything?
+
+No. Datavix runs in the browser. If your browser offers it, you can install it as an app.
+
+### Does the spreadsheet go to a server?
+
+No. It is read and processed in your browser. See the privacy policy.
+
+### Does it work with Excel and CSV?
+
+Yes: .xlsx, .xls, .csv and .tsv.
+
+### Can I use the result offline?
+
+Yes. The exported HTML is a single file and opens without internet.
+
+---
+
+# Bar chart race from a spreadsheet
+
+URL: https://datavix.app/en/bar-chart-race/
+Language: en
+
+A bar chart race shows how the ranking of several items changes over time: each period is a frame and the bars swap places as the values change. In Datavix it comes from a spreadsheet with dates, items and values, without uploading the file to any server.
+
+## What the spreadsheet needs
+
+Datavix offers the bar chart race when it finds a date column, 3 or more items (the series competing for the ranking), 4 or more periods and a value column. The simplest layout is one row for each item in each period:
+
+| Date | Item | Value |
+| --- | --- | --- |
+| 2022-01 | Store A | 120 |
+| 2022-01 | Store B | 95 |
+| 2022-01 | Store C | 80 |
+| 2022-02 | Store A | 130 |
+| 2022-02 | Store B | 140 |
+| 2022-02 | Store C | 85 |
+
+The values are fictional, only to show the layout. If a requirement is missing, the race appears dimmed in the chart list, with the reason.
+
+## How to create it
+
+1. **Add the spreadsheet**: Drag the .xlsx, .xls or .csv file into Datavix.
+2. **Check the columns**: The date, the item and the value need the right role on the reading screen.
+3. **Pick “Bar chart race”**: It shows up in the chart list when your data supports it.
+4. **Play it**: The animation starts on its own. Use Play and Pause, or pick a period.
+5. **Export**: Interactive HTML, PNG of the current frame, PowerPoint or MP4 video.
+
+## By period or cumulative
+
+Without the Cumulative option, each frame shows the value of that period alone. With it, the values add up over time, which suits totals such as cumulative sales.
+
+## Tips for a good race
+
+- Use the same item names in every period. Differences in capitalization or accents become separate items, and Datavix suggests merging similar labels.
+- Prefer regular periods (every month, every year) so the pace of the race makes sense.
+- Write the title as a statement of what the race shows, not just the name of the measure.
+
+## Exporting the race
+
+- Interactive HTML: one file that opens offline, with Play and Pause.
+- PNG: the current frame at 1920×1080 or 4K.
+- PowerPoint: the race comes out as the closest native chart for the same data (ranked bars), with a note on the slide. The animation does not go into the file. See export to PowerPoint.
+- MP4 video: vertical or square, no audio. See video for social media.
+
+## Quick questions
+
+### Is a “bar chart race” the same as a “racing bar chart”?
+
+Yes. They are two names for the same chart.
+
+### How many periods and items do I need?
+
+At least 4 periods and 3 items, with a date column and a value column.
+
+### Does the spreadsheet go to a server?
+
+No. Everything happens in your browser.
+
+---
+
+# Data storytelling: from spreadsheet to story
+
+URL: https://datavix.app/en/data-storytelling/
+Language: en
+
+Data storytelling is arranging numbers into a story that helps someone understand something and decide. Instead of showing every chart you could make, you start from a question, pick the evidence that answers it and close with what to do about it.
+
+## 1. Start with the question, not the chart
+
+Every story answers a question. “How did it change?”, “Who drives the result?”, “What is the total made of?”, “Where do we lose items?”. Once the question is clear, choosing the chart and the highlights stops being a matter of taste and becomes a consequence. See the questions the Datavix templates answer.
+
+## 2. Pick a few pieces of evidence
+
+One slide, one idea. Pick three to five findings that answer the question and leave the rest in the spreadsheet. More charts do not make the story more convincing, only more tiring.
+
+## 3. Show the math
+
+A sentence like “SC leads with 16% of revenue” is only convincing if the reader can check it. In Datavix, every insight has a see calculation with the numbers used, and the validator recalculates each piece of evidence independently before it enters the presentation. If the data does not support the sentence, it does not appear.
+
+## 4. Respect the limits of the data
+
+Numbers show what happened, not why it happened. The text Datavix writes describes what is in the data: it does not claim causes and does not accuse. Where there is no basis, the slide says “no data for this analysis” instead of filling the space.
+
+## 5. Close with your conclusion
+
+The decision belongs to the person presenting. Some templates end with a blank conclusion for you to write, and the texts can be edited before presenting or exporting.
+
+## How Datavix helps along the way
+
+- Suggests, from your spreadsheet, the stories your data supports (and dims the ones it does not, with the reason).
+- Builds the script in 2, 5 or 10 slides, one finding per slide, with the calculation in plain sight.
+- Presents step by step in presentation mode and exports to editable PowerPoint, HTML, PNG and video.
+
+## Common mistakes
+
+- Too many charts: each one competes for attention with the others.
+- A title that only describes (“Sales by month”) instead of stating what the chart shows.
+- An axis that starts at a value that exaggerates the difference.
+- Colors with no meaning: use color to separate groups or highlight a point, not to decorate.
+- A number without a source: say where it comes from and what the period is.
+
+## Quick questions
+
+### What is data storytelling?
+
+It is presenting numbers as a story: start from a question, back every claim with verifiable evidence and end with a conclusion or a decision.
+
+### What is the difference between a dashboard and a data story?
+
+A dashboard lets people explore many numbers. A story guides them along a path, with a few findings and a conclusion. They complement each other.
+
+### How many slides should a story have?
+
+It depends on the time you have. Datavix builds scripts of 2, 5 or 10 slides, and only slides that have data make it in.
+
+---
+
+# 13 story templates for presenting your data
+
+URL: https://datavix.app/en/presentation-templates/
+Language: en
+
+Each Datavix template is a question your spreadsheet answers, with a ready script of 2, 5 or 10 slides. Datavix shows the templates your data supports and dims the others, with the reason.
+
+## How the templates work
+
+- A script of 2, 5 or 10 slides. It is an “up to”: only a slide that has data makes it in.
+- Calculation in plain sight. Every finding carries “see calculation”, and the evidence is recalculated by the validator.
+- Spreadsheet text as it came. Datavix does not rewrite the comments and descriptions in your spreadsheet.
+- A conclusion of your own. Some templates (such as Head to head, Season summary and Profile sheet) end with a blank conclusion for you to write.
+- Presentation, PowerPoint, PNG and video follow the same script.
+
+> In the app, the templates are called models: look for “Open the model gallery” in the editor.
+
+## The 13 templates
+
+- **Head to head** — How does A compare to B, metric by metric? Compares 2 to 4 entities metric by metric, without saying who is “better”: it shows the highest value of each metric and the limits of the comparison.
+- **Season summary** — How did each one change from one season to the next? For entities × periods with several measures: one slide per entity, with a table of metrics by season and the highest value of each metric marked.
+- **Profile sheet** — What are the numbers and traits of a single entity? For a list of indicators about a single entity (one row per indicator): shows the values as your spreadsheet has them, without adding up or comparing different units.
+- **Comparison** — Who is bigger, smaller, better? How does A compare to B? Shows the biggest and the smallest, the distance between groups and the ratio between them.
+- **Change over time** — How did it change? Did it grow, fall, fluctuate? Shows growth, decline, trend and swings over the period.
+- **Ranking and concentration** — Who drives the result? Do a few do most? Shows who contributes most to the result and how much of the total is concentrated in the top few.
+- **Composition** — What is the total made of? Shows the parts that make up the total: what dominates and what weighs little.
+- **Distribution and anomalies** — What is normal? What breaks the pattern? Shows the typical value, the normal range and the points that break the pattern.
+- **Relationship** — Does one thing vary together with the other? Shows whether two measures move together and which items break the relationship.
+- **Geography** — Where do things happen? Shows where the values concentrate, by state or by coordinates.
+- **Funnel and conversion** — Where do we lose items along the stages? Shows how much moves from one stage to the next and where the biggest drop is.
+- **Goal and performance** — Did we hit the plan? Shows how much of the plan was reached and where the gap is.
+- **Before and after** — What changed after the milestone? Shows what changed before and after a milestone.
+
+## How Datavix chooses
+
+After reading the spreadsheet, Datavix checks, for each template, whether there is data to support it. The supported ones come first (the best three with the question and the real numbers from your spreadsheet), and you can see them all. The area you choose only reorders the suggestion: it never hides a possible template.
+
+## Quick questions
+
+### Can I switch templates after generating?
+
+Yes. The story selector in the editor changes the script and suggests that template’s main chart.
+
+### What if my spreadsheet fits none of the templates?
+
+You still have the Overview, the general script, and you can pick any chart available for your data.
+
+---
+
+# Export a spreadsheet to PowerPoint, with editable charts
+
+URL: https://datavix.app/en/export-to-powerpoint/
+Language: en
+
+Datavix exports the presentation as .pptx with the text in real text boxes and the charts as native PowerPoint charts, each with its spreadsheet embedded. In PowerPoint, “Edit Data” opens the numbers, and shapes, colors and axes can be edited like any chart of your own.
+
+## What goes in the file
+
+- An opening slide with the headline indicator, a “The chart” slide with the insights and one slide per step of the script (2, 5 or 10 slides, the same as the presentation).
+- Text in real text boxes and the “how it was calculated” in PowerPoint tables.
+- The piece’s colors and fonts: background, palette and the title and text font families.
+- Native charts with the spreadsheet embedded: bars, horizontal bars, stacked, 100% stacked, line, area, pie, donut, scatter, bubbles and radar.
+- The radial tree as a vector drawing: grouped PowerPoint shapes, in the same layout as the chart.
+
+## Charts with no PowerPoint equivalent
+
+Some charts do not exist in PowerPoint. They come out as the closest native chart for the same data, with a note on the slide saying so. For example: the treemap and the bar chart race become ranked bars, the calendar becomes columns by month, the vertical stream becomes stacked areas, the funnel becomes columns by stage and the isoline map becomes a scatter of the points. In every case, the numbers are the ones in your spreadsheet.
+
+## How to export
+
+1. **Generate the piece**: Add the spreadsheet and pick chart and story.
+2. **Review the texts**: Edit titles and sentences if you like. The file carries the edited texts.
+3. **Export**: On the Export tab, choose PowerPoint (.pptx).
+4. **Open it in PowerPoint**: Click the chart and “Edit Data” to see and change the numbers.
+
+## Limits
+
+- PowerPoint uses the font installed on the computer. If the piece’s font is not there, it substitutes it.
+- The presentation’s animations and transitions do not go into the file.
+- Approximated charts show the same data, but not the original drawing.
+
+> The export was checked in PowerPoint (the file opens without asking for repair) and in Excel (the embedded spreadsheet opens).
+
+## Quick questions
+
+### Are the charts images?
+
+No. They are native PowerPoint charts with the data embedded. The exception is the radial tree, which comes out as an editable vector drawing.
+
+### Does the spreadsheet go to a server to build the file?
+
+No. The .pptx is built in your browser.
+
+### Does it work in other presentation programs?
+
+The file follows the standard PowerPoint format (OOXML). It was checked in PowerPoint and Excel; other programs may show differences.
+
+---
+
+# Animated chart video for social media, from a spreadsheet
+
+URL: https://datavix.app/en/social-video/
+Language: en
+
+Datavix records an MP4 video of about 20 seconds with the animated chart and the insights, in the vertical 9:16 format used by Reels, TikTok and Shorts or square 1:1 for the feed and LinkedIn. Recording happens in your browser: nothing is uploaded.
+
+## What is in the video
+
+The video script follows the piece: an opening with the title and the headline number, an overview, insights with the calculation in plain sight, a summary and a closing with the DATAVIX logo and the site address. The numbers and texts are the ones from your spreadsheet.
+
+## Formats
+
+| Format | Size | Common use |
+| --- | --- | --- |
+| Vertical 9:16 | 1080 × 1920 | Reels, TikTok, Shorts and Stories |
+| Square 1:1 | 1080 × 1080 | Feed and LinkedIn |
+
+Both come out at 30 frames per second, with no audio, as MP4 (H.264).
+
+## How to generate it
+
+1. **Generate the piece**: Add the spreadsheet and pick chart and story.
+2. **Open the Export tab**: Choose “Create video (MP4)” and the format.
+3. **Keep the tab open**: Recording happens in real time, with a live preview and a progress bar.
+4. **Download or share**: The video stays on your computer. On phones, you can use the share sheet.
+
+## Limits and care
+
+- The tab must stay open and visible during recording. On weaker devices, frames can be dropped, and the window warns you.
+- Chrome and Edge record MP4. Firefox records WebM, which some networks reject.
+- The file is a standard MP4 (H.264), but final acceptance depends on each social network.
+- The video shows the numbers and texts of the piece. When you post it, you make them public.
+
+## Quick questions
+
+### Does the video have audio?
+
+No. This version records video without audio.
+
+### Does the data go to a server?
+
+No. The video is generated in your browser.
+
+---
+
+# 30 chart types and what each one needs from your data
+
+URL: https://datavix.app/en/chart-types/
+Language: en
+
+Datavix offers 30 chart types. Which ones are available depends on the shape of your data: it suggests what fits and shows the alternatives, and the ones your spreadsheet cannot support are dimmed, with the reason.
+
+## How to choose the chart
+
+Start with the question (see the story templates) and let Datavix suggest. If you want another one, the list shows everything your data supports. Each line below says what the chart shows and what it needs from the spreadsheet.
+
+## The 30 charts
+
+- **Radial tree**: Period, entities and every record in the same chart. Hover to read the row from your spreadsheet. (Needs a period and entities)
+- **Radial spokes**: One spoke per item, with length set by the value and color by group. (Needs an entity with 3+ items and a value)
+- **Vertical stream**: How categories grow and shrink over time. (Needs a date, 3+ categories and a value)
+- **Bar fan**: Hundreds of ranked items, read at a glance. (Needs 8+ items and a value)
+- **Isometric ridgeline**: Series compared in relief, side by side. (Needs a date, entities and a value)
+- **Funnel flow**: Where items enter, move on and drop out at each stage. (Needs 2 to 5 category columns in sequence)
+- **Bars**: Compares the value of each category, side by side. (Needs a category and a value)
+- **Horizontal bars**: Compares categories, with room for long names. (Needs a category and a value)
+- **100% stacked**: Shows each series’ share of the total in each category. (Needs a second category (series))
+- **Treemap**: Rectangles sized by value show what the total is made of. (Needs a category and a value (with series))
+- **Pie chart**: The parts of a whole, when there are few categories. (Needs a category with 2 to 8 items and a value that adds up)
+- **Donut chart**: The pie chart as a ring: the parts of a whole. (Needs a category with 2 to 8 items and a value that adds up)
+- **Multiple pies**: One pie per panel, to compare composition across groups. (Needs two categories (parts and panels) and a value that adds up)
+- **Multiple donuts**: One donut per panel, to compare composition across groups. (Needs two categories (parts and panels) and a value that adds up)
+- **Packed bubbles**: Packed bubbles, with each bubble’s area proportional to the item’s value. (Needs 10+ items and a value)
+- **Multiple columns**: Columns by period or category, with one panel per group and the same scale in all of them. (Needs a period or category and, ideally, a group)
+- **Multiple lines**: One line per panel, one panel per group and the same scale in all of them, to compare trends. (Needs a date with 6+ periods)
+- **Radial line**: The cycle of the year (or of the categories) around a center. (Needs a date spanning more than a year or a category with 5+ items)
+- **Radar**: Several indicators per group, each axis on its own scale. (Needs a group with 2 to 8 items and 3 or more numeric columns)
+- **Box & whisker**: Quartiles, whiskers and outliers, by category. (Needs a category with 2 to 12 items (5+ values each) and a numeric column)
+- **Word cloud**: The words that repeat most in a free-text column. (Needs a free-text column with 10+ filled rows)
+- **Bubble map**: One bubble per Brazilian state, with the area set by the value. (Needs a column of states (abbreviation or name) with 3+ states)
+- **Isoline map**: Curves of equal value, drawn from latitude and longitude. (Needs latitude and longitude columns and a numeric value)
+- **Bar chart race**: The ranking of several items changes over time, one frame per period. (Needs a date, 3+ series and 4+ periods)
+- **Line**: How a value changes over time. (Needs a date column and a value)
+- **Area**: Like the line chart, with the area filled in: volume over time. (Needs a date column and a value)
+- **Calendar heatmap**: A heatmap with one square per day. (Needs daily dates and a value)
+- **Scatter**: Each point is an item: one measure against another. (Needs two number columns)
+- **Bubbles**: Like the scatter plot, with bubble size set by a third measure. (Needs three number columns)
+- **KPI cards**: Cards with the headline numbers. (Needs a value)
+
+> The bar chart race has a page of its own, with the spreadsheet layout and the playback options.
+
+> The state outlines in the bubble map come from IBGE meshes (CC BY 4.0), simplified and built into the app: nothing is downloaded on the fly.
+
+---
+
+# Frequently asked questions about Datavix
+
+URL: https://datavix.app/en/faq/
+Language: en
+
+Direct answers about what Datavix does with your spreadsheet, what it accepts and what it exports. Did not find your question? The privacy policy details how data is handled.
+
+## Privacy
+
+### Is my spreadsheet sent to a server?
+
+No. The file is read and processed in your browser and is never uploaded. The only things that leave your browser are the email you enter to get started, your answer to the satisfaction survey (optional) and, if you accept, anonymous site usage data.
+
+### Do I need to give my email to use it?
+
+Yes. To start using Datavix for free, we ask for your email. It is used to unlock access and to tell you about product news. Nothing from the spreadsheet is sent with it.
+
+### Does Datavix use cookies or trackers?
+
+No ads. Usage analytics (Microsoft Clarity) only turn on if you accept, inside the app, and never record the content of the spreadsheet. The exported HTML loads no trackers, and neither do the pages of this website.
+
+### What happens to personal data in the spreadsheet?
+
+Emails, ID numbers, phone numbers and people’s names are recognized and kept out of the charts and the presentation by default, with a warning. You can include the column if you want.
+
+### Who maintains Datavix?
+
+Datavix is maintained by Caio (GitHub: caiospot). The code is at github.com/caiospot/Datavix.
+
+## Files and limits
+
+### Which file formats are supported?
+
+XLSX, XLS, CSV and TSV, with dates and numbers written in Portuguese or English. If the file has several sheets, Datavix gives each one a role and you can change it.
+
+### How many rows can the spreadsheet have?
+
+Tens of thousands. Above 3,000 rows, the radial tree groups records by period, entity and category. Very large spreadsheets (tens of MB) can take about a minute to open.
+
+### Does it work on a phone?
+
+Yes. The app has a phone layout.
+
+### Does it work offline?
+
+The exported HTML opens without internet. The app also opens offline after the first visit and can be installed as an app in browsers that offer installation.
+
+### Which languages does it support?
+
+The interface is in Portuguese and English, and the chart and text labels follow the chosen language.
+
+## Charts and insights
+
+### Which charts does Datavix have?
+
+30 types, from bars and lines to radial tree, treemap, radar, box & whisker and maps. See the list in chart types.
+
+### Does Datavix make up insights?
+
+No. We only show what comes out of a calculation on your data, and you can see the math in “see calculation”. If the spreadsheet does not support a sentence, it does not appear.
+
+### What are the story templates?
+
+They are 13 questions your spreadsheet can answer (change over time, comparison, ranking, composition, funnel and others), each with a 2, 5 or 10-slide script. See presentation templates.
+
+## Export and cost
+
+### Does Datavix export to PowerPoint?
+
+Yes. The .pptx has editable text and native PowerPoint charts with the spreadsheet embedded. Details in export to PowerPoint.
+
+### Can it make video for social media?
+
+Yes. It is an MP4 of about 20 seconds, vertical (9:16) or square (1:1), with no audio, recorded in the browser. Chrome and Edge record MP4; Firefox records WebM. See video for social media.
+
+### What other formats does it export?
+
+Interactive HTML (a single file that opens offline), PNG at 1920×1080 or 3840×2160 and a ZIP with one PNG per step.
+
+### Is Datavix free?
+
+You start for free: just enter your email.
+
+---
+
+# Privacy Policy
+
+URL: https://datavix.app/en/privacy/
+
+Your spreadsheet is read and processed in your browser and is not sent to any server. This page explains what does leave the browser, where it goes and what your rights are.
+
+See the page for the full policy text.

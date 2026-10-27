@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "Datavix",
+  "short_name": "Datavix",
+  "description": "Tudo vira dado. Transforme planilhas em dataviz executivo animado, 100% no navegador.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b0d0a",
+  "theme_color": "#0b0d0a",
+  "categories": ["productivity", "business", "utilities"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

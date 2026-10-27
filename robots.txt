@@ -1,0 +1,47 @@
+# Datavix: o site é público e feito para ser lido por pessoas, buscadores e assistentes de IA.
+# O app (/app/) não é conteúdo: leva noindex no HTML e no cabeçalho (por isso não é bloqueado aqui: o bloqueio impediria o buscador de ver o noindex).
+
+User-agent: *
+Allow: /
+
+User-agent: Googlebot
+User-agent: Googlebot-Image
+User-agent: Google-Extended
+User-agent: GoogleOther
+User-agent: Bingbot
+User-agent: Applebot
+User-agent: Applebot-Extended
+User-agent: DuckDuckBot
+User-agent: DuckAssistBot
+User-agent: YandexBot
+User-agent: Baiduspider
+Allow: /
+
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: anthropic-ai
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: MistralAI-User
+User-agent: cohere-ai
+User-agent: Amazonbot
+User-agent: meta-externalagent
+User-agent: CCBot
+User-agent: Bytespider
+Allow: /
+
+User-agent: Twitterbot
+User-agent: LinkedInBot
+User-agent: facebookexternalhit
+User-agent: Slackbot
+User-agent: Discordbot
+User-agent: TelegramBot
+User-agent: WhatsApp
+User-agent: Pinterestbot
+Allow: /
+
+Sitemap: https://datavix.app/sitemap.xml

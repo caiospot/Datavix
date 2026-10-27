@@ -1,0 +1,42 @@
+# Datavix
+
+> Datavix turns spreadsheets (XLSX, XLS, CSV) into animated, interactive charts, presentations and videos, entirely in the browser: the spreadsheet is never uploaded to a server. Interface in Portuguese and English. You can start for free.
+
+Key facts, as of the last update of this file:
+- Input: .xlsx, .xls, .csv and .tsv files, processed locally in the browser.
+- 30 chart types, suggested from the shape of the data, and 13 story templates with scripts of 2, 5 or 10 slides.
+- Every insight comes with its calculation ("see calculation"); the numbers come only from the spreadsheet.
+- Exports: interactive HTML that opens offline, PNG (1920×1080 and 3840×2160), a ZIP with one PNG per step, PowerPoint (.pptx) with native editable charts, and MP4 video (about 20 seconds, vertical 9:16 or square 1:1, no audio).
+- What leaves the browser: the signup email, the optional satisfaction survey and, only if the user accepts, anonymous usage analytics. Never the spreadsheet.
+- The app lives at https://datavix.app/app/ (not indexed). The pages below are the public content.
+
+## English
+
+- [Datavix: turn spreadsheets into animated charts and stories](https://datavix.app/en/): Spreadsheets into animated charts, presentations and videos, in the browser.
+- [Spreadsheet to animated chart](https://datavix.app/en/spreadsheet-to-animated-chart/): The step by step from an Excel or CSV file to an animated chart.
+- [Bar chart race](https://datavix.app/en/bar-chart-race/): The ranking that changes over time, from dates, items and values.
+- [Data storytelling](https://datavix.app/en/data-storytelling/): A simple method to go from a spreadsheet to a story told with numbers.
+- [Presentation templates](https://datavix.app/en/presentation-templates/): Thirteen questions your spreadsheet can answer, each with a ready script.
+- [Export to PowerPoint](https://datavix.app/en/export-to-powerpoint/): A .pptx with editable text and native charts, each with its spreadsheet embedded.
+- [Video for social media](https://datavix.app/en/social-video/): A roughly 20-second MP4, vertical or square, recorded in your browser.
+- [Chart types](https://datavix.app/en/chart-types/): The 30 Datavix charts and what each one needs from your spreadsheet.
+- [FAQ](https://datavix.app/en/faq/): Privacy, formats, charts, exports and limits.
+- [Privacy](https://datavix.app/en/privacy/): What stays in the browser, what is sent and your rights under the LGPD.
+
+## Português (pt-BR)
+
+- [Datavix: planilha em gráficos animados e storytelling](https://datavix.app/): Planilhas em gráficos animados, apresentações e vídeos, no navegador.
+- [Planilha em gráfico animado](https://datavix.app/planilha-em-grafico-animado/): O passo a passo para sair do Excel ou CSV e chegar a um gráfico animado.
+- [Corrida de barras](https://datavix.app/corrida-de-barras/): O ranking que muda ao longo do tempo, a partir de datas, itens e valores.
+- [Storytelling com dados](https://datavix.app/storytelling-com-dados/): Um método simples para sair da planilha e chegar a uma história com números.
+- [Modelos de apresentação](https://datavix.app/modelos-de-apresentacao/): Treze perguntas que a planilha pode responder, cada uma com roteiro pronto.
+- [Exportar para PowerPoint](https://datavix.app/exportar-para-powerpoint/): Um .pptx com textos editáveis e gráficos nativos, cada um com a planilha embutida.
+- [Vídeo para redes sociais](https://datavix.app/video-para-redes-sociais/): Um MP4 de cerca de 20 segundos, vertical ou quadrado, gravado no navegador.
+- [Tipos de gráfico](https://datavix.app/tipos-de-grafico/): Os 30 gráficos do Datavix e o que cada um pede da planilha.
+- [Perguntas frequentes](https://datavix.app/perguntas-frequentes/): Privacidade, formatos, gráficos, exportações e limites.
+- [Privacidade](https://datavix.app/privacidade/): O que fica no navegador, o que é enviado e os seus direitos pela LGPD.
+
+## Optional
+
+- [Full text of this site](https://datavix.app/llms-full.txt): all pages in one Markdown file
+- [Source code on GitHub](https://github.com/caiospot/Datavix)
